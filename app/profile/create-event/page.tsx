@@ -23,56 +23,37 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
+import { createEvent } from "@/lib/actions/events";
+import { eventFormSchema } from "@/lib/schemas/events";
 
 interface Step1Props {
   onNext: () => void;
 }
 
-interface Step2Props {
-  onNext: () => void;
-  onBack: () => void;
-}
+// interface Step2Props {
+//   onNext: () => void;
+//   onBack: () => void;
+// }
 
-interface Step3Props {
-  onNext: () => void;
-  onBack: () => void;
-}
+// interface Step3Props {
+//   onNext: () => void;
+//   onBack: () => void;
+// }
 
 function Step1({ onNext }: Step1Props) {
-  const formSchema = z.object({
-    name: z.string().min(1, {
-      message: "Name is required",
-    }),
-    description: z.string().min(1, {
-      message: "Description is required",
-    }),
-    venueName: z.string().min(1, {
-      message: "Location name is required",
-    }),
-    venueAddress: z.string().min(1, {
-      message: "Location address is required",
-    }),
-    date: z.date({
-      required_error: "Date is required",
-    }),
-    ticketPrice: z.number(),
-    ticketQuantity: z.number(),
+  const form = useForm<z.infer<typeof eventFormSchema>>({
+    resolver: zodResolver(eventFormSchema),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const handleNext = () => {
-    console.log(form.getValues());
-    // onNext();
+  const onSubmit = async () => {
+    await createEvent(form.getValues());
   };
 
   return (
     <div className="h-full">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleNext)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
@@ -124,7 +105,7 @@ function Step1({ onNext }: Step1Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Small Description" {...field} />
+                    <Input placeholder="Venue Address" {...field} />
                   </FormControl>
                   <div className="h-2">
                     <FormMessage />
@@ -213,37 +194,37 @@ function Step1({ onNext }: Step1Props) {
   );
 }
 
-function Step2({ onNext, onBack }: Step2Props) {
-  return (
-    <div>
-      <h1>Step 2</h1>
-      <div className="w-full flex space-x-4 absolute bottom-0">
-        <Button className="w-full" onClick={onBack}>
-          Back
-        </Button>
-        <Button className="w-full" onClick={onNext}>
-          Next
-        </Button>
-      </div>
-    </div>
-  );
-}
+// function Step2({ onNext, onBack }: Step2Props) {
+//   return (
+//     <div>
+//       <h1>Step 2</h1>
+//       <div className="w-full flex space-x-4 absolute bottom-0">
+//         <Button className="w-full" onClick={onBack}>
+//           Back
+//         </Button>
+//         <Button className="w-full" onClick={onNext}>
+//           Next
+//         </Button>
+//       </div>
+//     </div>
+//   );
+// }
 
-function Step3({ onNext, onBack }: Step2Props) {
-  return (
-    <div>
-      <h1>Step 3</h1>
-      <div className="w-full flex space-x-4 absolute bottom-0">
-        <Button className="w-full" onClick={onBack}>
-          Back
-        </Button>
-        <Button className="w-full" onClick={onNext}>
-          Next
-        </Button>
-      </div>
-    </div>
-  );
-}
+// function Step3({ onNext, onBack }: Step2Props) {
+//   return (
+//     <div>
+//       <h1>Step 3</h1>
+//       <div className="w-full flex space-x-4 absolute bottom-0">
+//         <Button className="w-full" onClick={onBack}>
+//           Back
+//         </Button>
+//         <Button className="w-full" onClick={onNext}>
+//           Next
+//         </Button>
+//       </div>
+//     </div>
+//   );
+// }
 
 export default function Page() {
   const [step, setStep] = useState(1);
@@ -252,7 +233,7 @@ export default function Page() {
     <main className="max-w-lg h-[calc(100vh-120px)] m-auto">
       <h1 className="text-3xl font-semibold mb-6">Create Event</h1>
       {step === 1 && <Step1 onNext={() => setStep(step + 1)} />}
-      {step === 2 && (
+      {/* {step === 2 && (
         <Step2
           onNext={() => setStep(step + 1)}
           onBack={() => setStep(step - 1)}
@@ -263,7 +244,7 @@ export default function Page() {
           onNext={() => setStep(step + 1)}
           onBack={() => setStep(step - 1)}
         />
-      )}
+      )} */}
     </main>
   );
 }

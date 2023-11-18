@@ -2,7 +2,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import validateUser from "@/lib/actions";
+import validateUser from "@/lib/actions/auth";
 
 export default async function Page() {
   const { data } = await validateUser();

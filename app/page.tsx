@@ -1,5 +1,5 @@
 import Link from "next/link";
-import validateUser from "@/lib/actions";
+import validateUser from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
