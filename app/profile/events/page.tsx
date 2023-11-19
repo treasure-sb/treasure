@@ -11,7 +11,7 @@ export default async function Page() {
 
   const supabase = await createSupabaseServerClient();
   const { data: eventData } = await supabase
-    .from("event")
+    .from("events")
     .select("*")
     .eq("organizer_id", userData.user.id);
 

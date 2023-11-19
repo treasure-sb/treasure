@@ -22,7 +22,7 @@ const createEvent = async (values: z.infer<typeof eventFormSchema>) => {
     data: { user },
   } = await supabase.auth.getUser();
   const { data, error } = await supabase
-    .from("event")
+    .from("events")
     .insert([
       {
         name,

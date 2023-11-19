@@ -14,7 +14,7 @@ export default async function EventDisplay({ event }: { event: any }) {
 
   return (
     <div className="group">
-      <Link href="/">
+      <Link href={`/profile/events/${event.id}`}>
         <Image
           className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
