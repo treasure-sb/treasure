@@ -16,7 +16,7 @@ export default async function Page() {
     .eq("organizer_id", userData.user.id);
 
   return (
-    <main className="">
+    <main className="w-full max-w-md m-auto">
       <h1 className="font-bold text-2xl mb-6">My Events</h1>
       {!eventData ? (
         <p>You have no events</p>
