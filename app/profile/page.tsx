@@ -18,15 +18,20 @@ export default async function Page() {
   };
 
   return (
-    <main className="m-auto max-w-lg">
+    <main className="m-auto max-w-lg min-h-screen">
       <div className="flex flex-col space-y-6">
-        <h1 className="text-2xl m-auto font-semibold">{data.user?.email}</h1>
+        <h1 className="text-2xl m-auto font-semibold text-center">
+          Welcome, {data.user?.email}!
+        </h1>
         <Link href="/profile/create-event">
           <Button className="w-full">Throw an Event</Button>
         </Link>
         <form action={handleLogout}>
           <Button className="w-full">Logout</Button>
         </form>
+        <Link href="/profile/events">
+          <Button className="w-full">My Events</Button>
+        </Link>
       </div>
     </main>
   );

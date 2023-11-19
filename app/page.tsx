@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 
 export default async function Page() {
   const { data } = await validateUser();
-  console.log(data);
   if (!data.user) {
     redirect("/account");
   }
