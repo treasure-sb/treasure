@@ -5,45 +5,71 @@ import { Button } from "@/components/ui/button";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
-  const { data: event, error } = await supabase
+  const event_id = params.id;
+  const { data: event, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", event_id)
     .single();
 
-  const data = await supabase.storage
-    .from("posters")
-    .getPublicUrl(event.poster_url);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
-  console.log(event);
+  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }).format(
+    new Date(
+      0,
+      0,
+      0,
+      event.start_time.split(":")[0],
+      event.start_time.split(":")[1]
+    )
+  );
+
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+
+  const { data: tickets, error: ticketError } = await supabase
+    .from("tickets")
+    .select("*")
+    .eq("event_id", event_id);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <Image
           className="rounded-xl lg:hidden mb-6 lg:mb-0"
           alt="image"
-          src={data.data.publicUrl}
+          src={publicUrl}
           width={500}
           height={500}
         />
         <Image
           className="rounded-xl hidden lg:block mb-6 lg:mb-0"
           alt="image"
-          src={data.data.publicUrl}
+          src={publicUrl}
           width={600}
           height={600}
         />
         <div className="space-y-6">
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
-            <h1>Location</h1>
-            <h1>{formattedDate}</h1>
+            <h1 className="font-semibold">{event.venue_name}</h1>
+            <h1 className="text-yellow-300">
+              {formattedDate} at {formattedStartTime}
+            </h1>
           </div>
           <div>
             <h1>Tags go here</h1>
           </div>
           <div>
-            <h1>Prices go here</h1>
+            {tickets?.map((ticket) => (
+              <h3>
+                ${ticket.price} {ticket.name}
+              </h3>
+            ))}
           </div>
           <h1>City, State</h1>
           <div>

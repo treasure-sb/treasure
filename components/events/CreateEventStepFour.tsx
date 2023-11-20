@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
+import { createEvent } from "@/lib/actions/events";
+import { createClient } from "@/utils/supabase/client";
 
 interface Step3Props {
   onNext: () => void;
@@ -25,7 +27,7 @@ interface Step3Props {
 }
 
 const stepTwoSchema = z.object({
-  poster: z.instanceof(File).optional(),
+  poster_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
 export default function Step4({
@@ -38,29 +40,40 @@ export default function Step4({
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      poster: eventForm.poster,
+      poster_url: eventForm.poster_url,
     },
   });
 
-  const handleNext = () => {
+  const onSubmit = async () => {
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
-    setEventForm(newForm);
-    onNext();
+
+    const poster = newForm.poster_url;
+    if (poster) {
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from("posters")
+        .upload(`poster${Date.now()}.png`, poster);
+
+      if (data) {
+        newForm.poster_url = data.path;
+        await createEvent(newForm);
+      }
+    }
   };
 
   return (
     <div className="h-full">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleNext)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
           <FormField
             control={form.control}
-            name="poster"
+            name="poster_url"
             render={({ field }) => (
               <FormItem className="flex mx-auto">
                 <FormLabel
@@ -115,7 +128,7 @@ export default function Step4({
               Back
             </Button>
             <Button className="w-full" type="submit">
-              Next
+              Create Event
             </Button>
           </div>
         </form>

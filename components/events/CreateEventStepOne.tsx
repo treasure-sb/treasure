@@ -14,6 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+import { EventFormLocation } from "@/types/event";
+import Autocomplete from "../places/Autocomplete";
 
 interface Step1Props {
   onNext: () => void;
@@ -28,30 +31,31 @@ const stepOneSchema = z.object({
   description: z.string().min(1, {
     message: "Description is required",
   }),
-  venueName: z.string().min(1, {
+  venue_name: z.string().min(1, {
     message: "Location name is required",
-  }),
-  venueAddress: z.string().min(1, {
-    message: "Location address is required",
   }),
 });
 
 export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
+  const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(
+    null
+  );
   const form = useForm<z.infer<typeof stepOneSchema>>({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
       name: eventForm.name,
       description: eventForm.description,
-      venueName: eventForm.venueName,
-      venueAddress: eventForm.venueAddress,
+      venue_name: eventForm.venue_name,
     },
   });
 
   const handleNext = () => {
     const newForm = {
       ...eventForm,
+      ...venueLocation,
       ...form.getValues(),
     };
+    console.log(newForm);
     setEventForm(newForm);
     onNext();
   };
@@ -94,7 +98,7 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
             />
             <FormField
               control={form.control}
-              name="venueName"
+              name="venue_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -106,20 +110,7 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="venueAddress"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Venue Address" {...field} />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
+            <Autocomplete setVenueLocation={setVenueLocation} />
           </div>
           <Button type="submit" className="w-full py-6 mt-20">
             Next

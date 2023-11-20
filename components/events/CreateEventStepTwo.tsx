@@ -42,10 +42,10 @@ const stepTwoSchema = z.object({
   date: z.date({
     required_error: "Date is required",
   }),
-  startTime: z.string().refine((value) => isValidTime(value), {
+  start_time: z.string().refine((value) => isValidTime(value), {
     message: "Must be a valid time (HH:mm)",
   }),
-  endTime: z.string().refine((value) => isValidTime(value), {
+  end_time: z.string().refine((value) => isValidTime(value), {
     message: "Must be a valid time (HH:mm)",
   }),
 });
@@ -60,8 +60,8 @@ export default function Step2({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
       date: eventForm.date,
-      startTime: eventForm.startTime,
-      endTime: eventForm.endTime,
+      start_time: eventForm.start_time,
+      end_time: eventForm.end_time,
     },
   });
 
@@ -84,7 +84,7 @@ export default function Step2({
           <div className="space-y-6">
             <FormField
               control={form.control}
-              name="startTime"
+              name="start_time"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Start Time</FormLabel>
@@ -99,7 +99,7 @@ export default function Step2({
             />
             <FormField
               control={form.control}
-              name="endTime"
+              name="end_time"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>End Time</FormLabel>

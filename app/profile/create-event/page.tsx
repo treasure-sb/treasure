@@ -11,14 +11,16 @@ export default function Page() {
   const [eventForm, setEventForm] = useState<EventForm>({
     name: "",
     description: "",
-    venueName: "",
-    venueAddress: "",
+    venue_name: "",
+    address: "",
+    lat: 0,
+    lng: 0,
     date: undefined,
-    startTime: "",
-    endTime: "",
-    ticketPrice: "",
-    ticketQuantity: "",
-    poster: undefined,
+    start_time: "",
+    end_time: "",
+    ticket_price: "",
+    ticket_quantity: "",
+    poster_url: undefined,
   });
 
   return (

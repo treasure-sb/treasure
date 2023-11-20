@@ -1,12 +1,20 @@
 export interface EventForm {
   name: string;
   description: string;
-  venueName: string;
-  venueAddress: string;
+  venue_name: string;
+  address: string;
+  lng: number;
+  lat: number;
   date: Date | undefined;
-  startTime: string;
-  endTime: string;
-  ticketPrice: string;
-  ticketQuantity: string;
-  poster: File | undefined;
+  start_time: string;
+  end_time: string;
+  ticket_price: string;
+  ticket_quantity: string;
+  poster_url: File | string | undefined;
+}
+
+export interface EventFormLocation {
+  address: string;
+  lng: number;
+  lat: number;
 }

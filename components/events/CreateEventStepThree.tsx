@@ -23,7 +23,7 @@ interface Step3Props {
 }
 
 const stepTwoSchema = z.object({
-  ticketPrice: z.string().refine(
+  ticket_price: z.string().refine(
     (num) => {
       return !isNaN(Number(num)) && Number(num) > 0;
     },
@@ -31,7 +31,7 @@ const stepTwoSchema = z.object({
       message: "Must be a valid ticket price",
     }
   ),
-  ticketQuantity: z.string().refine(
+  ticket_quantity: z.string().refine(
     (num) => {
       return !isNaN(Number(num)) && Number(num) > 0;
     },
@@ -50,8 +50,8 @@ export default function Step3({
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      ticketPrice: eventForm.ticketPrice,
-      ticketQuantity: eventForm.ticketQuantity,
+      ticket_price: eventForm.ticket_price,
+      ticket_quantity: eventForm.ticket_quantity,
     },
   });
 
@@ -74,7 +74,7 @@ export default function Step3({
           <div className="space-y-6">
             <FormField
               control={form.control}
-              name="ticketPrice"
+              name="ticket_price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -88,7 +88,7 @@ export default function Step3({
             />
             <FormField
               control={form.control}
-              name="ticketQuantity"
+              name="ticket_quantity"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

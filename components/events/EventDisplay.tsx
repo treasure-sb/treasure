@@ -10,8 +10,6 @@ export default async function EventDisplay({ event }: { event: any }) {
     .getPublicUrl(event.poster_url);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
 
-  console.log(event);
-
   return (
     <div className="group">
       <Link href={`/profile/events/${event.id}`}>
