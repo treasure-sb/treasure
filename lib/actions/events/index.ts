@@ -1,8 +1,7 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import * as z from "zod";
 import { redirect } from "next/navigation";
-import { EventForm } from "@/types/event";
+import { EventForm, EventFormTicket } from "@/types/event";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -41,20 +40,28 @@ const createEvent = async (values: EventForm) => {
     .select();
   if (data) {
     const event_id = data[0].id;
-    await createTickets(values, event_id);
+    await createTickets(values.tickets, event_id);
   }
   if (!error) {
     redirect("/profile");
   }
 };
 
-const createTickets = async (values: EventForm, event_id: string) => {
+const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
   const supabase = await createSupabaseServerClient();
-  const { ticket_price, ticket_quantity } = values;
-  const { data, error } = await supabase.from("tickets").insert({
-    event_id,
-    price: ticket_price,
-    quantity: ticket_quantity,
+  tickets.forEach(async (ticket) => {
+    const { ticket_price, ticket_quantity } = ticket;
+    const { data: ticketsData, error } = await supabase
+      .from("tickets")
+      .insert([
+        {
+          price: ticket_price,
+          quantity: ticket_quantity,
+          event_id,
+        },
+      ])
+      .select();
+    console.log(ticketsData, error);
   });
 };
 

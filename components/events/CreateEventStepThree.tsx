@@ -55,7 +55,7 @@ export default function Step3({
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      tickets: [{ ticket_price: "", ticket_quantity: "" }],
+      tickets: eventForm.tickets,
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -69,7 +69,7 @@ export default function Step3({
       ...eventForm,
       ...form.getValues(),
     };
-    //setEventForm(newForm);
+    setEventForm(newForm);
     onNext();
   };
 

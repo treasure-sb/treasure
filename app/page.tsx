@@ -23,7 +23,7 @@ export default async function Page() {
             </Button>
             <Button
               variant={"secondary"}
-              className="w-full landing-page-button hover:bg-background bg-background"
+              className="w-full border-primary landing-page-button hover:bg-background bg-background"
             >
               Create Event
             </Button>

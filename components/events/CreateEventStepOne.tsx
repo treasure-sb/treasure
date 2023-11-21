@@ -55,7 +55,6 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
       ...venueLocation,
       ...form.getValues(),
     };
-    console.log(newForm);
     setEventForm(newForm);
     onNext();
   };

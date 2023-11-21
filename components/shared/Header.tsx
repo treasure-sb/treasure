@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/lib/store";
 
 export default function Header() {
   const pathname = usePathname();
+  const { isLoggedIn } = useAuthStore();
 
   return (
     <>
@@ -20,11 +22,18 @@ export default function Header() {
           <Link href="/" className="font-bold text-3xl">
             Treasure
           </Link>
-          <Link href="/account">
-            <Button variant={"outline"} className="w-20 lg:w-28 border-primary">
-              Log in
-            </Button>
-          </Link>
+          {isLoggedIn ? (
+            <Link href="/profile">My Profile</Link>
+          ) : (
+            <Link href="/account">
+              <Button
+                variant={"outline"}
+                className="w-20 lg:w-28 border-primary"
+              >
+                Log in
+              </Button>
+            </Link>
+          )}
         </header>
       )}
     </>

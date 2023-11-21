@@ -18,8 +18,12 @@ export default function Page() {
     date: undefined,
     start_time: "",
     end_time: "",
-    ticket_price: "",
-    ticket_quantity: "",
+    tickets: [
+      {
+        ticket_price: "",
+        ticket_quantity: "",
+      },
+    ],
     poster_url: undefined,
   });
 
