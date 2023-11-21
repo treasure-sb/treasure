@@ -28,8 +28,7 @@ export default function Page() {
   });
 
   return (
-    <main className="max-w-lg h-[calc(100vh-200px)] m-auto">
-      <h1 className="text-3xl font-semibold mb-6">Create Event</h1>
+    <main className="max-w-lg h-[calc(100vh-220px)] m-auto">
       {step === 1 && (
         <CreateEventStepOne
           eventForm={eventForm}

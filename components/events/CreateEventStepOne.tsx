@@ -67,6 +67,7 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
+            <h1 className="text-3xl font-semibold">Create Event</h1>
             <FormField
               control={form.control}
               name="name"
@@ -111,7 +112,7 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
             />
             <Autocomplete setVenueLocation={setVenueLocation} />
           </div>
-          <Button type="submit" className="w-full py-6 mt-20">
+          <Button type="submit" className="w-full py-6">
             Next
           </Button>
         </form>

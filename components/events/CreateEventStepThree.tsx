@@ -91,6 +91,7 @@ export default function Step3({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
+            <h1 className="text-3xl font-semibold">Create Event</h1>
             {fields.map((field, index) => {
               return (
                 <div key={field.id}>

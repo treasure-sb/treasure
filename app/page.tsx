@@ -6,7 +6,7 @@ import Newsletter from "@/components/landing-page/Newsletter";
 
 export default async function Page() {
   return (
-    <main className="min-h-screen max-w-xl md:max-w-6xl xl:max-w-[90rem] m-auto">
+    <main className="min-h-screen max-w-xl md:max-w-6xl xl:max-w-7xl m-auto">
       {/* Hero */}
       <div className="my-20 space-y-10 w-full">
         <div className="max-w-xl">

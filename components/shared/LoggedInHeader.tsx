@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 export default function LoggedInHeader() {
   return (
-    <header className="flex justify-between md:max-w-6xl xl:max-w-[90rem] m-auto w-full mb-10">
+    <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10">
       <Link href="/" className="font-bold text-3xl">
         Treasure
       </Link>

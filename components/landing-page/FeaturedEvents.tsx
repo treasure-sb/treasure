@@ -1,7 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import FeaturedEventDisplay from "./FeaturedEventDisplay";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export default async function FeaturedEvents() {
   const supabase = await createSupabaseServerClient();

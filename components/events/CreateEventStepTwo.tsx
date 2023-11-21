@@ -82,6 +82,7 @@ export default function Step2({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
+            <h1 className="text-3xl font-semibold">Create Event</h1>
             <FormField
               control={form.control}
               name="start_time"

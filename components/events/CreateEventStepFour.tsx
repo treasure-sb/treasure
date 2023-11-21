@@ -71,6 +71,7 @@ export default function Step4({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
+          <h1 className="text-3xl font-semibold">Create Event</h1>
           <FormField
             control={form.control}
             name="poster_url"
