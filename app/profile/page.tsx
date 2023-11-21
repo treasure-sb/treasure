@@ -18,7 +18,7 @@ export default async function Page() {
   };
 
   return (
-    <main className="m-auto max-w-lg min-h-screen">
+    <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6">
         <h1 className="text-2xl m-auto font-semibold text-center">
           Welcome, {data.user?.email}!

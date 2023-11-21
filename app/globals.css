@@ -57,3 +57,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+.landing-page-button {
+  @apply py-6 font-bold text-lg md:py-10 md:text-xl rounded-full;
+}
+
+.landing-page-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+}
+
+.landing-footer-link {
+  @apply text-xs underline md:text-sm;
+}

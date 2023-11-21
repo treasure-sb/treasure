@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 
 interface Step3Props {
   onNext: () => void;
@@ -22,7 +23,7 @@ interface Step3Props {
   setEventForm: Dispatch<SetStateAction<EventForm>>;
 }
 
-const stepTwoSchema = z.object({
+const ticketSchema = z.object({
   ticket_price: z.string().refine(
     (num) => {
       return !isNaN(Number(num)) && Number(num) > 0;
@@ -41,6 +42,10 @@ const stepTwoSchema = z.object({
   ),
 });
 
+const stepTwoSchema = z.object({
+  tickets: z.array(ticketSchema),
+});
+
 export default function Step3({
   onNext,
   onBack,
@@ -50,18 +55,32 @@ export default function Step3({
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      ticket_price: eventForm.ticket_price,
-      ticket_quantity: eventForm.ticket_quantity,
+      tickets: [{ ticket_price: "", ticket_quantity: "" }],
     },
   });
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "tickets",
+  });
+  const [numTickets, setNumTickets] = useState(1);
 
   const handleNext = () => {
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
-    setEventForm(newForm);
+    //setEventForm(newForm);
     onNext();
+  };
+
+  const addTicketTier = () => {
+    append({ ticket_price: "", ticket_quantity: "" });
+    setNumTickets(numTickets + 1);
+  };
+
+  const removeTicketTier = () => {
+    remove(numTickets - 1);
+    setNumTickets(numTickets - 1);
   };
 
   return (
@@ -72,34 +91,58 @@ export default function Step3({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="ticket_price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Ticket Price" {...field} />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
+            {fields.map((field, index) => {
+              return (
+                <div key={field.id}>
+                  <FormField
+                    control={form.control}
+                    name={`tickets.${index}.ticket_price`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Ticket Price" {...field} />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tickets.${index}.ticket_quantity`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Ticket Quantity" {...field} />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              );
+            })}
+            <div className="flex space-x-4">
+              <Button
+                onClick={addTicketTier}
+                type="button"
+                variant={"secondary"}
+              >
+                Add Ticket Tier
+              </Button>{" "}
+              {numTickets > 1 && (
+                <Button
+                  type="button"
+                  onClick={removeTicketTier}
+                  variant={"secondary"}
+                >
+                  Remove Ticket Tier
+                </Button>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="ticket_quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Ticket Quantity" {...field} />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
+            </div>
           </div>
           <div className="flex space-x-2">
             <Button className="w-full" onClick={() => onBack()}>

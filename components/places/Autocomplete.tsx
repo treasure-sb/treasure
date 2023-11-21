@@ -1,4 +1,4 @@
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { useLoadScript } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -11,7 +11,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { EventFormLocation } from "@/types/event";
-import { useState } from "react";
 
 const PlacesAutocomplete = ({
   setVenueLocation,

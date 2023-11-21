@@ -23,7 +23,7 @@ export default async function Page() {
       ) : (
         <div className="flex flex-col items-center space-y-12">
           {eventData.map((event) => (
-            <EventDisplay event={event} />
+            <EventDisplay key={event.id} event={event} />
           ))}
         </div>
       )}

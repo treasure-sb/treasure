@@ -19,7 +19,7 @@ export default function Page() {
   });
 
   return (
-    <main className="p-10 max-w-lg m-auto">
+    <main className="p-10 max-w-lg m-auto w-full">
       <Auth
         theme="dark"
         supabaseClient={supabase}
