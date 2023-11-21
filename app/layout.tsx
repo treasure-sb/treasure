@@ -2,7 +2,8 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/shared/Header";
-import Footer from "@/components/shared/Footer";
+import LoggedInHeader from "@/components/shared/LoggedInHeader";
+import validateUser from "@/lib/actions/auth";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -14,11 +15,12 @@ export const metadata = {
   description: "The fastest way to build apps with Next.js and Supabase",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await validateUser();
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground p-10 flex flex-col min-h-screen justify-between">
@@ -29,7 +31,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div>
-            <Header />
+            {user.data.user ? <LoggedInHeader /> : <Header />}
             {children}
           </div>
           {/* <Footer /> */}

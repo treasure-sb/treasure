@@ -22,18 +22,11 @@ export default function Header() {
           <Link href="/" className="font-bold text-3xl">
             Treasure
           </Link>
-          {isLoggedIn ? (
-            <Link href="/profile">My Profile</Link>
-          ) : (
-            <Link href="/account">
-              <Button
-                variant={"outline"}
-                className="w-20 lg:w-28 border-primary"
-              >
-                Log in
-              </Button>
-            </Link>
-          )}
+          <Link href="/account">
+            <Button variant={"outline"} className="w-20 lg:w-28 border-primary">
+              Log in
+            </Button>
+          </Link>
         </header>
       )}
     </>
