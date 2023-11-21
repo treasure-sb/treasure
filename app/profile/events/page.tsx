@@ -1,7 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import validateUser from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
-import EventDisplay from "@/components/events/EventDisplay";
+import EventDisplay from "@/components/events/shared/EventDisplay";
 
 export default async function Page() {
   const { data: userData } = await validateUser();

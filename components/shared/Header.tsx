@@ -18,7 +18,7 @@ export default function Header() {
           </Link>
         </header>
       ) : (
-        <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10">
+        <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
           <Link href="/" className="font-bold text-3xl">
             Treasure
           </Link>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import FeaturedEvents from "@/components/landing-page/FeaturedEvents";
 import Newsletter from "@/components/landing-page/Newsletter";
+import Link from "next/link";
 
 export default async function Page() {
   return (
@@ -15,18 +16,22 @@ export default async function Page() {
             <span className="text-primary">Events</span> Near You
           </h1>
           <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-            <Button
-              variant={"secondary"}
-              className="w-full landing-page-button"
-            >
-              Browse Events
-            </Button>
-            <Button
-              variant={"secondary"}
-              className="w-full border-primary landing-page-button hover:bg-background bg-background"
-            >
-              Create Event
-            </Button>
+            <Link href="/events">
+              <Button
+                variant={"secondary"}
+                className="w-full landing-page-button"
+              >
+                Browse Events
+              </Button>
+            </Link>
+            <Link href="/profile/create-event">
+              <Button
+                variant={"secondary"}
+                className="w-full border-primary landing-page-button hover:bg-background bg-background"
+              >
+                Create Event
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
-import Autocomplete from "../places/Autocomplete";
+import Autocomplete from "../../places/Autocomplete";
 
 interface Step1Props {
   onNext: () => void;
