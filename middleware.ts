@@ -54,7 +54,10 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getSession();
+  const session = await supabase.auth.getSession();
+  if (session.data.session && request.nextUrl.pathname === "/account") {
+    response = NextResponse.redirect(new URL("/", request.url));
+  }
 
   return response;
 }

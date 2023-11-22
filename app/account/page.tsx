@@ -6,6 +6,7 @@ import {
 } from "@supabase/auth-ui-shared";
 import { Auth } from "@supabase/auth-ui-react";
 import { useRouter } from "next/navigation";
+
 const supabase = createClient();
 
 export default function Page() {
@@ -13,7 +14,6 @@ export default function Page() {
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
-      router.push("/");
       router.refresh();
     }
   });

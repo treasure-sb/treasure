@@ -7,7 +7,6 @@ import { useAuthStore } from "@/lib/store";
 
 export default function Header() {
   const pathname = usePathname();
-  const { isLoggedIn } = useAuthStore();
 
   return (
     <>
