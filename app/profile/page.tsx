@@ -49,13 +49,13 @@ export default async function Page() {
           Welcome, {profile.email}!
         </h1>
         <Link href="/profile/create-event">
-          <Button className="w-full">Throw an Event</Button>
+          <Button className="w-full">Host an Event</Button>
         </Link>
         <form action={handleLogout}>
-          <Button className="w-full">Logout</Button>
+          <Button className="w-full" variant={'secondary'}>Logout</Button>
         </form>
         <Link href="/profile/events">
-          <Button className="w-full">My Events</Button>
+          <Button className="w-full" variant={'secondary'}>My Events</Button>
         </Link>
       </div>
     </main>
