@@ -88,7 +88,6 @@ export default async function Page({ params }: { params: { id: string } }) {
       <div className="mt-10 text-center">
         <h1 className="font-semibold text-2xl">Location</h1>
         <h1>{event.address}</h1>
-        <Map lat={event.lat} lng={event.lng} />
       </div>
     </main>
   );
