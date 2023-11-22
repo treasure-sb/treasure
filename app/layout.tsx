@@ -23,7 +23,7 @@ export default async function RootLayout({
   const user = await validateUser();
   return (
     <html lang="en" className={GeistSans.className}>
-      <body className="bg-background text-foreground p-10 flex flex-col min-h-screen justify-between">
+      <body className="bg-background text-foreground p-6 flex flex-col min-h-screen justify-between">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

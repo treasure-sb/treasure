@@ -5,9 +5,9 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function MiniEvent({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
-  const data = await supabase.storage
-    .from("posters")
-    .getPublicUrl(event.poster_url);
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
   const { data: tickets, error } = await supabase
     .from("tickets")
@@ -20,7 +20,7 @@ export default async function MiniEvent({ event }: { event: any }) {
         <Image
           className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
-          src={data.data.publicUrl}
+          src={publicUrl}
           width={100}
           height={100}
         />
