@@ -17,7 +17,7 @@ export default function Page() {
       router.refresh();
     }
   });
-
+console.log("hello")
   return (
     <main className="p-10 max-w-lg m-auto w-full">
       <Auth
