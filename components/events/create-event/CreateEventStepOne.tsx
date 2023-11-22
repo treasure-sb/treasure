@@ -17,6 +17,8 @@ import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
 import Autocomplete from "../../places/Autocomplete";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect } from "react";
 
 interface Step1Props {
   onNext: () => void;
@@ -37,6 +39,8 @@ const stepOneSchema = z.object({
 });
 
 export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
+  const [tags, setTags] = useState<any[]>([]);
+  const [tagSearch, setTagSearch] = useState("");
   const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(
     null
   );
@@ -58,6 +62,24 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
     setEventForm(newForm);
     onNext();
   };
+
+  // get events tags
+  const supabase = createClient();
+  useEffect(() => {
+    const getTags = async () => {
+      const { data: tags, error } = await supabase
+        .from("tags")
+        .select("*")
+        .ilike("name", `%${tagSearch}%`)
+        .order("name", { ascending: true });
+
+      if (tags) {
+        setTags(tags);
+        console.log(tags);
+      }
+    };
+    getTags();
+  }, [tagSearch]);
 
   return (
     <div className="h-full">
@@ -110,6 +132,24 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
                 </FormItem>
               )}
             />
+            <div>
+              <Input
+                onChange={(e) => setTagSearch(e.target.value)}
+                placeholder="Search for tags..."
+              ></Input>
+              <div className="flex overflow-scroll scrollbar-hidden h-12 space-x-2 mt-4">
+                {tags?.map((tag) => (
+                  <Button
+                    variant={"secondary"}
+                    type="button"
+                    className="h-8"
+                    key={tag.id}
+                  >
+                    <h1>{tag.name}</h1>
+                  </Button>
+                ))}
+              </div>
+            </div>
             <Autocomplete setVenueLocation={setVenueLocation} />
           </div>
           <Button type="submit" className="w-full py-6">
