@@ -1,7 +1,7 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { EventForm, EventFormTicket } from "@/types/event";
+import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -39,12 +39,30 @@ const createEvent = async (values: EventForm) => {
     ])
     .select();
   if (data) {
+    console.log(values.tags);
     const event_id = data[0].id;
     await createTickets(values.tickets, event_id);
+    await createTags(values.tags, event_id);
   }
   if (!error) {
     redirect("/profile");
   }
+};
+
+const createTags = async (tags: EventFormTag[], event_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  tags.forEach(async (tag) => {
+    const { data: tagsData, error } = await supabase
+      .from("event_tags")
+      .insert([
+        {
+          event_id,
+          tag_id: tag.tag_id,
+        },
+      ])
+      .select();
+    console.log(tagsData, error);
+  });
 };
 
 const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
@@ -61,7 +79,6 @@ const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
         },
       ])
       .select();
-    console.log(ticketsData, error);
   });
 };
 
