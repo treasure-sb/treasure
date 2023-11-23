@@ -33,6 +33,7 @@ export default async function Page() {
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
   let instaLink = "https://www.instagram.com/" + profile.instagram;
+  let twitterLink = "https://www.twitter.com/" + profile.twitter;
   const formattedDate = format(new Date(user.created_at), "MMMM do, yyyy");
 
   return (
@@ -96,7 +97,7 @@ export default async function Page() {
         </Link>
         <Link
           className="flex text-2xl space-x-4 justify-center"
-          href={instaLink}
+          href={twitterLink}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +110,7 @@ export default async function Page() {
               fill="white"
             />
           </svg>
-          <h1>@{profile.instagram}</h1>
+          <h1>@{profile.twitter}</h1>
         </Link>
         <h1 className="text-2xl text-center">
           On Treasure since{" "}
