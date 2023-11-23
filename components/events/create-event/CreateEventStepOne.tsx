@@ -40,6 +40,7 @@ const stepOneSchema = z.object({
 
 export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
   const [tags, setTags] = useState<any[]>([]);
+  const [eventTags, setEventTags] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
   const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(
     null
@@ -75,11 +76,20 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
 
       if (tags) {
         setTags(tags);
-        console.log(tags);
       }
     };
     getTags();
   }, [tagSearch]);
+
+  const handleTagSelect = (tag: any) => {
+    if (!eventTags.some((eventTag) => eventTag.name === tag.name)) {
+      setEventTags([...eventTags, tag]);
+    } else {
+      setEventTags(eventTags.filter((eventTag) => eventTag.name !== tag.name));
+    }
+  };
+
+  console.log(eventTags);
 
   return (
     <div className="h-full">
@@ -140,7 +150,12 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
               <div className="flex overflow-scroll scrollbar-hidden h-12 space-x-2 mt-4">
                 {tags?.map((tag) => (
                   <Button
-                    variant={"secondary"}
+                    onClick={() => handleTagSelect(tag)}
+                    variant={
+                      eventTags.some((eventTag) => eventTag.name === tag.name)
+                        ? "default"
+                        : "secondary"
+                    }
                     type="button"
                     className="h-8"
                     key={tag.id}
