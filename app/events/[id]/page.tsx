@@ -1,7 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { format } from "date-fns";
-import Map from "@/components/places/Map";
+import { Button } from "@/components/ui/button";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
@@ -42,6 +42,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("id", event.organizer_id)
     .single();
 
+  const { data: tagsData, error: tagsError } = await supabase
+    .from("event_tags")
+    .select("tags(name)")
+    .eq("event_id", event_id);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
@@ -60,8 +65,12 @@ export default async function Page({ params }: { params: { id: string } }) {
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
-          <div>
-            <h1>Tags go here</h1>
+          <div className="flex space-x-2">
+            {tagsData?.map((tag: any) => (
+              <Button className="hover:bg-primary hover:cursor-default">
+                {tag.tags.name}
+              </Button>
+            ))}
           </div>
           <div>
             {tickets?.map((ticket) => (
