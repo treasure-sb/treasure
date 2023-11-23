@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import MiniEvent from "@/components/events/events-public/MiniEvent";
 
 export default async function Page() {
   const { data: userData } = await validateUser();
@@ -30,7 +31,7 @@ export default async function Page() {
         <div className="flex flex-col items-center space-y-12">
           <h1 className="font-bold text-2xl mb-6">My Events</h1>
           {eventData?.map((event) => (
-            <EventDisplay key={event.id} event={event} />
+            <MiniEvent key={event.id} event={event} />
           ))}
         </div>
       )}
