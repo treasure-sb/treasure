@@ -15,15 +15,31 @@ export default async function MiniEvent({ event }: { event: any }) {
     .eq("event_id", event.id);
 
   return (
-    <div className="group">
-      <Link className="flex space-x-4" href={`/events/${event.id}`}>
-        <Image
-          className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
-          alt="image"
-          src={publicUrl}
-          width={100}
-          height={100}
-        />
+    <div className="group w-full h-50">
+      <Link
+        className="flex space-x-4"
+        style={{
+          maxHeight: "100px",
+          height: "30vw",
+        }}
+        href={`/events/${event.id}`}
+      >
+        <div
+          className="relative max-w-sm"
+          style={{
+            width: "30vw",
+            maxWidth: "100px",
+            maxHeight: "100px",
+            height: "30vw",
+          }}
+        >
+          <Image
+            className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
+            alt="image"
+            src={publicUrl}
+            fill={true}
+          />
+        </div>
         <div>
           <h1 className="text-xl mt-2">{event.name}</h1>
           <h1>
