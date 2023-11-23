@@ -24,6 +24,7 @@ export default function Page() {
         ticket_quantity: "",
       },
     ],
+    tags: [],
     poster_url: undefined,
   });
 

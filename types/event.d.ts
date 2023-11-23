@@ -3,6 +3,11 @@ export interface EventFormTicket {
   ticket_quantity: string;
 }
 
+export interface EventFormTag {
+  tag_name: string;
+  tag_id: number;
+}
+
 export interface EventForm {
   name: string;
   description: string;
@@ -14,6 +19,7 @@ export interface EventForm {
   start_time: string;
   end_time: string;
   tickets: EventFormTicket[];
+  tags: EventFormTag[];
   poster_url: File | string | undefined;
 }
 

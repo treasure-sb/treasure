@@ -19,6 +19,7 @@ import { EventFormLocation } from "@/types/event";
 import Autocomplete from "../../places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
+import { EventFormTag } from "@/types/event";
 
 interface Step1Props {
   onNext: () => void;
@@ -40,7 +41,6 @@ const stepOneSchema = z.object({
 
 export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
   const [tags, setTags] = useState<any[]>([]);
-  const [eventTags, setEventTags] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
   const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(
     null
@@ -82,14 +82,20 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
   }, [tagSearch]);
 
   const handleTagSelect = (tag: any) => {
-    if (!eventTags.some((eventTag) => eventTag.name === tag.name)) {
-      setEventTags([...eventTags, tag]);
+    if (!eventForm.tags.some((eventTag) => eventTag.tag_name === tag.name)) {
+      setEventForm({
+        ...eventForm,
+        tags: [...eventForm.tags, { tag_name: tag.name, tag_id: tag.id }],
+      });
     } else {
-      setEventTags(eventTags.filter((eventTag) => eventTag.name !== tag.name));
+      setEventForm({
+        ...eventForm,
+        tags: eventForm.tags.filter(
+          (eventTag) => eventTag.tag_name !== tag.name
+        ),
+      });
     }
   };
-
-  console.log(eventTags);
 
   return (
     <div className="h-full">
@@ -152,7 +158,9 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
                   <Button
                     onClick={() => handleTagSelect(tag)}
                     variant={
-                      eventTags.some((eventTag) => eventTag.name === tag.name)
+                      eventForm.tags.some(
+                        (eventTag) => eventTag.tag_name === tag.name
+                      )
                         ? "default"
                         : "secondary"
                     }
