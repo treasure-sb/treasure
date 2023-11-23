@@ -39,7 +39,6 @@ const createEvent = async (values: EventForm) => {
     ])
     .select();
   if (data) {
-    console.log(values.tags);
     const event_id = data[0].id;
     await createTickets(values.tickets, event_id);
     await createTags(values.tags, event_id);
