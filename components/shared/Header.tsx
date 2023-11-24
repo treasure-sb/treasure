@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
-import { useAuthStore } from "@/lib/store";
 
 export default function Header() {
   const pathname = usePathname();
