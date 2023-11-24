@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
 import validateUser from "@/lib/actions/auth";
+import logo from "@/public/favicon-treasure.ico";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -11,8 +12,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Treasure",
+  description: "Events for everyone",
 };
 
 export default async function RootLayout({
@@ -21,8 +22,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const user = await validateUser();
+
   return (
     <html lang="en" className={GeistSans.className}>
+      <head>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+      </head>
       <body className="bg-background text-foreground p-6 flex flex-col min-h-screen justify-between">
         <ThemeProvider
           attribute="class"
