@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import MiniEvent from "@/components/events/events-public/MiniEvent";
+import EventCard from "@/components/events/events-public/EventCard";
 
 export default async function Events() {
   const supabase = await createSupabaseServerClient();
@@ -32,7 +32,7 @@ export default async function Events() {
         <div className="space-y-8">
           <EventDisplay event={events[0]} />
           {events.splice(1).map((event) => (
-            <MiniEvent event={event} />
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       ) : (

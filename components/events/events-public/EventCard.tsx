@@ -3,12 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
-export default async function MiniEvent({ event }: { event: any }) {
+export default async function EventCard({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
   } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
+  const formattedDate = format(new Date(event.date), "EEE, d MMM");
   const { data: tickets, error } = await supabase
     .from("tickets")
     .select("*")
@@ -16,21 +16,12 @@ export default async function MiniEvent({ event }: { event: any }) {
 
   return (
     <div className="group w-full h-50">
-      <Link
-        className="flex space-x-4"
-        style={{
-          maxHeight: "100px",
-          height: "30vw",
-        }}
-        href={`/events/${event.id}`}
-      >
+      <Link className="flex space-x-4" href={`/profile/events/${event.id}`}>
         <div
           className="relative max-w-sm"
           style={{
-            width: "30vw",
-            maxWidth: "100px",
-            maxHeight: "100px",
-            height: "30vw",
+            width: "100px",
+            height: "100px",
           }}
         >
           <Image
@@ -40,17 +31,15 @@ export default async function MiniEvent({ event }: { event: any }) {
             fill={true}
           />
         </div>
-        <div>
-          <h1 className="text-xl mt-2">{event.name}</h1>
-          <h1>
-            <span className="text-yellow-300">{formattedDate} </span>
-            {event.venue_name}
-          </h1>
-          <div>
+        <div className="flex flex-col">
+          <div className="text-base">{event.name}</div>
+          <div className="text-primary text-sm">{formattedDate} </div>
+          <div className="text-sm">{event.venue_name}</div>
+          <div className="flex space-x-2">
             {tickets?.map((ticket) => (
-              <h1>
+              <div className="text-sm">
                 ${ticket.price} {ticket.name}
-              </h1>
+              </div>
             ))}
           </div>
         </div>

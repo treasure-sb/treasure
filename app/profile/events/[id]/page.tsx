@@ -1,7 +1,18 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { format } from "date-fns";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import EventsPage from "@/components/events/events-public/EventsPage";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
@@ -12,6 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("id", event_id)
     .single();
 
+  const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
   const formattedStartTime = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -36,6 +48,19 @@ export default async function Page({ params }: { params: { id: string } }) {
     .select("*")
     .eq("event_id", event_id);
 
+  const { data: user, error: userError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", event.organizer_id)
+    .single();
+
+  const { data: tagsData, error: tagsError } = await supabase
+    .from("event_tags")
+    .select("tags(name)")
+    .eq("event_id", event_id);
+
+  console.log(tagsData);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
@@ -53,34 +78,48 @@ export default async function Page({ params }: { params: { id: string } }) {
           width={600}
           height={600}
         />
-        <div className="space-y-6">
-          <h1 className="text-4xl font-semibold">{event.name}</h1>
+        <div className="flex flex-col space-y-6">
           <div>
-            <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-yellow-300">
-              {formattedDate} at {formattedStartTime}
-            </h1>
+            <div className="text-2xl font-semibold">{event.name}</div>
+            <div className="flex space-x-3">
+              <div className="text-lg text-primary">{shortFormattedDate} </div>
+              <span className="text-lg text-white">{event.venue_name}</span>
+            </div>
           </div>
-          <div>
-            <h1>Tags go here</h1>
-          </div>
-          <div>
-            {tickets?.map((ticket) => (
-              <h3>
-                ${ticket.price} {ticket.name}
-              </h3>
-            ))}
-          </div>
-          <h1>City, State</h1>
-          <div>
-            <h1 className="font-semibold text-2xl">About</h1>
-            <p>{event.description}</p>
-          </div>
-          <div>
-            <h1 className="font-semibold text-2xl">Vendors</h1>
-            <h1>Vendors list goes here</h1>
-          </div>
-          <Button className="mt-6 w-full">Edit Event</Button>
+
+          <Link href="">
+            <Button className="w-full" variant={"secondary"}>
+              Event Analytics
+            </Button>
+          </Link>
+          <Link href="">
+            <Button className="w-full" variant={"secondary"}>
+              Edit Event
+            </Button>
+          </Link>
+          <Dialog>
+            <DialogTrigger className="w-full">
+              <Button className="w-full" variant={"secondary"}>
+                Preview Event
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="h-[80%] min-w-full overflow-scroll">
+              <DialogHeader>
+                <DialogTitle>Preview</DialogTitle>
+              </DialogHeader>
+              <EventsPage key={event.id} event={event} />
+            </DialogContent>
+          </Dialog>
+          <Link href="">
+            <Button className="w-full" variant={"secondary"}>
+              Message Guests
+            </Button>
+          </Link>
+          <Link href="">
+            <Button className="w-full" variant={"secondary"}>
+              Guest List
+            </Button>
+          </Link>
         </div>
       </div>
     </main>
