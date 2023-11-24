@@ -103,7 +103,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 Preview Event
               </Button>
             </DialogTrigger>
-            <DialogContent className="h-screen min-w-full overflow-scroll">
+            <DialogContent className="h-[80%] min-w-full overflow-scroll">
               <DialogHeader>
                 <DialogTitle>Preview</DialogTitle>
               </DialogHeader>
