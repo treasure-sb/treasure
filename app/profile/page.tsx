@@ -50,9 +50,9 @@ export default async function Page() {
         ) : (
           <Avatar id={profile.id} />
         )}
-        <h1 className="text-2xl m-auto font-semibold text-center">
+        <div className="text-2xl m-auto font-semibold text-center">
           Welcome, {profile.email}!
-        </h1>
+        </div>
         <Link href="/profile/create-event">
           <Button className="w-full">Host an Event</Button>
         </Link>

@@ -26,7 +26,7 @@ export default async function EventDisplay({ event }: { event: any }) {
         />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>
-          <span className="text-yellow-300">{formattedDate}</span>{" "}
+          <span className="text-primary">{formattedDate}</span>{" "}
           {event.venue_name}
         </h1>
         <div>
