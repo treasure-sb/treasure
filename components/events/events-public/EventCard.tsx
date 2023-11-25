@@ -3,7 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
-export default async function EventCard({ event }: { event: any }) {
+export default async function EventCard({
+  event,
+  redirectTo,
+}: {
+  event: any;
+  redirectTo: string;
+}) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
@@ -16,7 +22,7 @@ export default async function EventCard({ event }: { event: any }) {
 
   return (
     <div className="group w-full h-50">
-      <Link className="flex space-x-4" href={`/profile/events/${event.id}`}>
+      <Link className="flex space-x-4" href={redirectTo}>
         <div
           className="relative max-w-sm"
           style={{
