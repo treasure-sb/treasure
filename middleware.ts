@@ -58,6 +58,12 @@ export async function middleware(request: NextRequest) {
   if (session.data.session && request.nextUrl.pathname === "/account") {
     response = NextResponse.redirect(new URL("/", request.url));
   }
+  if (
+    !session.data.session &&
+    request.nextUrl.pathname === "/profile/create-event"
+  ) {
+    response = NextResponse.redirect(new URL("/account", request.url));
+  }
 
   return response;
 }
