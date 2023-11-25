@@ -125,10 +125,6 @@ export default async function EventsPage({ event }: { event: any }) {
           </div>
         </div>
       </div>
-      <div className="mt-10 text-center">
-        <h1 className="font-semibold text-2xl">Location</h1>
-        <h1>{event.address}</h1>
-      </div>
     </main>
   );
 }
