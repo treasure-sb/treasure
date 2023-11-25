@@ -51,32 +51,38 @@ export default async function Page() {
           <Avatar id={profile.id} />
         )}
         <div className="text-2xl m-auto font-semibold text-center">
-          Welcome, {profile.email}!
+          Welcome, {profile.first_name}!
         </div>
         <Link href="/profile/create-event">
           <Button className="w-full">Host an Event</Button>
         </Link>
-        <form action={handleLogout}>
-          <Button className="w-full" variant={"secondary"}>
-            Logout
-          </Button>
-        </form>
-        <Link
-          href="/profile/events"
-          className="border-b-2 border-b-secondary pb-6 mb-0"
-        >
+
+        <Link href="/profile/events" className="">
           <Button className="w-full" variant={"secondary"}>
             My Events
           </Button>
         </Link>
+        <Link href="/profile/edit-profile" className="">
+          <Button className="w-full" variant={"secondary"}>
+            Edit Profile
+          </Button>
+        </Link>
+        <form
+          className="border-b-2 border-b-secondary pb-6 mb-0"
+          action={handleLogout}
+        >
+          <Button className="w-full" variant={"secondary"}>
+            Logout
+          </Button>
+        </form>
         {profile.instagram && (
           <Link
-            className="flex text-2xl space-x-4 justify-center"
+            className="flex text-base space-x-4 justify-center align-middle"
             href={instaLink}
           >
             <svg
-              width="30"
-              height="30"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -104,8 +110,8 @@ export default async function Page() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
             >
               <path
@@ -116,10 +122,11 @@ export default async function Page() {
             <h1>@{profile.twitter}</h1>
           </Link>
         )}
-        <h1 className="text-2xl text-center">
+        <div className="text-base text-center border-b-2 border-b-secondary pb-6 mb-0">
           On Treasure since{" "}
           <span className="text-primary">{formattedDate}</span>
-        </h1>
+        </div>
+        <div className="text-base text-center">{profile.bio}</div>
       </div>
     </main>
   );
