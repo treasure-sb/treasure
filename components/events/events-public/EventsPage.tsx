@@ -31,8 +31,14 @@ export default async function EventsPage({ event }: { event: any }) {
   );
 
   const {
-    data: { publicUrl },
+    data: { publicUrl: posterPublicUrl },
   } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+
+  const {
+    data: { publicUrl: venueMapPublicUrl },
+  } = await supabase.storage
+    .from("venue_maps")
+    .getPublicUrl(event.venue_map_url);
 
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
@@ -53,14 +59,14 @@ export default async function EventsPage({ event }: { event: any }) {
   const cheapestTicket = tickets?.reduce((prev, cur) => {
     return prev.price < cur.price ? prev : cur;
   }, 0);
-  console.log(tickets, tickets?.length);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <Image
           className="rounded-xl mb-6 lg:mb-0"
           alt="image"
-          src={publicUrl}
+          src={posterPublicUrl}
           width={500}
           height={500}
         />
@@ -123,6 +129,11 @@ export default async function EventsPage({ event }: { event: any }) {
             <h1 className="font-semibold text-2xl">Hosted By</h1>
             <h1>{user.email}</h1>
           </div>
+          {event.venue_map_url ? (
+            <div>
+              <h1 className="font-semibold text-2xl">Venue Map</h1>
+            </div>
+          ) : null}
         </div>
       </div>
     </main>
