@@ -32,7 +32,11 @@ export default async function Events() {
         <div className="space-y-8">
           <EventDisplay event={events[0]} />
           {events.splice(1).map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard
+              redirectTo={`/events/${event.id}`}
+              key={event.id}
+              event={event}
+            />
           ))}
         </div>
       ) : (

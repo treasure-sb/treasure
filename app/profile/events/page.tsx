@@ -13,10 +13,7 @@ export default async function Page() {
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", userData.user.id);
+  const { data: eventData } = await supabase.from("events").select("*");
 
   return (
     <main className="w-full max-w-md m-auto">
@@ -31,7 +28,15 @@ export default async function Page() {
         <div className="flex flex-col items-center space-y-12">
           <div className="font-bold text-2xl mb-6">My Events</div>
           {eventData?.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard
+              redirectTo={
+                userData.user.id === event.organizer_id
+                  ? `/profile/events/organizer/${event.id}`
+                  : `/profile/events/${event.id}`
+              }
+              key={event.id}
+              event={event}
+            />
           ))}
         </div>
       )}
