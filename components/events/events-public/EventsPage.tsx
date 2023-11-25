@@ -129,20 +129,20 @@ export default async function EventsPage({ event }: { event: any }) {
             <h1 className="font-semibold text-2xl">Hosted By</h1>
             <h1>{user.email}</h1>
           </div>
-          {event.venue_map_url ? (
-            <div>
-              <h1 className="font-semibold text-2xl mb-4">Venue Map</h1>
-              <Image
-                className="rounded-xl mb-6 lg:mb-0"
-                alt="venue map image"
-                src={venueMapPublicUrl}
-                width={500}
-                height={200}
-              />
-            </div>
-          ) : null}
         </div>
       </div>
+      {event.venue_map_url ? (
+        <div>
+          <h1 className="font-semibold text-2xl my-4">Venue Map</h1>
+          <Image
+            className="rounded-xl mb-6 lg:mb-0"
+            alt="venue map image"
+            src={venueMapPublicUrl}
+            width={500}
+            height={200}
+          />
+        </div>
+      ) : null}
     </main>
   );
 }
