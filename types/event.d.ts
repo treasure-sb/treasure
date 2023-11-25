@@ -1,6 +1,7 @@
 export interface EventFormTicket {
   ticket_price: string;
   ticket_quantity: string;
+  ticket_name: string;
 }
 
 export interface EventFormTag {

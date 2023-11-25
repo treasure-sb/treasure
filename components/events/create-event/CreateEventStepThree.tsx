@@ -40,6 +40,9 @@ const ticketSchema = z.object({
       message: "Must be a valid ticket price",
     }
   ),
+  ticket_name: z.string().min(1, {
+    message: "Ticket name is required",
+  }),
 });
 
 const stepTwoSchema = z.object({
@@ -74,7 +77,7 @@ export default function Step3({
   };
 
   const addTicketTier = () => {
-    append({ ticket_price: "", ticket_quantity: "" });
+    append({ ticket_price: "", ticket_quantity: "", ticket_name: "" });
     setNumTickets(numTickets + 1);
   };
 
@@ -90,7 +93,7 @@ export default function Step3({
           onSubmit={form.handleSubmit(handleNext)}
           className="flex flex-col justify-between h-full"
         >
-          <div className="space-y-6">
+          <div className="space-y-6 mb-10">
             <h1 className="text-3xl font-semibold">Create Event</h1>
             {fields.map((field, index) => {
               return (
@@ -116,6 +119,23 @@ export default function Step3({
                       <FormItem>
                         <FormControl>
                           <Input placeholder="Ticket Quantity" {...field} />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tickets.${index}.ticket_name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Ticket Name (eg. GA)"
+                            {...field}
+                          />
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />

@@ -22,6 +22,7 @@ export default function Page() {
       {
         ticket_price: "",
         ticket_quantity: "",
+        ticket_name: "",
       },
     ],
     tags: [],
