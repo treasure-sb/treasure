@@ -16,6 +16,7 @@ const createEvent = async (values: EventForm) => {
     start_time,
     end_time,
     poster_url,
+    venue_map_url,
   } = values;
   const {
     data: { user },
@@ -34,6 +35,7 @@ const createEvent = async (values: EventForm) => {
         start_time,
         end_time,
         poster_url,
+        venue_map_url,
         organizer_id: user?.id,
       },
     ])
@@ -67,13 +69,14 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
 const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
   const supabase = await createSupabaseServerClient();
   tickets.forEach(async (ticket) => {
-    const { ticket_price, ticket_quantity } = ticket;
+    const { ticket_price, ticket_quantity, ticket_name } = ticket;
     const { data: ticketsData, error } = await supabase
       .from("tickets")
       .insert([
         {
           price: ticket_price,
           quantity: ticket_quantity,
+          name: ticket_name,
           event_id,
         },
       ])

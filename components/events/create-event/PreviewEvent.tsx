@@ -1,4 +1,3 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -11,10 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export default async function EventsPage({ event }: { event: any }) {
-  const supabase = await createSupabaseServerClient();
-  const event_id = event.id;
-
+export default function PreviewEvent({ event }: { event: any }) {
+  console.log(event);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
   const formattedStartTime = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -30,43 +27,21 @@ export default async function EventsPage({ event }: { event: any }) {
     )
   );
 
-  const {
-    data: { publicUrl: posterPublicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
-
-  const {
-    data: { publicUrl: venueMapPublicUrl },
-  } = await supabase.storage
-    .from("venue_maps")
-    .getPublicUrl(event.venue_map_url);
-
-  const { data: tickets, error: ticketError } = await supabase
-    .from("tickets")
-    .select("*")
-    .eq("event_id", event_id);
-
-  const { data: user, error: userError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", event.organizer_id)
-    .single();
-
-  const { data: tagsData, error: tagsError } = await supabase
-    .from("event_tags")
-    .select("tags(name)")
-    .eq("event_id", event_id);
-
-  const cheapestTicket = tickets?.reduce((prev, cur) => {
-    return prev.price < cur.price ? prev : cur;
+  const cheapestTicket = event.tickets?.reduce((prev: any, current: any) => {
+    return prev.ticket_price < current.ticket_price ? prev : current;
   }, 0);
 
   return (
     <main className="m-auto w-fit">
-      <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
+      <div className="mt-10 flex flex-col">
         <Image
-          className="rounded-xl mb-6 lg:mb-0"
+          className="rounded-xl mb-6"
           alt="event poster image"
-          src={posterPublicUrl}
+          src={
+            typeof event.poster_url === "string"
+              ? event.poster_url
+              : URL.createObjectURL(event.poster_url)
+          }
           width={500}
           height={500}
         />
@@ -79,15 +54,17 @@ export default async function EventsPage({ event }: { event: any }) {
             </h1>
           </div>
           <div className="flex space-x-2">
-            {tagsData?.map((tag: any) => (
+            {event.tags?.map((tag: any) => (
               <Button className="hover:bg-primary hover:cursor-default">
-                {tag.tags.name}
+                {tag.tag_name}
               </Button>
             ))}
           </div>
-          {tickets && tickets.length > 0 ? (
-            <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
-              <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
+          {event.tickets && event.tickets.length > 0 ? (
+            <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-10 font-bold">
+              <h1 className="text-lg">
+                Tickets from ${cheapestTicket.ticket_price}
+              </h1>
               <Dialog>
                 <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
                   Buy Now
@@ -99,11 +76,11 @@ export default async function EventsPage({ event }: { event: any }) {
                     </DialogTitle>
                   </DialogHeader>
                   <div className="flex flex-col space-y-4">
-                    {tickets?.map((ticket: any) => (
+                    {event.tickets?.map((ticket: any) => (
                       <div className="flex justify-between items-center">
                         <div>
                           <h1 className="font-semibold text-xl">
-                            {ticket.name} ${ticket.price}
+                            {ticket.ticket_name} ${ticket.ticket_price}
                           </h1>
                         </div>
                         <Button>Buy Now!</Button>
@@ -125,24 +102,20 @@ export default async function EventsPage({ event }: { event: any }) {
             <h1 className="font-semibold text-2xl">Vendors</h1>
             <h1>Vendors list goes here</h1>
           </div>
+        </div>
+        {event.venue_map_url ? (
           <div>
-            <h1 className="font-semibold text-2xl">Hosted By</h1>
-            <h1>{user.email}</h1>
+            <h1 className="font-semibold text-2xl my-4">Venue Map</h1>
+            <Image
+              className="rounded-xl mb-6 lg:mb-0"
+              alt="venue map image"
+              src={event.venue_map_url}
+              width={500}
+              height={200}
+            />
           </div>
-        </div>
+        ) : null}
       </div>
-      {event.venue_map_url ? (
-        <div>
-          <h1 className="font-semibold text-2xl my-4">Venue Map</h1>
-          <Image
-            className="rounded-xl mb-6 lg:mb-0"
-            alt="venue map image"
-            src={venueMapPublicUrl}
-            width={500}
-            height={200}
-          />
-        </div>
-      ) : null}
     </main>
   );
 }

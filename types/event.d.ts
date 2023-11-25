@@ -1,6 +1,7 @@
 export interface EventFormTicket {
   ticket_price: string;
   ticket_quantity: string;
+  ticket_name: string;
 }
 
 export interface EventFormTag {
@@ -21,6 +22,7 @@ export interface EventForm {
   tickets: EventFormTicket[];
   tags: EventFormTag[];
   poster_url: File | string | undefined;
+  venue_map_url: File | string | undefined;
 }
 
 export interface EventFormLocation {

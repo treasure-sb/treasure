@@ -4,6 +4,7 @@ import CreateEventStepOne from "@/components/events/create-event/CreateEventStep
 import CreateEventStepTwo from "@/components/events/create-event/CreateEventStepTwo";
 import CreateEventStepThree from "@/components/events/create-event/CreateEventStepThree";
 import CreateEventStepFour from "@/components/events/create-event/CreateEventStepFour";
+import CreateEventStepFive from "@/components/events/create-event/CreateEventStepFive";
 import { EventForm } from "@/types/event";
 
 export default function Page() {
@@ -22,10 +23,12 @@ export default function Page() {
       {
         ticket_price: "",
         ticket_quantity: "",
+        ticket_name: "",
       },
     ],
     tags: [],
     poster_url: undefined,
+    venue_map_url: undefined,
   });
 
   return (
@@ -58,6 +61,13 @@ export default function Page() {
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
+          onBack={() => setStep(step - 1)}
+        />
+      )}
+      {step === 5 && (
+        <CreateEventStepFive
+          eventForm={eventForm}
+          setEventForm={setEventForm}
           onBack={() => setStep(step - 1)}
         />
       )}
