@@ -22,6 +22,7 @@ export interface EventForm {
   tickets: EventFormTicket[];
   tags: EventFormTag[];
   poster_url: File | string | undefined;
+  venue_map_url: File | string | undefined;
 }
 
 export interface EventFormLocation {

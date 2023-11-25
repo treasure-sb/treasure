@@ -20,50 +20,67 @@ import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
 
 interface Step3Props {
-  onNext: () => void;
   onBack: () => void;
   eventForm: EventForm;
   setEventForm: Dispatch<SetStateAction<EventForm>>;
 }
 
 const stepTwoSchema = z.object({
-  poster_url: z.union([z.instanceof(File), z.string()]).optional(),
+  venue_map_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
-export default function Step4({
-  onNext,
-  onBack,
-  eventForm,
-  setEventForm,
-}: Step3Props) {
+export default function Step5({ onBack, eventForm, setEventForm }: Step3Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
-      poster_url: eventForm.poster_url,
+      venue_map_url: eventForm.venue_map_url,
     },
   });
 
-  const handleNext = async () => {
+  const onSubmit = async () => {
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
-    setEventForm(newForm);
-    onNext();
+    console.log(newForm);
+
+    const venueMap = newForm.venue_map_url;
+    if (venueMap) {
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from("venue_maps")
+        .upload(`venueMap${Date.now()}.png`, venueMap);
+      if (data) {
+        newForm.venue_map_url = data.path;
+      }
+    }
+
+    const poster = newForm.poster_url;
+    if (poster) {
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from("posters")
+        .upload(`poster${Date.now()}.png`, poster);
+
+      if (data) {
+        newForm.poster_url = data.path;
+        await createEvent(newForm);
+      }
+    }
   };
 
   return (
     <div className="h-full">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleNext)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
           <h1 className="text-3xl font-semibold">Create Event</h1>
           <FormField
             control={form.control}
-            name="poster_url"
+            name="venue_map_url"
             render={({ field }) => (
               <FormItem className="flex mx-auto">
                 <FormLabel
@@ -79,14 +96,14 @@ export default function Step4({
                       />
                       <div className="w-full h-full absolute top-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center">
                         <h1 className="hidden group-hover:block">
-                          Replace Poster
+                          Replace Venue Map
                         </h1>
                       </div>
                     </div>
                   )}
                   {!imageUrl && (
                     <div className="p-40 border-2 border-gray-300 rounded-md">
-                      <h1>Upload Poster</h1>
+                      <h1>Upload Venue Map</h1>
                     </div>
                   )}
                 </FormLabel>
@@ -118,7 +135,7 @@ export default function Step4({
               Back
             </Button>
             <Button className="w-full" type="submit">
-              Next
+              Create Event
             </Button>
           </div>
         </form>

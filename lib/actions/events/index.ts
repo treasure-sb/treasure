@@ -16,6 +16,7 @@ const createEvent = async (values: EventForm) => {
     start_time,
     end_time,
     poster_url,
+    venue_map_url,
   } = values;
   const {
     data: { user },
@@ -34,6 +35,7 @@ const createEvent = async (values: EventForm) => {
         start_time,
         end_time,
         poster_url,
+        venue_map_url,
         organizer_id: user?.id,
       },
     ])

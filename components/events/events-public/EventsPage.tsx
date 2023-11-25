@@ -65,7 +65,7 @@ export default async function EventsPage({ event }: { event: any }) {
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <Image
           className="rounded-xl mb-6 lg:mb-0"
-          alt="image"
+          alt="event poster image"
           src={posterPublicUrl}
           width={500}
           height={500}
@@ -131,7 +131,14 @@ export default async function EventsPage({ event }: { event: any }) {
           </div>
           {event.venue_map_url ? (
             <div>
-              <h1 className="font-semibold text-2xl">Venue Map</h1>
+              <h1 className="font-semibold text-2xl mb-4">Venue Map</h1>
+              <Image
+                className="rounded-xl mb-6 lg:mb-0"
+                alt="venue map image"
+                src={venueMapPublicUrl}
+                width={500}
+                height={200}
+              />
             </div>
           ) : null}
         </div>
