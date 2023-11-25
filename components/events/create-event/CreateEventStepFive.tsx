@@ -12,12 +12,21 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
+import PreviewEvent from "./PreviewEvent";
 
 interface Step3Props {
   onBack: () => void;
@@ -43,7 +52,6 @@ export default function Step5({ onBack, eventForm, setEventForm }: Step3Props) {
       ...eventForm,
       ...form.getValues(),
     };
-    console.log(newForm);
 
     const venueMap = newForm.venue_map_url;
     if (venueMap) {
@@ -130,13 +138,28 @@ export default function Step5({ onBack, eventForm, setEventForm }: Step3Props) {
               </FormItem>
             )}
           />
-          <div className="flex space-x-2">
-            <Button className="w-full" onClick={() => onBack()}>
-              Back
-            </Button>
-            <Button className="w-full" type="submit">
-              Create Event
-            </Button>
+          <div className="flex flex-col space-y-2">
+            <div className="flex space-x-2">
+              <Button className="w-full" onClick={() => onBack()}>
+                Back
+              </Button>
+              <Button className="w-full" type="submit">
+                Create Event
+              </Button>
+            </div>
+            <Dialog>
+              <DialogTrigger>
+                <Button type="button" className="w-full" variant={"secondary"}>
+                  Preview Event
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="h-[90%] overflow-scroll scrollbar-hidden">
+                <h1 className="font-bold text-xl">Preview</h1>
+                <PreviewEvent
+                  event={{ ...eventForm, venue_map_url: imageUrl }}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </form>
       </Form>
