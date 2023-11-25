@@ -2,6 +2,14 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default async function EventsPage({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
@@ -42,6 +50,12 @@ export default async function EventsPage({ event }: { event: any }) {
     .select("tags(name)")
     .eq("event_id", event_id);
 
+  const cheapestTicket = tickets?.reduce((prev, cur) => {
+    return prev.price < cur.price ? prev : cur;
+  });
+
+  console.log(cheapestTicket);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
@@ -67,12 +81,59 @@ export default async function EventsPage({ event }: { event: any }) {
               </Button>
             ))}
           </div>
-          <div>
-            {tickets?.map((ticket) => (
-              <h3 key={ticket.id}>
-                ${ticket.price} {ticket.name}
-              </h3>
-            ))}
+          <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
+            <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
+            <Dialog>
+              <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
+                Buy Now
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
+                    Tickets
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col space-y-4">
+                  {tickets?.map((ticket: any) => (
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h1 className="font-semibold text-xl">
+                          {ticket.name} ${ticket.price}
+                        </h1>
+                      </div>
+                      <Button>Buy Now!</Button>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
+            <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
+            <Dialog>
+              <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
+                Buy Now
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
+                    Tickets
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col space-y-4">
+                  {tickets?.map((ticket: any) => (
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h1 className="font-semibold text-xl">
+                          {ticket.name} ${ticket.price}
+                        </h1>
+                      </div>
+                      <Button>Buy Now!</Button>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <h1>{event.address}</h1>
           <div>
