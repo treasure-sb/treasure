@@ -52,10 +52,8 @@ export default async function EventsPage({ event }: { event: any }) {
 
   const cheapestTicket = tickets?.reduce((prev, cur) => {
     return prev.price < cur.price ? prev : cur;
-  });
-
-  console.log(cheapestTicket);
-
+  }, 0);
+  console.log(tickets, tickets?.length);
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
@@ -81,60 +79,37 @@ export default async function EventsPage({ event }: { event: any }) {
               </Button>
             ))}
           </div>
-          <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
-            <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
-            <Dialog>
-              <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
-                Buy Now
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
-                    Tickets
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col space-y-4">
-                  {tickets?.map((ticket: any) => (
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h1 className="font-semibold text-xl">
-                          {ticket.name} ${ticket.price}
-                        </h1>
+          {tickets && tickets.length > 0 ? (
+            <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
+              <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
+              <Dialog>
+                <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
+                  Buy Now
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
+                      Tickets
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col space-y-4">
+                    {tickets?.map((ticket: any) => (
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h1 className="font-semibold text-xl">
+                            {ticket.name} ${ticket.price}
+                          </h1>
+                        </div>
+                        <Button>Buy Now!</Button>
                       </div>
-                      <Button>Buy Now!</Button>
-                    </div>
-                  ))}
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-          <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
-            <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
-            <Dialog>
-              <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
-                Buy Now
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
-                    Tickets
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col space-y-4">
-                  {tickets?.map((ticket: any) => (
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h1 className="font-semibold text-xl">
-                          {ticket.name} ${ticket.price}
-                        </h1>
-                      </div>
-                      <Button>Buy Now!</Button>
-                    </div>
-                  ))}
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          ) : (
+            <h1>No Tickets</h1>
+          )}
           <h1>{event.address}</h1>
           <div>
             <h1 className="font-semibold text-2xl">About</h1>
