@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import EventsPage from "@/components/events/events-public/EventsPage";
+import PreviewEvent from "@/components/events/create-event/PreviewEvent";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
@@ -60,7 +61,32 @@ export default async function Page({ params }: { params: { id: string } }) {
     .select("tags(name)")
     .eq("event_id", event_id);
 
-  console.log(tagsData);
+  const previewTickets = tickets?.map((ticket: any) => {
+    return {
+      ticket_name: ticket.name,
+      ticket_price: ticket.price,
+    };
+  });
+
+  const previewTags = tagsData?.map((tag: any) => {
+    return {
+      tag_name: tag.tags.name,
+    };
+  });
+
+  const previewEvent = {
+    name: event.name,
+    date: event.date,
+    start_time: event.start_time,
+    end_time: event.end_time,
+    venue_name: event.venue_name,
+    tags: previewTags,
+    tickets: previewTickets,
+    address: event.address,
+    description: event.description,
+    poster_url: publicUrl,
+    venue_map_url: null,
+  };
 
   return (
     <main className="m-auto w-fit">
@@ -104,11 +130,11 @@ export default async function Page({ params }: { params: { id: string } }) {
                 Preview Event
               </Button>
             </DialogTrigger>
-            <DialogContent className="h-[80%] min-w-full overflow-scroll">
+            <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
               <DialogHeader>
                 <DialogTitle>Preview</DialogTitle>
               </DialogHeader>
-              <EventsPage key={event.id} event={event} />
+              <PreviewEvent event={previewEvent} />
             </DialogContent>
           </Dialog>
           <Link href="">

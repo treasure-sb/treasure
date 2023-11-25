@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function PreviewEvent({ event }: { event: any }) {
+  console.log(event);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
   const formattedStartTime = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -25,14 +26,22 @@ export default function PreviewEvent({ event }: { event: any }) {
       event.start_time.split(":")[1]
     )
   );
-  console.log(event);
+
+  const cheapestTicket = event.tickets?.reduce((prev: any, current: any) => {
+    return prev.ticket_price < current.ticket_price ? prev : current;
+  }, 0);
+
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col">
         <Image
           className="rounded-xl mb-6"
           alt="event poster image"
-          src={URL.createObjectURL(event.poster_url)}
+          src={
+            typeof event.poster_url === "string"
+              ? event.poster_url
+              : URL.createObjectURL(event.poster_url)
+          }
           width={500}
           height={500}
         />
@@ -53,7 +62,9 @@ export default function PreviewEvent({ event }: { event: any }) {
           </div>
           {event.tickets && event.tickets.length > 0 ? (
             <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-10 font-bold">
-              <h1 className="text-lg">Tickets from $5</h1>
+              <h1 className="text-lg">
+                Tickets from ${cheapestTicket.ticket_price}
+              </h1>
               <Dialog>
                 <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
                   Buy Now
