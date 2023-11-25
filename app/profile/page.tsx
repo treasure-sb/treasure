@@ -105,7 +105,7 @@ export default async function Page() {
         )}
         {profile.twitter && (
           <Link
-            className="flex text-2xl space-x-4 justify-center"
+            className="flex text-base space-x-4 justify-center align-middle"
             href={twitterLink}
           >
             <svg
