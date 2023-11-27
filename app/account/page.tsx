@@ -24,6 +24,7 @@ export default function Page() {
         theme="dark"
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
+        providers={["google"]}
       />
     </main>
   );
