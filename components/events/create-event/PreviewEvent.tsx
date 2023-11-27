@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 
 export default function PreviewEvent({ event }: { event: any }) {
-  console.log(event);
   const formattedDate = format(new Date(event.date), "EEE, MMMM do");
   const formattedStartTime = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
@@ -54,7 +53,10 @@ export default function PreviewEvent({ event }: { event: any }) {
           </div>
           <div className="flex space-x-2">
             {event.tags?.map((tag: any) => (
-              <Button className="hover:bg-primary hover:cursor-default">
+              <Button
+                className="hover:bg-primary hover:cursor-default"
+                key={tag.id}
+              >
                 {tag.tag_name}
               </Button>
             ))}
@@ -76,7 +78,10 @@ export default function PreviewEvent({ event }: { event: any }) {
                   </DialogHeader>
                   <div className="flex flex-col space-y-4">
                     {event.tickets?.map((ticket: any) => (
-                      <div className="flex justify-between items-center">
+                      <div
+                        className="flex justify-between items-center"
+                        key={ticket.id}
+                      >
                         <div>
                           <h1 className="font-semibold text-xl">
                             {ticket.ticket_name} ${ticket.ticket_price}

@@ -22,36 +22,16 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("id", event_id)
     .single();
 
-  const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(
-    new Date(
-      0,
-      0,
-      0,
-      event.start_time.split(":")[0],
-      event.start_time.split(":")[1]
-    )
-  );
+  // const shortFormattedDate = format(new Date(event?.date), "EEE, MMM d");
 
   const {
     data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+  } = await supabase.storage.from("posters").getPublicUrl(event?.poster_url);
 
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
     .eq("event_id", event_id);
-
-  const { data: user, error: userError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", event.organizer_id)
-    .single();
 
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
@@ -72,15 +52,15 @@ export default async function Page({ params }: { params: { id: string } }) {
   });
 
   const previewEvent = {
-    name: event.name,
-    date: event.date,
-    start_time: event.start_time,
-    end_time: event.end_time,
-    venue_name: event.venue_name,
+    name: event?.name,
+    date: event?.date,
+    start_time: event?.start_time,
+    end_time: event?.end_time,
+    venue_name: event?.venue_name,
     tags: previewTags,
     tickets: previewTickets,
-    address: event.address,
-    description: event.description,
+    address: event?.address,
+    description: event?.description,
     poster_url: publicUrl,
     venue_map_url: null,
   };
@@ -104,10 +84,10 @@ export default async function Page({ params }: { params: { id: string } }) {
         />
         <div className="flex flex-col space-y-6">
           <div>
-            <div className="text-2xl font-semibold">{event.name}</div>
+            <div className="text-2xl font-semibold">{event?.name}</div>
             <div className="flex space-x-3">
-              <div className="text-lg text-primary">{shortFormattedDate} </div>
-              <span className="text-lg text-white">{event.venue_name}</span>
+              {/* <div className="text-lg text-primary">{shortFormattedDate} </div> */}
+              <span className="text-lg text-white">{event?.venue_name}</span>
             </div>
           </div>
 
@@ -122,10 +102,8 @@ export default async function Page({ params }: { params: { id: string } }) {
             </Button>
           </Link>
           <Dialog>
-            <DialogTrigger className="w-full">
-              <Button className="w-full" variant={"secondary"}>
-                Preview Event
-              </Button>
+            <DialogTrigger className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-sm text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 h-10 px-4 py-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+              Preview Event
             </DialogTrigger>
             <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
               <DialogHeader>

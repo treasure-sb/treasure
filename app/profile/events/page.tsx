@@ -13,7 +13,6 @@ export default async function Page() {
 
   const supabase = await createSupabaseServerClient();
   const { data: eventData } = await supabase.from("events").select("*");
-
   return (
     <main className="w-full max-w-md m-auto">
       {eventData?.length === 0 ? (

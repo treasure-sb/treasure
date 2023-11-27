@@ -43,7 +43,7 @@ export default async function EventCard({
           <div className="text-sm">{event.venue_name}</div>
           <div className="flex space-x-2">
             {tickets?.map((ticket) => (
-              <div className="text-sm">
+              <div className="text-sm" key={ticket.id}>
                 ${ticket.price} {ticket.name}
               </div>
             ))}
