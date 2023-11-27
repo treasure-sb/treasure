@@ -10,24 +10,33 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import PreviewEvent from "@/components/events/create-event/PreviewEvent";
+import PreviewEvent from "@/components/events/shared/PreviewEvent";
+import { Tables } from "@/types/supabase";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
   const event_id = params.id;
-  const { data: event, error: eventError } = await supabase
+  const { data, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("id", event_id)
     .single();
 
-  // const shortFormattedDate = format(new Date(event?.date), "EEE, MMM d");
+  if (eventError) {
+    throw new Error(eventError.message);
+  }
 
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event?.poster_url);
-
+  const event: Tables<"events"> = data;
+  const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
+  let publicPosterUrl = "";
+  if (event.poster_url) {
+    const {
+      data: { publicUrl },
+    } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+    publicPosterUrl = publicUrl;
+  }
+  console.log(event);
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
@@ -52,42 +61,46 @@ export default async function Page({ params }: { params: { id: string } }) {
   });
 
   const previewEvent = {
-    name: event?.name,
-    date: event?.date,
-    start_time: event?.start_time,
-    end_time: event?.end_time,
-    venue_name: event?.venue_name,
+    name: event.name,
+    date: event.date,
+    start_time: event.start_time,
+    end_time: event.end_time,
+    venue_name: event.venue_name,
     tags: previewTags,
     tickets: previewTickets,
-    address: event?.address,
-    description: event?.description,
-    poster_url: publicUrl,
+    address: event.address,
+    description: event.description,
+    poster_url: publicPosterUrl,
     venue_map_url: null,
   };
 
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
-        <Image
-          className="rounded-xl lg:hidden mb-6 lg:mb-0"
-          alt="image"
-          src={publicUrl}
-          width={500}
-          height={500}
-        />
-        <Image
-          className="rounded-xl hidden lg:block mb-6 lg:mb-0"
-          alt="image"
-          src={publicUrl}
-          width={600}
-          height={600}
-        />
+        {event.poster_url ? (
+          <>
+            <Image
+              className="rounded-xl lg:hidden mb-6 lg:mb-0"
+              alt="image"
+              src={publicPosterUrl}
+              width={500}
+              height={500}
+            />
+            <Image
+              className="rounded-xl hidden lg:block mb-6 lg:mb-0"
+              alt="image"
+              src={publicPosterUrl}
+              width={600}
+              height={600}
+            />
+          </>
+        ) : null}
         <div className="flex flex-col space-y-6">
           <div>
-            <div className="text-2xl font-semibold">{event?.name}</div>
+            <div className="text-2xl font-semibold">{event.name}</div>
             <div className="flex space-x-3">
-              {/* <div className="text-lg text-primary">{shortFormattedDate} </div> */}
-              <span className="text-lg text-white">{event?.venue_name}</span>
+              <div className="text-lg text-primary">{shortFormattedDate} </div>
+              <span className="text-lg text-white">{event.venue_name}</span>
             </div>
           </div>
 

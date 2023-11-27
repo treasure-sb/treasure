@@ -24,9 +24,6 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={GeistSans.className}>
-      <head>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-      </head>
       <body className="bg-background text-foreground p-6 flex flex-col min-h-screen justify-between">
         <ThemeProvider
           attribute="class"

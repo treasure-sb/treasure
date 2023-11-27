@@ -18,7 +18,7 @@ import { EventForm } from "@/types/event";
 import { useState } from "react";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
-import PreviewEvent from "./PreviewEvent";
+import PreviewEvent from "../shared/PreviewEvent";
 
 interface Step3Props {
   onBack: () => void;
