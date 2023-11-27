@@ -74,7 +74,7 @@ export default async function EventsPage({
             ))}
           </div>
           {tickets && tickets.length > 0 ? (
-            <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-10 font-bold">
+            <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
               <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
               <Dialog>
                 <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">

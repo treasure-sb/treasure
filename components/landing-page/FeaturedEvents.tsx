@@ -11,7 +11,7 @@ export default async function FeaturedEvents() {
     .limit(4);
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col justify-center">
       <h1 className="font-bold text-3xl mb-4 text-center md:text-5xl">
         Featured Events
       </h1>
@@ -20,13 +20,9 @@ export default async function FeaturedEvents() {
           <FeaturedEventDisplay key={event.id} event={event} />
         ))}
       </div>
-      <div className="w-full flex justify-center">
-        <Link href="/events" className="w-full">
-          <Button className="landing-page-button max-w-lg w-full md:w-80 mt-6">
-            See All Events
-          </Button>
-        </Link>
-      </div>
+      <Link href="/events" className="w-full max-w-md md:w-80 mx-auto mt-6">
+        <Button className="landing-page-button w-full">See All Events</Button>
+      </Link>
     </div>
   );
 }
