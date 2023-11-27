@@ -23,10 +23,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("id", event_id)
     .single();
 
-  if (eventError) {
-    throw new Error(eventError.message);
-  }
-
   const event: Tables<"events"> = data;
   const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
   let publicPosterUrl = "";
@@ -36,7 +32,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
     publicPosterUrl = publicUrl;
   }
-  console.log(event);
+
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")

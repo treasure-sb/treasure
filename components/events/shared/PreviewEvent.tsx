@@ -80,7 +80,7 @@ export default function PreviewEvent({ event }: { event: any }) {
                     {event.tickets?.map((ticket: any) => (
                       <div
                         className="flex justify-between items-center"
-                        key={ticket.name}
+                        key={ticket.name + ticket.price}
                       >
                         <div>
                           <h1 className="font-semibold text-xl">
