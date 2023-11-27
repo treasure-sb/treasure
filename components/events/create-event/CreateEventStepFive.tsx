@@ -49,7 +49,7 @@ export default function Step5({ onBack, eventForm }: Step3Props) {
       const supabase = createClient();
       const { data, error } = await supabase.storage
         .from("venue_maps")
-        .upload(`venueMap${Date.now()}.png`, venueMap);
+        .upload(`venueMap${Date.now()}`, venueMap);
       if (data) {
         newForm.venue_map_url = data.path;
       }
