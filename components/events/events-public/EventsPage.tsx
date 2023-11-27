@@ -9,40 +9,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Tables } from "@/types/supabase";
+import {
+  getPublicPosterUrl,
+  getPublicVenueMapUrl,
+  formatStartTime,
+  formatDate,
+} from "@/utils/helpers/events";
 
-export default async function EventsPage({ event }: { event: any }) {
+export default async function EventsPage({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   const supabase = await createSupabaseServerClient();
-  const event_id = event.id;
-
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(
-    new Date(
-      0,
-      0,
-      0,
-      event.start_time.split(":")[0],
-      event.start_time.split(":")[1]
-    )
-  );
-
-  const {
-    data: { publicUrl: posterPublicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
-
-  const {
-    data: { publicUrl: venueMapPublicUrl },
-  } = await supabase.storage
-    .from("venue_maps")
-    .getPublicUrl(event.venue_map_url);
+  const publicPosterUrl = await getPublicPosterUrl(event);
+  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+  const formattedDate = formatDate(event.date);
+  const formattedStartTime = formatStartTime(event.start_time);
 
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", event_id);
+    .eq("event_id", event.id);
 
   const { data: user, error: userError } = await supabase
     .from("profiles")
@@ -53,7 +42,7 @@ export default async function EventsPage({ event }: { event: any }) {
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
     .select("tags(name)")
-    .eq("event_id", event_id);
+    .eq("event_id", event.id);
 
   const cheapestTicket = tickets?.reduce((prev, cur) => {
     return prev.price < cur.price ? prev : cur;
@@ -65,7 +54,7 @@ export default async function EventsPage({ event }: { event: any }) {
         <Image
           className="rounded-xl mb-6 lg:mb-0"
           alt="event poster image"
-          src={posterPublicUrl}
+          src={publicPosterUrl}
           width={500}
           height={500}
         />
@@ -136,7 +125,7 @@ export default async function EventsPage({ event }: { event: any }) {
           <Image
             className="rounded-xl mb-6 lg:mb-0"
             alt="venue map image"
-            src={venueMapPublicUrl}
+            src={publicVenueMapUrl}
             width={500}
             height={200}
           />

@@ -25,6 +25,25 @@ export interface EventForm {
   venue_map_url: File | string | undefined;
 }
 
+export interface EventPreview {
+  name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  venue_name: string;
+  address: string;
+  description: string;
+  poster_url: string | null;
+  venue_map_url: string | null;
+  tickets: {
+    ticket_name: string;
+    ticket_price: number;
+  }[];
+  tags: {
+    tag_name: string;
+  }[];
+}
+
 export interface EventFormLocation {
   address: string;
   lng: number;

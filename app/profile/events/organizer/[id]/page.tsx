@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PreviewEvent from "@/components/events/shared/PreviewEvent";
 import { Tables } from "@/types/supabase";
+import { EventPreview } from "@/types/event";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
@@ -43,20 +44,22 @@ export default async function Page({ params }: { params: { id: string } }) {
     .select("tags(name)")
     .eq("event_id", event_id);
 
-  const previewTickets = tickets?.map((ticket: any) => {
-    return {
-      ticket_name: ticket.name,
-      ticket_price: ticket.price,
-    };
-  });
+  const previewTickets =
+    tickets?.map((ticket: any) => {
+      return {
+        ticket_name: ticket.name,
+        ticket_price: ticket.price,
+      };
+    }) || [];
 
-  const previewTags = tagsData?.map((tag: any) => {
-    return {
-      tag_name: tag.tags.name,
-    };
-  });
+  const previewTags =
+    tagsData?.map((tag: any) => {
+      return {
+        tag_name: tag.tags.name,
+      };
+    }) || [];
 
-  const previewEvent = {
+  const previewEvent: EventPreview = {
     name: event.name,
     date: event.date,
     start_time: event.start_time,

@@ -14,7 +14,7 @@ export default async function Page() {
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data: profile, error: fghfgh } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
