@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditProfileForm from "@/components/profile/EditProfileForm";
 import validateUser from "@/lib/actions/auth";
-import Avatar from "@/components/profile/Avatar";
+import AvatarEdit from "@/components/profile/AvatarEdit";
 import Image from "next/image";
 
 export default async function Page() {
@@ -25,20 +25,11 @@ export default async function Page() {
 
   return (
     <main className="m-auto max-w-lg">
-      <div className="flex flex-col space-y-6 ">
-        {profile.avatar_url ? (
-          <Image
-            className=" mx-auto rounded-full"
-            alt="avatar"
-            src={publicUrl}
-            width={100}
-            height={100}
-          />
-        ) : (
-          <Avatar id={profile.id} />
-        )}
-      </div>
-      <EditProfileForm profileform={profile} profile={profile} />
+      <EditProfileForm
+        profileform={profile}
+        profile={profile}
+        avatarUrl={publicUrl}
+      />
     </main>
   );
 }

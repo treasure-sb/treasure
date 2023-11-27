@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import validateUser from "@/lib/actions/auth";
-import Avatar from "@/components/profile/Avatar";
+import Avatar from "@/components/profile/AvatarEdit";
 import Image from "next/image";
 import format from "date-fns/format";
 
@@ -40,16 +40,16 @@ export default async function Page() {
     <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6 ">
         {profile.avatar_url ? (
-          <Image
-            className=" mx-auto rounded-full"
-            alt="avatar"
-            src={publicUrl}
-            width={100}
-            height={100}
-          />
-        ) : (
-          <Avatar id={profile.id} />
-        )}
+          <div className="h-28 w-28 rounded-full overflow-hidden m-auto">
+            <Image
+              className="block w-full h-full object-cover"
+              alt="avatar"
+              src={publicUrl}
+              width={100}
+              height={100}
+            />
+          </div>
+        ) : null}
         <div className="text-2xl m-auto font-semibold text-center">
           Welcome, {profile.first_name}!
         </div>

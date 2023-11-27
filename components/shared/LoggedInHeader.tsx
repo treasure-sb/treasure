@@ -25,13 +25,15 @@ export default async function LoggedInHeader() {
       </Link>
       <Link href="/profile">
         {profile.avatar_url ? (
-          <Image
-            className="rounded-full"
-            alt="avatar"
-            src={publicUrl}
-            width={50}
-            height={50}
-          />
+          <div className="h-12 w-12 rounded-full overflow-hidden">
+            <Image
+              className="block w-full h-full object-cover"
+              alt="avatar"
+              src={publicUrl}
+              width={100}
+              height={100}
+            />
+          </div>
         ) : (
           <h1>My Profile</h1>
         )}

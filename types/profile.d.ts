@@ -4,4 +4,5 @@ export interface profileForm {
   instagram: string;
   twitter: string;
   bio: string;
+  avatar_url: string;
 }
