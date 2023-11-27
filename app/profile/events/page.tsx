@@ -1,10 +1,10 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import validateUser from "@/lib/actions/auth";
+import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
-import EventDisplay from "@/components/events/shared/EventDisplay";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard from "@/components/events/events-public/EventCard";
+import { Tables } from "@/types/supabase";
 
 export default async function Page() {
   const { data: userData } = await validateUser();
@@ -15,9 +15,14 @@ export default async function Page() {
   const supabase = await createSupabaseServerClient();
   const { data: eventData } = await supabase.from("events").select("*");
 
+  let events: Tables<"events">[] = [];
+  if (eventData) {
+    events = eventData;
+  }
+
   return (
     <main className="w-full max-w-md m-auto">
-      {eventData?.length === 0 ? (
+      {events.length === 0 ? (
         <div className="flex flex-col space-y-4">
           <div className="text-center">You are hosting no events</div>
           <Link href="/profile/create-event" className="m-auto">
@@ -27,7 +32,7 @@ export default async function Page() {
       ) : (
         <div className="flex flex-col items-center space-y-12">
           <div className="font-bold text-2xl mb-6">My Events</div>
-          {eventData?.map((event) => (
+          {events.map((event) => (
             <EventCard
               redirectTo={
                 userData.user.id === event.organizer_id

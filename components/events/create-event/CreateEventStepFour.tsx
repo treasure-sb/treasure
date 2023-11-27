@@ -16,8 +16,6 @@ import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
-import { createEvent } from "@/lib/actions/events";
-import { createClient } from "@/utils/supabase/client";
 
 interface Step3Props {
   onNext: () => void;

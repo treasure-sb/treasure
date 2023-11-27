@@ -4,28 +4,16 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { formatDate, formatStartTime } from "@/utils/helpers/events";
+import { EventPreview } from "@/types/event";
 
 export default function PreviewEvent({ event }: { event: any }) {
-  console.log(event);
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(
-    new Date(
-      0,
-      0,
-      0,
-      event.start_time.split(":")[0],
-      event.start_time.split(":")[1]
-    )
-  );
+  const formattedDate = formatDate(event.date);
+  const formattedStartTime = formatStartTime(event.start_time);
 
   const cheapestTicket = event.tickets?.reduce((prev: any, current: any) => {
     return prev.ticket_price < current.ticket_price ? prev : current;
@@ -34,17 +22,19 @@ export default function PreviewEvent({ event }: { event: any }) {
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col">
-        <Image
-          className="rounded-xl mb-6"
-          alt="event poster image"
-          src={
-            typeof event.poster_url === "string"
-              ? event.poster_url
-              : URL.createObjectURL(event.poster_url)
-          }
-          width={500}
-          height={500}
-        />
+        {event.poster_url ? (
+          <Image
+            className="rounded-xl mb-6"
+            alt="event poster image"
+            src={
+              typeof event.poster_url === "string"
+                ? event.poster_url
+                : URL.createObjectURL(event.poster_url)
+            }
+            width={500}
+            height={500}
+          />
+        ) : null}
         <div className="space-y-6">
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
@@ -55,7 +45,10 @@ export default function PreviewEvent({ event }: { event: any }) {
           </div>
           <div className="flex space-x-2">
             {event.tags?.map((tag: any) => (
-              <Button className="hover:bg-primary hover:cursor-default">
+              <Button
+                className="hover:bg-primary hover:cursor-default"
+                key={tag.id}
+              >
                 {tag.tag_name}
               </Button>
             ))}
@@ -77,7 +70,10 @@ export default function PreviewEvent({ event }: { event: any }) {
                   </DialogHeader>
                   <div className="flex flex-col space-y-4">
                     {event.tickets?.map((ticket: any) => (
-                      <div className="flex justify-between items-center">
+                      <div
+                        className="flex justify-between items-center"
+                        key={ticket.name + ticket.price}
+                      >
                         <div>
                           <h1 className="font-semibold text-xl">
                             {ticket.ticket_name} ${ticket.ticket_price}

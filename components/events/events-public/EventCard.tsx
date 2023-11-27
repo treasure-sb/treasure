@@ -1,20 +1,20 @@
-import format from "date-fns/format";
 import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { Tables } from "@/types/supabase";
+import { getPublicPosterUrl, formatDate } from "@/utils/helpers/events";
 
 export default async function EventCard({
   event,
   redirectTo,
 }: {
-  event: any;
+  event: Tables<"events">;
   redirectTo: string;
 }) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
-  const formattedDate = format(new Date(event.date), "EEE, d MMM");
+  const publicPosterUrl = await getPublicPosterUrl(event);
+  const formattedDate = formatDate(event.date);
+
   const { data: tickets, error } = await supabase
     .from("tickets")
     .select("*")
@@ -33,7 +33,7 @@ export default async function EventCard({
           <Image
             className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
             alt="image"
-            src={publicUrl}
+            src={publicPosterUrl}
             fill={true}
           />
         </div>
@@ -43,7 +43,7 @@ export default async function EventCard({
           <div className="text-sm">{event.venue_name}</div>
           <div className="flex space-x-2">
             {tickets?.map((ticket) => (
-              <div className="text-sm">
+              <div className="text-sm" key={ticket.name}>
                 ${ticket.price} {ticket.name}
               </div>
             ))}

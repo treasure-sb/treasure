@@ -1,5 +1,3 @@
-import validateUser from "@/lib/actions/auth";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import FeaturedEvents from "@/components/landing-page/FeaturedEvents";
 import Newsletter from "@/components/landing-page/Newsletter";

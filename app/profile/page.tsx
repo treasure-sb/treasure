@@ -2,17 +2,9 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import validateUser from "@/lib/actions/auth";
-import Avatar from "@/components/profile/AvatarEdit";
+import { validateUser, logoutUser } from "@/lib/actions/auth";
 import Image from "next/image";
 import format from "date-fns/format";
-
-const handleLogout = async () => {
-  "use server";
-  const supabase = await createSupabaseServerClient();
-  await supabase.auth.signOut();
-  redirect("/account");
-};
 
 export default async function Page() {
   const { data } = await validateUser();
@@ -22,7 +14,7 @@ export default async function Page() {
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data: profile, error: fghfgh } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
@@ -69,7 +61,7 @@ export default async function Page() {
         </Link>
         <form
           className="border-b-2 border-b-secondary pb-6 mb-0"
-          action={handleLogout}
+          action={logoutUser}
         >
           <Button className="w-full" variant={"secondary"}>
             Logout

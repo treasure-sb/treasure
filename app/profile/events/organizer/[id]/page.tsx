@@ -4,77 +4,64 @@ import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import EventsPage from "@/components/events/events-public/EventsPage";
-import PreviewEvent from "@/components/events/create-event/PreviewEvent";
+import PreviewEvent from "@/components/events/shared/PreviewEvent";
+import { Tables } from "@/types/supabase";
+import { EventPreview } from "@/types/event";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
   const event_id = params.id;
-  const { data: event, error: eventError } = await supabase
+  const { data, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("id", event_id)
     .single();
 
+  const event: Tables<"events"> = data;
   const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(
-    new Date(
-      0,
-      0,
-      0,
-      event.start_time.split(":")[0],
-      event.start_time.split(":")[1]
-    )
-  );
-
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+  let publicPosterUrl = "";
+  if (event.poster_url) {
+    const {
+      data: { publicUrl },
+    } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+    publicPosterUrl = publicUrl;
+  }
 
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
     .eq("event_id", event_id);
 
-  const { data: user, error: userError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", event.organizer_id)
-    .single();
-
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
     .select("tags(name)")
     .eq("event_id", event_id);
 
-  const previewTickets = tickets?.map((ticket: any) => {
-    return {
-      ticket_name: ticket.name,
-      ticket_price: ticket.price,
-    };
-  });
+  const previewTickets =
+    tickets?.map((ticket: any) => {
+      return {
+        ticket_name: ticket.name,
+        ticket_price: ticket.price,
+        ticket_quantity: ticket.quantity,
+      };
+    }) || [];
 
-  const previewTags = tagsData?.map((tag: any) => {
-    return {
-      tag_name: tag.tags.name,
-    };
-  });
+  const previewTags =
+    tagsData?.map((tag: any) => {
+      return {
+        tag_id: tag.tags.id,
+        tag_name: tag.tags.name,
+      };
+    }) || [];
 
-  const previewEvent = {
+  const previewEvent: EventPreview = {
     name: event.name,
     date: event.date,
     start_time: event.start_time,
@@ -84,27 +71,31 @@ export default async function Page({ params }: { params: { id: string } }) {
     tickets: previewTickets,
     address: event.address,
     description: event.description,
-    poster_url: publicUrl,
+    poster_url: publicPosterUrl,
     venue_map_url: null,
   };
 
   return (
     <main className="m-auto w-fit">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
-        <Image
-          className="rounded-xl lg:hidden mb-6 lg:mb-0"
-          alt="image"
-          src={publicUrl}
-          width={500}
-          height={500}
-        />
-        <Image
-          className="rounded-xl hidden lg:block mb-6 lg:mb-0"
-          alt="image"
-          src={publicUrl}
-          width={600}
-          height={600}
-        />
+        {event.poster_url ? (
+          <>
+            <Image
+              className="rounded-xl lg:hidden mb-6 lg:mb-0"
+              alt="image"
+              src={publicPosterUrl}
+              width={500}
+              height={500}
+            />
+            <Image
+              className="rounded-xl hidden lg:block mb-6 lg:mb-0"
+              alt="image"
+              src={publicPosterUrl}
+              width={600}
+              height={600}
+            />
+          </>
+        ) : null}
         <div className="flex flex-col space-y-6">
           <div>
             <div className="text-2xl font-semibold">{event.name}</div>
@@ -125,10 +116,8 @@ export default async function Page({ params }: { params: { id: string } }) {
             </Button>
           </Link>
           <Dialog>
-            <DialogTrigger className="w-full">
-              <Button className="w-full" variant={"secondary"}>
-                Preview Event
-              </Button>
+            <DialogTrigger asChild>
+              <Button variant={"secondary"}>Preview</Button>
             </DialogTrigger>
             <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
               <DialogHeader>

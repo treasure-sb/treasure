@@ -1,7 +1,6 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 
 export default function AvatarEdit({

@@ -19,7 +19,6 @@ import { EventFormLocation } from "@/types/event";
 import Autocomplete from "../../places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
-import { EventFormTag } from "@/types/event";
 
 interface Step1Props {
   onNext: () => void;
