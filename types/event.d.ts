@@ -6,7 +6,7 @@ export interface EventFormTicket {
 
 export interface EventFormTag {
   tag_name: string;
-  tag_id: number;
+  tag_id: string;
 }
 
 export interface EventForm {
@@ -38,9 +38,11 @@ export interface EventPreview {
   tickets: {
     ticket_name: string;
     ticket_price: number;
+    ticket_quantity: string;
   }[];
   tags: {
     tag_name: string;
+    tag_id: string;
   }[];
 }
 

@@ -49,12 +49,14 @@ export default async function Page({ params }: { params: { id: string } }) {
       return {
         ticket_name: ticket.name,
         ticket_price: ticket.price,
+        ticket_quantity: ticket.quantity,
       };
     }) || [];
 
   const previewTags =
     tagsData?.map((tag: any) => {
       return {
+        tag_id: tag.tags.id,
         tag_name: tag.tags.name,
       };
     }) || [];
