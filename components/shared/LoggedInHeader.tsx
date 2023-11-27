@@ -1,6 +1,6 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import validateUser from "@/lib/actions/auth";
+import { validateUser } from "@/lib/actions/auth";
 import Image from "next/image";
 
 export default async function LoggedInHeader() {

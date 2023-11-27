@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
-import validateUser from "@/lib/actions/auth";
+import { validateUser } from "@/lib/actions/auth";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

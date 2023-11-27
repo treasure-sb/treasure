@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditProfileForm from "@/components/profile/EditProfileForm";
-import validateUser from "@/lib/actions/auth";
+import { validateUser } from "@/lib/actions/auth";
 
 export default async function Page() {
   const { data } = await validateUser();

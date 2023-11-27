@@ -1,5 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import validateUser from "@/lib/actions/auth";
+import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
