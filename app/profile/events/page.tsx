@@ -1,7 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import validateUser from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
-import EventDisplay from "@/components/events/shared/EventDisplay";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EventCard from "@/components/events/events-public/EventCard";

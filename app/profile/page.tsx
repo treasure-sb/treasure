@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import validateUser from "@/lib/actions/auth";
-import Avatar from "@/components/profile/AvatarEdit";
 import Image from "next/image";
 import format from "date-fns/format";
 
