@@ -60,7 +60,7 @@ export default function Step5({ onBack, eventForm }: Step3Props) {
       const supabase = createClient();
       const { data, error } = await supabase.storage
         .from("posters")
-        .upload(`poster${Date.now()}.png`, poster);
+        .upload(`poster${Date.now()}`, poster);
 
       if (data) {
         newForm.poster_url = data.path;

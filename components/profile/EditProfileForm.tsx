@@ -63,7 +63,7 @@ export default function EditProfileForm({
     };
 
     if (newAvatarFile) {
-      const newAvatarSupabaseUrl = `avatar${Date.now()}.png`;
+      const newAvatarSupabaseUrl = `avatar${Date.now()}`;
       newForm.avatar_url = newAvatarSupabaseUrl;
       const supabase = createClient();
       if (profile.avatar_url !== "default-avatar.png") {
