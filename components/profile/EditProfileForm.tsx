@@ -13,17 +13,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
-import Link from "next/link";
-import validateUser from "@/lib/actions/auth";
-import Avatar from "@/components/profile/Avatar";
-import Image from "next/image";
-import format from "date-fns/format";
 import { editProfile } from "@/lib/actions/profile";
-import { createClient } from "@/utils/supabase/client";
 import { profileForm } from "@/types/profile";
+import AvatarEdit from "@/components/profile/AvatarEdit";
+import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 const profileSchema = z.object({
   first_name: z.string().min(1, {
@@ -37,15 +31,19 @@ const profileSchema = z.object({
   bio: z.string().optional(),
 });
 
-interface eventFormProps {
+interface EventFormProps {
   profileform: profileForm;
   profile: any;
+  avatarUrl: string;
 }
 
-export default function editProfileForm({
+export default function EditProfileForm({
   profileform,
   profile,
-}: eventFormProps) {
+  avatarUrl,
+}: EventFormProps) {
+  const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
+
   //   Form Stuff
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -61,14 +59,30 @@ export default function editProfileForm({
   //Form submit
   const onSubmit = async () => {
     const newForm = {
-      ...profile.id,
+      ...profile,
       ...form.getValues(),
     };
+
+    if (newAvatarFile) {
+      const newAvatarSupabaseUrl = `avatar${Date.now()}.png`;
+      newForm.avatar_url = newAvatarSupabaseUrl;
+      const supabase = createClient();
+      if (profile.avatar_url !== "default-avatar.png") {
+        await supabase.storage.from("avatars").remove([profile.avatar_url]);
+      }
+      await supabase.storage
+        .from("avatars")
+        .upload(newAvatarSupabaseUrl, newAvatarFile);
+    }
+
     await editProfile(newForm);
   };
 
   return (
     <main className="m-auto max-w-lg">
+      {profile.avatar_url ? (
+        <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
+      ) : null}
       <div className="flex flex-col space-y-6 ">
         <Form {...form}>
           <form
