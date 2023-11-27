@@ -102,8 +102,8 @@ export default async function Page({ params }: { params: { id: string } }) {
             </Button>
           </Link>
           <Dialog>
-            <DialogTrigger className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-sm text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 h-10 px-4 py-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-              Preview Event
+            <DialogTrigger asChild>
+              <Button variant={"secondary"}>Preview</Button>
             </DialogTrigger>
             <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
               <DialogHeader>
