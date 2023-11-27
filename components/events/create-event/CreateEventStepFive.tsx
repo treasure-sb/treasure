@@ -15,7 +15,6 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
-import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
@@ -24,14 +23,13 @@ import PreviewEvent from "./PreviewEvent";
 interface Step3Props {
   onBack: () => void;
   eventForm: EventForm;
-  setEventForm: Dispatch<SetStateAction<EventForm>>;
 }
 
 const stepTwoSchema = z.object({
   venue_map_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
-export default function Step5({ onBack, eventForm, setEventForm }: Step3Props) {
+export default function Step5({ onBack, eventForm }: Step3Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),

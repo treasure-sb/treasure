@@ -67,7 +67,6 @@ export default function Page() {
       {step === 5 && (
         <CreateEventStepFive
           eventForm={eventForm}
-          setEventForm={setEventForm}
           onBack={() => setStep(step - 1)}
         />
       )}
