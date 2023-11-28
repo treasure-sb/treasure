@@ -1,37 +1,29 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
-import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { validateUser, logoutUser } from "@/lib/actions/auth";
 import Image from "next/image";
+import createSupabaseServerClient from "@/utils/supabase/server";
 import format from "date-fns/format";
+import Link from "next/link";
 
-export default async function Page() {
-  const { data } = await validateUser();
-  const user = data.user;
-  if (!user) {
-    redirect("/account");
-  }
-
+export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
-  const { data: profile, error: profileError } = await supabase
+
+  const { data: user, error: userError } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user.id)
+    .eq("id", params.id)
     .single();
 
   const {
     data: { publicUrl },
-  } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+  } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
 
-  let instaLink = "https://www.instagram.com/" + profile.instagram;
-  let twitterLink = "https://www.twitter.com/" + profile.twitter;
-  const formattedDate = format(new Date(user.created_at), "MMMM do, yyyy");
+  let instaLink = "https://www.instagram.com/" + user.instagram;
+  let twitterLink = "https://www.twitter.com/" + user.twitter;
+  console.log(user);
 
   return (
     <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6 ">
-        {profile.avatar_url ? (
+        {user.avatar_url ? (
           <div className="h-28 w-28 rounded-full overflow-hidden m-auto">
             <Image
               className="block w-full h-full object-cover"
@@ -42,38 +34,10 @@ export default async function Page() {
             />
           </div>
         ) : null}
-        {profile.first_name ? (
-          <div className="text-2xl m-auto font-semibold text-center">
-            Welcome, {profile.first_name}!
-          </div>
-        ) : (
-          <div className="text-2xl m-auto font-semibold text-center">
-            Welcome!
-          </div>
-        )}
-        <Link href="/profile/create-event">
-          <Button className="w-full">Host an Event</Button>
-        </Link>
-
-        <Link href="/profile/events" className="">
-          <Button className="w-full" variant={"secondary"}>
-            My Events
-          </Button>
-        </Link>
-        <Link href="/profile/edit-profile" className="">
-          <Button className="w-full" variant={"secondary"}>
-            Edit Profile
-          </Button>
-        </Link>
-        <form
-          className="border-b-2 border-b-secondary pb-6 mb-0"
-          action={logoutUser}
-        >
-          <Button className="w-full" variant={"secondary"}>
-            Logout
-          </Button>
-        </form>
-        {profile.instagram && (
+        <div className="text-2xl m-auto font-semibold text-center">
+          {user.email}
+        </div>
+        {user.instagram && (
           <Link
             className="flex text-base space-x-4 justify-center align-middle"
             href={instaLink}
@@ -98,10 +62,10 @@ export default async function Page() {
                 fill="white"
               />
             </svg>
-            <h1>@{profile.instagram}</h1>
+            <h1>@{user.instagram}</h1>
           </Link>
         )}
-        {profile.twitter && (
+        {user.twitter && (
           <Link
             className="flex text-base space-x-4 justify-center align-middle"
             href={twitterLink}
@@ -117,14 +81,9 @@ export default async function Page() {
                 fill="white"
               />
             </svg>
-            <h1>@{profile.twitter}</h1>
+            <h1>@{user.twitter}</h1>
           </Link>
         )}
-        <div className="text-base text-center border-b-2 border-b-secondary pb-6 mb-0">
-          On Treasure since{" "}
-          <span className="text-primary">{formattedDate}</span>
-        </div>
-        <div className="text-base text-center">{profile.bio}</div>
       </div>
     </main>
   );

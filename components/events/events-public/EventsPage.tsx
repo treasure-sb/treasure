@@ -1,6 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
-import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +15,7 @@ import {
   formatStartTime,
   formatDate,
 } from "@/utils/helpers/events";
+import Link from "next/link";
 
 export default async function EventsPage({
   event,
@@ -38,6 +38,10 @@ export default async function EventsPage({
     .select("*")
     .eq("id", event.organizer_id)
     .single();
+
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
 
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
@@ -62,17 +66,22 @@ export default async function EventsPage({
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-yellow-300">
+            <h1 className="text-tertiary">
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
-          <div className="flex space-x-2">
-            {tagsData?.map((tag: any) => (
-              <Button className="hover:bg-primary hover:cursor-default">
-                {tag.tags.name}
-              </Button>
-            ))}
-          </div>
+          {tagsData ? (
+            <div className="flex space-x-2">
+              {tagsData.map((tag: any) => (
+                <Button
+                  className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
+                  key={tag.id}
+                >
+                  {tag.tags.name}
+                </Button>
+              ))}
+            </div>
+          ) : null}
           {tickets && tickets.length > 0 ? (
             <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
               <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
@@ -115,7 +124,17 @@ export default async function EventsPage({
           </div>
           <div>
             <h1 className="font-semibold text-2xl">Hosted By</h1>
-            <h1>{user.email}</h1>
+            <div className="h-28 w-28 rounded-full overflow-hidden mt-2">
+              <Link href={`/users/${user.id}`}>
+                <Image
+                  className="block w-full h-full object-cover"
+                  alt="avatar"
+                  src={publicUrl}
+                  width={100}
+                  height={100}
+                />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

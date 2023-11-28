@@ -25,7 +25,7 @@ export default async function Events() {
         <h1 className="font-semibold text-2xl">Popular Events</h1>
         <h1 className="font-bold text-gray-500">In New York, NY</h1>
       </div>
-      {events ? (
+      {events && events.length > 0 ? (
         <div className="space-y-8">
           <EventDisplay event={events[0]} />
           {events.splice(1).map((event) => (
