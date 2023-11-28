@@ -104,7 +104,12 @@ export default function Step3({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Ticket Price" {...field} />
+                          <Input
+                            type="text"
+                            pattern="\d+(\.\d{2})?"
+                            placeholder="Ticket Price"
+                            {...field}
+                          />
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />

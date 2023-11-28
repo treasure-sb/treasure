@@ -3,7 +3,10 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { createTicketTailorEvent } from "../ticket-tailor";
+import {
+  createTicketTailorEvent,
+  createTicketTailorTicket,
+} from "../ticket-tailor";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -46,7 +49,7 @@ const createEvent = async (values: EventForm) => {
   if (data) {
     const event: Tables<"events"> = data[0];
     const ticketTailorEventData = await createTicketTailorEvent(event);
-    console.log(ticketTailorEventData);
+    await createTicketTailorTicket(values.tickets, ticketTailorEventData.id);
     await createTickets(values.tickets, event.id);
     await createTags(values.tags, event.id);
   }
@@ -67,7 +70,6 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
         },
       ])
       .select();
-    console.log(tagsData, error);
   });
 };
 
