@@ -5,6 +5,7 @@ import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { ticketTest } from "@/lib/actions/ticket-tailor";
 
 export default function Page({ params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -24,6 +25,11 @@ export default function Page({ params }: { params: { id: string } }) {
       }
     };
 
+    const testTicket = async () => {
+      const data = await ticketTest();
+      console.log(data);
+    };
+    testTicket();
     fetchTicketGroups();
   }, []);
 
@@ -65,7 +71,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </Button>
       </div>
       <Textarea rows={15} className="my-10" placeholder="Your message..." />
-      <Button className="w-full" type="submit">
+      <Button className="w-full" type="button">
         Send Message
       </Button>
     </main>
