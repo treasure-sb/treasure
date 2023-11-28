@@ -39,14 +39,14 @@ export default function PreviewEvent({ event }: { event: EventPreview }) {
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-accent">
+            <h1 className="text-tertiary">
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
           <div className="flex space-x-2">
             {event.tags?.map((tag: any) => (
               <Button
-                className="hover:bg-accent bg-accent h-8 hover:cursor-default"
+                className="hover:bg-tertiary bg-tertiary h-8 hover:cursor-default"
                 key={tag.id}
               >
                 {tag.tag_name}

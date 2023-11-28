@@ -66,7 +66,7 @@ export default async function EventsPage({
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-accent">
+            <h1 className="text-tertiary">
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
@@ -74,7 +74,7 @@ export default async function EventsPage({
             <div className="flex space-x-2">
               {tagsData.map((tag: any) => (
                 <Button
-                  className="hover:bg-accent bg-accent hover:cursor-default h-8"
+                  className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
                   key={tag.id}
                 >
                   {tag.tags.name}
