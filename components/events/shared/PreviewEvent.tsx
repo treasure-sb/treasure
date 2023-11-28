@@ -11,7 +11,7 @@ import {
 import { formatDate, formatStartTime } from "@/utils/helpers/events";
 import { EventPreview } from "@/types/event";
 
-export default function PreviewEvent({ event }: { event: EventPreview }) {
+export default function PreviewEvent({ event }: { event: any }) {
   const formattedDate = formatDate(event.date);
   const formattedStartTime = formatStartTime(event.start_time);
 
