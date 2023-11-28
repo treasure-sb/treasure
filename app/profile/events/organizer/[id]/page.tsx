@@ -120,13 +120,13 @@ export default async function Page({ params }: { params: { id: string } }) {
               <Button variant={"secondary"}>Preview</Button>
             </DialogTrigger>
             <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
-              <DialogHeader>
+              <DialogHeader className="text-left">
                 <DialogTitle>Preview</DialogTitle>
               </DialogHeader>
               <PreviewEvent event={previewEvent} />
             </DialogContent>
           </Dialog>
-          <Link href="">
+          <Link href={`/profile/events/organizer/${event.id}/message`}>
             <Button className="w-full" variant={"secondary"}>
               Message Guests
             </Button>

@@ -69,7 +69,10 @@ export default async function EventsPage({
           {tagsData ? (
             <div className="flex space-x-2">
               {tagsData.map((tag: any) => (
-                <Button className="hover:bg-primary hover:cursor-default">
+                <Button
+                  className="hover:bg-accent bg-accent hover:cursor-default h-8"
+                  key={tag.id}
+                >
                   {tag.tags.name}
                 </Button>
               ))}
@@ -117,7 +120,7 @@ export default async function EventsPage({
           </div>
           <div>
             <h1 className="font-semibold text-2xl">Hosted By</h1>
-            <h1>{user.email}</h1>
+            <h1>{user?.email}</h1>
           </div>
         </div>
       </div>

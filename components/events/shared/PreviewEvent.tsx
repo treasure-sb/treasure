@@ -11,7 +11,7 @@ import {
 import { formatDate, formatStartTime } from "@/utils/helpers/events";
 import { EventPreview } from "@/types/event";
 
-export default function PreviewEvent({ event }: { event: any }) {
+export default function PreviewEvent({ event }: { event: EventPreview }) {
   const formattedDate = formatDate(event.date);
   const formattedStartTime = formatStartTime(event.start_time);
 
@@ -39,14 +39,14 @@ export default function PreviewEvent({ event }: { event: any }) {
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-yellow-300">
+            <h1 className="text-accent">
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
           <div className="flex space-x-2">
             {event.tags?.map((tag: any) => (
               <Button
-                className="hover:bg-primary hover:cursor-default"
+                className="hover:bg-accent bg-accent h-8 hover:cursor-default"
                 key={tag.id}
               >
                 {tag.tag_name}
