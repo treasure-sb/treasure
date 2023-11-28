@@ -42,9 +42,15 @@ export default async function Page() {
             />
           </div>
         ) : null}
-        <div className="text-2xl m-auto font-semibold text-center">
-          Welcome, {profile.first_name}!
-        </div>
+        {profile.first_name ? (
+          <div className="text-2xl m-auto font-semibold text-center">
+            Welcome, {profile.first_name}!
+          </div>
+        ) : (
+          <div className="text-2xl m-auto font-semibold text-center">
+            Welcome!
+          </div>
+        )}
         <Link href="/profile/create-event">
           <Button className="w-full">Host an Event</Button>
         </Link>
