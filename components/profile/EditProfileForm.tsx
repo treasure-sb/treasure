@@ -66,7 +66,7 @@ export default function EditProfileForm({
       const newAvatarSupabaseUrl = `avatar${Date.now()}`;
       newForm.avatar_url = newAvatarSupabaseUrl;
       const supabase = createClient();
-      if (profile.avatar_url !== "default-avatar.png") {
+      if (profile.avatar_url !== "default_avatar.jpeg") {
         await supabase.storage.from("avatars").remove([profile.avatar_url]);
       }
       await supabase.storage
