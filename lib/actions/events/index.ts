@@ -2,6 +2,8 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
+import { Tables } from "@/types/supabase";
+import { createTicketTailorEvent } from "../ticket-tailor";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -40,10 +42,13 @@ const createEvent = async (values: EventForm) => {
       },
     ])
     .select();
+
   if (data) {
-    const event_id = data[0].id;
-    await createTickets(values.tickets, event_id);
-    await createTags(values.tags, event_id);
+    const event: Tables<"events"> = data[0];
+    const ticketTailorEventData = await createTicketTailorEvent(event);
+    console.log(ticketTailorEventData);
+    await createTickets(values.tickets, event.id);
+    await createTags(values.tags, event.id);
   }
   if (!error) {
     redirect("/profile");

@@ -5,7 +5,6 @@ import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { ticketTest } from "@/lib/actions/ticket-tailor";
 
 export default function Page({ params }: { params: { id: string } }) {
   const supabase = createClient();
@@ -25,12 +24,9 @@ export default function Page({ params }: { params: { id: string } }) {
       }
     };
 
-    const testTicket = async () => {
-      const data = await ticketTest();
-      console.log(data);
-    };
-    testTicket();
-    fetchTicketGroups();
+    if (!ticketGroups.length) {
+      fetchTicketGroups();
+    }
   }, []);
 
   const handleClickGroup = (groupName: string) => {
