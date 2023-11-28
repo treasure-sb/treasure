@@ -62,17 +62,19 @@ export default async function EventsPage({
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-yellow-300">
+            <h1 className="text-accent">
               {formattedDate} at {formattedStartTime}
             </h1>
           </div>
-          <div className="flex space-x-2">
-            {tagsData?.map((tag: any) => (
-              <Button className="hover:bg-primary hover:cursor-default">
-                {tag.tags.name}
-              </Button>
-            ))}
-          </div>
+          {tagsData ? (
+            <div className="flex space-x-2">
+              {tagsData.map((tag: any) => (
+                <Button className="hover:bg-primary hover:cursor-default">
+                  {tag.tags.name}
+                </Button>
+              ))}
+            </div>
+          ) : null}
           {tickets && tickets.length > 0 ? (
             <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
               <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
