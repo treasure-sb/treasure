@@ -54,54 +54,61 @@ export default async function EventsPage({
 
   return (
     <main className="m-auto w-fit">
-      <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
-        <Image
-          className="rounded-xl mb-6 lg:mb-0"
-          alt="event poster image"
-          src={publicPosterUrl}
-          width={500}
-          height={500}
-        />
-        <div className="space-y-6">
-          <h1 className="text-4xl font-semibold">{event.name}</h1>
-          <div>
-            <h1 className="font-semibold">{event.venue_name}</h1>
-            <h1 className="text-tertiary">
-              {formattedDate} at {formattedStartTime}
-            </h1>
-          </div>
-          {tagsData ? (
-            <div className="flex space-x-2">
-              {tagsData.map((tag: any) => (
-                <Button
-                  className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
-                  key={tag.id}
-                >
-                  {tag.tags.name}
-                </Button>
-              ))}
+      <div className="mt-10 flex flex-col md:flex-row md:space-x-10">
+        <div className="relative md:max-w-lg">
+          <Image
+            className="rounded-xl mb-6 lg:mb-0 md:"
+            alt="event poster image"
+            src={publicPosterUrl}
+            width={500}
+            height={500}
+          />
+        </div>
+        <div className="flex flex-col lg:flex-col text-left">
+          <div className="space-y-6">
+            <h1 className="text-4xl font-semibold">{event.name}</h1>
+            <div>
+              <h1 className="font-semibold">{event.venue_name}</h1>
+              <h1 className="text-tertiary">
+                {formattedDate} at {formattedStartTime}
+              </h1>
             </div>
-          ) : null}
-          {tickets && tickets.length > 0 ? (
-            <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
-              <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
-              <Dialog>
-                <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
-                  Buy Now
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
-                      Tickets
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="flex flex-col space-y-4">
-                    {tickets?.map((ticket: any) => (
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h1 className="font-semibold text-xl">
-                            {ticket.name} ${ticket.price}
-                          </h1>
+            {tagsData ? (
+              <div className="flex space-x-2">
+                {tagsData.map((tag: any) => (
+                  <Button
+                    className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
+                    key={tag.id}
+                  >
+                    {tag.tags.name}
+                  </Button>
+                ))}
+              </div>
+            ) : null}
+            {tickets && tickets.length > 0 ? (
+              <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
+                <h1 className="text-lg">
+                  Tickets from ${cheapestTicket.price}
+                </h1>
+                <Dialog>
+                  <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
+                    Buy Now
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
+                        Tickets
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col space-y-4">
+                      {tickets?.map((ticket: any) => (
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h1 className="font-semibold text-xl">
+                              {ticket.name} ${ticket.price}
+                            </h1>
+                          </div>
+                          <Button>Buy Now!</Button>
                         </div>
                         <Link
                           target="_blank"
@@ -115,48 +122,52 @@ export default async function EventsPage({
                     ))}
                   </div>
                 </DialogContent>
-              </Dialog>
+                </Dialog>
+              </div>
+            ) : (
+              <h1>No Tickets</h1>
+            )}
+            <h1>{event.address}</h1>
+            <div>
+              <h1 className="font-semibold text-2xl">About</h1>
+              <p>{event.description}</p>
             </div>
-          ) : (
-            <h1>No Tickets</h1>
-          )}
-          <h1>{event.address}</h1>
-          <div>
-            <h1 className="font-semibold text-2xl">About</h1>
-            <p>{event.description}</p>
-          </div>
-          <div>
-            <h1 className="font-semibold text-2xl">Vendors</h1>
-            <h1>Vendors list goes here</h1>
-          </div>
-          <div>
-            <h1 className="font-semibold text-2xl">Hosted By</h1>
-            <div className="h-28 w-28 rounded-full overflow-hidden mt-2">
-              <Link href={`/users/${user.id}`}>
-                <Image
-                  className="block w-full h-full object-cover"
-                  alt="avatar"
-                  src={publicUrl}
-                  width={100}
-                  height={100}
-                />
-              </Link>
+            <div>
+              <h1 className="font-semibold text-2xl">Vendors</h1>
+              <h1>Vendors list goes here</h1>
+            </div>
+            <div>
+              <h1 className="font-semibold text-2xl">Hosted By</h1>
+              <div className="h-28 w-28 rounded-full overflow-hidden mt-2">
+                <Link href={`/users/${user.id}`}>
+                  <Image
+                    className="block w-full h-full object-cover"
+                    alt="avatar"
+                    src={publicUrl}
+                    width={100}
+                    height={100}
+                  />
+                </Link>
+              </div>
             </div>
           </div>
+
+          {event.venue_map_url ? (
+            <div>
+              <div className="font-semibold text-2xl my-4 w-full">
+                Venue Map
+              </div>
+              <Image
+                className="rounded-xl mb-6 lg:mb-0"
+                alt="venue map image"
+                src={publicVenueMapUrl}
+                width={500}
+                height={200}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
-      {event.venue_map_url ? (
-        <div>
-          <h1 className="font-semibold text-2xl my-4">Venue Map</h1>
-          <Image
-            className="rounded-xl mb-6 lg:mb-0"
-            alt="venue map image"
-            src={publicVenueMapUrl}
-            width={500}
-            height={200}
-          />
-        </div>
-      ) : null}
     </main>
   );
 }
