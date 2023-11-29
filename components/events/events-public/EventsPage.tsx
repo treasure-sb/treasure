@@ -108,20 +108,18 @@ export default async function EventsPage({
                               {ticket.name} ${ticket.price}
                             </h1>
                           </div>
-                          <Button>Buy Now!</Button>
+                          <Link
+                            target="_blank"
+                            href={`https://buytickets.at/treasure1/${event.ticket_tailor_event_id?.substring(
+                              3
+                            )}`}
+                          >
+                            <Button>Buy Now!</Button>
+                          </Link>
                         </div>
-                        <Link
-                          target="_blank"
-                          href={`https://buytickets.at/treasure1/${event.ticket_tailor_event_id?.substring(
-                            3
-                          )}`}
-                        >
-                          <Button>Buy Now!</Button>
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                </DialogContent>
+                      ))}
+                    </div>
+                  </DialogContent>
                 </Dialog>
               </div>
             ) : (
