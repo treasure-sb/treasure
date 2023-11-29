@@ -3,6 +3,7 @@ import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
 import TagFiltering from "@/components/events/client-components/TagFiltering";
+import DateFiltering from "@/components/events/client-components/DateFiltering";
 import { Suspense } from "react";
 
 export default async function Page({
@@ -40,7 +41,7 @@ export default async function Page({
     <main className="max-w-xl m-auto">
       <div className="flex space-x-2 mb-2">
         <Button>New York, NY</Button>
-        <Button>Date</Button>
+        <DateFiltering />
       </div>
       <TagFiltering />
       <div className="my-4">

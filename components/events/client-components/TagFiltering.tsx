@@ -14,7 +14,7 @@ export default function TagFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [activeTag, setActiveTag] = useState<string>("");
-  const { replace } = useRouter();
+  const { replace, refresh } = useRouter();
 
   useEffect(() => {
     const fetchTags = async () => {
