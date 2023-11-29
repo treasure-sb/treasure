@@ -110,9 +110,18 @@ export default async function EventsPage({
                           </div>
                           <Button>Buy Now!</Button>
                         </div>
-                      ))}
-                    </div>
-                  </DialogContent>
+                        <Link
+                          target="_blank"
+                          href={`https://buytickets.at/treasure1/${event.ticket_tailor_event_id?.substring(
+                            3
+                          )}`}
+                        >
+                          <Button>Buy Now!</Button>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
                 </Dialog>
               </div>
             ) : (

@@ -3,7 +3,12 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { createTicketTailorEvent } from "../ticket-tailor";
+import {
+  createTicketTailorEvent,
+  createTicketTailorTickets,
+  publishTicketTailorEvent,
+  createTicketTailorEventOccurence,
+} from "../ticket-tailor";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -23,6 +28,32 @@ const createEvent = async (values: EventForm) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // create event and tickets on ticket tailor and publish the event
+  const ticketTailorEvent = {
+    name,
+    description,
+    venue_name,
+  };
+  const ticketTailorEventData = await createTicketTailorEvent(
+    ticketTailorEvent
+  );
+
+  const ticketTailorEventOccurence = {
+    start_date: date?.toISOString().split("T")[0],
+    end_date: date?.toISOString().split("T")[0],
+    start_time: start_time + ":00",
+    end_time: end_time + ":00",
+  };
+
+  await createTicketTailorEventOccurence(
+    ticketTailorEventData.id,
+    ticketTailorEventOccurence
+  );
+  await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
+  await publishTicketTailorEvent(ticketTailorEventData.id);
+
+  // create the event on supabase
   const { data, error } = await supabase
     .from("events")
     .insert([
@@ -39,14 +70,12 @@ const createEvent = async (values: EventForm) => {
         poster_url,
         venue_map_url,
         organizer_id: user?.id,
+        ticket_tailor_event_id: ticketTailorEventData.id,
       },
     ])
     .select();
-
   if (data) {
     const event: Tables<"events"> = data[0];
-    const ticketTailorEventData = await createTicketTailorEvent(event);
-    console.log(ticketTailorEventData);
     await createTickets(values.tickets, event.id);
     await createTags(values.tags, event.id);
   }
@@ -67,7 +96,6 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
         },
       ])
       .select();
-    console.log(tagsData, error);
   });
 };
 
