@@ -26,6 +26,18 @@ const createEvent = async (values: EventForm) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // create event on ticket tailor
+  const ticketTailorEvent = {
+    name,
+    description,
+    venue_name,
+  };
+  const ticketTailorEventData = await createTicketTailorEvent(
+    ticketTailorEvent
+  );
+  console.log(ticketTailorEventData);
+  // create the event on supabase
   const { data, error } = await supabase
     .from("events")
     .insert([
@@ -42,13 +54,13 @@ const createEvent = async (values: EventForm) => {
         poster_url,
         venue_map_url,
         organizer_id: user?.id,
+        ticket_tailor_event_id: ticketTailorEventData.id,
       },
     ])
     .select();
-
+  console.log(data);
   if (data) {
     const event: Tables<"events"> = data[0];
-    const ticketTailorEventData = await createTicketTailorEvent(event);
     await createTicketTailorTicket(values.tickets, ticketTailorEventData.id);
     await createTickets(values.tickets, event.id);
     await createTags(values.tags, event.id);

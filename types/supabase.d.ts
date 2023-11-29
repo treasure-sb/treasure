@@ -56,6 +56,7 @@ interface Database {
           organizer_id: string;
           poster_url: string | null;
           start_time: string;
+          ticket_tailor_event_id: string | null;
           venue_map_url: string | null;
           venue_name: string;
         };
@@ -72,6 +73,7 @@ interface Database {
           organizer_id: string;
           poster_url?: string | null;
           start_time: string;
+          ticket_tailor_event_id?: string | null;
           venue_map_url?: string | null;
           venue_name: string;
         };
@@ -88,6 +90,7 @@ interface Database {
           organizer_id?: string;
           poster_url?: string | null;
           start_time?: string;
+          ticket_tailor_event_id?: string | null;
           venue_map_url?: string | null;
           venue_name?: string;
         };
@@ -103,7 +106,7 @@ interface Database {
       };
       profiles: {
         Row: {
-          avatar_url: string | null;
+          avatar_url: string;
           bio: string | null;
           email: string | null;
           first_name: string | null;
@@ -113,7 +116,7 @@ interface Database {
           twitter: string | null;
         };
         Insert: {
-          avatar_url?: string | null;
+          avatar_url?: string;
           bio?: string | null;
           email?: string | null;
           first_name?: string | null;
@@ -123,7 +126,7 @@ interface Database {
           twitter?: string | null;
         };
         Update: {
-          avatar_url?: string | null;
+          avatar_url?: string;
           bio?: string | null;
           email?: string | null;
           first_name?: string | null;

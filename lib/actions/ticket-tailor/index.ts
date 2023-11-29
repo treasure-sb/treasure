@@ -1,8 +1,13 @@
 "use server";
-import { Tables } from "@/types/supabase";
 import { EventFormTicket } from "@/types/event";
 
-const createTicketTailorEvent = async (event: Tables<"events">) => {
+interface TicketTailorEvent {
+  name: string;
+  description: string;
+  venue_name: string;
+}
+
+const createTicketTailorEvent = async (event: TicketTailorEvent) => {
   const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series`;
   const headers = new Headers({
     Accept: "application/json",
@@ -12,9 +17,7 @@ const createTicketTailorEvent = async (event: Tables<"events">) => {
   });
 
   const body = {
-    name: event.name,
-    description: event.description,
-    venue: event.venue_name,
+    ...event,
     currency: "usd",
   };
 
@@ -36,7 +39,7 @@ const createTicketTailorEvent = async (event: Tables<"events">) => {
   }
 };
 
-const formatPrices = (tickets: EventFormTicket[]) => {
+const formatTicketPrices = (tickets: EventFormTicket[]) => {
   return tickets.map((ticket) => {
     let formattedPrice = "";
     let price = Number(ticket.ticket_price);
@@ -66,14 +69,13 @@ const createTicketTailorTicket = async (
       "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
   });
 
-  const formattedTickets = formatPrices(tickets);
+  const formattedTickets = formatTicketPrices(tickets);
   formattedTickets.forEach(async (ticket) => {
     const body = {
       name: ticket.ticket_name,
       price: ticket.ticket_price,
       quantity: ticket.ticket_quantity,
     };
-    console.log(body);
 
     try {
       const response = await fetch(url, {
@@ -81,9 +83,6 @@ const createTicketTailorTicket = async (
         headers: headers,
         body: new URLSearchParams(body),
       });
-
-      const data = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -94,4 +93,34 @@ const createTicketTailorTicket = async (
   });
 };
 
-export { createTicketTailorEvent, createTicketTailorTicket };
+const listAllTicketTailorEvents = async () => {
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series`;
+  const headers = new Headers({
+    Accept: "application/json",
+    Content_Type: "application/x-www-form-urlencoded",
+    Authorization:
+      "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export {
+  createTicketTailorEvent,
+  createTicketTailorTicket,
+  listAllTicketTailorEvents,
+};
