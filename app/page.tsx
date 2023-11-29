@@ -7,8 +7,8 @@ export default async function Page() {
   return (
     <main className="min-h-screen max-w-xl md:max-w-6xl xl:max-w-7xl m-auto">
       {/* Hero */}
-      <div className="my-20 space-y-10 w-full">
-        <div className="max-w-xl">
+      <div className="my-20 space-y-10 w-full justify-center">
+        <div className="max-w-xl mx-auto">
           <h1 className="text-5xl md:text-8xl font-bold text-left mb-6">
             Find Great Card & Collectible{" "}
             <span className="text-primary">Events</span> Near You
