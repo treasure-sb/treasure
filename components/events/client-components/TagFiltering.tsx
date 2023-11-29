@@ -14,7 +14,7 @@ export default function TagFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [activeTag, setActiveTag] = useState<string>("");
-  const { replace, refresh } = useRouter();
+  const { replace } = useRouter();
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -25,7 +25,7 @@ export default function TagFiltering() {
       }
       setLoading(false);
     };
-    setActiveTag(searchParams.get("query") || "");
+    setActiveTag(searchParams.get("tag") || "");
     fetchTags();
   }, []);
 
@@ -33,10 +33,10 @@ export default function TagFiltering() {
     const params = new URLSearchParams(searchParams);
     if (tag_name === activeTag) {
       setActiveTag("");
-      params.delete("query");
-    } else if (tag_name) {
+      params.delete("tag");
+    } else {
       setActiveTag(tag_name);
-      params.set("query", tag_name);
+      params.set("tag", tag_name);
     }
     replace(`${pathname}?${params.toString()}`);
   };

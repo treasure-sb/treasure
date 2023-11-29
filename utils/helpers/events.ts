@@ -1,6 +1,5 @@
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "../supabase/server";
-import format from "date-fns/format";
 
 const getPublicPosterUrl = async (event: Tables<"events">) => {
   const supabase = await createSupabaseServerClient();
@@ -47,7 +46,13 @@ const formatStartTime = (startTime: string) => {
 };
 
 const formatDate = (date: string) => {
-  return format(new Date(date), "EEE, d MMM");
+  const formattedDate = new Date(date).toLocaleDateString(undefined, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+  return formattedDate;
 };
 
 export {

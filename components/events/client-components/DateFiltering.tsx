@@ -28,9 +28,6 @@ export default function DateFiltering() {
       params.set("until", formattedDate);
       setDate(date);
       setIsCalenderOpen(false);
-    } else {
-      params.delete("from");
-      params.delete("until");
     }
     replace(`${pathname}?${params.toString()}`);
   };
@@ -70,29 +67,70 @@ export default function DateFiltering() {
     replace(`${pathname}?${params.toString()}`);
   };
 
+  const hanldeClearDate = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("from");
+    params.delete("until");
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  let from = searchParams.get("from");
+  let until = searchParams.get("until");
+  let hasDateQuery = from && until;
+  let dateDisplayed = "";
+  if (from && until) {
+    from = new Date(from).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    });
+    until = new Date(until).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    });
+    if (from === until) {
+      dateDisplayed = from;
+    } else {
+      dateDisplayed = `${from} - ${until}`;
+    }
+  }
+
   return (
-    <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button>Date</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <div className="flex justify-center p-2">
-          <DropdownMenuItem onClick={handleClickToday}>Today</DropdownMenuItem>
-          <DropdownMenuItem onClick={handleClickTomorrow}>
-            Tomorrow
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleClickThisWeek}>
-            This Week
-          </DropdownMenuItem>
-        </div>
-        <DropdownMenuSeparator />
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={handleCalenderDateSelect}
-          className="rounded-md"
-        />
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex space-x-2 items-center">
+      <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button>{hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <div className="flex justify-center p-2">
+            <DropdownMenuItem onClick={handleClickToday}>
+              Today
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleClickTomorrow}>
+              Tomorrow
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleClickThisWeek}>
+              This Week
+            </DropdownMenuItem>
+          </div>
+          <DropdownMenuSeparator />
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleCalenderDateSelect}
+            className="rounded-md"
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {hasDateQuery && (
+        <Button
+          className="p-2 h-6 bg-secondary text-red-400 hover:bg-secondary hover:text-red-500 transition duration-300"
+          onClick={hanldeClearDate}
+        >
+          x
+        </Button>
+      )}
+    </div>
   );
 }
