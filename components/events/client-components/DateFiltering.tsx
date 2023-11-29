@@ -35,6 +35,41 @@ export default function DateFiltering() {
     replace(`${pathname}?${params.toString()}`);
   };
 
+  const handleClickToday = () => {
+    const todaysDateFormatted = format(new Date(), "yyyy-MM-dd");
+
+    const params = new URLSearchParams(searchParams);
+    params.set("from", todaysDateFormatted);
+    params.set("until", todaysDateFormatted);
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  const handleClickTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowFormatted = format(tomorrow, "yyyy-MM-dd");
+
+    const params = new URLSearchParams(searchParams);
+    params.set("from", tomorrowFormatted);
+    params.set("until", tomorrowFormatted);
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  const handleClickThisWeek = () => {
+    const today = new Date();
+    const endOfWeek = new Date(today);
+    const daysUntilSunday = 6 - today.getDay();
+    endOfWeek.setDate(today.getDate() + daysUntilSunday);
+
+    const todaysDateFormatted = format(today, "yyyy-MM-dd");
+    const endOfWeekDateFormatted = format(endOfWeek, "yyyy-MM-dd");
+
+    const params = new URLSearchParams(searchParams);
+    params.set("from", todaysDateFormatted);
+    params.set("until", endOfWeekDateFormatted);
+    replace(`${pathname}?${params.toString()}`);
+  };
+
   return (
     <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
       <DropdownMenuTrigger asChild>
@@ -42,9 +77,13 @@ export default function DateFiltering() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <div className="flex justify-center p-2">
-          <DropdownMenuItem>Today</DropdownMenuItem>
-          <DropdownMenuItem>Tomorrow</DropdownMenuItem>
-          <DropdownMenuItem>This Week</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleClickToday}>Today</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleClickTomorrow}>
+            Tomorrow
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleClickThisWeek}>
+            This Week
+          </DropdownMenuItem>
         </div>
         <DropdownMenuSeparator />
         <Calendar
