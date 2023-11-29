@@ -4,6 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
 import TagFiltering from "@/components/events/client-components/TagFiltering";
 import DateFiltering from "@/components/events/client-components/DateFiltering";
+import SeeMore from "@/components/events/client-components/SeeMore";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -14,11 +15,16 @@ export default async function Page({
     tag?: string;
     from?: string;
     until?: string;
+    numEvents?: string;
   };
 }) {
   const tagQuery = searchParams?.tag || null;
   const fromQuery = searchParams?.from || null;
   const untilQuery = searchParams?.until || null;
+  let numEvents = 4;
+  if (searchParams?.numEvents) {
+    numEvents = parseInt(searchParams.numEvents);
+  }
   const supabase = await createSupabaseServerClient();
   let events = [];
 
@@ -33,6 +39,7 @@ export default async function Page({
     const { data: dateTagEventData, error: dateTagEventError } = await supabase
       .from("events")
       .select("*, event_tags!inner(*)")
+      .range(0, numEvents)
       .gte("date", fromQuery)
       .lte("date", untilQuery)
       .eq("event_tags.tag_id", tagData?.id);
@@ -44,6 +51,7 @@ export default async function Page({
     const { data: dateEventData, error: dateEventError } = await supabase
       .from("events")
       .select("*")
+      .range(0, numEvents)
       .gte("date", fromQuery)
       .lte("date", untilQuery);
     if (dateEventData) {
@@ -58,6 +66,7 @@ export default async function Page({
     const { data: eventData, error: eventError } = await supabase
       .from("events")
       .select("*, event_tags!inner(*)")
+      .range(0, numEvents)
       .eq("event_tags.tag_id", tagData?.id);
 
     if (eventData) {
@@ -66,7 +75,8 @@ export default async function Page({
   } else {
     const { data: allEventData, error: allEventError } = await supabase
       .from("events")
-      .select("*");
+      .select("*")
+      .range(0, numEvents);
     if (allEventData) {
       events = allEventData;
     }
@@ -101,6 +111,7 @@ export default async function Page({
               event={event}
             />
           ))}
+          <SeeMore />
         </div>
       ) : (
         <div>No Events</div>
