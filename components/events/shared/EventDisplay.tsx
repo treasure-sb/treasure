@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import format from "date-fns/format";
+import { formatDate } from "@/utils/helpers/events";
 
 export default async function EventDisplay({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
   } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
-  const formattedDate = format(new Date(event.date), "EEE, MMMM do");
+  const formattedDate = formatDate(event.date);
   const { data: tickets, error } = await supabase
     .from("tickets")
     .select("*")

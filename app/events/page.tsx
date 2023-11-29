@@ -2,32 +2,98 @@ import { Button } from "@/components/ui/button";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
+import TagFiltering from "@/components/events/client-components/TagFiltering";
+import DateFiltering from "@/components/events/client-components/DateFiltering";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function Events() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    tag?: string;
+    from?: string;
+    until?: string;
+  };
+}) {
+  const tagQuery = searchParams?.tag || null;
+  const fromQuery = searchParams?.from || null;
+  const untilQuery = searchParams?.until || null;
   const supabase = await createSupabaseServerClient();
-  const { data: events, error } = await supabase.from("events").select("*");
+  let events = [];
+
+  // works for now but have to go back to supabase and fix event_tags table to make this more efficient/simpler
+  if (fromQuery && untilQuery && tagQuery) {
+    const { data: tagData, error: tagError } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("name", tagQuery)
+      .single();
+
+    const { data: dateTagEventData, error: dateTagEventError } = await supabase
+      .from("events")
+      .select("*, event_tags!inner(*)")
+      .gte("date", fromQuery)
+      .lte("date", untilQuery)
+      .eq("event_tags.tag_id", tagData?.id);
+
+    if (dateTagEventData) {
+      events = dateTagEventData;
+    }
+  } else if (fromQuery && untilQuery) {
+    const { data: dateEventData, error: dateEventError } = await supabase
+      .from("events")
+      .select("*")
+      .gte("date", fromQuery)
+      .lte("date", untilQuery);
+    if (dateEventData) {
+      events = dateEventData;
+    }
+  } else if (tagQuery) {
+    const { data: tagData, error: tagError } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("name", tagQuery)
+      .single();
+    const { data: eventData, error: eventError } = await supabase
+      .from("events")
+      .select("*, event_tags!inner(*)")
+      .eq("event_tags.tag_id", tagData?.id);
+
+    if (eventData) {
+      events = eventData;
+    }
+  } else {
+    const { data: allEventData, error: allEventError } = await supabase
+      .from("events")
+      .select("*");
+    if (allEventData) {
+      events = allEventData;
+    }
+  }
 
   return (
-    <main className="max-w-xl md:max-w-6xl xl:max-w-7xl m-auto">
+    <main className="max-w-xl m-auto">
       <div className="flex space-x-2 mb-2">
         <Button>New York, NY</Button>
-        <Button>Date</Button>
+        <DateFiltering />
       </div>
-      <div className="flex space-x-2 overflow-scroll scrollbar-hidden mb-2">
-        <Button variant={"secondary"}>Pokemon</Button>
-        <Button variant={"secondary"}>Sports</Button>
-        <Button variant={"secondary"}>Anime</Button>
-        <Button variant={"secondary"}>Trading Cards</Button>
-        <Button variant={"secondary"}>Futbol</Button>
-        <Button variant={"secondary"}>Jobs</Button>
-      </div>
+      <TagFiltering />
       <div className="my-4">
-        <h1 className="font-semibold text-2xl">Popular Events</h1>
+        {tagQuery ? (
+          <h1 className="font-semibold text-2xl">Popular {tagQuery} Events</h1>
+        ) : (
+          <h1 className="font-semibold text-2xl">Popular Events</h1>
+        )}
         <h1 className="font-bold text-gray-500">In New York, NY</h1>
       </div>
       {events && events.length > 0 ? (
         <div className="space-y-8">
-          <EventDisplay event={events[0]} />
+          <Suspense
+            fallback={<Skeleton className="w-full h-[500px] rounded-md" />}
+          >
+            <EventDisplay event={events[0]} />
+          </Suspense>
           {events.splice(1).map((event) => (
             <EventCard
               redirectTo={`/events/${event.id}`}

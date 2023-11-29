@@ -3,6 +3,7 @@ import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl, formatDate } from "@/utils/helpers/events";
+import { Suspense } from "react";
 
 export default async function EventCard({
   event,
