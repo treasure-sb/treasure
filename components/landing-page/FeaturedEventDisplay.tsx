@@ -10,13 +10,21 @@ export default async function FeaturedEventDisplay({ event }: { event: any }) {
 
   return (
     <Link href={`/events/${event.id}`}>
-      <Image
-        className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
-        alt="image"
-        src={data.data.publicUrl}
-        width={500}
-        height={500}
-      />
+      <div
+        className="relative"
+        style={{
+          width: "300px",
+          height: "300px",
+        }}
+      >
+        <Image
+          className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
+          alt="image"
+          src={data.data.publicUrl}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          fill={true}
+        />
+      </div>
     </Link>
   );
 }

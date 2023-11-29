@@ -12,7 +12,7 @@ export default async function FeaturedEvents() {
 
   return (
     <div className="w-full flex flex-col justify-center">
-      <h1 className="font-bold text-3xl mb-4 text-center md:text-5xl">
+      <h1 className="font-bold text-3xl mb-10 text-center md:text-5xl">
         Featured Events
       </h1>
       <div className="flex flex-wrap gap-8 justify-center">
@@ -20,7 +20,7 @@ export default async function FeaturedEvents() {
           <FeaturedEventDisplay key={event.id} event={event} />
         ))}
       </div>
-      <Link href="/events" className="w-full max-w-md md:w-80 mx-auto mt-6">
+      <Link href="/events" className="w-full max-w-md md:w-80 mx-auto mt-10">
         <Button className="landing-page-button w-full">See All Events</Button>
       </Link>
     </div>
