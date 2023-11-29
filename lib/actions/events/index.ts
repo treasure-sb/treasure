@@ -5,7 +5,9 @@ import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   createTicketTailorEvent,
-  createTicketTailorTicket,
+  createTicketTailorTickets,
+  publishTicketTailorEvent,
+  createTicketTailorEventOccurence,
 } from "../ticket-tailor";
 
 const createEvent = async (values: EventForm) => {
@@ -27,7 +29,7 @@ const createEvent = async (values: EventForm) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // create event on ticket tailor
+  // create event and tickets on ticket tailor and publish the event
   const ticketTailorEvent = {
     name,
     description,
@@ -36,7 +38,21 @@ const createEvent = async (values: EventForm) => {
   const ticketTailorEventData = await createTicketTailorEvent(
     ticketTailorEvent
   );
-  console.log(ticketTailorEventData);
+
+  const ticketTailorEventOccurence = {
+    start_date: date?.toISOString().split("T")[0],
+    end_date: date?.toISOString().split("T")[0],
+    start_time: start_time + ":00",
+    end_time: end_time + ":00",
+  };
+
+  await createTicketTailorEventOccurence(
+    ticketTailorEventData.id,
+    ticketTailorEventOccurence
+  );
+  await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
+  await publishTicketTailorEvent(ticketTailorEventData.id);
+
   // create the event on supabase
   const { data, error } = await supabase
     .from("events")
@@ -58,10 +74,8 @@ const createEvent = async (values: EventForm) => {
       },
     ])
     .select();
-  console.log(data);
   if (data) {
     const event: Tables<"events"> = data[0];
-    await createTicketTailorTicket(values.tickets, ticketTailorEventData.id);
     await createTickets(values.tickets, event.id);
     await createTags(values.tags, event.id);
   }

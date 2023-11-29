@@ -2,14 +2,10 @@ import { Button } from "@/components/ui/button";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
-import { listAllTicketTailorEvents } from "@/lib/actions/ticket-tailor";
 
 export default async function Events() {
   const supabase = await createSupabaseServerClient();
   const { data: events, error } = await supabase.from("events").select("*");
-
-  const data = await listAllTicketTailorEvents();
-  console.log(data);
 
   return (
     <main className="max-w-xl md:max-w-6xl xl:max-w-7xl m-auto">
