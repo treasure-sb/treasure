@@ -19,7 +19,7 @@ export default async function Page({
   const tagQuery = searchParams?.tag || null;
   const fromQuery = searchParams?.from || null;
   const untilQuery = searchParams?.until || null;
-  let numEvents = 4;
+  let numEvents = 10;
   if (searchParams?.numEvents) {
     numEvents = parseInt(searchParams.numEvents);
   }
@@ -109,7 +109,7 @@ export default async function Page({
             {isSeeMoreVisible && <SeeMore />}
           </div>
           <div className="hidden md:block">
-            <div className="hidden md:grid grid-cols-2 gap-2">
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
               {events.map((event) => (
                 <EventDisplay event={event} />
               ))}
