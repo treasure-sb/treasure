@@ -81,7 +81,7 @@ export default async function Page({
       events = allEventData;
     }
   }
-
+  const isSeeMoreVisible = events.length >= numEvents + 1;
   return (
     <main className="max-w-xl m-auto">
       <div className="flex space-x-2 mb-2">
@@ -111,7 +111,7 @@ export default async function Page({
               event={event}
             />
           ))}
-          <SeeMore />
+          {isSeeMoreVisible && <SeeMore />}
         </div>
       ) : (
         <div>No Events</div>
