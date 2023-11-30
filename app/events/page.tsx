@@ -3,9 +3,7 @@ import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
 import TagFiltering from "@/components/events/events-page-client-components/TagFiltering";
-import DateFiltering from "@/components/events/events-page-client-components/DateFiltering";
-import SeeMore from "@/components/events/events-page-client-components/SeeMore";
-import SearchBar from "@/components/events/events-page-client-components/SearchBar";
+import FilteringButtons from "@/components/events/events-page-client-components/FilteringButtons";
 
 export default async function Page({
   searchParams,
@@ -80,14 +78,10 @@ export default async function Page({
       events = allEventData;
     }
   }
-  const isSeeMoreVisible = events.length >= numEvents + 1;
+
   return (
     <main className="max-w-lg md:max-w-5xl m-auto">
-      <div className="flex space-x-2 mb-2 items-center">
-        <Button>New York, NY</Button>
-        <DateFiltering />
-        <SearchBar />
-      </div>
+      <FilteringButtons />
       <TagFiltering />
       <div className="my-4">
         {tagQuery ? (
@@ -108,7 +102,6 @@ export default async function Page({
                 event={event}
               />
             ))}
-            {isSeeMoreVisible && <SeeMore />}
           </div>
           <div className="hidden md:block">
             <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -116,7 +109,6 @@ export default async function Page({
                 <EventDisplay event={event} />
               ))}
             </div>
-            {isSeeMoreVisible && <SeeMore />}
           </div>
         </>
       ) : (
