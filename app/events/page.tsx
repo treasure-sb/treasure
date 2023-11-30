@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventCard from "@/components/events/events-public/EventCard";
-import TagFiltering from "@/components/events/client-components/TagFiltering";
-import DateFiltering from "@/components/events/client-components/DateFiltering";
-import SeeMore from "@/components/events/client-components/SeeMore";
+import TagFiltering from "@/components/events/events-page-client-components/TagFiltering";
+import DateFiltering from "@/components/events/events-page-client-components/DateFiltering";
+import SeeMore from "@/components/events/events-page-client-components/SeeMore";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
