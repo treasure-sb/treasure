@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import Cancel from "@/components/icons/Cancel";
 
 export default function DateFiltering() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -67,13 +68,14 @@ export default function DateFiltering() {
     replace(`${pathname}?${params.toString()}`);
   };
 
-  const hanldeClearDate = () => {
+  const handleClearDate = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("from");
     params.delete("until");
     replace(`${pathname}?${params.toString()}`);
   };
 
+  // For displaying the date in the button
   let from = searchParams.get("from");
   let until = searchParams.get("until");
   let hasDateQuery = from && until;
@@ -97,7 +99,7 @@ export default function DateFiltering() {
   }
 
   return (
-    <div className="flex space-x-2 items-center">
+    <div className="flex space-x-1 items-center">
       <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
         <DropdownMenuTrigger asChild>
           <Button>{hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}</Button>
@@ -123,14 +125,7 @@ export default function DateFiltering() {
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      {hasDateQuery && (
-        <Button
-          className="p-2 h-6 bg-secondary text-red-400 hover:bg-secondary hover:text-red-500 transition duration-300"
-          onClick={hanldeClearDate}
-        >
-          x
-        </Button>
-      )}
+      {hasDateQuery && <Cancel handleCancel={handleClearDate} />}
     </div>
   );
 }
