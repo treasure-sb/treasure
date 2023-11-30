@@ -31,13 +31,11 @@ const profileSchema = z.object({
 });
 
 interface EventFormProps {
-  profileform: profileForm;
   profile: any;
   avatarUrl: string;
 }
 
 export default function EditProfileForm({
-  profileform,
   profile,
   avatarUrl,
 }: EventFormProps) {

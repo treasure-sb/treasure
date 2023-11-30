@@ -23,11 +23,7 @@ export default async function Page() {
 
   return (
     <main className="m-auto max-w-lg">
-      <EditProfileForm
-        profileform={profile}
-        profile={profile}
-        avatarUrl={publicUrl}
-      />
+      <EditProfileForm profile={profile} avatarUrl={publicUrl} />
     </main>
   );
 }
