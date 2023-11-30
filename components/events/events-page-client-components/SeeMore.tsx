@@ -18,8 +18,12 @@ export default function SeeMore() {
   };
 
   return (
-    <Button onClick={handleClick} className="w-full">
-      See More
-    </Button>
+    <div className="flex justify-center">
+      <Button
+        variant={"secondary"}
+        onClick={handleClick}
+        className="w-10 h-10 rounded-full"
+      ></Button>
+    </div>
   );
 }

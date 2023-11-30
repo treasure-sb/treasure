@@ -5,8 +5,6 @@ import EventCard from "@/components/events/events-public/EventCard";
 import TagFiltering from "@/components/events/events-page-client-components/TagFiltering";
 import DateFiltering from "@/components/events/events-page-client-components/DateFiltering";
 import SeeMore from "@/components/events/events-page-client-components/SeeMore";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function Page({
   searchParams,
@@ -83,7 +81,7 @@ export default async function Page({
   }
   const isSeeMoreVisible = events.length >= numEvents + 1;
   return (
-    <main className="max-w-xl m-auto">
+    <main className="max-w-lg md:max-w-5xl m-auto">
       <div className="flex space-x-2 mb-2">
         <Button>New York, NY</Button>
         <DateFiltering />
@@ -98,21 +96,27 @@ export default async function Page({
         <h1 className="font-bold text-gray-500">In New York, NY</h1>
       </div>
       {events && events.length > 0 ? (
-        <div className="space-y-8">
-          <Suspense
-            fallback={<Skeleton className="w-full h-[500px] rounded-md" />}
-          >
+        <>
+          <div className="space-y-8 md:hidden">
             <EventDisplay event={events[0]} />
-          </Suspense>
-          {events.splice(1).map((event) => (
-            <EventCard
-              redirectTo={`/events/${event.id}`}
-              key={event.id}
-              event={event}
-            />
-          ))}
-          {isSeeMoreVisible && <SeeMore />}
-        </div>
+            {events.slice(1).map((event) => (
+              <EventCard
+                redirectTo={`/events/${event.id}`}
+                key={event.id}
+                event={event}
+              />
+            ))}
+            {isSeeMoreVisible && <SeeMore />}
+          </div>
+          <div className="hidden md:block">
+            <div className="hidden md:grid grid-cols-2 gap-2">
+              {events.map((event) => (
+                <EventDisplay event={event} />
+              ))}
+            </div>
+            {isSeeMoreVisible && <SeeMore />}
+          </div>
+        </>
       ) : (
         <div>No Events</div>
       )}
