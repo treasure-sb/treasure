@@ -5,6 +5,7 @@ import EventCard from "@/components/events/events-public/EventCard";
 import TagFiltering from "@/components/events/events-page-client-components/TagFiltering";
 import DateFiltering from "@/components/events/events-page-client-components/DateFiltering";
 import SeeMore from "@/components/events/events-page-client-components/SeeMore";
+import SearchBar from "@/components/events/events-page-client-components/SearchBar";
 
 export default async function Page({
   searchParams,
@@ -82,9 +83,10 @@ export default async function Page({
   const isSeeMoreVisible = events.length >= numEvents + 1;
   return (
     <main className="max-w-lg md:max-w-5xl m-auto">
-      <div className="flex space-x-2 mb-2">
+      <div className="flex space-x-2 mb-2 items-center">
         <Button>New York, NY</Button>
         <DateFiltering />
+        <SearchBar />
       </div>
       <TagFiltering />
       <div className="my-4">
