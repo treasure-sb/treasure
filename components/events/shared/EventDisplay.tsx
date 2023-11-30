@@ -15,14 +15,14 @@ export default async function EventDisplay({ event }: { event: any }) {
     .eq("event_id", event.id);
 
   return (
-    <div className="group w-fit">
+    <div className="group aspect-square w-full">
       <Link href={`/events/${event.id}`}>
         <Image
-          className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
+          className="object-cover h-full w-full rounded-md"
           alt="image"
           src={publicUrl}
-          width={500}
-          height={500}
+          width={200}
+          height={200}
         />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>
