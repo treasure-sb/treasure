@@ -105,12 +105,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          <Link href="">
+          <Link href={`/profile/events/organizer/${event.id}/event-analytics`}>
             <Button className="w-full" variant={"secondary"}>
               Event Analytics
             </Button>
           </Link>
-          <Link href="">
+          <Link href={`/profile/events/organizer/${event.id}/edit-event`}>
             <Button className="w-full" variant={"secondary"}>
               Edit Event
             </Button>
