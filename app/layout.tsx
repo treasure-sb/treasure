@@ -1,4 +1,3 @@
-import { GeistSans } from "geist/font/sans";
 import { Lexend_Deca } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
