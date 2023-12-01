@@ -136,6 +136,11 @@ export default async function Page({ params }: { params: { id: string } }) {
               Guest List
             </Button>
           </Link>
+          <Link href={`/profile/events/organizer/${event.id}/vendor-list`}>
+            <Button className="w-full" variant={"secondary"}>
+              Vendor List
+            </Button>
+          </Link>
         </div>
       </div>
     </main>
