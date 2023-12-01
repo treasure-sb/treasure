@@ -11,7 +11,9 @@ export default function InviteLink({ event_id }: { event_id: string }) {
   const handleCopy = async () => {
     const createInviteToken = async (invite_token: string) => {
       try {
-        const expirationTimestamp = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const expirationTimestamp = new Date(
+          Date.now() + 24 * 60 * 60 * 1000 * 7
+        );
         await supabase.from("vendor_invite_tokens").insert([
           {
             token: invite_token,
