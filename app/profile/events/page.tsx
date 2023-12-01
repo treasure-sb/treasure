@@ -37,7 +37,7 @@ export default async function Page() {
               redirectTo={
                 userData.user.id === event.organizer_id
                   ? `/profile/events/organizer/${event.id}`
-                  : `/profile/events/${event.id}`
+                  : `/events/${event.id}`
               }
               key={event.id}
               event={event}
