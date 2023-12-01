@@ -2,8 +2,6 @@ import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEventForm from "@/components/events/edit-event/EditEventForm";
 import { validateUser } from "@/lib/actions/auth";
-import { EventForm } from "@/types/event";
-import { useState } from "react";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { data } = await validateUser();
@@ -23,10 +21,16 @@ export default async function Page({ params }: { params: { id: string } }) {
     redirect("/events");
   }
 
-  // load the event tickets
+  // load the event tickets : FIXME : not using yet
   const { data: tickets } = await supabase
     .from("tickets")
     .select("*")
+    .eq("event_id", params.id);
+
+  // load the event tags
+  const { data: pTags } = await supabase
+    .from("event_tags")
+    .select("*,tags(name)")
     .eq("event_id", params.id);
 
   // load the event poster
@@ -36,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <main className="m-auto max-w-lg">
-      <EditEventForm event={event} posterUrl={publicUrl} />
+      <EditEventForm event={event} posterUrl={publicUrl} priorTags={pTags} />
     </main>
   );
 }

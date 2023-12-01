@@ -51,3 +51,15 @@ export interface EventFormLocation {
   lng: number;
   lat: number;
 }
+
+export interface EditEventForm {
+  name: string;
+  description: string;
+  venue_name: string;
+  address: string | undefined;
+  lng: number;
+  lat: number;
+  date: Date | undefined;
+  start_time: string;
+  end_time: string;
+}
