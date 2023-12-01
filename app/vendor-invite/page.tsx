@@ -60,11 +60,6 @@ export default async function Page({
     await supabase
       .from("event_vendors")
       .insert([{ event_id: eventId, vendor_id: vendorId }]);
-
-    await supabase
-      .from("vendor_invite_tokens")
-      .delete()
-      .eq("token", inviteToken);
     redirect(`/events/${eventId}`);
   };
 
