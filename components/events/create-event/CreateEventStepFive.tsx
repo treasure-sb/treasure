@@ -66,9 +66,12 @@ export default function Step5({ onBack, eventForm }: Step5Props) {
 
       if (data) {
         newForm.poster_url = data.path;
-        await createEvent(newForm);
       }
+    } else {
+      newForm.poster_url = "poster_coming_soon";
     }
+
+    await createEvent(newForm);
     setSubmitting(false);
   };
 
