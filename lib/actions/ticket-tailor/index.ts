@@ -94,9 +94,9 @@ const formatTicketPrices = (tickets: EventFormTicket[]) => {
 
 const createTicketTailorTickets = async (
   tickets: EventFormTicket[],
-  ticvet_tailor_event_id: string
+  ticket_tailor_event_id: string
 ) => {
-  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${ticvet_tailor_event_id}/ticket_types`;
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${ticket_tailor_event_id}/ticket_types`;
   const headers = new Headers({
     Accept: "application/json",
     Content_Type: "application/x-www-form-urlencoded",
@@ -105,27 +105,27 @@ const createTicketTailorTickets = async (
   });
 
   const formattedTickets = formatTicketPrices(tickets);
-  formattedTickets.forEach(async (ticket) => {
-    const body = {
-      name: ticket.ticket_name,
-      price: ticket.ticket_price,
-      quantity: ticket.ticket_quantity,
-    };
 
-    try {
+  try {
+    const promises = formattedTickets.map(async (ticket) => {
+      const body = {
+        name: ticket.ticket_name,
+        price: ticket.ticket_price,
+        quantity: ticket.ticket_quantity,
+      };
       const response = await fetch(url, {
         method: "POST",
         headers: headers,
         body: new URLSearchParams(body),
       });
-
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    } catch (err) {
-      console.log(err);
-    }
-  });
+    });
+    await Promise.all(promises);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const publishTicketTailorEvent = async (ticket_tailor_event_id: string) => {
@@ -147,7 +147,6 @@ const publishTicketTailorEvent = async (ticket_tailor_event_id: string) => {
       headers: headers,
       body: new URLSearchParams(body),
     });
-
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
