@@ -20,7 +20,7 @@ import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
 import PreviewEvent from "../shared/PreviewEvent";
 
-interface Step3Props {
+interface Step5Props {
   onBack: () => void;
   eventForm: EventForm;
 }
@@ -29,8 +29,9 @@ const stepTwoSchema = z.object({
   venue_map_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
-export default function Step5({ onBack, eventForm }: Step3Props) {
+export default function Step5({ onBack, eventForm }: Step5Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
@@ -38,35 +39,37 @@ export default function Step5({ onBack, eventForm }: Step3Props) {
     },
   });
 
+  const uploadFile = async (file: any, storageFolder: string) => {
+    if (file) {
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from(storageFolder)
+        .upload(`${storageFolder}${Date.now()}`, file);
+
+      if (data) {
+        return data.path;
+      }
+    }
+    return null;
+  };
+
   const onSubmit = async () => {
+    setSubmitting(true);
+
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
 
-    const venueMap = newForm.venue_map_url;
-    if (venueMap) {
-      const supabase = createClient();
-      const { data, error } = await supabase.storage
-        .from("venue_maps")
-        .upload(`venueMap${Date.now()}`, venueMap);
-      if (data) {
-        newForm.venue_map_url = data.path;
-      }
-    }
+    newForm.venue_map_url =
+      (await uploadFile(newForm.venue_map_url, "venue_maps")) ||
+      "venue_map_coming_soon";
+    newForm.poster_url =
+      (await uploadFile(newForm.poster_url, "posters")) || "poster_coming_soon";
+    console.log(newForm);
 
-    const poster = newForm.poster_url;
-    if (poster) {
-      const supabase = createClient();
-      const { data, error } = await supabase.storage
-        .from("posters")
-        .upload(`poster${Date.now()}`, poster);
-
-      if (data) {
-        newForm.poster_url = data.path;
-        await createEvent(newForm);
-      }
-    }
+    await createEvent(newForm);
+    setSubmitting(false);
   };
 
   return (
@@ -131,16 +134,29 @@ export default function Step5({ onBack, eventForm }: Step3Props) {
           />
           <div className="flex flex-col space-y-2">
             <div className="flex space-x-2">
-              <Button className="w-full" onClick={() => onBack()}>
+              <Button
+                className="w-full disabled:cursor-not-allowed"
+                disabled={submitting}
+                onClick={() => onBack()}
+              >
                 Back
               </Button>
-              <Button className="w-full" type="submit">
-                Create Event
+              <Button
+                className="w-full disabled:cursor-not-allowed"
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? "Creating Event..." : "Create Event"}
               </Button>
             </div>
             <Dialog>
               <DialogTrigger>
-                <Button type="button" className="w-full" variant={"secondary"}>
+                <Button
+                  disabled={submitting}
+                  type="button"
+                  className="w-full disabled:cursor-not-allowed"
+                  variant={"secondary"}
+                >
                   Preview Event
                 </Button>
               </DialogTrigger>

@@ -17,7 +17,7 @@ import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
-interface Step3Props {
+interface Step4Props {
   onNext: () => void;
   onBack: () => void;
   eventForm: EventForm;
@@ -33,7 +33,7 @@ export default function Step4({
   onBack,
   eventForm,
   setEventForm,
-}: Step3Props) {
+}: Step4Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),

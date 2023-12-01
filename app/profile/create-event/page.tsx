@@ -17,8 +17,8 @@ export default function Page() {
     lat: 0,
     lng: 0,
     date: undefined,
-    start_time: "",
-    end_time: "",
+    start_time: "09:30",
+    end_time: "16:30",
     tickets: [
       {
         ticket_price: "",
