@@ -53,7 +53,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           ))}
         </div>
       )}
-      <InviteLink />
+      <InviteLink event_id={event_id} />
     </main>
   );
 }
