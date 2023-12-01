@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplay from "@/components/events/shared/EventDisplay";
+import { validateUser } from "@/lib/actions/auth";
+import AcceptButton from "./AcceptButton";
 import { Button } from "@/components/ui/button";
 
 export default async function Page({
@@ -21,14 +23,58 @@ export default async function Page({
     .eq("id", eventId)
     .single();
 
-  // get event poster
-  const {
-    data: { publicUrl: eventPosterPublicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(eventData.poster_url);
-
   if (eventError) {
     redirect("/");
   }
+
+  // validate token
+  const { data: inviteTokenData, error: inviteTokenError } = await supabase
+    .from("vendor_invite_tokens")
+    .select("*")
+    .eq("token", inviteToken)
+    .single();
+
+  if (inviteTokenError) {
+    redirect("/");
+  }
+
+  // validate token is not expired
+  const now = new Date();
+  const expirationDate = new Date(inviteTokenData.expires_at);
+  if (now > expirationDate) {
+    redirect("/");
+  }
+
+  // have to handle this if user is logged in or not
+  const handleAccept = async () => {
+    "use server";
+    const {
+      data: { user },
+    } = await validateUser();
+    if (!user) {
+      redirect("/login");
+    }
+
+    const supabase = await createSupabaseServerClient();
+    const vendorId = user.id;
+    await supabase
+      .from("event_vendors")
+      .insert([{ event_id: eventId, vendor_id: vendorId }]);
+
+    await supabase
+      .from("vendor_invite_tokens")
+      .delete()
+      .eq("token", inviteToken);
+    redirect(`/events/${eventId}`);
+  };
+
+  const handleDecline = async () => {
+    "use server";
+  };
+
+  const {
+    data: { publicUrl: eventPosterPublicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(eventData.poster_url);
 
   return (
     <main className="max-w-lg m-auto space-y-4">
@@ -37,8 +83,8 @@ export default async function Page({
       </h1>
       <EventDisplay event={eventData} />
       <div className="flex space-x-2">
-        <Button className="w-full">Accept</Button>
-        <Button className="w-full" variant={"destructive"}>
+        <AcceptButton handleAccept={handleAccept} />
+        <Button variant={"destructive"} className="w-full">
           Decline
         </Button>
       </div>

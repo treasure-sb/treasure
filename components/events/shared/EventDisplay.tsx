@@ -4,6 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { formatDate } from "@/utils/helpers/events";
 
 export default async function EventDisplay({ event }: { event: any }) {
+  console.log(event);
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },

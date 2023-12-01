@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       {vendorsWithPublicUrls.length == 0 ? (
         <div className="text-lg">Your event currently has no vendors</div>
       ) : (
-        <div className="flex space-x-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap">
           {vendorsWithPublicUrls.map((vendor: any) => (
             <div
               key={vendor.id}

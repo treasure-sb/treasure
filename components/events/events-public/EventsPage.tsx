@@ -148,7 +148,7 @@ export default async function EventsPage({
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Vendors</h1>
-              <div className="flex space-x-2 flex-wrap">
+              <div className="flex gap-2 flex-wrap">
                 {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0
                   ? vendorsWithPublicUrls.map((vendor: any) => (
                       <div
