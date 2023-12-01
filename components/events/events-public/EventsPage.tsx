@@ -151,7 +151,10 @@ export default async function EventsPage({
               <div className="flex space-x-2 flex-wrap">
                 {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0
                   ? vendorsWithPublicUrls.map((vendor: any) => (
-                      <div className="h-28 w-28 rounded-full overflow-hidden mt-2">
+                      <div
+                        key={vendor.id}
+                        className="h-28 w-28 rounded-full overflow-hidden mt-2"
+                      >
                         <Link href={`/users/${vendor.id}`}>
                           <Image
                             className="block w-full h-full object-cover"
