@@ -29,7 +29,7 @@ export default function InviteLink({ event_id }: { event_id: string }) {
       try {
         const inviteToken = uuidv4();
         await createInviteToken(inviteToken);
-        const inviteLink = `http://localhost:3000/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
+        const inviteLink = `https://treasureapp.io/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
         await navigator.clipboard.writeText(inviteLink);
         toast({
           title: "Invite Link Copied!",
