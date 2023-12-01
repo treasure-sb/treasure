@@ -29,12 +29,16 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
+import { useCallback } from "react";
+import { editEvent } from "@/lib/actions/edit-events";
 
 interface EventProps {
   event: any;
   posterUrl: string;
+  priorTags: any;
 }
 
+// Function to fix date format
 function fixDate(time: string) {
   const fixedTime = time
     .slice(time.indexOf("-") + 1)
@@ -58,6 +62,11 @@ const eventSchema = z.object({
   venue_name: z.string().min(1, {
     message: "Location name is required",
   }),
+  address: z.string().min(1, {
+    message: "Name is required",
+  }),
+  lng: z.number({ required_error: "Name is required" }),
+  lat: z.number({ required_error: "Name is required" }),
   date: z.date({
     required_error: "Date is required",
   }),
@@ -69,13 +78,21 @@ const eventSchema = z.object({
   }),
 });
 
-export default function EditEventForm({ event, posterUrl }: EventProps) {
+export default function EditEventForm({
+  event,
+  posterUrl,
+  priorTags,
+}: EventProps) {
   const [tags, setTags] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
-  const [event_tags, setEventTags] = useState<any[]>([]);
-  const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(
-    null
+  const [event_tags, setEventTags] = useState<any[]>(
+    priorTags.map((tag: any) => [tag.tags.name, tag.tag_id])
   );
+  const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>({
+    lat: event.lat,
+    lng: event.lng,
+    address: event.address,
+  });
 
   //create form for event
   const form = useForm<z.infer<typeof eventSchema>>({
@@ -85,13 +102,11 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
       description: event.description,
       venue_name: event.venue_name,
       date: fixDate(event.date),
-      start_time: event.start_time,
-      end_time: event.end_time,
+      start_time: event.start_time.slice(0, event.start_time.lastIndexOf(":")),
+      end_time: event.end_time.slice(0, event.end_time.lastIndexOf(":")),
     },
   });
 
-  console.log(event.date);
-  fixDate(event.date);
   // get events tags
   const supabase = createClient();
   useEffect(() => {
@@ -111,7 +126,6 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
 
   // method to handle tags
   const handleTagSelect = (tag: any) => {
-    console.log(tag);
     if (!event_tags.some((eventTag) => eventTag[0] === tag.name)) {
       setEventTags([...event_tags, [tag.name, tag.id]]);
     } else {
@@ -123,7 +137,16 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
   const onSubmit = async () => {
     const newForm = {
       ...form.getValues(),
+      ...venueLocation,
     };
+    // FIXME: not working with supabase yet
+    const supabase = createClient();
+    await editEvent(newForm, event.id, event_tags);
+    // const { data, error } = await supabase
+    //   .from("events")
+    //   .update(newForm)
+    //   .eq("id", event.id);
+
     console.log(event_tags);
     console.log(newForm);
   };
@@ -136,7 +159,7 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
-            <h1 className="text-3xl font-semibold">Create Event</h1>
+            <h1 className="text-3xl font-semibold">Edit Event</h1>
             <FormField
               control={form.control}
               name="name"
@@ -250,8 +273,7 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
                           )}
                         >
                           {field.value
-                            ? (console.log(field.value),
-                              format(field.value, "PPP"))
+                            ? format(field.value, "PPP")
                             : format(event.date, "PPP")}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -273,7 +295,7 @@ export default function EditEventForm({ event, posterUrl }: EventProps) {
               )}
             />
           </div>
-          <Button type="submit" className="w-full py-6">
+          <Button type="submit" className="w-full py-6 my-4">
             Submit
           </Button>
         </form>

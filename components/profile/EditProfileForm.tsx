@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { editProfile } from "@/lib/actions/profile";
-import { profileForm } from "@/types/profile";
 import AvatarEdit from "@/components/profile/AvatarEdit";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
