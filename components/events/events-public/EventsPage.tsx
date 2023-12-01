@@ -32,6 +32,9 @@ export default async function EventsPage({
     .from("tickets")
     .select("*")
     .eq("event_id", event.id);
+  const cheapestTicket = tickets?.reduce((prev, cur) => {
+    return prev.price < cur.price ? prev : cur;
+  }, 0);
 
   const { data: user, error: userError } = await supabase
     .from("profiles")
@@ -39,18 +42,31 @@ export default async function EventsPage({
     .eq("id", event.organizer_id)
     .single();
 
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
-
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
     .select("tags(name)")
     .eq("event_id", event.id);
 
-  const cheapestTicket = tickets?.reduce((prev, cur) => {
-    return prev.price < cur.price ? prev : cur;
-  }, 0);
+  // avatars for organizer and vendors
+  const {
+    data: { publicUrl: organizerPublicUrl },
+  } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
+
+  // @ts-ignore
+  const vendors = event.profiles;
+  const vendorsWithPublicUrls = await Promise.all(
+    vendors.map(async (vendor: any) => {
+      let {
+        data: { publicUrl: vendorPublicUrl },
+      } = await supabase.storage
+        .from("avatars")
+        .getPublicUrl(vendor.avatar_url);
+      return {
+        ...vendor,
+        vendorPublicUrl,
+      };
+    })
+  );
 
   return (
     <main className="m-auto w-fit">
@@ -132,7 +148,26 @@ export default async function EventsPage({
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Vendors</h1>
-              <h1>Vendors list goes here</h1>
+              <div className="flex gap-2 flex-wrap">
+                {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0
+                  ? vendorsWithPublicUrls.map((vendor: any) => (
+                      <div
+                        key={vendor.id}
+                        className="h-28 w-28 rounded-full overflow-hidden mt-2"
+                      >
+                        <Link href={`/users/${vendor.id}`}>
+                          <Image
+                            className="block w-full h-full object-cover"
+                            alt="avatar"
+                            src={vendor.vendorPublicUrl}
+                            width={100}
+                            height={100}
+                          />
+                        </Link>
+                      </div>
+                    ))
+                  : null}
+              </div>
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Hosted By</h1>
@@ -141,7 +176,7 @@ export default async function EventsPage({
                   <Image
                     className="block w-full h-full object-cover"
                     alt="avatar"
-                    src={publicUrl}
+                    src={organizerPublicUrl}
                     width={100}
                     height={100}
                   />

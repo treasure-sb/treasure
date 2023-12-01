@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
 import { validateUser } from "@/lib/actions/auth";
+import { Toaster } from "@/components/ui/toaster";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -34,6 +35,7 @@ export default async function RootLayout({
           <div>
             {user.data.user ? <LoggedInHeader /> : <Header />}
             {children}
+            <Toaster />
           </div>
           {/* <Footer /> */}
         </ThemeProvider>

@@ -7,8 +7,9 @@ import Image from "next/image";
 import format from "date-fns/format";
 
 export default async function Page() {
-  const { data } = await validateUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await validateUser();
   if (!user) {
     redirect("/account");
   }
