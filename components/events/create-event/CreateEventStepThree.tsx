@@ -26,7 +26,7 @@ interface Step3Props {
 const ticketSchema = z.object({
   ticket_price: z.string().refine(
     (num) => {
-      return !isNaN(Number(num)) && Number(num) > 0;
+      return !isNaN(Number(num)) && Number(num) >= 0;
     },
     {
       message: "Must be a valid ticket price",
