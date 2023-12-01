@@ -39,37 +39,34 @@ export default function Step5({ onBack, eventForm }: Step5Props) {
     },
   });
 
+  const uploadFile = async (file: any, storageFolder: string) => {
+    if (file) {
+      const supabase = createClient();
+      const { data, error } = await supabase.storage
+        .from(storageFolder)
+        .upload(`${storageFolder}${Date.now()}`, file);
+
+      if (data) {
+        return data.path;
+      }
+    }
+    return null;
+  };
+
   const onSubmit = async () => {
     setSubmitting(true);
+
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
 
-    const venueMap = newForm.venue_map_url;
-    if (venueMap) {
-      const supabase = createClient();
-      const { data, error } = await supabase.storage
-        .from("venue_maps")
-        .upload(`venueMap${Date.now()}`, venueMap);
-      if (data) {
-        newForm.venue_map_url = data.path;
-      }
-    }
-
-    const poster = newForm.poster_url;
-    if (poster) {
-      const supabase = createClient();
-      const { data, error } = await supabase.storage
-        .from("posters")
-        .upload(`poster${Date.now()}`, poster);
-
-      if (data) {
-        newForm.poster_url = data.path;
-      }
-    } else {
-      newForm.poster_url = "poster_coming_soon";
-    }
+    newForm.venue_map_url =
+      (await uploadFile(newForm.venue_map_url, "venue_maps")) ||
+      "venue_map_coming_soon";
+    newForm.poster_url =
+      (await uploadFile(newForm.poster_url, "posters")) || "poster_coming_soon";
+    console.log(newForm);
 
     await createEvent(newForm);
     setSubmitting(false);
