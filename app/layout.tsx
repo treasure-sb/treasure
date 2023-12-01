@@ -1,4 +1,4 @@
-import { GeistSans } from "geist/font/sans";
+import { Lexend_Deca } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/shared/Header";
@@ -9,6 +9,12 @@ import { Toaster } from "@/components/ui/toaster";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
+
+const lexend = Lexend_Deca({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: "normal",
+});
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
@@ -24,7 +30,7 @@ export default async function RootLayout({
   const user = await validateUser();
 
   return (
-    <html lang="en" className={GeistSans.className}>
+    <html lang="en" className={lexend.className}>
       <body className="bg-background text-foreground p-6 flex flex-col min-h-screen justify-between">
         <ThemeProvider
           attribute="class"
