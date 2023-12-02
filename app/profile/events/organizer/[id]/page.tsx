@@ -1,6 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PreviewEvent from "@/components/events/shared/PreviewEvent";
@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DeleteEventButton from "@/components/events/organizer/DeleteEventButton";
+import { formatDate } from "@/utils/helpers/events";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
@@ -27,7 +28,8 @@ export default async function Page({ params }: { params: { id: string } }) {
     .single();
 
   const event: Tables<"events"> = data;
-  const shortFormattedDate = format(new Date(event.date), "EEE, MMM d");
+
+  const shortFormattedDate = formatDate(event.date);
   let publicPosterUrl = "";
   if (event.poster_url) {
     const {
@@ -131,7 +133,6 @@ export default async function Page({ params }: { params: { id: string } }) {
               <span className="text-lg text-white">{event.venue_name}</span>
             </div>
           </div>
-
           <Link href={`/profile/events/organizer/${event.id}/event-analytics`}>
             <Button className="w-full" variant={"secondary"}>
               Event Analytics

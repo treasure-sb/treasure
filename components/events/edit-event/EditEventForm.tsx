@@ -31,6 +31,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { useCallback } from "react";
 import { editEvent } from "@/lib/actions/edit-events";
+import { formatDate } from "@/utils/helpers/events";
 
 interface EventProps {
   event: any;
@@ -38,12 +39,11 @@ interface EventProps {
   priorTags: any;
 }
 
-// Function to fix date format
 function fixDate(time: string) {
-  const fixedTime = time
-    .slice(time.indexOf("-") + 1)
-    .concat("-" + time.slice(0, time.indexOf("-")));
-  return new Date(fixedTime);
+  const date = new Date(time);
+  const options = { timeZone: "UTC" }; // Adjust the time zone as needed
+  const formattedDate = date.toLocaleString("en-US", options);
+  return new Date(formattedDate);
 }
 
 // Function to validate time format (HH:mm)
