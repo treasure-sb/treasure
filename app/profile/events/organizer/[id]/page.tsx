@@ -1,6 +1,12 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import PreviewEvent from "@/components/events/shared/PreviewEvent";
+import { Tables } from "@/types/supabase";
+import { EventPreview } from "@/types/event";
+import { redirect } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -8,11 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import PreviewEvent from "@/components/events/shared/PreviewEvent";
-import { Tables } from "@/types/supabase";
-import { EventPreview } from "@/types/event";
+import DeleteEventButton from "@/components/events/organizer/DeleteEventButton";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
@@ -73,6 +75,31 @@ export default async function Page({ params }: { params: { id: string } }) {
     description: event.description,
     poster_url: publicPosterUrl,
     venue_map_url: null,
+  };
+
+  const handleDelete = async () => {
+    "use server";
+    const supabase = await createSupabaseServerClient();
+    if (event.poster_url && event.poster_url !== "poster_coming_soon") {
+      await supabase.storage.from("posters").remove([event.poster_url]);
+    }
+
+    if (
+      event.venue_map_url &&
+      event.venue_map_url !== "venue_map_coming_soon"
+    ) {
+      await supabase.storage.from("venue_maps").remove([event.venue_map_url]);
+    }
+
+    const { error: deleteError } = await supabase
+      .from("events")
+      .delete()
+      .eq("id", event_id);
+
+    if (!deleteError) {
+      redirect("/profile/events");
+    }
+    console.log("hello");
   };
 
   return (
@@ -141,6 +168,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               Vendor List
             </Button>
           </Link>
+          <DeleteEventButton handleDelete={handleDelete} />
         </div>
       </div>
     </main>
