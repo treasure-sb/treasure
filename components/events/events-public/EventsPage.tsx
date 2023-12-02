@@ -80,7 +80,7 @@ export default async function EventsPage({
             height={500}
           />
         </div>
-        <div className="flex flex-col lg:flex-col text-left max-w-sm">
+        <div className="flex flex-col lg:flex-col text-left max-w-lg md:max-w-sm">
           <div className="space-y-6">
             <h1 className="text-4xl font-semibold">{event.name}</h1>
             <div>
