@@ -205,10 +205,109 @@ const getATicketTailorEvent = async (event_id: string) => {
   }
 };
 
+const editTicketTailorEvent = async (
+  event_id: string,
+  event: TicketTailorEvent
+) => {
+  const headers = new Headers({
+    Accept: "application/json",
+    Content_Type: "application/x-www-form-urlencoded",
+    Authorization:
+      "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
+  });
+
+  const seriesUrl = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}`;
+  const body = {
+    event_series_id: event_id,
+    ...event,
+  };
+
+  console.log(body);
+
+  try {
+    const response = await fetch(seriesUrl, {
+      method: "POST",
+      headers: headers,
+      body: new URLSearchParams(body),
+    });
+    if (!response.ok) {
+      throw new Error("Series network response was not ok");
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const editTicketTailorEventOccurence = async (
+  event_id: string,
+  event_occurence: any
+) => {
+  const headers = new Headers({
+    Accept: "application/json",
+    Content_Type: "application/x-www-form-urlencoded",
+    Authorization:
+      "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
+  });
+
+  const occurenceID = await listAllTicketTailorEventsOccurences(event_id);
+  const occurenceUrl = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/events/${occurenceID}`;
+  const body = {
+    event_series_id: event_id,
+    ...event_occurence,
+  };
+  console.log(body);
+
+  try {
+    const response = await fetch(occurenceUrl, {
+      method: "POST",
+      headers: headers,
+      body: new URLSearchParams(body),
+    });
+    if (!response.ok) {
+      throw new Error("Occurence network response was not ok");
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const listAllTicketTailorEventsOccurences = async (event_id: string) => {
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/events`;
+  const headers = new Headers({
+    Accept: "application/json",
+    Authorization:
+      "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return data.data[0].id;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export {
   createTicketTailorEvent,
   createTicketTailorTickets,
   listAllTicketTailorEvents,
   publishTicketTailorEvent,
   createTicketTailorEventOccurence,
+  editTicketTailorEvent,
+  editTicketTailorEventOccurence,
 };
