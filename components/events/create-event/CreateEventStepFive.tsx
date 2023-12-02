@@ -79,14 +79,13 @@ export default function Step5({ onBack, eventForm }: Step5Props) {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
-          <h1 className="text-3xl font-semibold">Create Event</h1>
           <FormField
             control={form.control}
             name="venue_map_url"
             render={({ field }) => (
-              <FormItem className="flex mx-auto">
+              <FormItem className="flex mx-auto w-full h-full items-center justify-center">
                 <FormLabel
-                  className="hover:cursor-pointer relative group"
+                  className="hover:cursor-pointer relative group w-full"
                   htmlFor="poster"
                 >
                   {imageUrl && (
@@ -104,7 +103,7 @@ export default function Step5({ onBack, eventForm }: Step5Props) {
                     </div>
                   )}
                   {!imageUrl && (
-                    <div className="p-40 border-2 border-gray-300 rounded-md">
+                    <div className="h-60 w-full flex items-center justify-center border-2 border-gray-300 rounded-md">
                       <h1>Upload Venue Map</h1>
                     </div>
                   )}

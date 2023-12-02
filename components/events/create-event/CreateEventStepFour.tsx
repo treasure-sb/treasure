@@ -34,7 +34,11 @@ export default function Step4({
   eventForm,
   setEventForm,
 }: Step4Props) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    eventForm.poster_url instanceof File
+      ? URL.createObjectURL(eventForm.poster_url)
+      : null
+  );
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
     defaultValues: {
@@ -58,18 +62,17 @@ export default function Step4({
           onSubmit={form.handleSubmit(handleNext)}
           className="flex flex-col justify-between h-full"
         >
-          <h1 className="text-3xl font-semibold">Create Event</h1>
           <FormField
             control={form.control}
             name="poster_url"
             render={({ field }) => (
-              <FormItem className="flex mx-auto">
+              <FormItem className="flex mx-auto justify-center items-center h-full w-full">
                 <FormLabel
-                  className="hover:cursor-pointer relative group"
+                  className="hover:cursor-pointer relative group w-full"
                   htmlFor="poster"
                 >
                   {imageUrl && (
-                    <div className="">
+                    <div>
                       <img
                         src={imageUrl}
                         alt="Uploaded image"
@@ -83,7 +86,7 @@ export default function Step4({
                     </div>
                   )}
                   {!imageUrl && (
-                    <div className="p-40 border-2 border-gray-300 rounded-md">
+                    <div className="flex h-80 w-full items-center justify-center  border-2 border-gray-300 rounded-md">
                       <h1>Upload Poster</h1>
                     </div>
                   )}
@@ -112,10 +115,10 @@ export default function Step4({
             )}
           />
           <div className="flex space-x-2">
-            <Button className="w-full" onClick={() => onBack()}>
+            <Button className="w-full py-6" onClick={() => onBack()}>
               Back
             </Button>
-            <Button className="w-full" type="submit">
+            <Button className="w-full py-6" type="submit">
               Next
             </Button>
           </div>

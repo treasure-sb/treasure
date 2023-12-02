@@ -103,8 +103,7 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
           onSubmit={form.handleSubmit(handleNext)}
           className="flex flex-col justify-between h-full"
         >
-          <div className="space-y-6">
-            <h1 className="text-3xl font-semibold">Create Event</h1>
+          <div className="space-y-2">
             <FormField
               control={form.control}
               name="name"

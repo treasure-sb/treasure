@@ -6,6 +6,7 @@ import CreateEventStepThree from "@/components/events/create-event/CreateEventSt
 import CreateEventStepFour from "@/components/events/create-event/CreateEventStepFour";
 import CreateEventStepFive from "@/components/events/create-event/CreateEventStepFive";
 import { EventForm } from "@/types/event";
+import { Progress } from "@/components/ui/progress";
 
 export default function Page() {
   const [step, setStep] = useState(1);
@@ -32,7 +33,11 @@ export default function Page() {
   });
 
   return (
-    <main className="max-w-lg h-[calc(100vh-220px)] m-auto">
+    <main className="max-w-lg h-[calc(100vh-300px)] m-auto">
+      <div className="space-y-2 mb-4">
+        <h1 className="text-3xl font-semibold">Create Event</h1>
+        <Progress value={step * 20} />
+      </div>
       {step === 1 && (
         <CreateEventStepOne
           eventForm={eventForm}
