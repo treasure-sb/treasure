@@ -13,7 +13,10 @@ export default async function Page() {
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase.from("events").select("*");
+  const { data: eventData } = await supabase
+    .from("events")
+    .select("*")
+    .eq("organizer_id", userData.user.id);
 
   let events: Tables<"events">[] = [];
   if (eventData) {
@@ -30,7 +33,7 @@ export default async function Page() {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col items-center space-y-12">
+        <div className="flex flex-col items-center space-y-4">
           <div className="font-bold text-2xl mb-6">My Events</div>
           {events.map((event) => (
             <EventCard
