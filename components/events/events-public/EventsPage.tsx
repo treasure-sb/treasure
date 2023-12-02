@@ -148,13 +148,13 @@ export default async function EventsPage({
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Vendors</h1>
-              <div className="flex flex-col gap-4 flex-wrap h-72 overflow-scroll scrollbar-hidden">
+              <div className="flex flex-col gap-4 flex-wrap h-72 overflow-scroll sm:scrollbar-hidden scrollbar-small overflow-y-hidden justify-center">
                 {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0
                   ? vendorsWithPublicUrls.map((vendor: any) => (
                       <Link href={`/users/${vendor.id}`}>
                         <div
                           key={vendor.id}
-                          className="flex flex-col justify-center align-middle mt-2"
+                          className="flex flex-col gap-1 justify-center align-middle"
                         >
                           <div className="h-24 w-24 m-auto rounded-full overflow-hidden">
                             <Image
@@ -176,15 +176,22 @@ export default async function EventsPage({
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Hosted By</h1>
-              <div className="h-28 w-28 rounded-full overflow-hidden mt-2">
+              <div className="h-40 overflow-hidden justify-end mt-4">
                 <Link href={`/users/${user.id}`}>
-                  <Image
-                    className="block w-full h-full object-cover"
-                    alt="avatar"
-                    src={organizerPublicUrl}
-                    width={100}
-                    height={100}
-                  />
+                  <div className="flex flex-col gap-2 w-auto">
+                    <div className="h-24 w-24 rounded-full overflow-hidden">
+                      <Image
+                        className="block w-full h-full object-cover"
+                        alt="avatar"
+                        src={organizerPublicUrl}
+                        width={100}
+                        height={100}
+                      />
+                    </div>
+                    <p className="text-left text-sm w-auto">
+                      @{user.instagram}
+                    </p>
+                  </div>
                 </Link>
               </div>
             </div>
