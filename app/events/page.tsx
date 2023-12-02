@@ -26,7 +26,7 @@ export default async function Page({
   const untilQuery = searchParams?.until || null;
   const search = searchParams?.search || null;
 
-  let numEvents = 10;
+  let numEvents = 100;
   let events = [];
 
   if (fromQuery && untilQuery && tagQuery) {

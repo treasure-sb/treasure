@@ -56,7 +56,9 @@ export async function middleware(request: NextRequest) {
 
   const session = await supabase.auth.getSession();
   if (session.data.session && request.nextUrl.pathname === "/account") {
-    response = NextResponse.redirect(new URL("/", request.url));
+    response = NextResponse.redirect(
+      new URL("/profile/edit-profile", request.url)
+    );
   }
   if (
     !session.data.session &&
