@@ -94,7 +94,6 @@ export default function Step3({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6 mb-10">
-            <h1 className="text-3xl font-semibold">Create Event</h1>
             {fields.map((field, index) => {
               return (
                 <div key={field.id}>
@@ -171,10 +170,10 @@ export default function Step3({
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button className="w-full" onClick={() => onBack()}>
+            <Button className="w-full py-6" onClick={() => onBack()}>
               Back
             </Button>
-            <Button className="w-full" type="submit">
+            <Button className="w-full py-6" type="submit">
               Next
             </Button>
           </div>

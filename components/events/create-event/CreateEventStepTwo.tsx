@@ -82,7 +82,6 @@ export default function Step2({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
-            <h1 className="text-3xl font-semibold">Create Event</h1>
             <FormField
               control={form.control}
               name="start_time"
@@ -154,10 +153,10 @@ export default function Step2({
             />
           </div>
           <div className="flex space-x-2">
-            <Button className="w-full" onClick={() => onBack()}>
+            <Button className="w-full py-6" onClick={() => onBack()}>
               Back
             </Button>
-            <Button className="w-full" type="submit">
+            <Button className="w-full py-6" type="submit">
               Next
             </Button>
           </div>
