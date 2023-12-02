@@ -18,8 +18,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { EventForm } from "@/types/event";
-import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
 import Autocomplete from "../../places/Autocomplete";
@@ -29,7 +27,6 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { useCallback } from "react";
 import { editEvent } from "@/lib/actions/edit-events";
 
 interface EventProps {
@@ -40,9 +37,10 @@ interface EventProps {
 
 // Function to fix date format
 function fixDate(time: string) {
-  const fixedTime = time
+  let fixedTime = time
     .slice(time.indexOf("-") + 1)
     .concat("-" + time.slice(0, time.indexOf("-")));
+  fixedTime = fixedTime.replaceAll("-", "/");
   return new Date(fixedTime);
 }
 
