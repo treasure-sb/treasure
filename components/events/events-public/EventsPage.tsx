@@ -156,7 +156,7 @@ export default async function EventsPage({
                         key={vendor.id}
                         className="flex flex-col gap-1 justify-center align-middle"
                       >
-                        <div className="h-24 w-24 m-auto rounded-full overflow-hidden">
+                        <div className="h-28 w-28 m-auto rounded-full overflow-hidden">
                           <Image
                             className="block w-full h-full object-cover"
                             alt="avatar"
@@ -181,7 +181,7 @@ export default async function EventsPage({
               <div className="h-40 overflow-hidden justify-end mt-4">
                 <Link href={`/users/${user.id}`}>
                   <div className="flex flex-col gap-2 text-center">
-                    <div className="h-24 w-24 rounded-full overflow-hidden m-auto">
+                    <div className="h-28 w-28 rounded-full overflow-hidden m-auto">
                       <Image
                         className="block w-full h-full object-cover"
                         alt="avatar"
