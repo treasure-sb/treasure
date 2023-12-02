@@ -85,7 +85,7 @@ export default async function Page({
             ))}
           </div>
           <div className="hidden md:block">
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
                 <EventDisplay event={event} />
               ))}

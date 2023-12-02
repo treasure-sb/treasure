@@ -148,23 +148,28 @@ export default async function EventsPage({
             </div>
             <div>
               <h1 className="font-semibold text-2xl">Vendors</h1>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-col gap-4 flex-wrap h-72 overflow-scroll scrollbar-hidden">
                 {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0
                   ? vendorsWithPublicUrls.map((vendor: any) => (
-                      <div
-                        key={vendor.id}
-                        className="h-28 w-28 rounded-full overflow-hidden mt-2"
-                      >
-                        <Link href={`/users/${vendor.id}`}>
-                          <Image
-                            className="block w-full h-full object-cover"
-                            alt="avatar"
-                            src={vendor.vendorPublicUrl}
-                            width={100}
-                            height={100}
-                          />
-                        </Link>
-                      </div>
+                      <Link href={`/users/${vendor.id}`}>
+                        <div
+                          key={vendor.id}
+                          className="flex flex-col justify-center align-middle mt-2"
+                        >
+                          <div className="h-24 w-24 m-auto rounded-full overflow-hidden">
+                            <Image
+                              className="block w-full h-full object-cover"
+                              alt="avatar"
+                              src={vendor.vendorPublicUrl}
+                              width={100}
+                              height={100}
+                            />
+                          </div>
+                          <h1 className="text-center text-sm">
+                            @{vendor.instagram}
+                          </h1>
+                        </div>
+                      </Link>
                     ))
                   : null}
               </div>
