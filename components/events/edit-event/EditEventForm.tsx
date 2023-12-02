@@ -18,8 +18,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { EventForm } from "@/types/event";
-import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
 import Autocomplete from "../../places/Autocomplete";
@@ -29,7 +27,6 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { useCallback } from "react";
 import { editEvent } from "@/lib/actions/edit-events";
 import { formatDate } from "@/utils/helpers/events";
 
@@ -40,10 +37,11 @@ interface EventProps {
 }
 
 function fixDate(time: string) {
-  const date = new Date(time);
-  const options = { timeZone: "UTC" }; // Adjust the time zone as needed
-  const formattedDate = date.toLocaleString("en-US", options);
-  return new Date(formattedDate);
+  let fixedTime = time
+    .slice(time.indexOf("-") + 1)
+    .concat("-" + time.slice(0, time.indexOf("-")));
+  fixedTime = fixedTime.replaceAll("-", "/");
+  return new Date(fixedTime);
 }
 
 // Function to validate time format (HH:mm)

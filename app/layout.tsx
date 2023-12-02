@@ -5,6 +5,7 @@ import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
 import { validateUser } from "@/lib/actions/auth";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/react";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -45,6 +46,7 @@ export default async function RootLayout({
           </div>
           {/* <Footer /> */}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
