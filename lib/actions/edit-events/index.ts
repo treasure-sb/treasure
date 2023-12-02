@@ -2,6 +2,10 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EditEventForm, EventFormTag } from "@/types/event";
+import {
+  editTicketTailorEvent,
+  editTicketTailorEventOccurence,
+} from "../ticket-tailor";
 
 const editEvent = async (
   values: EditEventForm,
@@ -24,6 +28,36 @@ const editEvent = async (
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Update event on ticket tailor
+  const { data: ticketTailorID } = await supabase
+    .from("events")
+    .select("ticket_tailor_event_id")
+    .eq("id", id);
+
+  const updatedTicketTailorEvent = {
+    name: name,
+    description: description,
+    venue_name: venue_name,
+  };
+
+  const updatedTicketTailorDate = {
+    start_date: date?.toISOString().split("T")[0],
+    end_date: date?.toISOString().split("T")[0],
+    end_time: start_time + ":00",
+    start_time: end_time + ":00",
+  };
+
+  await editTicketTailorEventOccurence(
+    ticketTailorID?.pop()?.ticket_tailor_event_id,
+    updatedTicketTailorDate
+  );
+
+  await editTicketTailorEvent(
+    ticketTailorID?.pop()?.ticket_tailor_event_id,
+    updatedTicketTailorEvent
+  );
+
+  // Update the event on supabase
   const { data, error } = await supabase
     .from("events")
     .update({
@@ -41,6 +75,7 @@ const editEvent = async (
     .select();
   if (!error) {
     await editTags(tags, id);
+
     redirect("/events");
   } else {
     console.log(error);
