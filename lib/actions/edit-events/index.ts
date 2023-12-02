@@ -47,15 +47,12 @@ const editEvent = async (
     start_time: end_time + ":00",
   };
 
-  await editTicketTailorEventOccurence(
-    ticketTailorID?.pop()?.ticket_tailor_event_id,
-    updatedTicketTailorDate
-  );
+  const event_id = ticketTailorID?.pop()?.ticket_tailor_event_id;
 
-  await editTicketTailorEvent(
-    ticketTailorID?.pop()?.ticket_tailor_event_id,
-    updatedTicketTailorEvent
-  );
+  // FIXME: this is not working to change date of event on ticket tailor
+  await editTicketTailorEventOccurence(event_id, updatedTicketTailorDate);
+
+  await editTicketTailorEvent(event_id, updatedTicketTailorEvent);
 
   // Update the event on supabase
   const { data, error } = await supabase

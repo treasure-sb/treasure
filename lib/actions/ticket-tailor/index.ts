@@ -222,6 +222,8 @@ const editTicketTailorEvent = async (
     ...event,
   };
 
+  console.log(body);
+
   try {
     const response = await fetch(seriesUrl, {
       method: "POST",
@@ -232,7 +234,6 @@ const editTicketTailorEvent = async (
       throw new Error("Series network response was not ok");
     }
     const data = await response.json();
-    console.log(data);
 
     return data;
   } catch (err) {
@@ -255,7 +256,6 @@ const editTicketTailorEventOccurence = async (
   const occurenceUrl = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/events/${occurenceID}`;
   const body = {
     event_series_id: event_id,
-    event_occurence_id: occurenceID,
     ...event_occurence,
   };
   console.log(body);
@@ -270,7 +270,7 @@ const editTicketTailorEventOccurence = async (
       throw new Error("Occurence network response was not ok");
     }
     const data = await response.json();
-
+    console.log(data);
     return data;
   } catch (err) {
     console.log(err);
