@@ -30,7 +30,10 @@ export default function InviteLink({ event_id }: { event_id: string }) {
         const inviteToken = uuidv4();
         await createInviteToken(inviteToken);
         const inviteLink = `https://treasureapp.io/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
-        await navigator.clipboard.writeText(inviteLink);
+        const textBlob = new Blob([inviteLink], { type: "text/plain" });
+        const clipboardItem = new ClipboardItem({ "text/plain": textBlob });
+        await navigator.clipboard.write([clipboardItem]);
+
         toast({
           title: "Invite Link Copied!",
         });
