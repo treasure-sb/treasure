@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { editEvent } from "@/lib/actions/edit-events";
+import { formatDate } from "@/utils/helpers/events";
 
 interface EventProps {
   event: any;
@@ -35,7 +36,6 @@ interface EventProps {
   priorTags: any;
 }
 
-// Function to fix date format
 function fixDate(time: string) {
   let fixedTime = time
     .slice(time.indexOf("-") + 1)
