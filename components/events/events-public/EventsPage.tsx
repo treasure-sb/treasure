@@ -73,14 +73,14 @@ export default async function EventsPage({
       <div className="mt-10 flex flex-col md:flex-row md:space-x-10">
         <div className="relative md:max-w-lg">
           <Image
-            className="rounded-xl mb-6 lg:mb-0 md:"
+            className="rounded-xl mb-6 lg:mb-0 m-auto"
             alt="event poster image"
             src={publicPosterUrl}
             width={500}
             height={500}
           />
         </div>
-        <div className="flex flex-col lg:flex-col text-left">
+        <div className="flex flex-col lg:flex-col text-left max-w-sm">
           <div className="space-y-6">
             <h1 className="text-4xl font-semibold">{event.name}</h1>
             <div>
