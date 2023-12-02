@@ -55,11 +55,18 @@ export async function middleware(request: NextRequest) {
   );
 
   const session = await supabase.auth.getSession();
-  if (session.data.session && request.nextUrl.pathname === "/account") {
+  if (
+    session.data.session &&
+    request.nextUrl.pathname === "/account?redirectTo=create-profile"
+  ) {
     response = NextResponse.redirect(
-      new URL("/profile/edit-profile", request.url)
+      new URL("/profile/create-profile", request.url)
     );
   }
+  if (session.data.session && request.nextUrl.pathname === "/account") {
+    response = NextResponse.redirect(new URL("/", request.url));
+  }
+
   if (
     !session.data.session &&
     request.nextUrl.pathname === "/profile/create-event"
