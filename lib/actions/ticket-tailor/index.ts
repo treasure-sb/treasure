@@ -94,9 +94,9 @@ const formatTicketPrices = (tickets: EventFormTicket[]) => {
 
 const createTicketTailorTickets = async (
   tickets: EventFormTicket[],
-  ticket_tailor_event_id: string
+  event_id: string
 ) => {
-  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${ticket_tailor_event_id}/ticket_types`;
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/ticket_types`;
   const headers = new Headers({
     Accept: "application/json",
     Content_Type: "application/x-www-form-urlencoded",
@@ -128,8 +128,8 @@ const createTicketTailorTickets = async (
   }
 };
 
-const publishTicketTailorEvent = async (ticket_tailor_event_id: string) => {
-  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${ticket_tailor_event_id}/status`;
+const publishTicketTailorEvent = async (event_id: string) => {
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/status`;
   const headers = new Headers({
     Accept: "application/json",
     Content_Type: "application/x-www-form-urlencoded",
@@ -180,8 +180,8 @@ const listAllTicketTailorEvents = async () => {
   }
 };
 
-const getATicketTailorEvent = async (event_series_id: string) => {
-  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_series_id}`;
+const getATicketTailorEvent = async (event_id: string) => {
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}`;
   const headers = new Headers({
     Accept: "application/json",
     Authorization:

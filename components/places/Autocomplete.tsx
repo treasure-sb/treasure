@@ -15,9 +15,7 @@ import { EventFormLocation } from "@/types/event";
 const PlacesAutocomplete = ({
   setVenueLocation,
 }: {
-  setVenueLocation: React.Dispatch<
-    React.SetStateAction<EventFormLocation | null>
-  >;
+  setVenueLocation: any;
 }) => {
   const {
     ready,
@@ -63,9 +61,7 @@ const PlacesAutocomplete = ({
 export default function Autocomplete({
   setVenueLocation,
 }: {
-  setVenueLocation: React.Dispatch<
-    React.SetStateAction<EventFormLocation | null>
-  >;
+  setVenueLocation: any;
 }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,

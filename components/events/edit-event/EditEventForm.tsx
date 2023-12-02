@@ -62,11 +62,6 @@ const eventSchema = z.object({
   venue_name: z.string().min(1, {
     message: "Location name is required",
   }),
-  address: z.string().min(1, {
-    message: "Name is required",
-  }),
-  lng: z.number({ required_error: "Name is required" }),
-  lat: z.number({ required_error: "Name is required" }),
   date: z.date({
     required_error: "Date is required",
   }),
@@ -88,7 +83,7 @@ export default function EditEventForm({
   const [event_tags, setEventTags] = useState<any[]>(
     priorTags.map((tag: any) => [tag.tags.name, tag.tag_id])
   );
-  const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>({
+  const [venueLocation, setVenueLocation] = useState<EventFormLocation>({
     lat: event.lat,
     lng: event.lng,
     address: event.address,
@@ -139,16 +134,8 @@ export default function EditEventForm({
       ...form.getValues(),
       ...venueLocation,
     };
-    // FIXME: not working with supabase yet
     const supabase = createClient();
     await editEvent(newForm, event.id, event_tags);
-    // const { data, error } = await supabase
-    //   .from("events")
-    //   .update(newForm)
-    //   .eq("id", event.id);
-
-    console.log(event_tags);
-    console.log(newForm);
   };
 
   return (

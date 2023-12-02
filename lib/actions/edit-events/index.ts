@@ -40,26 +40,27 @@ const editEvent = async (
     .eq("id", id)
     .select();
   if (!error) {
-    // await editTags(tags, id);
+    await editTags(tags, id);
     redirect("/events");
   } else {
     console.log(error);
   }
 };
 
-// const editTags = async (tags: EventFormTag[], event_id: string) => {
-//   const supabase = await createSupabaseServerClient();
-//   tags.forEach(async (tag) => {
-//     const { data: tagsData, error } = await supabase
-//       .from("event_tags")
-//       .insert([
-//         {
-//           event_id,
-//           tag_id: tag.tag_id,
-//         },
-//       ])
-//       .select();
-//   });
-// };
+const editTags = async (tags: EventFormTag[], event_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  await supabase.from("event_tags").delete().eq("event_id", event_id);
+  tags.forEach(async (tag: any) => {
+    await supabase
+      .from("event_tags")
+      .insert([
+        {
+          event_id,
+          tag_id: tag[1],
+        },
+      ])
+      .select();
+  });
+};
 
 export { editEvent };

@@ -52,7 +52,7 @@ export default async function Page({
       data: { user },
     } = await validateUser();
     if (!user) {
-      redirect("/login");
+      redirect("/account");
     }
 
     const supabase = await createSupabaseServerClient();
