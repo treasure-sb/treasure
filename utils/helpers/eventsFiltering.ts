@@ -7,7 +7,6 @@ const getTagData = async (tagName: string) => {
   const { data, error } = await supabase
     .from("tags")
     .select("id")
-    .order("date", { ascending: true })
     .eq("name", tagName)
     .single();
   return { data, error };
@@ -31,6 +30,7 @@ const getDateTagEventData = async (
     .lte("date", until)
     .order("date", { ascending: true })
     .eq("event_tags.tag_id", tagId);
+
   return { data, error };
 };
 
@@ -61,9 +61,9 @@ const getEventDataByTag = async (
   const { data, error } = await supabase
     .from("events")
     .select("*, event_tags!inner(*)")
-    .order("date", { ascending: true })
     .ilike("name", `%${search}%`)
     .range(0, numEvents)
+    .order("date", { ascending: true })
     .eq("event_tags.tag_id", tagId);
   return { data, error };
 };
