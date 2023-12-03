@@ -16,6 +16,8 @@ import {
   formatDate,
 } from "@/utils/helpers/events";
 import Link from "next/link";
+import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
+import { string } from "zod";
 
 export default async function EventsPage({
   event,
@@ -68,10 +70,14 @@ export default async function EventsPage({
     })
   );
 
+  const checkoutURL = await getTicketTailorCheckoutUrl(
+    event.ticket_tailor_event_id === null ? "" : event.ticket_tailor_event_id
+  );
+
   return (
-    <main className="m-auto w-fit">
+    <main className="relative w-full md:w-fit m-auto">
       <div className="mt-10 flex flex-col md:flex-row md:space-x-10">
-        <div className="relative md:max-w-lg">
+        <div className="relative md:max-w-md">
           <Image
             className="rounded-xl mb-6 lg:mb-0 m-auto"
             alt="event poster image"
@@ -89,18 +95,20 @@ export default async function EventsPage({
                 {formattedDate} at {formattedStartTime}
               </h1>
             </div>
-            {tagsData ? (
-              <div className="flex space-x-2">
-                {tagsData.map((tag: any) => (
-                  <Button
-                    className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
-                    key={tag.id}
-                  >
-                    {tag.tags.name}
-                  </Button>
-                ))}
-              </div>
-            ) : null}
+            <div className="w-full">
+              {tagsData ? (
+                <div className="flex gap-2 w-full flex-wrap">
+                  {tagsData.map((tag: any) => (
+                    <Button
+                      className="hover:bg-tertiary bg-tertiary hover:cursor-default h-8"
+                      key={tag.id}
+                    >
+                      {tag.tags.name}
+                    </Button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
             {tickets && tickets.length > 0 ? (
               <div className="bg-secondary w-full lg:w-96 h-20 items-center rounded-md flex justify-between px-5 font-bold">
                 <h1 className="text-lg">
@@ -124,12 +132,7 @@ export default async function EventsPage({
                               {ticket.name} ${ticket.price}
                             </h1>
                           </div>
-                          <Link
-                            target="_blank"
-                            href={`https://buytickets.at/treasure1/${event.ticket_tailor_event_id?.substring(
-                              3
-                            )}`}
-                          >
+                          <Link target="_blank" href={checkoutURL}>
                             <Button>Buy Now!</Button>
                           </Link>
                         </div>

@@ -296,10 +296,42 @@ const listAllTicketTailorEventsOccurences = async (event_id: string) => {
     }
 
     const data = await response.json();
+    console.log(data);
     return data.data[0].id;
   } catch (err) {
     console.log(err);
   }
+};
+
+const getTicketTailorCheckoutUrl = async (
+  event_id: string
+): Promise<string> => {
+  const url = `${process.env.NEXT_PUBLIC_TICKET_TAILOR_API_URL}/v1/event_series/${event_id}/events`;
+  const headers = new Headers({
+    Accept: "application/json",
+    Authorization:
+      "Basic " + btoa(process.env.NEXT_PUBLIC_TICKET_TAILOR_API_KEY as string),
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    let checkoutURL = `https://www.tickettailor.com/checkout/view-event/id/${data.data[0].id.substring(
+      3
+    )}/chk/${data.data[0].chk}`;
+    return checkoutURL;
+  } catch (err) {
+    console.log(err);
+  }
+  return "";
 };
 
 export {
@@ -310,4 +342,6 @@ export {
   createTicketTailorEventOccurence,
   editTicketTailorEvent,
   editTicketTailorEventOccurence,
+  listAllTicketTailorEventsOccurences,
+  getTicketTailorCheckoutUrl,
 };
