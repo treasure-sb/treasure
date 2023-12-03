@@ -28,6 +28,7 @@ const getDateTagEventData = async (
     .range(0, numEvents)
     .gte("date", from)
     .lte("date", until)
+    .order("featured", { ascending: true })
     .order("date", { ascending: true })
     .eq("event_tags.tag_id", tagId);
 
@@ -45,6 +46,7 @@ const getEventDataByDate = async (
     .from("events")
     .select("*")
     .ilike("name", `%${search}%`)
+    .order("featured", { ascending: true })
     .order("date", { ascending: true })
     .range(0, numEvents)
     .gte("date", from)
@@ -63,6 +65,7 @@ const getEventDataByTag = async (
     .select("*, event_tags!inner(*)")
     .ilike("name", `%${search}%`)
     .range(0, numEvents)
+    .order("featured", { ascending: true })
     .order("date", { ascending: true })
     .eq("event_tags.tag_id", tagId);
   return { data, error };
@@ -73,6 +76,7 @@ const getAllEventData = async (search: string, numEvents: number) => {
   const { data, error } = await supabase
     .from("events")
     .select("*")
+    .order("featured", { ascending: true })
     .order("date", { ascending: true })
     .ilike("name", `%${search}%`)
     .range(0, numEvents);
