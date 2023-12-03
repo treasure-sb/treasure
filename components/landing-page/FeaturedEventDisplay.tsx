@@ -10,13 +10,7 @@ export default async function FeaturedEventDisplay({ event }: { event: any }) {
 
   return (
     <Link href={`/events/${event.id}`}>
-      <div
-        className="relative"
-        style={{
-          width: "300px",
-          height: "300px",
-        }}
-      >
+      <div className="relative w-36 h-36 sm:w-80 sm:h-80">
         <Image
           className="rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
