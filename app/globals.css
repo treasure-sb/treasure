@@ -63,7 +63,7 @@
 }
 
 .landing-page-button {
-  @apply py-6 font-bold text-lg md:py-10 md:text-xl rounded-full;
+  @apply py-6 font-bold text-lg md:py-10 md:text-xl rounded-md;
 }
 
 .landing-page-underline {
