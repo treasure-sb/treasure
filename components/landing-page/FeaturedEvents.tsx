@@ -8,14 +8,14 @@ export default async function FeaturedEvents() {
   const { data: events, error: eventsError } = await supabase
     .from("events")
     .select("*")
-    .limit(4);
+    .limit(6);
 
   return (
     <div className="w-full flex flex-col justify-center">
       <h1 className="font-bold text-3xl mb-10 text-center md:text-5xl">
         Featured Events
       </h1>
-      <div className="flex flex-wrap gap-8 justify-center">
+      <div className="flex flex-wrap gap-y-10 w-full justify-between">
         {events?.map((event) => (
           <FeaturedEventDisplay key={event.id} event={event} />
         ))}
