@@ -32,7 +32,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={lexend.className}>
-      <body className="bg-background text-foreground p-6 flex flex-col min-h-screen justify-between">
+      <body className="bg-background text-foreground p-6 px-4 flex flex-col min-h-screen justify-between">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

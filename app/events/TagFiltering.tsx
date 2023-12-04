@@ -50,6 +50,7 @@ export default function TagFiltering() {
       {loading && <>{TagsSkeleton}</>}
       {tags?.map((tag) => (
         <Button
+          key={tag.id}
           onClick={() => handleClick(tag.name)}
           variant={tag.name === activeTag ? "default" : "secondary"}
         >

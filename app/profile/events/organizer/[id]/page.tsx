@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DeleteEventButton from "./DeleteEventButton";
-import { formatDate } from "@/utils/helpers/events";
+import { formatDate } from "@/lib/helpers/events";
 
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { formatDate } from "@/utils/helpers/events";
+import { formatDate } from "@/lib/helpers/events";
 
 export default async function EventDisplay({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
@@ -31,7 +31,7 @@ export default async function EventDisplay({ event }: { event: any }) {
         </h1>
         <div>
           {tickets?.map((ticket) => (
-            <h1>
+            <h1 key={ticket.id}>
               ${ticket.price} {ticket.name}
             </h1>
           ))}

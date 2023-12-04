@@ -66,7 +66,6 @@ export default function Step5({ onBack, eventForm }: Step5Props) {
       "venue_map_coming_soon";
     newForm.poster_url =
       (await uploadFile(newForm.poster_url, "posters")) || "poster_coming_soon";
-    console.log(newForm);
 
     await createEvent(newForm);
     setSubmitting(false);

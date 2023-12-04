@@ -1,6 +1,9 @@
 "use server";
 
-import createSupabaseServerClient from "../supabase/server";
+import createSupabaseServerClient from "../../utils/supabase/server";
+import format from "date-fns/format";
+
+const today = format(new Date(), "yyyy-MM-dd");
 
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
@@ -76,6 +79,7 @@ const getAllEventData = async (search: string, numEvents: number) => {
   const { data, error } = await supabase
     .from("events")
     .select("*")
+    .gte("date", today)
     .order("featured", { ascending: true })
     .order("date", { ascending: true })
     .ilike("name", `%${search}%`)

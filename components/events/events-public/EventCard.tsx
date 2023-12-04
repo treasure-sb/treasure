@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
-import { getPublicPosterUrl, formatDate } from "@/utils/helpers/events";
+import { getPublicPosterUrl, formatDate } from "@/lib/helpers/events";
 
 export default async function EventCard({
   event,

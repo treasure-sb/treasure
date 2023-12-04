@@ -4,7 +4,7 @@ import {
   getEventDataByTag,
   getTagData,
   getDateTagEventData,
-} from "@/utils/helpers/eventsFiltering";
+} from "@/lib/helpers/eventsFiltering";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import EventCard from "@/components/events/events-public/EventCard";
 
@@ -73,7 +73,7 @@ export default async function ListEvents({
           </div>
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
-              <EventDisplay event={event} />
+              <EventDisplay key={`desktop-${event.id}`} event={event} />
             ))}
           </div>
         </>
