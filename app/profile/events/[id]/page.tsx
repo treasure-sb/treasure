@@ -1,5 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventsPage from "@/components/events/events-public/EventsPage";
+import EventsPage from "@/app/events/[id]/EventsPage";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
