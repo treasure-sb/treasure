@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import ListUserEvents from "./ListUserEvents";
 import LoadingListUserEvents from "./LoadingListUserEvents";
-import EventCardSkeleton from "@/components/events/skeletons/EventCardSkeleton";
 
 export default async function Page() {
   const { data: userData } = await validateUser();

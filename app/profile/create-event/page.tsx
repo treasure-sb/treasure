@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import CreateEventStepOne from "@/components/events/create-event/CreateEventStepOne";
-import CreateEventStepTwo from "@/components/events/create-event/CreateEventStepTwo";
-import CreateEventStepThree from "@/components/events/create-event/CreateEventStepThree";
-import CreateEventStepFour from "@/components/events/create-event/CreateEventStepFour";
-import CreateEventStepFive from "@/components/events/create-event/CreateEventStepFive";
+import CreateEventStepOne from "./CreateEventStepOne";
+import CreateEventStepTwo from "./CreateEventStepTwo";
+import CreateEventStepThree from "./CreateEventStepThree";
+import CreateEventStepFour from "./CreateEventStepFour";
+import CreateEventStepFive from "./CreateEventStepFive";
 import { EventForm } from "@/types/event";
 import { Progress } from "@/components/ui/progress";
 

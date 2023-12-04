@@ -1,4 +1,4 @@
-import AnalyticsCard from "@/components/events/event-analytics/AnalyticsCard";
+import AnalyticsCard from "./AnalyticsCard";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Page({ params }: { params: { id: string } }) {

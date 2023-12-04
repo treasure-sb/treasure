@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EditEventForm from "@/components/events/edit-event/EditEventForm";
+import EditEventForm from "./EditEventForm";
 import { validateUser } from "@/lib/actions/auth";
 
 export default async function Page({ params }: { params: { id: string } }) {

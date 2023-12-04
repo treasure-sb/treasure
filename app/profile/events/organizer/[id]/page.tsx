@@ -1,6 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
-import { format, parse } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PreviewEvent from "@/components/events/shared/PreviewEvent";
@@ -14,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import DeleteEventButton from "@/components/events/organizer/DeleteEventButton";
+import DeleteEventButton from "./DeleteEventButton";
 import { formatDate } from "@/utils/helpers/events";
 
 // redirect if not organizer to another page

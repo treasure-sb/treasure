@@ -1,5 +1,5 @@
-import TagFiltering from "@/components/events/events-page-client-components/TagFiltering";
-import FilteringButtons from "@/components/events/events-page-client-components/FilteringButtons";
+import TagFiltering from "./TagFiltering";
+import FilteringButtons from "./FilteringButtons";
 import ListEvents from "./ListEvents";
 import LoadingListEvents from "./LoadingListEvents";
 import { Suspense } from "react";
