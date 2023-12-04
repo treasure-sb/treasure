@@ -73,7 +73,7 @@ export default async function ListEvents({
           </div>
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
-              <EventDisplay event={event} />
+              <EventDisplay key={`desktop-${event.id}`} event={event} />
             ))}
           </div>
         </>

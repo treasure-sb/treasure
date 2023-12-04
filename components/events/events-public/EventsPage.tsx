@@ -126,7 +126,10 @@ export default async function EventsPage({
                     </DialogHeader>
                     <div className="flex flex-col space-y-4">
                       {tickets?.map((ticket: any) => (
-                        <div className="flex justify-between items-center">
+                        <div
+                          key={ticket.id}
+                          className="flex justify-between items-center"
+                        >
                           <div>
                             <h1 className="font-semibold text-xl">
                               {ticket.name} ${ticket.price}
@@ -156,11 +159,8 @@ export default async function EventsPage({
               <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 md:overflow-auto">
                 {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0 ? (
                   vendorsWithPublicUrls.map((vendor: any) => (
-                    <Link href={`/users/${vendor.id}`}>
-                      <div
-                        key={vendor.id}
-                        className="flex flex-col gap-1 justify-center align-middle"
-                      >
+                    <Link key={vendor.id} href={`/users/${vendor.id}`}>
+                      <div className="flex flex-col gap-1 justify-center align-middle">
                         <div className="h-28 w-28 m-auto rounded-full overflow-hidden">
                           <Image
                             className="block w-full h-full object-cover"

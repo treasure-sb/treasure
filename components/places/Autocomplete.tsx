@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { EventFormLocation } from "@/types/event";
+import type { Libraries } from "@react-google-maps/api";
 
 const PlacesAutocomplete = ({
   setVenueLocation,
@@ -58,6 +58,7 @@ const PlacesAutocomplete = ({
   );
 };
 
+const libraries: Libraries = ["places"];
 export default function Autocomplete({
   setVenueLocation,
 }: {
@@ -65,7 +66,7 @@ export default function Autocomplete({
 }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
-    libraries: ["places"],
+    libraries,
   });
 
   return (

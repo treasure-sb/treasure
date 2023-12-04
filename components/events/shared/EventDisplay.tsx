@@ -31,7 +31,7 @@ export default async function EventDisplay({ event }: { event: any }) {
         </h1>
         <div>
           {tickets?.map((ticket) => (
-            <h1>
+            <h1 key={ticket.id}>
               ${ticket.price} {ticket.name}
             </h1>
           ))}
