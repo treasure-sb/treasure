@@ -37,7 +37,7 @@ export default async function EventCard({
             fill={true}
           />
         </div>
-        <div className="flex flex-col">
+        <div>
           <div className="text-base">{event.name}</div>
           <div className="text-primary text-sm">{formattedDate} </div>
           <div className="text-sm">{event.venue_name}</div>
