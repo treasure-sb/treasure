@@ -17,7 +17,7 @@ import {
 } from "@/utils/helpers/events";
 import Link from "next/link";
 import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
-import { string } from "zod";
+import { Separator } from "@/components/ui/separator";
 
 export default async function EventsPage({
   event,
@@ -86,7 +86,7 @@ export default async function EventsPage({
             height={500}
           />
         </div>
-        <div className="flex flex-col lg:flex-col text-left max-w-lg md:max-w-sm">
+        <div className="flex flex-col lg:flex-col text-left max-w-lg md:max-w-sm mx-auto">
           <div className="space-y-6">
             <h1 className="text-4xl font-semibold">{event.name}</h1>
             <div>
@@ -145,10 +145,12 @@ export default async function EventsPage({
               <h1>No Tickets</h1>
             )}
             <h1>{event.address}</h1>
+            <Separator />
             <div>
               <h1 className="font-semibold text-2xl">About</h1>
               <p>{event.description}</p>
             </div>
+            <Separator />
             <div>
               <h1 className="font-semibold text-2xl">Vendors</h1>
               <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 md:overflow-auto">
@@ -179,6 +181,7 @@ export default async function EventsPage({
                 )}
               </div>
             </div>
+            <Separator />
             <div>
               <h1 className="font-semibold text-2xl">Hosted By</h1>
               <div className="h-40 overflow-hidden justify-end mt-4">
@@ -199,7 +202,7 @@ export default async function EventsPage({
               </div>
             </div>
           </div>
-
+          <Separator />
           {event.venue_map_url ? (
             <div>
               <div className="font-semibold text-2xl my-4 w-full">

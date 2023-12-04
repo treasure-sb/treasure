@@ -1,7 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
-import InviteLink from "@/components/events/organizer/InviteLink";
+import InviteLink from "./InviteLink";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();

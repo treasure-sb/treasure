@@ -41,16 +41,13 @@ export default function TagFiltering() {
     replace(`${pathname}?${params.toString()}`);
   };
 
+  const TagsSkeleton = Array.from({ length: 6 }, (_, i) => {
+    return <Skeleton className="w-32 h-10 rounded-sm" key={i} />;
+  });
+
   return (
     <div className="flex space-x-2 overflow-scroll scrollbar-hidden mb-2">
-      {loading && (
-        <>
-          <Skeleton className="w-full h-10 rounded-sm" />
-          <Skeleton className="w-full h-10 rounded-sm" />
-          <Skeleton className="w-full h-10 rounded-sm" />
-          <Skeleton className="w-full h-10 rounded-sm" />
-        </>
-      )}
+      {loading && <>{TagsSkeleton}</>}
       {tags?.map((tag) => (
         <Button
           onClick={() => handleClick(tag.name)}
