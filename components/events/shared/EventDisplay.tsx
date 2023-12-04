@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { formatDate } from "@/utils/helpers/events";
+import { formatDate } from "@/lib/helpers/events";
 
 export default async function EventDisplay({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();

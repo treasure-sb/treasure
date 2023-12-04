@@ -5,7 +5,8 @@ import {
   getPublicVenueMapUrl,
   formatStartTime,
   formatDate,
-} from "@/utils/helpers/events";
+} from "@/lib/helpers/events";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Tickets from "./Tickets";
 import { Separator } from "@/components/ui/separator";
@@ -56,7 +57,7 @@ export default async function EventsPage({
           <Separator />
           <div>
             <h1 className="font-semibold text-2xl">About</h1>
-            <p>{event.description}</p>
+            <p className="leading-8">{event.description}</p>
           </div>
           <Separator />
           <Vendors event={event} />
@@ -80,13 +81,19 @@ export default async function EventsPage({
           <Separator />
           <div>
             <h1 className="font-semibold text-2xl">Location</h1>
+            <p> {capitalize(event.address)}</p>
             <Link
               target="_blank"
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                 event.address
               )}`}
             >
-              {capitalize(event.address)}
+              <Button
+                className="rounded-full tracking-wide mt-4 w-60"
+                variant={"secondary"}
+              >
+                OPEN IN MAPS
+              </Button>
             </Link>
           </div>
         </div>

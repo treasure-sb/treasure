@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { formatDate, formatStartTime } from "@/utils/helpers/events";
+import { formatDate, formatStartTime } from "@/lib/helpers/events";
 
 export default function PreviewEvent({ event }: { event: any }) {
   const formattedDate = formatDate(event.date);

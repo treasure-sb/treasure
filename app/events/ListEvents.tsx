@@ -4,7 +4,7 @@ import {
   getEventDataByTag,
   getTagData,
   getDateTagEventData,
-} from "@/utils/helpers/eventsFiltering";
+} from "@/lib/helpers/eventsFiltering";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import EventCard from "@/components/events/events-public/EventCard";
 
