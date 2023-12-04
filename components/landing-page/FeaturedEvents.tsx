@@ -15,7 +15,7 @@ export default async function FeaturedEvents() {
       <h1 className="font-bold text-3xl mb-10 text-center md:text-5xl">
         Featured Events
       </h1>
-      <div className="flex flex-wrap h-80 overflow-y-hidden sm:h-auto sm:justify-between sm:gap-y-10 gap-4 w-full justify-center">
+      <div className="flex flex-wrap h-80 overflow-y-hidden sm:h-auto gap-4 w-full justify-center">
         {events?.map((event) => (
           <FeaturedEventDisplay key={event.id} event={event} />
         ))}
