@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
 import { Separator } from "@/components/ui/separator";
+import Map from "@/components/places/Map";
 
 export default async function EventsPage({
   event,
@@ -73,6 +74,14 @@ export default async function EventsPage({
   const checkoutURL = await getTicketTailorCheckoutUrl(
     event.ticket_tailor_event_id === null ? "" : event.ticket_tailor_event_id
   );
+
+  const capitalize = (address: string) => {
+    const words = address.split(" ");
+    const capitalizedWords = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    return capitalizedWords.join(" ");
+  };
 
   return (
     <main className="relative w-full md:w-fit m-auto">
@@ -147,7 +156,6 @@ export default async function EventsPage({
             ) : (
               <h1>No Tickets</h1>
             )}
-            <h1>{event.address}</h1>
             <Separator />
             <div>
               <h1 className="font-semibold text-2xl">About</h1>
@@ -204,7 +212,7 @@ export default async function EventsPage({
           </div>
           <Separator />
           {event.venue_map_url ? (
-            <div>
+            <>
               <div className="font-semibold text-2xl my-4 w-full">
                 Venue Map
               </div>
@@ -215,8 +223,21 @@ export default async function EventsPage({
                 width={500}
                 height={200}
               />
-            </div>
+            </>
           ) : null}
+          <Separator />
+          <div>
+            <h1 className="font-semibold text-2xl">Location</h1>
+            <Link
+              target="_blank"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                event.address
+              )}`}
+            >
+              {capitalize(event.address)}
+            </Link>
+            <Map lat={event.lat} lng={event.lng} />
+          </div>
         </div>
       </div>
     </main>
