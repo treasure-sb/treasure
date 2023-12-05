@@ -13,10 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signUp } from "@/lib/actions/auth";
-import {
-  UsernameTakenError,
-  EmailTakenError,
-} from "@/lib/classes/signup-errors";
 import * as z from "zod";
 import Link from "next/link";
 import GoogleIcon from "@/components/icons/GoogleIcon";
@@ -32,7 +28,7 @@ const formSchema = z.object({
     message: "Password must be at least 8 characters long",
   }),
   instagram: z.string().optional(),
-  tiktok: z.string().optional(),
+  twitter: z.string().optional(),
 });
 
 export default function Page() {
@@ -47,14 +43,13 @@ export default function Page() {
       email: "",
       password: "",
       instagram: "",
-      tiktok: "",
+      twitter: "",
     },
   });
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
     try {
       const response = await signUp(formData);
-      console.log(response);
       if (response?.error) {
         if (response.error.type === "username_taken") {
           setUserExistsError(true);
@@ -70,7 +65,7 @@ export default function Page() {
   const handleClickSocials = () => {
     if (addSocial) {
       form.setValue("instagram", "");
-      form.setValue("tiktok", "");
+      form.setValue("twitter", "");
     }
     setAddSocial(!addSocial);
   };
@@ -144,11 +139,11 @@ export default function Page() {
               />
               <FormField
                 control={form.control}
-                name="tiktok"
+                name="twitter"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Tiktok" {...field} />
+                      <Input placeholder="Twitter" {...field} />
                     </FormControl>
                     <div className="h-1">
                       <FormMessage />

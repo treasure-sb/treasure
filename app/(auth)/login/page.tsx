@@ -15,6 +15,7 @@ import * as z from "zod";
 import { useState } from "react";
 import Link from "next/link";
 import GoogleIcon from "@/components/icons/GoogleIcon";
+import { login } from "@/lib/actions/auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -26,7 +27,7 @@ const formSchema = z.object({
 });
 
 export default function Page() {
-  const [addSocial, setAddSocial] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,8 +36,15 @@ export default function Page() {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    try {
+      const response = await login(formData);
+      if (response?.error) {
+        setLoginError(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -67,7 +75,9 @@ export default function Page() {
                   <Input type="password" placeholder="Password" {...field} />
                 </FormControl>
                 <div className="h-1">
-                  <FormMessage />
+                  <FormMessage>
+                    {loginError ? "Invalid Login Credentials" : ""}
+                  </FormMessage>
                 </div>
               </FormItem>
             )}
