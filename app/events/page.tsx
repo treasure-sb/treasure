@@ -18,7 +18,7 @@ export default function Page({
   let numEvents = 100;
 
   return (
-    <main className="max-w-lg md:max-w-5xl m-auto">
+    <main className="max-w-full md:max-w-6xl xl:max-w-7xl m-auto">
       <FilteringButtons />
       <TagFiltering />
       <div className="my-4">
