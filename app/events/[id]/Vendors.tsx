@@ -25,7 +25,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   return (
     <>
       <h1 className="font-semibold text-2xl">Vendors</h1>
-      <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 md:overflow-auto">
+      <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 sm:overflow-auto">
         {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0 ? (
           vendorsWithPublicUrls.map((vendor: any) => (
             <Link key={vendor.id} href={`/users/${vendor.id}`}>

@@ -124,7 +124,7 @@ pre {
   border: 3px solid var(--scroll-bar-bg-color);
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 640px) {
   .smScrollbar-hidden::-webkit-scrollbar {
     display: none !important;
   }
