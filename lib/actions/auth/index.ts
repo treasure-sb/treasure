@@ -14,30 +14,29 @@ const logoutUser = async () => {
   redirect("/login");
 };
 
+const generateUniqueLocalDiscriminator = (
+  discriminators: any[] | undefined
+) => {
+  if (!discriminators) {
+    return 1;
+  }
+
+  const sortedDiscriminators = discriminators.sort((a, b) => a - b);
+  const lastDiscriminator =
+    sortedDiscriminators[sortedDiscriminators.length - 1];
+  return lastDiscriminator + 1;
+};
+
 interface SignUpForm {
-  username: string;
   email: string;
+  firstName: string;
+  lastName: string;
   password: string;
-  instagram?: string;
-  twitter?: string;
 }
 
 const signUp = async (form: SignUpForm) => {
-  const { username, email, password, instagram, twitter } = form;
+  const { firstName, lastName, email, password } = form;
   const supabase = await createSupabaseServerClient();
-
-  // check if username is taken
-  const { data: usernameData, error: usernameError } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq("username", username)
-    .single();
-
-  if (usernameData) {
-    return {
-      error: { type: "username_taken", message: "Username already taken" },
-    };
-  }
 
   // if error is returned email is already in use
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
@@ -49,14 +48,31 @@ const signUp = async (form: SignUpForm) => {
     return { error: { type: "email_taken", message: "Email already taken" } };
   }
 
-  // username and email are unique so create profile
+  // if email is unique create a profile
   if (signUpData.user) {
+    const username = email.split("@")[0];
+    const firstNameCapitalized =
+      firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    const lastNameCapitalized =
+      firstName.charAt(0).toUpperCase() + firstName.slice(1);
+
+    // get discriminator
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("discriminator", { count: "exact" })
+      .eq("username", username);
+
+    const previousDiscriminators = profilesData?.map(
+      (profile) => profile.discriminator
+    );
+
     await supabase.from("profiles").insert([
       {
+        first_name: firstNameCapitalized,
+        last_name: lastNameCapitalized,
         username,
+        discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
         email,
-        instagram,
-        twitter,
         id: signUpData.user.id,
       },
     ]);
