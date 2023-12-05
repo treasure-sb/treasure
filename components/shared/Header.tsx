@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <>
-      {pathname === "/account" ? (
+      {pathname === "/login" || pathname === "/signup" ? (
         <header className="text-center">
           <Link href="/" className="font-bold text-3xl">
             Treasure
@@ -20,7 +20,7 @@ export default function Header() {
           <Link href="/" className="font-bold text-3xl">
             Treasure
           </Link>
-          <Link href="/account">
+          <Link href="/login">
             <Button variant={"outline"} className="w-20 lg:w-28 border-primary">
               Log in
             </Button>

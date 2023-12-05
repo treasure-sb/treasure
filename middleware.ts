@@ -57,13 +57,9 @@ export async function middleware(request: NextRequest) {
   const session = await supabase.auth.getSession();
   if (
     session.data.session &&
-    request.nextUrl.pathname === "/account?redirectTo=create-profile"
+    (request.nextUrl.pathname === "/login" ||
+      request.nextUrl.pathname === "/signup")
   ) {
-    response = NextResponse.redirect(
-      new URL("/profile/create-profile", request.url)
-    );
-  }
-  if (session.data.session && request.nextUrl.pathname === "/account") {
     response = NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -71,7 +67,7 @@ export async function middleware(request: NextRequest) {
     !session.data.session &&
     request.nextUrl.pathname === "/profile/create-event"
   ) {
-    response = NextResponse.redirect(new URL("/account", request.url));
+    response = NextResponse.redirect(new URL("/login", request.url));
   }
 
   return response;
