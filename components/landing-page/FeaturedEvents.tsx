@@ -5,19 +5,29 @@ import Link from "next/link";
 
 export default async function FeaturedEvents() {
   const supabase = await createSupabaseServerClient();
-  const { data: events, error: eventsError } = await supabase
+  const { data: eventsA, error: eventsError } = await supabase
     .from("events")
     .select("*")
-    .limit(6);
+    .range(0, 3);
+
+  const { data: eventsB, error: eventsErr } = await supabase
+    .from("events")
+    .select("*")
+    .range(4, 5);
 
   return (
     <div className="w-full flex flex-col justify-center">
       <h1 className="font-bold text-3xl mb-10 text-center md:text-5xl">
         Featured Events
       </h1>
-      <div className="grid h-96 overflow-hidden sm:h-auto grid-cols-2 md:grid-cols-3 gap-10">
-        {events?.map((event) => (
+      <div className="grid sm:h-auto grid-cols-2 md:grid-cols-3 gap-10">
+        {eventsA?.map((event) => (
           <FeaturedEventDisplay key={event.id} event={event} />
+        ))}
+        {eventsB?.map((event) => (
+          <div className="hidden sm:block">
+            <FeaturedEventDisplay key={event.id} event={event} />
+          </div>
         ))}
       </div>
       <Link
