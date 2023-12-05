@@ -9,16 +9,16 @@ export default async function FeaturedEventDisplay({ event }: { event: any }) {
     .getPublicUrl(event.poster_url);
 
   return (
-    <Link href={`/events/${event.id}`}>
-      <div className="group aspect-square w-full">
+    <div className="group aspect-square w-full">
+      <Link href={`/events/${event.id}`}>
         <Image
-          className="object-cover h-full w-full rounded-md group-hover:bg-black group-hover:opacity-50 transition duration-300"
+          className="object-cover w-full h-full rounded-md group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
           src={data.data.publicUrl}
           width={200}
           height={200}
         />
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
