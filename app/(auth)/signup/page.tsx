@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signUp } from "@/lib/actions/auth";
+import InstagramIcon from "@/components/icons/InstagramIcon";
+import TwitterIcon from "@/components/icons/TwitterIcon";
 import * as z from "zod";
 import Link from "next/link";
 import GoogleIcon from "@/components/icons/GoogleIcon";
@@ -129,7 +131,10 @@ export default function Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Instagram" {...field} />
+                      <div className="flex items-center">
+                        <InstagramIcon />
+                        <Input placeholder="Instagram" {...field} />
+                      </div>
                     </FormControl>
                     <div className="h-1">
                       <FormMessage />
@@ -143,7 +148,10 @@ export default function Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Twitter" {...field} />
+                      <div className="flex items-center">
+                        <TwitterIcon />
+                        <Input placeholder="Twitter" {...field} />
+                      </div>
                     </FormControl>
                     <div className="h-1">
                       <FormMessage />
