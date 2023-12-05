@@ -71,7 +71,7 @@ export default function Page() {
     <main className="px-4 mt-8 max-w-lg m-auto w-full">
       <h1 className="text-2xl text-center mb-4">Sign up</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex space-x-2 w-full">
             <FormField
               control={form.control}
