@@ -11,6 +11,7 @@ import Link from "next/link";
 import Tickets from "./Tickets";
 import { Separator } from "@/components/ui/separator";
 import Tags from "./Tags";
+import VendorTables from "./VendorTables";
 import Vendors from "./Vendors";
 import HostedBy from "./HostedBy";
 import { validateUser } from "@/lib/actions/auth";
@@ -58,6 +59,7 @@ export default async function EventsPage({
           </div>
           <Tags event={event} />
           <Tickets event={event} />
+          <VendorTables event={event} />
           <Separator />
           <div>
             <h1 className="font-semibold text-2xl">About</h1>
