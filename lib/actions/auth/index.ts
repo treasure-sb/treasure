@@ -17,7 +17,7 @@ const logoutUser = async () => {
 const generateUniqueLocalDiscriminator = (
   discriminators: any[] | undefined
 ) => {
-  if (!discriminators) {
+  if (!discriminators || discriminators.length === 0) {
     return 1;
   }
 
@@ -59,23 +59,29 @@ const signUp = async (form: SignUpForm) => {
     // get discriminator
     const { data: profilesData, error: profilesError } = await supabase
       .from("profiles")
-      .select("discriminator", { count: "exact" })
+      .select("discriminator")
       .eq("username", username);
 
     const previousDiscriminators = profilesData?.map(
       (profile) => profile.discriminator
     );
 
-    await supabase.from("profiles").insert([
-      {
-        first_name: firstNameCapitalized,
-        last_name: lastNameCapitalized,
-        username,
-        discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
-        email,
-        id: signUpData.user.id,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("profiles")
+      .insert([
+        {
+          first_name: firstNameCapitalized,
+          last_name: lastNameCapitalized,
+          username,
+          discriminator: generateUniqueLocalDiscriminator(
+            previousDiscriminators
+          ),
+          email,
+          id: signUpData.user.id,
+        },
+      ])
+      .select();
+    return { data };
   }
 };
 

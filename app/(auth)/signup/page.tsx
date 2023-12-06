@@ -65,16 +65,16 @@ export default function Page({
 
     try {
       const response = await signUp(formData);
-      if (response?.error) {
-        if (response.error.type === "email_taken") {
-          setEmailExistsError(true);
-        }
+
+      if (response?.error?.type === "email_taken") {
+        setEmailExistsError(true);
       }
-      if (invite_token && event_id) {
+
+      if (response?.data && invite_token && event_id) {
         replace(
           `/vendor-invite?invite_token=${invite_token}&event_id=${event_id}`
         );
-      } else {
+      } else if (response?.data) {
         replace("/");
       }
     } catch (err) {
