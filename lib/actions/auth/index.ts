@@ -54,7 +54,7 @@ const signUp = async (form: SignUpForm) => {
     const firstNameCapitalized =
       firstName.charAt(0).toUpperCase() + firstName.slice(1);
     const lastNameCapitalized =
-      firstName.charAt(0).toUpperCase() + firstName.slice(1);
+      lastName.charAt(0).toUpperCase() + firstName.slice(1);
 
     // get discriminator
     const { data: profilesData, error: profilesError } = await supabase
