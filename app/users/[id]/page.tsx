@@ -1,16 +1,18 @@
 import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import format from "date-fns/format";
 import Link from "next/link";
+import { Tables } from "@/types/supabase";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
 
-  const { data: user, error: userError } = await supabase
+  const { data: userData, error: userError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", params.id)
     .single();
+
+  const user: Tables<"profiles"> = userData;
 
   const {
     data: { publicUrl },
@@ -18,7 +20,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   let instaLink = "https://www.instagram.com/" + user.instagram;
   let twitterLink = "https://www.twitter.com/" + user.twitter;
-  console.log(user);
 
   return (
     <main className="m-auto max-w-lg">
@@ -35,7 +36,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
         ) : null}
         <div className="text-2xl m-auto font-semibold text-center">
-          {user.email}
+          @{user.username}
         </div>
         {user.instagram && (
           <Link

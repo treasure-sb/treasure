@@ -52,7 +52,7 @@ export default async function Page({
       data: { user },
     } = await validateUser();
     if (!user) {
-      redirect("/account");
+      redirect(`/signup?invite_token=${inviteToken}&event_id=${eventId}`);
     }
 
     const supabase = await createSupabaseServerClient();
