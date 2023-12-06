@@ -110,7 +110,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   };
 
   return (
-    <main className="m-auto w-fit">
+    <main className="m-auto max-w-fit lg:max-w-6xl">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         {event.poster_url ? (
           <>
@@ -130,7 +130,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             />
           </>
         ) : null}
-        <div className="flex flex-col space-y-6">
+        <div className="flex flex-col space-y-6 lg:w-96">
           <div>
             <div className="text-2xl font-semibold">{event.name}</div>
             <div className="flex space-x-3">
