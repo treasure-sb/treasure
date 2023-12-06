@@ -6,7 +6,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const event_id = params.id;
   const { data: event, error: eventError } = await supabase
     .from("events")
-    .select("*, profiles(*)")
+    .select("*, vendors:profiles!event_vendors(*)")
     .eq("id", event_id)
     .single();
 

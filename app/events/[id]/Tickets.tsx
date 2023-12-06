@@ -32,8 +32,10 @@ export default async function Tickets({ event }: { event: Tables<"events"> }) {
         <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
           <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
           <Dialog>
-            <DialogTrigger className="bg-primary h-[70%] w-24 rounded-md text-background text-md">
-              Buy Now
+            <DialogTrigger asChild>
+              <Button className="bg-primary h-[70%] w-24 rounded-md text-background text-md font-bold">
+                Buy Now
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

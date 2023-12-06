@@ -7,7 +7,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
 
   // @ts-ignore
-  const vendors: Tables<"profiles">[] = event.profiles;
+  const vendors: Tables<"profiles">[] = event.vendors;
   const vendorsWithPublicUrls = await Promise.all(
     vendors.map(async (vendor: any) => {
       let {
