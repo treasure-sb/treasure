@@ -5,11 +5,13 @@ import Image from "next/image";
 
 export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
-  const { data: user, error: userError } = await supabase
+  const { data: userData, error: userError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", event.organizer_id)
     .single();
+
+  const user: Tables<"profiles"> = userData;
 
   // avatar for organizer
   const {
@@ -31,7 +33,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
                 height={100}
               />
             </div>
-            <p className="text-sm w-auto">@{user.instagram}</p>
+            <p className="text-sm w-auto">@{user.username}</p>
           </div>
         </Link>
       </div>

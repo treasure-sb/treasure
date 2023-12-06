@@ -7,7 +7,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
 
   // @ts-ignore
-  const vendors = event.profiles;
+  const vendors: Tables<"profiles">[] = event.profiles;
   const vendorsWithPublicUrls = await Promise.all(
     vendors.map(async (vendor: any) => {
       let {
@@ -39,7 +39,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
                     height={100}
                   />
                 </div>
-                <h1 className="text-center text-sm">@{vendor.instagram}</h1>
+                <h1 className="text-center text-sm">@{vendor.username}</h1>
               </div>
             </Link>
           ))
