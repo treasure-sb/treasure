@@ -1,7 +1,7 @@
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
@@ -21,21 +21,17 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   return (
     <>
       <h1 className="font-semibold text-2xl">Hosted By</h1>
-      <div className="h-40 overflow-hidden justify-end mt-4">
+      <div className="flex flex-col space-y-1 items-center">
         <Link href={`/users/${user.id}`}>
-          <div className="flex flex-col gap-2 text-center">
-            <div className="h-28 w-28 rounded-full overflow-hidden m-auto">
-              <Image
-                className="block w-full h-full object-cover"
-                alt="avatar"
-                src={organizerPublicUrl}
-                width={100}
-                height={100}
-              />
-            </div>
-            <p className="text-sm w-auto">@{user.username}</p>
-          </div>
+          <Avatar className="h-24 w-24 m-auto">
+            <AvatarImage src={organizerPublicUrl} />
+            <AvatarFallback>
+              {user.first_name[0]}
+              {user.last_name[0]}
+            </AvatarFallback>
+          </Avatar>
         </Link>
+        <span>@{user.username}</span>
       </div>
     </>
   );

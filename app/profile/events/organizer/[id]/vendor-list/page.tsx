@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import InviteLink from "./InviteLink";
 import { Tables } from "@/types/supabase";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const vendorsWithAvatars = async (vendors: any) => {
   const supabase = await createSupabaseServerClient();
@@ -63,22 +64,17 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex gap-2 flex-wrap mb-10">
           {publicVendors.map((vendor: any) => (
-            <div className="flex flex-col items-center">
-              <div
-                key={vendor.id}
-                className="h-28 w-28 rounded-full overflow-hidden mt-2"
-              >
-                <Link href={`/users/${vendor.id}`}>
-                  <Image
-                    className="block w-full h-full object-cover"
-                    alt="avatar"
-                    src={vendor.vendorPublicUrl}
-                    width={100}
-                    height={100}
-                  />
-                </Link>
-              </div>
-              <h1>@{vendor.username}</h1>
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/users/${vendor.id}`}>
+                <Avatar className="h-24 w-24 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {vendor.first_name[0]}
+                    {vendor.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <span>@{vendor.username}</span>
             </div>
           ))}
         </div>
@@ -89,22 +85,17 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex gap-2 flex-wrap">
           {publicApplications.map((vendor: any) => (
-            <div className="flex flex-col items-center">
-              <div
-                key={vendor.id}
-                className="h-28 w-28 rounded-full overflow-hidden mt-2"
-              >
-                <Link href={`/users/${vendor.id}`}>
-                  <Image
-                    className="block w-full h-full object-cover"
-                    alt="avatar"
-                    src={vendor.vendorPublicUrl}
-                    width={100}
-                    height={100}
-                  />
-                </Link>
-              </div>
-              <h1>@{vendor.username}</h1>
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/users/${vendor.id}`}>
+                <Avatar className="h-24 w-24 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {vendor.first_name[0]}
+                    {vendor.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <span>@{vendor.username}</span>
             </div>
           ))}
         </div>

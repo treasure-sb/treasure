@@ -1,7 +1,7 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { validateUser } from "@/lib/actions/auth";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function LoggedInHeader() {
   const { data } = await validateUser();
@@ -25,15 +25,13 @@ export default async function LoggedInHeader() {
       </Link>
       <Link href="/profile">
         {profile.avatar_url ? (
-          <div className="h-12 w-12 rounded-full overflow-hidden">
-            <Image
-              className="block w-full h-full object-cover"
-              alt="avatar"
-              src={publicUrl}
-              width={100}
-              height={100}
-            />
-          </div>
+          <Avatar className="h-14 w-14">
+            <AvatarImage src={publicUrl} />
+            <AvatarFallback>
+              {profile.first_name[0]}
+              {profile.last_name[0]}
+            </AvatarFallback>
+          </Avatar>
         ) : (
           <h1>My Profile</h1>
         )}

@@ -7,28 +7,27 @@ import { User } from "@supabase/supabase-js";
 
 export default async function ListUserEvents({ user }: { user: User }) {
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", user.id);
+  const { data: appliedEventsData, error: appliedEventsError } = await supabase
+    .from("vendor_applications")
+    .select("events(*)")
+    .eq("vendor_id", user.id);
 
-  let events: Tables<"events">[] = [];
-  if (eventData) {
-    events = eventData;
-  }
+  const appliedEvents = appliedEventsData?.map((event) => event.events);
 
   return (
     <>
-      {events.length === 0 ? (
+      {!appliedEvents ? (
         <div className="flex flex-col space-y-4">
-          <div className="text-center">You are hosting no events</div>
-          <Link href="/profile/create-event" className="m-auto">
-            <Button className="w-40">Create Event</Button>
+          <div className="text-center">
+            You have not applied to be a vendor at any event
+          </div>
+          <Link href="/events" className="m-auto">
+            <Button className="w-40">Apply Now!</Button>
           </Link>
         </div>
       ) : (
         <div className="flex flex-col items-center space-y-4">
-          {events.map((event: Tables<"events">) => (
+          {appliedEvents.map((event: any) => (
             <EventCard
               redirectTo={
                 user.id === event.organizer_id
