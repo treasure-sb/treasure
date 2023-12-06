@@ -1,32 +1,59 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 
 export default async function Tickets({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
-  const { data } = await validateUser();
+  const { data: userData } = await validateUser();
+  const user = userData.user;
+
+  const { data: applicantData, error: applicantError } = await supabase
+    .from("vendor_applications")
+    .select("*")
+    .eq("event_id", event.id)
+    .eq("vendor_id", user?.id)
+    .single();
+
+  const handleApply = async () => {
+    "use server";
+    if (!user) {
+      redirect("/signup");
+    }
+
+    const supabase = await createSupabaseServerClient();
+    const { data: applicationData, error } = await supabase
+      .from("vendor_applications")
+      .insert([
+        {
+          event_id: event.id,
+          vendor_id: user.id,
+        },
+      ]);
+    if (!error) {
+      redirect("/profile/events");
+    }
+  };
 
   return (
     <>
       <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
         <h1 className="text-lg">Tables from $80</h1>
-        <Link
-          className="h-[70%]"
-          href={data.user ? `/apply?event_id=${event.id}` : "/signup"}
-        >
-          <Button className="bg-primary h-full w-24 rounded-md text-background text-md font-bold">
-            Apply Now
+        {applicantData ? (
+          <Button
+            disabled
+            className="w-24 h-[70%] rounded-md text-background text-md font-bold bg-tertiary hover:bg-tertiary"
+          >
+            Applied!
           </Button>
-        </Link>
+        ) : (
+          <form className="h-[70%]" action={handleApply}>
+            <Button className="h-full w-24 rounded-md text-background text-md font-bold">
+              Apply Now
+            </Button>
+          </form>
+        )}
       </div>
     </>
   );

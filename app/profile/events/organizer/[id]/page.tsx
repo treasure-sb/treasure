@@ -13,6 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import DeleteEventButton from "./DeleteEventButton";
 import { formatDate } from "@/lib/helpers/events";
 
@@ -132,43 +138,71 @@ export default async function Page({ params }: { params: { id: string } }) {
               <span className="text-lg text-white">{event.venue_name}</span>
             </div>
           </div>
-          <Link href={`/profile/events/organizer/${event.id}/event-analytics`}>
-            <Button className="w-full" variant={"secondary"}>
-              Event Analytics
-            </Button>
-          </Link>
-          <Link href={`/profile/events/organizer/${event.id}/edit-event`}>
-            <Button className="w-full" variant={"secondary"}>
-              Edit Event
-            </Button>
-          </Link>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant={"secondary"}>Preview</Button>
-            </DialogTrigger>
-            <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
-              <DialogHeader className="text-left">
-                <DialogTitle>Preview</DialogTitle>
-              </DialogHeader>
-              <PreviewEvent event={previewEvent} />
-            </DialogContent>
-          </Dialog>
-          <Link href={`/profile/events/organizer/${event.id}/message`}>
-            <Button className="w-full" variant={"secondary"}>
-              Message Guests
-            </Button>
-          </Link>
-          <Link href="">
-            <Button className="w-full" variant={"secondary"}>
-              Guest List
-            </Button>
-          </Link>
-          <Link href={`/profile/events/organizer/${event.id}/vendor-list`}>
-            <Button className="w-full" variant={"secondary"}>
-              Vendor List
-            </Button>
-          </Link>
-          <DeleteEventButton handleDelete={handleDelete} />
+          <Accordion type="multiple">
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Event Options</AccordionTrigger>
+              <AccordionContent className="flex flex-col space-y-4 items-center">
+                <Link
+                  className="w-[90%]"
+                  href={`/profile/events/organizer/${event.id}/event-analytics`}
+                >
+                  <Button className="w-full" variant={"ghost"}>
+                    Event Analytics
+                  </Button>
+                </Link>
+                <Link
+                  className="w-[90%]"
+                  href={`/profile/events/organizer/${event.id}/edit-event`}
+                >
+                  <Button className="w-full" variant={"ghost"}>
+                    Edit Event
+                  </Button>
+                </Link>
+                <Dialog>
+                  <DialogTrigger className="w-[90%]" asChild>
+                    <Button variant={"ghost"}>Preview</Button>
+                  </DialogTrigger>
+                  <DialogContent className="h-[80%] max-w-xl overflow-scroll scrollbar-hidden">
+                    <DialogHeader className="text-left">
+                      <DialogTitle>Preview</DialogTitle>
+                    </DialogHeader>
+                    <PreviewEvent event={previewEvent} />
+                  </DialogContent>
+                </Dialog>
+                <DeleteEventButton handleDelete={handleDelete} />
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger>Attendees Options</AccordionTrigger>
+              <AccordionContent className="flex flex-col space-y-4 items-center">
+                <Link
+                  className="w-[90%]"
+                  href={`/profile/events/organizer/${event.id}/message`}
+                >
+                  <Button className="w-full" variant={"ghost"}>
+                    Message Guests
+                  </Button>
+                </Link>
+                <Link className="w-[90%]" href="">
+                  <Button className="w-full" variant={"ghost"}>
+                    Guest List
+                  </Button>
+                </Link>
+                <Link
+                  className=" w-[90%] relative"
+                  href={`/profile/events/organizer/${event.id}/vendor-list`}
+                >
+                  <Button className="w-full" variant={"ghost"}>
+                    Vendor List
+                  </Button>
+                  <span className="absolute top-[-2px] right-[-2px] flex h-3 w-3">
+                    <span className="animate-ping absolute h-full w-full rounded-full bg-red-600 opacity-75"></span>
+                    <span className="relative rounded-full h-3 w-3 bg-red-600"></span>
+                  </span>
+                </Link>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
     </main>

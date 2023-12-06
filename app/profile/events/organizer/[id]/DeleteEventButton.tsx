@@ -16,7 +16,7 @@ export default function DeleteEventButton({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger className="w-[90%]" asChild>
         <Button variant={"destructive"}>Delete</Button>
       </DialogTrigger>
       <DialogContent className="rounded-md w-[80%]">
