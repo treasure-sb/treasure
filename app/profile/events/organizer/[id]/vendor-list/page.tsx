@@ -64,19 +64,18 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex gap-2 flex-wrap mb-10">
           {publicVendors.map((vendor: any) => (
-            <Link
-              className="flex flex-col items-center space-y-1"
-              href={`/users/${vendor.id}`}
-            >
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={vendor.vendorPublicUrl} />
-                <AvatarFallback>
-                  {vendor.first_name[0]}
-                  {vendor.last_name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <h1 className="text-sm">@{vendor.username}</h1>
-            </Link>
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/users/${vendor.id}`}>
+                <Avatar className="h-24 w-24 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {vendor.first_name[0]}
+                    {vendor.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <span>@{vendor.username}</span>
+            </div>
           ))}
         </div>
       )}
@@ -86,19 +85,18 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex gap-2 flex-wrap">
           {publicApplications.map((vendor: any) => (
-            <Link
-              className="flex flex-col items-center space-y-1"
-              href={`/users/${vendor.id}`}
-            >
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={vendor.vendorPublicUrl} />
-                <AvatarFallback>
-                  {vendor.first_name[0]}
-                  {vendor.last_name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <h1 className="text-sm">@{vendor.username}</h1>
-            </Link>
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/users/${vendor.id}`}>
+                <Avatar className="h-24 w-24 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {vendor.first_name[0]}
+                    {vendor.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <span>@{vendor.username}</span>
+            </div>
           ))}
         </div>
       )}

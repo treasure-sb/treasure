@@ -28,19 +28,18 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
       <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 sm:overflow-auto">
         {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0 ? (
           vendorsWithPublicUrls.map((vendor: any) => (
-            <Link
-              className="flex flex-col items-center space-y-1"
-              href={`/users/${vendor.id}`}
-            >
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={vendor.vendorPublicUrl} />
-                <AvatarFallback>
-                  {vendor.first_name[0]}
-                  {vendor.last_name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <h1 className="text-sm">@{vendor.username}</h1>
-            </Link>
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/users/${vendor.id}`}>
+                <Avatar className="h-24 w-24 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {vendor.first_name[0]}
+                    {vendor.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <span>@{vendor.username}</span>
+            </div>
           ))
         ) : (
           <h1 className="text-center text-sm">Vendors Coming Soon!</h1>

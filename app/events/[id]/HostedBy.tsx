@@ -21,19 +21,18 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   return (
     <>
       <h1 className="font-semibold text-2xl">Hosted By</h1>
-      <Link
-        className="flex flex-col items-center space-y-1"
-        href={`/users/${user.id}`}
-      >
-        <Avatar className="h-24 w-24">
-          <AvatarImage src={organizerPublicUrl} />
-          <AvatarFallback>
-            {user.first_name[0]}
-            {user.last_name[0]}
-          </AvatarFallback>
-        </Avatar>
-        <h1 className="text-sm">@{user.username}</h1>
-      </Link>
+      <div className="flex flex-col space-y-1 items-center">
+        <Link href={`/users/${user.id}`}>
+          <Avatar className="h-24 w-24 m-auto">
+            <AvatarImage src={organizerPublicUrl} />
+            <AvatarFallback>
+              {user.first_name[0]}
+              {user.last_name[0]}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
+        <span>@{user.username}</span>
+      </div>
     </>
   );
 }
