@@ -76,7 +76,6 @@ const signUp = async (form: SignUpForm) => {
         id: signUpData.user.id,
       },
     ]);
-    redirect("/");
   }
 };
 

@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signUp } from "@/lib/actions/auth";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 import Link from "next/link";
 import GoogleIcon from "@/components/icons/GoogleIcon";
@@ -35,9 +36,16 @@ const formSchema = z.object({
   }),
 });
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { invite_token: string; event_id: string };
+}) {
   const [emailExistsError, setEmailExistsError] = useState(false);
   const [emailsConfirmationError, setEmailConfirmationError] = useState(false);
+  const { replace } = useRouter();
+  const invite_token = searchParams.invite_token || null;
+  const event_id = searchParams.event_id || null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,6 +69,13 @@ export default function Page() {
         if (response.error.type === "email_taken") {
           setEmailExistsError(true);
         }
+      }
+      if (invite_token && event_id) {
+        replace(
+          `/vendor-invite?invite_token=${invite_token}&event_id=${event_id}`
+        );
+      } else {
+        replace("/");
       }
     } catch (err) {
       console.log(err);
