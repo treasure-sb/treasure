@@ -79,6 +79,7 @@ export interface Database {
           date: string
           description: string
           end_time: string
+          featured: number | null
           id: string
           lat: number
           lng: number
@@ -96,6 +97,7 @@ export interface Database {
           date: string
           description: string
           end_time: string
+          featured?: number | null
           id?: string
           lat: number
           lng: number
@@ -113,6 +115,7 @@ export interface Database {
           date?: string
           description?: string
           end_time?: string
+          featured?: number | null
           id?: string
           lat?: number
           lng?: number
@@ -138,32 +141,38 @@ export interface Database {
         Row: {
           avatar_url: string
           bio: string | null
-          email: string | null
-          first_name: string | null
+          discriminator: number
+          email: string
+          first_name: string
           id: string
           instagram: string | null
-          last_name: string | null
+          last_name: string
           twitter: string | null
+          username: string
         }
         Insert: {
           avatar_url?: string
           bio?: string | null
-          email?: string | null
-          first_name?: string | null
+          discriminator: number
+          email: string
+          first_name: string
           id: string
           instagram?: string | null
-          last_name?: string | null
+          last_name: string
           twitter?: string | null
+          username: string
         }
         Update: {
           avatar_url?: string
           bio?: string | null
-          email?: string | null
-          first_name?: string | null
+          discriminator?: number
+          email?: string
+          first_name?: string
           id?: string
           instagram?: string | null
-          last_name?: string | null
+          last_name?: string
           twitter?: string | null
+          username?: string
         }
         Relationships: []
       }
@@ -216,6 +225,27 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      vendor_invite_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
