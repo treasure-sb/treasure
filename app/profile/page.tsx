@@ -11,7 +11,7 @@ export default async function Page() {
     data: { user },
   } = await validateUser();
   if (!user) {
-    redirect("/account");
+    redirect("/login");
   }
 
   const supabase = await createSupabaseServerClient();
