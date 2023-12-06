@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { validateUser, logoutUser } from "@/lib/actions/auth";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import format from "date-fns/format";
 
 export default async function Page() {
@@ -31,17 +32,15 @@ export default async function Page() {
 
   return (
     <main className="m-auto max-w-lg">
-      <div className="flex flex-col space-y-6 ">
+      <div className="flex flex-col space-y-6">
         {profile.avatar_url ? (
-          <div className="h-28 w-28 rounded-full overflow-hidden m-auto">
-            <Image
-              className="block w-full h-full object-cover"
-              alt="avatar"
-              src={publicUrl}
-              width={100}
-              height={100}
-            />
-          </div>
+          <Avatar className="h-32 w-32 m-auto">
+            <AvatarImage src={publicUrl} />
+            <AvatarFallback>
+              {profile.first_name[0]}
+              {profile.last_name[0]}
+            </AvatarFallback>
+          </Avatar>
         ) : null}
         {profile.first_name ? (
           <div className="text-2xl m-auto font-semibold text-center">
