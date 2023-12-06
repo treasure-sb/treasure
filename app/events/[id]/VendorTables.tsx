@@ -3,21 +3,33 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
+import { User } from "@supabase/supabase-js";
 
-export default async function Tickets({ event }: { event: Tables<"events"> }) {
+export default async function VendorTables({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: userData } = await validateUser();
   const user = userData.user;
 
-  const { data: applicantData, error: applicantError } = await supabase
-    .from("vendor_applications")
-    .select("*")
-    .eq("event_id", event.id)
-    .eq("vendor_id", user?.id)
-    .single();
+  let applicantData = null;
+  if (user) {
+    const { data, error } = await supabase
+      .from("vendor_applications")
+      .select("*")
+      .eq("event_id", event.id)
+      .eq("vendor_id", user.id)
+      .single();
+    applicantData = data;
+  }
 
   const handleApply = async () => {
     "use server";
+    const {
+      data: { user },
+    } = await validateUser();
     if (!user) {
       redirect("/signup");
     }
