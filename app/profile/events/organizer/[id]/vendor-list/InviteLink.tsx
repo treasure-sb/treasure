@@ -46,7 +46,7 @@ export default function InviteLink({ event_id }: { event_id: string }) {
   };
 
   return (
-    <Button onClick={handleCopy} className="mt-10" variant={"secondary"}>
+    <Button onClick={handleCopy} variant={"secondary"}>
       Copy Invite Link
     </Button>
   );
