@@ -16,7 +16,7 @@ export default async function ListUserEvents({
 }) {
   const filter = searchParams?.filter || null;
   const supabase = await createSupabaseServerClient();
-  let events: Tables<"events">[] = [];
+  let events: any[] = [];
 
   if (filter === "Hosting") {
     const { data: eventData } = await supabase
@@ -25,6 +25,17 @@ export default async function ListUserEvents({
       .eq("organizer_id", user.id);
     if (eventData) {
       events = eventData;
+    }
+  } else if (filter === "Applied") {
+    const { data: appliedEventsData, error: appliedEventsError } =
+      await supabase
+        .from("vendor_applications")
+        .select("events(*)")
+        .eq("vendor_id", user.id);
+
+    const appliedEvents = appliedEventsData?.map((event) => event.events);
+    if (appliedEvents) {
+      events = appliedEvents;
     }
   }
 
@@ -38,7 +49,7 @@ export default async function ListUserEvents({
                 You are currently attending no events
               </div>
               <Link href="/events" className="m-auto">
-                <Button className="w-40">Search Event</Button>
+                <Button className="w-40">Search Events</Button>
               </Link>
             </>
           )}
@@ -58,7 +69,7 @@ export default async function ListUserEvents({
                 You have not applied to any events
               </div>
               <Link href="/events" className="m-auto">
-                <Button className="w-40">Search Event</Button>
+                <Button className="w-40">Search Events</Button>
               </Link>
             </>
           )}
