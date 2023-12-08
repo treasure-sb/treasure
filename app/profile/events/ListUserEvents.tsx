@@ -1,10 +1,12 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import EventCard from "@/components/events/cards/EventCard";
+import HostingCard from "@/components/events/cards/HostingCard";
 import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
 import AttendingDisplay from "@/components/events/displays/AttendingDisplay";
+import HostingDisplay from "@/components/events/displays/HostingDisplay";
 import ListEvents from "@/components/events/shared/ListEvents";
 
 export default async function ListUserEvents({
@@ -17,6 +19,10 @@ export default async function ListUserEvents({
   const filter = searchParams?.filter || null;
   const supabase = await createSupabaseServerClient();
   let events: any[] = [];
+  let DisplayComponent: React.FC<{ event: Tables<"events"> }> =
+    AttendingDisplay;
+  let CardDisplay: React.FC<{ event: Tables<"events">; redirectTo: string }> =
+    EventCard;
 
   if (filter === "Hosting") {
     const { data: eventData } = await supabase
@@ -26,6 +32,8 @@ export default async function ListUserEvents({
     if (eventData) {
       events = eventData;
     }
+    DisplayComponent = HostingDisplay;
+    CardDisplay = HostingCard;
   } else if (filter === "Applied") {
     const { data: appliedEventsData, error: appliedEventsError } =
       await supabase
@@ -77,8 +85,8 @@ export default async function ListUserEvents({
       ) : (
         <ListEvents
           events={events}
-          DisplayComponent={AttendingDisplay}
-          CardComponent={EventCard}
+          DisplayComponent={DisplayComponent}
+          CardComponent={CardDisplay}
         />
       )}
     </>

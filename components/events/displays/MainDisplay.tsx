@@ -4,7 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { formatDate } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 
-export default async function EventDisplay({
+export default async function MainDisplay({
   event,
 }: {
   event: Tables<"events">;

@@ -3,7 +3,7 @@ import EventImage from "../shared/EventImage";
 import { formatDate } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 
-export default async function AttendingDisplay({
+export default async function HostingDisplay({
   event,
 }: {
   event: Tables<"events">;
@@ -12,7 +12,7 @@ export default async function AttendingDisplay({
 
   return (
     <div className="group aspect-square w-full">
-      <Link href={`/profile/events/organzier/${event.id}`}>
+      <Link href={`/profile/events/organizer/${event.id}`}>
         <EventImage event={event} />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>
