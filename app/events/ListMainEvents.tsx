@@ -5,10 +5,11 @@ import {
   getTagData,
   getDateTagEventData,
 } from "@/lib/helpers/eventsFiltering";
-import EventDisplay from "@/components/events/shared/EventDisplay";
-import EventCard from "@/components/events/events-public/EventCard";
+import MainDisplay from "@/components/events/displays/MainDisplay";
+import EventCard from "@/components/events/cards/EventCard";
+import ListEvents from "@/components/events/shared/ListEvents";
 
-export default async function ListEvents({
+export default async function ListMainEvents({
   numEvents,
   searchParams,
 }: {
@@ -60,23 +61,11 @@ export default async function ListEvents({
   return (
     <>
       {events && events.length > 0 ? (
-        <>
-          <div className="space-y-8 md:hidden">
-            <EventDisplay event={events[0]} />
-            {events.slice(1).map((event) => (
-              <EventCard
-                redirectTo={`/events/${event.id}`}
-                key={event.id}
-                event={event}
-              />
-            ))}
-          </div>
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <EventDisplay key={`desktop-${event.id}`} event={event} />
-            ))}
-          </div>
-        </>
+        <ListEvents
+          events={events}
+          DisplayComponent={MainDisplay}
+          CardComponent={EventCard}
+        />
       ) : (
         <div>No Events</div>
       )}

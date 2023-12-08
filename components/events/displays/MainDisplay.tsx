@@ -1,13 +1,15 @@
 import Link from "next/link";
-import Image from "next/image";
+import EventImage from "../shared/EventImage";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { formatDate } from "@/lib/helpers/events";
+import { Tables } from "@/types/supabase";
 
-export default async function EventDisplay({ event }: { event: any }) {
+export default async function EventDisplay({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
   const formattedDate = formatDate(event.date);
   const { data: tickets, error } = await supabase
     .from("tickets")
@@ -17,13 +19,7 @@ export default async function EventDisplay({ event }: { event: any }) {
   return (
     <div className="group aspect-square w-full">
       <Link href={`/events/${event.id}`}>
-        <Image
-          className="object-cover h-full w-full rounded-md"
-          alt="image"
-          src={publicUrl}
-          width={200}
-          height={200}
-        />
+        <EventImage event={event} />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>
           <span className="text-primary">{formattedDate}</span>{" "}

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventDisplay from "@/components/events/shared/EventDisplay";
+import EventDisplay from "@/components/events/displays/MainDisplay";
 import { validateUser } from "@/lib/actions/auth";
 import AcceptButton from "./AcceptButton";
 import { Button } from "@/components/ui/button";
