@@ -7,26 +7,61 @@ import { User } from "@supabase/supabase-js";
 import AttendingDisplay from "@/components/events/displays/AttendingDisplay";
 import ListEvents from "@/components/events/shared/ListEvents";
 
-export default async function ListUserEvents({ user }: { user: User }) {
+export default async function ListUserEvents({
+  user,
+  searchParams,
+}: {
+  user: User;
+  searchParams?: { filter?: string };
+}) {
+  const filter = searchParams?.filter || null;
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", user.id);
-
   let events: Tables<"events">[] = [];
-  if (eventData) {
-    events = eventData;
+
+  if (filter === "Hosting") {
+    const { data: eventData } = await supabase
+      .from("events")
+      .select("*")
+      .eq("organizer_id", user.id);
+    if (eventData) {
+      events = eventData;
+    }
   }
 
   return (
     <>
       {events.length === 0 ? (
         <div className="flex flex-col space-y-4">
-          <div className="text-center">You are attending no events</div>
-          <Link href="/profile/create-event" className="m-auto">
-            <Button className="w-40">Create Event</Button>
-          </Link>
+          {!filter && (
+            <>
+              <div className="text-center mt-10">
+                You are currently attending no events
+              </div>
+              <Link href="/events" className="m-auto">
+                <Button className="w-40">Search Event</Button>
+              </Link>
+            </>
+          )}
+          {filter === "Hosting" && (
+            <>
+              <div className="text-center mt-10">
+                You are currently hosting no events
+              </div>
+              <Link href="/events/create" className="m-auto">
+                <Button className="w-40">Create Event</Button>
+              </Link>
+            </>
+          )}
+          {filter === "Applied" && (
+            <>
+              <div className="text-center mt-10">
+                You have not applied to any events
+              </div>
+              <Link href="/events" className="m-auto">
+                <Button className="w-40">Search Event</Button>
+              </Link>
+            </>
+          )}
         </div>
       ) : (
         <ListEvents
