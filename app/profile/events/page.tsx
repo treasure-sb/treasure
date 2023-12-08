@@ -5,6 +5,8 @@ import ListUserEvents from "./ListUserEvents";
 import ListAppliedEvents from "./ListAppliedEvents";
 import LoadingListUserEvents from "./LoadingListUserEvents";
 import { User } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
+import Filters from "../Filters";
 
 export default async function Page() {
   const { data: userData } = await validateUser();
@@ -15,9 +17,8 @@ export default async function Page() {
 
   return (
     <main className="w-full max-w-md m-auto">
-      <div className="font-bold text-2xl mb-6 w-full text-center">
-        <h1>My Events</h1>
-      </div>
+      <h1 className="font-bold text-2xl w-full">My Events</h1>
+      <Filters />
       <Suspense fallback={<LoadingListUserEvents />}>
         <ListUserEvents user={user} />
       </Suspense>
