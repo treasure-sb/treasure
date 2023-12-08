@@ -27,6 +27,7 @@ const getDateTagEventData = async (
   const { data, error } = await supabase
     .from("events")
     .select("*, event_tags!inner(*)")
+    .gte("date", today)
     .ilike("name", `%${search}%`)
     .range(0, numEvents)
     .gte("date", from)
@@ -66,6 +67,7 @@ const getEventDataByTag = async (
   const { data, error } = await supabase
     .from("events")
     .select("*, event_tags!inner(*)")
+    .gte("date", today)
     .ilike("name", `%${search}%`)
     .range(0, numEvents)
     .order("featured", { ascending: true })
