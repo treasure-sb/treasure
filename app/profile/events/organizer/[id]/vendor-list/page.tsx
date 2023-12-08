@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AcceptDeclineButton from "./AcceptDeclineButton";
 import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const vendorsWithAvatars = async (vendors: any) => {
   const supabase = await createSupabaseServerClient();
@@ -74,12 +75,12 @@ export default async function Page({ params }: { params: { id: string } }) {
     const { data, error } = await supabase
       .from("event_vendors")
       .insert([{ event_id: event_id, vendor_id: vendor_id }]);
-    console.log(data, error);
     await supabase
       .from("vendor_applications")
       .delete()
       .eq("vendor_id", vendor_id)
       .eq("event_id", event_id);
+    revalidatePath(`/events/${event_id}/vendor-list`);
   };
 
   const handleDecline = async (vendor_id: string, event_id: string) => {
