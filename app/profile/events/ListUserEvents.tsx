@@ -57,7 +57,7 @@ export default async function ListUserEvents({
                 You are currently attending no events
               </div>
               <Link href="/events" className="m-auto">
-                <Button className="w-40">Search Events</Button>
+                <Button className="w-40">Browse Events</Button>
               </Link>
             </>
           )}
