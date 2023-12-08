@@ -1,7 +1,7 @@
 import TagFiltering from "./TagFiltering";
 import FilteringButtons from "./FilteringButtons";
-import ListEvents from "./ListEvents";
-import LoadingListEvents from "./LoadingListEvents";
+import ListMainEvents from "./ListMainEvents";
+import LoadingListEvents from "@/components/events/shared/LoadingListEvents";
 import { Suspense } from "react";
 
 export default function Page({
@@ -30,7 +30,7 @@ export default function Page({
         <h2 className="font-bold text-gray-500">In New York, NY</h2>
       </div>
       <Suspense fallback={<LoadingListEvents />}>
-        <ListEvents numEvents={numEvents} searchParams={searchParams} />
+        <ListMainEvents numEvents={numEvents} searchParams={searchParams} />
       </Suspense>
     </main>
   );
