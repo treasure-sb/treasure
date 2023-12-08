@@ -106,7 +106,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     if (!deleteError) {
       redirect("/profile/events");
     }
-    console.log("hello");
   };
 
   return (
