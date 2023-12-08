@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
+import copy from "copy-to-clipboard";
 
 export default function InviteLink({ event_id }: { event_id: string }) {
   const { toast } = useToast();
@@ -29,10 +30,11 @@ export default function InviteLink({ event_id }: { event_id: string }) {
       try {
         const inviteToken = uuidv4();
         await createInviteToken(inviteToken);
-        const inviteLink = `https://treasureapp.io/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
-        const textBlob = new Blob([inviteLink], { type: "text/plain" });
-        const clipboardItem = new ClipboardItem({ "text/plain": textBlob });
-        await navigator.clipboard.write([clipboardItem]);
+
+        const inviteLink = `${window.location.origin}/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
+        setTimeout(() => {
+          navigator.clipboard.writeText(inviteLink);
+        }, 0);
 
         toast({
           title: "Invite Link Copied!",
