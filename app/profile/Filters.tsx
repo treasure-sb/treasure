@@ -7,7 +7,9 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 export default function Filters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [active, setActive] = useState(searchParams.get("filter") || "Active");
+  const [active, setActive] = useState(
+    searchParams.get("filter") || "Attending"
+  );
   const { replace } = useRouter();
 
   const filters: string[] = ["Attending", "Hosting", "Applied"];
