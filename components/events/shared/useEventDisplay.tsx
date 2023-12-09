@@ -10,7 +10,7 @@ export const useEventDisplay = (
       <DisplayComponent event={events[0]} />
       {events.slice(1).map((event) => (
         <CardComponent
-          redirectTo={`/events/${event.id}`}
+          redirectTo={`/events/${event.cleaned_name}`}
           key={event.id}
           event={event}
         />

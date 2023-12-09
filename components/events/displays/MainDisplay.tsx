@@ -18,7 +18,7 @@ export default async function MainDisplay({
 
   return (
     <div className="group aspect-square w-full">
-      <Link href={`/events/${event.id}`}>
+      <Link href={`/events/${event.cleaned_name}`}>
         <EventImage event={event} />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>

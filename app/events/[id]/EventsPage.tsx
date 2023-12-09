@@ -106,7 +106,7 @@ export default async function EventsPage({
       </div>
       {organizer ? (
         <div className="fixed right-6 bottom-6">
-          <Link href={`/profile/events/organizer/${event.id}`}>
+          <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
             <div className="opacity-80 sm:opacity-60 hover:opacity-100">
               <svg
                 width="70"
