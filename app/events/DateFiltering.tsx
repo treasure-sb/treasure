@@ -118,7 +118,6 @@ export default function DateFiltering() {
           </div>
           <DropdownMenuSeparator />
           <Calendar
-            disabled={{ before: new Date() }}
             mode="single"
             selected={date}
             onSelect={handleCalenderDateSelect}
