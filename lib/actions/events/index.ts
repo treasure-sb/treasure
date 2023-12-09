@@ -9,9 +9,11 @@ import {
   publishTicketTailorEvent,
   createTicketTailorEventOccurence,
 } from "../ticket-tailor";
+import format from "date-fns/format";
 
 // Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
-const cleanedEventUrlName = (event_name: string) => {
+const cleanedEventUrlName = (event_name: string, event_date: Date) => {
+  const cleanedDate = format(event_date, "MMddyyyy");
   const cleanedName = event_name
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -19,7 +21,7 @@ const cleanedEventUrlName = (event_name: string) => {
     .replace(/\s+/g, "-")
     .toLowerCase();
 
-  return cleanedName;
+  return `${cleanedName}-${cleanedDate}`;
 };
 
 const createEvent = async (values: EventForm) => {
@@ -66,7 +68,7 @@ const createEvent = async (values: EventForm) => {
   await publishTicketTailorEvent(ticketTailorEventData.id);
 
   // create cleaned event name
-  const cleanedEventName = cleanedEventUrlName(name);
+  const cleanedEventName = cleanedEventUrlName(name, date as Date);
 
   // create the event on supabase
   const { data, error } = await supabase
