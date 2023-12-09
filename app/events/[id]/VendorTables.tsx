@@ -51,7 +51,7 @@ export default async function VendorTables({
   return (
     <>
       <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
-        <h1 className="text-lg">Tables from $80</h1>
+        <h1 className="text-lg">Tables from $50</h1>
         {applicantData ? (
           <Button
             disabled

@@ -12,7 +12,7 @@ export default async function HostingDisplay({
 
   return (
     <div className="group aspect-square w-full">
-      <Link href={`/profile/events/organizer/${event.id}`}>
+      <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
         <EventImage event={event} />
         <h1 className="text-xl mt-2">{event.name}</h1>
         <h1>

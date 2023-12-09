@@ -17,7 +17,7 @@ export default async function HostingCard({
     <div className="group w-full h-50">
       <Link
         className="flex space-x-4"
-        href={`/profile/events/organizer/${event.id}`}
+        href={`/profile/events/organizer/${event.cleaned_name}`}
       >
         <div
           className="relative max-w-sm"

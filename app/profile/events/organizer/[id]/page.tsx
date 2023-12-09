@@ -25,11 +25,10 @@ import { formatDate } from "@/lib/helpers/events";
 // redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
-  const event_id = params.id;
   const { data, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("id", event_id)
+    .eq("cleaned_name", params.id)
     .single();
 
   const event: Tables<"events"> = data;
@@ -46,12 +45,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", event_id);
+    .eq("event_id", event.id);
 
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
     .select("tags(name)")
-    .eq("event_id", event_id);
+    .eq("event_id", event.id);
 
   const previewTickets =
     tickets?.map((ticket: any) => {
@@ -101,7 +100,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     const { error: deleteError } = await supabase
       .from("events")
       .delete()
-      .eq("id", event_id);
+      .eq("id", event.id);
 
     if (!deleteError) {
       redirect("/profile/events");

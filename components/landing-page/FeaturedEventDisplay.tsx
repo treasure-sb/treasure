@@ -10,7 +10,7 @@ export default async function FeaturedEventDisplay({ event }: { event: any }) {
 
   return (
     <div className="group aspect-square w-full">
-      <Link href={`/events/${event.id}`}>
+      <Link href={`/events/${event.cleaned_name}`}>
         <Image
           className="object-cover w-full h-full rounded-md group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
