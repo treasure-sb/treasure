@@ -9,7 +9,7 @@ export default async function Page() {
       {/* Hero */}
       <div className="my-20 space-y-10 w-full">
         <div className="max-w-xl">
-          <h1 className="text-5xl md:text-8xl font-bold text-left mb-6">
+          <h1 className="text-6xl md:text-8xl font-bold text-left mb-6 max-w-xs md:max-w-full">
             Find Great Card & Collectible{" "}
             <span className="text-primary">Events</span> Near You
           </h1>
