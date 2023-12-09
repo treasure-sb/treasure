@@ -10,6 +10,18 @@ import {
   createTicketTailorEventOccurence,
 } from "../ticket-tailor";
 
+// Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
+const cleanedEventUrlName = (event_name: string) => {
+  const cleanedName = event_name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/gi, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+
+  return cleanedName;
+};
+
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
   const {
@@ -53,12 +65,16 @@ const createEvent = async (values: EventForm) => {
   await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
   await publishTicketTailorEvent(ticketTailorEventData.id);
 
+  // create cleaned event name
+  const cleanedEventName = cleanedEventUrlName(name);
+
   // create the event on supabase
   const { data, error } = await supabase
     .from("events")
     .insert([
       {
         name,
+        cleaned_name: cleanedEventName,
         description,
         address,
         lng,

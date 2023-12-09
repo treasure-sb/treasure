@@ -9,6 +9,49 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      event_attendees: {
+        Row: {
+          attendee_id: string
+          event_id: string
+          order_id: string
+          ticket_id: string
+        }
+        Insert: {
+          attendee_id: string
+          event_id: string
+          order_id: string
+          ticket_id: string
+        }
+        Update: {
+          attendee_id?: string
+          event_id?: string
+          order_id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_attendee_id_fkey"
+            columns: ["attendee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendees_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_tags: {
         Row: {
           event_id: string
@@ -75,6 +118,7 @@ export interface Database {
       events: {
         Row: {
           address: string
+          cleaned_name: string
           created_at: string
           date: string
           description: string
@@ -93,6 +137,7 @@ export interface Database {
         }
         Insert: {
           address: string
+          cleaned_name: string
           created_at?: string
           date: string
           description: string
@@ -111,6 +156,7 @@ export interface Database {
         }
         Update: {
           address?: string
+          cleaned_name?: string
           created_at?: string
           date?: string
           description?: string
@@ -199,6 +245,8 @@ export interface Database {
           name: string
           price: number
           quantity: number | null
+          stripe_price_id: string | null
+          stripe_product_id: string | null
         }
         Insert: {
           created_at?: string
@@ -207,6 +255,8 @@ export interface Database {
           name?: string
           price: number
           quantity?: number | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
         }
         Update: {
           created_at?: string
@@ -215,6 +265,8 @@ export interface Database {
           name?: string
           price?: number
           quantity?: number | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
         }
         Relationships: [
           {
@@ -222,6 +274,42 @@ export interface Database {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      vendor_applications: {
+        Row: {
+          created_at: string
+          event_id: string
+          status: number
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          status?: number
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          status?: number
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_applications_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_applications_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
