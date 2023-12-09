@@ -3,10 +3,18 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
+  const event_cleaned_name = params.id;
+
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("cleaned_name", event_cleaned_name)
+    .single();
+
   const { data: ticketsData, error } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", params.id);
+    .eq("event_id", event.id);
 
   return (
     <main className="m-auto max-w-lg">

@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: event } = await supabase
     .from("events")
     .select("*")
-    .eq("id", params.id)
+    .eq("cleaned_name", params.id)
     .single();
 
   // redirect if not organizer to another page
@@ -25,13 +25,13 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: tickets } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", params.id);
+    .eq("event_id", event.id);
 
   // load the event tags
   const { data: pTags } = await supabase
     .from("event_tags")
     .select("*,tags(name)")
-    .eq("event_id", params.id);
+    .eq("event_id", event.id);
 
   // load the event poster
   const {

@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
 import { v4 as uuidv4 } from "uuid";
-import copy from "copy-to-clipboard";
 
-export default function InviteLink({ event_id }: { event_id: string }) {
+export default function InviteLink({ event_url }: { event_url: string }) {
   const { toast } = useToast();
   const supabase = createClient();
 
@@ -31,7 +30,7 @@ export default function InviteLink({ event_id }: { event_id: string }) {
         const inviteToken = uuidv4();
         await createInviteToken(inviteToken);
 
-        const inviteLink = `${window.location.origin}/vendor-invite?invite_token=${inviteToken}&event_id=${event_id}`;
+        const inviteLink = `${window.location.origin}/vendor-invite?invite_token=${inviteToken}&event_name=${event_url}`;
         setTimeout(() => {
           navigator.clipboard.writeText(inviteLink);
         }, 0);

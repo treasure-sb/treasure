@@ -8,16 +8,22 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function Page({ params }: { params: { id: string } }) {
   const supabase = createClient();
-  const event_id = params.id;
+  const event_cleaned_name = params.id;
   const [ticketGroups, setTicketGroups] = useState<Tables<"tickets">[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchTicketGroups = async () => {
+      const { data: event, error: eventError } = await supabase
+        .from("events")
+        .select("*")
+        .eq("cleaned_name", event_cleaned_name)
+        .single();
+
       const { data, error } = await supabase
         .from("tickets")
         .select("*")
-        .eq("event_id", event_id);
+        .eq("event_id", event.id);
 
       if (data) {
         setTicketGroups(data);
