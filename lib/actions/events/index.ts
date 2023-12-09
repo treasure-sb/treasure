@@ -24,6 +24,20 @@ const cleanedEventUrlName = (event_name: string, event_date: Date) => {
   return `${cleanedName}-${cleanedDate}`;
 };
 
+const checkPreviousEvents = async (event_name: string, event_date: Date) => {
+  const supabase = await createSupabaseServerClient();
+  const formattedDate = format(event_date, "yyyy-MM-dd");
+  const { data: events, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("name", event_name)
+    .eq("date", formattedDate);
+  if (!events || events.length === 0) {
+    return 0;
+  }
+  return events.length + 1;
+};
+
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
   const {
@@ -67,8 +81,14 @@ const createEvent = async (values: EventForm) => {
   await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
   await publishTicketTailorEvent(ticketTailorEventData.id);
 
+  // check if there are previous events with the same name and same date
+  const previousEvents = await checkPreviousEvents(name, date as Date);
+
   // create cleaned event name
-  const cleanedEventName = cleanedEventUrlName(name, date as Date);
+  let cleanedEventName = cleanedEventUrlName(name, date as Date);
+  if (previousEvents > 0) {
+    cleanedEventName = `${cleanedEventName}-${previousEvents}`;
+  }
 
   // create the event on supabase
   const { data, error } = await supabase
