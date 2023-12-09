@@ -142,7 +142,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               <AccordionContent className="flex flex-col space-y-4 items-center">
                 <Link
                   className="w-[90%]"
-                  href={`/profile/events/organizer/${event.id}/event-analytics`}
+                  href={`/profile/events/organizer/${event.cleaned_name}/event-analytics`}
                 >
                   <Button className="w-full" variant={"ghost"}>
                     Event Analytics
@@ -150,7 +150,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 </Link>
                 <Link
                   className="w-[90%]"
-                  href={`/profile/events/organizer/${event.id}/edit-event`}
+                  href={`/profile/events/organizer/${event.cleaned_name}/edit-event`}
                 >
                   <Button className="w-full" variant={"ghost"}>
                     Edit Event
@@ -175,7 +175,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               <AccordionContent className="flex flex-col space-y-4 items-center">
                 <Link
                   className="w-[90%]"
-                  href={`/profile/events/organizer/${event.id}/message`}
+                  href={`/profile/events/organizer/${event.cleaned_name}/message`}
                 >
                   <Button className="w-full" variant={"ghost"}>
                     Message Guests
@@ -188,7 +188,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 </Link>
                 <Link
                   className=" w-[90%] relative"
-                  href={`/profile/events/organizer/${event.id}/vendor-list`}
+                  href={`/profile/events/organizer/${event.cleaned_name}/vendor-list`}
                 >
                   <Button className="w-full" variant={"ghost"}>
                     Vendor List

@@ -66,7 +66,7 @@ export default async function ListUserEvents({
               <div className="text-center mt-10">
                 You are currently hosting no events
               </div>
-              <Link href="/events/create" className="m-auto">
+              <Link href="/profile/create-event" className="m-auto">
                 <Button className="w-40">Create Event</Button>
               </Link>
             </>

@@ -29,7 +29,12 @@ const vendorsWithAvatars = async (vendors: any) => {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
-  const event_id = params.id;
+  const event_cleaned_name = params.id;
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("cleaned_name", event_cleaned_name)
+    .single();
 
   const {
     data: { user },
@@ -42,7 +47,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: vendorData, error: vendorError } = await supabase
     .from("event_vendors")
     .select("profiles(*)")
-    .eq("event_id", event_id);
+    .eq("event_id", event.id);
 
   const vendors = vendorData?.map((data) => data.profiles);
 
@@ -56,7 +61,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     await supabase
       .from("vendor_applications")
       .select("profiles(*)")
-      .eq("event_id", event_id);
+      .eq("event_id", event.id);
 
   const vendorApplications = vendorApplicationData?.map(
     (data) => data.profiles
@@ -74,13 +79,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("event_vendors")
-      .insert([{ event_id: event_id, vendor_id: vendor_id }]);
+      .insert([{ event_id: event.id, vendor_id: vendor_id }]);
     await supabase
       .from("vendor_applications")
       .delete()
       .eq("vendor_id", vendor_id)
-      .eq("event_id", event_id);
-    revalidatePath(`/events/${event_id}/vendor-list`);
+      .eq("event_id", event.id);
+    revalidatePath(`/events/${event_cleaned_name}/vendor-list`);
   };
 
   const handleDecline = async (vendor_id: string, event_id: string) => {
@@ -98,7 +103,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main className="max-w-xl m-auto w-full">
       <div className="flex w-full justify-between align-middle mb-6">
         <h1 className="font-semibold text-xl my-auto">Vendor List</h1>
-        <InviteLink event_id={event_id} />
+        <InviteLink event_url={event_cleaned_name} />
       </div>
       {publicVendors.length == 0 ? (
         <div className="text-lg">Your event currently has no vendors</div>
@@ -143,13 +148,13 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <AcceptDeclineButton
                   handleClick={handleAccept}
                   vendor_id={vendor.id}
-                  event_id={event_id}
+                  event_id={event.id}
                   type="0"
                 />
                 <AcceptDeclineButton
                   handleClick={handleDecline}
                   vendor_id={vendor.id}
-                  event_id={event_id}
+                  event_id={event.id}
                   type="1"
                 />
               </div>

@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { invite_token: string; event_id: string };
+  searchParams: { invite_token: string; event_name: string };
 }) {
   const inviteToken = searchParams.invite_token || null;
-  const eventId = searchParams.event_id || null;
-  if (!inviteToken || !eventId) {
+  const eventUrl = searchParams.event_name || null;
+  if (!inviteToken || !eventUrl) {
     redirect("/");
   }
 
@@ -20,7 +20,7 @@ export default async function Page({
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("id", eventId)
+    .eq("cleaned_name", eventUrl)
     .single();
 
   if (eventError) {
@@ -52,15 +52,15 @@ export default async function Page({
       data: { user },
     } = await validateUser();
     if (!user) {
-      redirect(`/signup?invite_token=${inviteToken}&event_id=${eventId}`);
+      redirect(`/signup?invite_token=${inviteToken}&event_name=${eventUrl}`);
     }
 
     const supabase = await createSupabaseServerClient();
     const vendorId = user.id;
     await supabase
       .from("event_vendors")
-      .insert([{ event_id: eventId, vendor_id: vendorId }]);
-    redirect(`/events/${eventId}`);
+      .insert([{ event_id: eventData.id, vendor_id: vendorId }]);
+    redirect(`/events/${eventUrl}`);
   };
 
   const handleDecline = async () => {
