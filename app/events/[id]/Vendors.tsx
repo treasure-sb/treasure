@@ -29,7 +29,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
         {vendorsWithPublicUrls && vendorsWithPublicUrls.length > 0 ? (
           vendorsWithPublicUrls.map((vendor: any) => (
             <div className="flex flex-col space-y-1 items-center">
-              <Link href={`/users/${vendor.id}`}>
+              <Link href={`/users/${vendor.username}`}>
                 <Avatar className="h-24 w-24 m-auto">
                   <AvatarImage src={vendor.vendorPublicUrl} />
                   <AvatarFallback>

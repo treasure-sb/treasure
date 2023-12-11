@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: userData, error: userError } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", params.id)
+    .eq("username", params.id)
     .single();
 
   const user: Tables<"profiles"> = userData;
