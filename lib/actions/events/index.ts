@@ -1,7 +1,12 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { EventForm, EventFormTicket, EventFormTag } from "@/types/event";
+import {
+  EventForm,
+  EventFormTicket,
+  EventFormTag,
+  EventFormTable,
+} from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   createTicketTailorEvent,
@@ -115,6 +120,7 @@ const createEvent = async (values: EventForm) => {
   if (data) {
     const event: Tables<"events"> = data[0];
     await createTickets(values.tickets, event.id);
+    await createTableTicket(values.tables, event.id);
     await createTags(values.tags, event.id);
   }
   if (!error) {
@@ -148,6 +154,27 @@ const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
           price: ticket_price,
           quantity: ticket_quantity,
           name: ticket_name,
+          event_id,
+        },
+      ])
+      .select();
+  });
+};
+
+const createTableTicket = async (
+  tables: EventFormTable[],
+  event_id: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  tables.forEach(async (table) => {
+    const { table_price, table_quantity } = table;
+    const { data: ticketsData, error } = await supabase
+      .from("tickets")
+      .insert([
+        {
+          price: table_price,
+          quantity: table_quantity,
+          name: "Table",
           event_id,
         },
       ])

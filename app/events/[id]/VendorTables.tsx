@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 import { User } from "@supabase/supabase-js";
+import { table } from "console";
 
 export default async function VendorTables({
   event,
@@ -48,10 +49,22 @@ export default async function VendorTables({
     }
   };
 
+  const { data: table, error } = await supabase
+    .from("tickets")
+    .select("*")
+    .eq("event_id", event.id)
+    .eq("name", "Table")
+    .single();
+
+  let tablePrice = "100";
+  if (!error) {
+    tablePrice = table.price;
+  }
+
   return (
     <>
       <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
-        <h1 className="text-lg">Tables from $50</h1>
+        <h1 className="text-lg">Tables from ${tablePrice}</h1>
         {applicantData ? (
           <Button
             disabled

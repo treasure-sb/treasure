@@ -16,7 +16,8 @@ export default async function Tickets({ event }: { event: Tables<"events"> }) {
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", event.id);
+    .eq("event_id", event.id)
+    .neq("name", "Table");
 
   const cheapestTicket = tickets?.reduce((prev: any, cur: any) => {
     return prev.price < cur.price ? prev : cur;
