@@ -4,6 +4,11 @@ export interface EventFormTicket {
   ticket_name: string;
 }
 
+export interface EventFormTable {
+  table_price: string;
+  table_quantity: string;
+}
+
 export interface EventFormTag {
   tag_name: string;
   tag_id: string;
@@ -20,6 +25,7 @@ export interface EventForm {
   start_time: string;
   end_time: string;
   tickets: EventFormTicket[];
+  tables: EventFormTable[];
   tags: EventFormTag[];
   poster_url: File | string | undefined;
   venue_map_url: File | string | undefined;
