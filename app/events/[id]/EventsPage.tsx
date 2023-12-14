@@ -15,6 +15,7 @@ import VendorTables from "./VendorTables";
 import Vendors from "./Vendors";
 import HostedBy from "./HostedBy";
 import { validateUser } from "@/lib/actions/auth";
+import ColorThief from "./ColorThief";
 
 export default async function EventsPage({
   event,
@@ -40,14 +41,15 @@ export default async function EventsPage({
   return (
     <main className="w-full lg:w-fit m-auto">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
-        <div className="lg:max-w-lg">
+        <div className="relative lg:sticky lg:top-0 h-fit max-w-lg mx-auto lg:pt-8">
           <Image
-            className="rounded-xl mb-6 lg:mb-0 m-auto lg:sticky lg:top-10"
+            className="rounded-xl mb-6 lg:mb-0 m-auto"
             alt="event poster image"
             src={publicPosterUrl}
             width={500}
             height={500}
           />
+          <ColorThief public_url={publicPosterUrl} />
         </div>
         <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8">
           <h1 className="text-4xl font-semibold">{event.name}</h1>
