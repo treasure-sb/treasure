@@ -22,7 +22,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
     <>
       <h1 className="font-semibold text-2xl">Hosted By</h1>
       <div className="flex flex-col space-y-1 items-center">
-        <Link href={`/users/${user.id}`}>
+        <Link href={`/users/${user.username}`}>
           <Avatar className="h-24 w-24 m-auto">
             <AvatarImage src={organizerPublicUrl} />
             <AvatarFallback>
