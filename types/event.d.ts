@@ -68,4 +68,5 @@ export interface EditEventForm {
   date: Date | undefined;
   start_time: string;
   end_time: string;
+  poster_url: string | File;
 }

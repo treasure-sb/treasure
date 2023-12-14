@@ -23,6 +23,7 @@ const editEvent = async (
     date,
     start_time,
     end_time,
+    poster_url,
   } = values;
   const {
     data: { user },
@@ -67,6 +68,7 @@ const editEvent = async (
       date,
       start_time,
       end_time,
+      poster_url,
     })
     .eq("id", id)
     .select();
