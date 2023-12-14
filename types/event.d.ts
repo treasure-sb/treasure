@@ -44,7 +44,7 @@ export interface EventPreview {
   tickets: {
     ticket_name: string;
     ticket_price: number;
-    ticket_quantity: string;
+    ticket_quantity: number | null;
   }[];
   tags: {
     tag_name: string;

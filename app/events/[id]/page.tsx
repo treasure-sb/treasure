@@ -1,5 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventsPage from "@/app/events/[id]/EventsPage";
+import { redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
@@ -8,6 +9,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     .select("*, vendors:profiles!event_vendors(*)")
     .eq("cleaned_name", params.id)
     .single();
+
+  if (eventError) {
+    redirect("/events");
+  }
 
   return <EventsPage key={event.id} event={event} />;
 }

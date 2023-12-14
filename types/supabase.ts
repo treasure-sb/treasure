@@ -9,49 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      event_attendees: {
-        Row: {
-          attendee_id: string
-          event_id: string
-          order_id: string
-          ticket_id: string
-        }
-        Insert: {
-          attendee_id: string
-          event_id: string
-          order_id: string
-          ticket_id: string
-        }
-        Update: {
-          attendee_id?: string
-          event_id?: string
-          order_id?: string
-          ticket_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "event_attendees_attendee_id_fkey"
-            columns: ["attendee_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_attendees_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_attendees_ticket_id_fkey"
-            columns: ["ticket_id"]
-            isOneToOne: false
-            referencedRelation: "tickets"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       event_tags: {
         Row: {
           event_id: string
@@ -81,6 +38,62 @@ export interface Database {
             columns: ["tag_id"]
             isOneToOne: false
             referencedRelation: "tags"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      event_tickets: {
+        Row: {
+          attendee_id: string
+          event_id: string
+          id: string
+          order_id: string
+          ticket_id: string
+          valid: boolean
+        }
+        Insert: {
+          attendee_id: string
+          event_id: string
+          id?: string
+          order_id: string
+          ticket_id: string
+          valid?: boolean
+        }
+        Update: {
+          attendee_id?: string
+          event_id?: string
+          id?: string
+          order_id?: string
+          ticket_id?: string
+          valid?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_attendee_id_fkey"
+            columns: ["attendee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_tickets_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_tickets_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_tickets_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
             referencedColumns: ["id"]
           }
         ]
@@ -129,7 +142,7 @@ export interface Database {
           lng: number
           name: string
           organizer_id: string
-          poster_url: string | null
+          poster_url: string
           start_time: string
           ticket_tailor_event_id: string | null
           venue_map_url: string | null
@@ -148,7 +161,7 @@ export interface Database {
           lng: number
           name: string
           organizer_id: string
-          poster_url?: string | null
+          poster_url: string
           start_time: string
           ticket_tailor_event_id?: string | null
           venue_map_url?: string | null
@@ -167,7 +180,7 @@ export interface Database {
           lng?: number
           name?: string
           organizer_id?: string
-          poster_url?: string | null
+          poster_url?: string
           start_time?: string
           ticket_tailor_event_id?: string | null
           venue_map_url?: string | null
@@ -183,6 +196,32 @@ export interface Database {
           }
         ]
       }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string
@@ -193,6 +232,7 @@ export interface Database {
           id: string
           instagram: string | null
           last_name: string
+          role: string
           twitter: string | null
           username: string
         }
@@ -205,6 +245,7 @@ export interface Database {
           id: string
           instagram?: string | null
           last_name: string
+          role?: string
           twitter?: string | null
           username: string
         }
@@ -217,10 +258,19 @@ export interface Database {
           id?: string
           instagram?: string | null
           last_name?: string
+          role?: string
           twitter?: string | null
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       tags: {
         Row: {

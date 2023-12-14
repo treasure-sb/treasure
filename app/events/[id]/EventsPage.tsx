@@ -6,15 +6,16 @@ import {
   formatStartTime,
   formatDate,
 } from "@/lib/helpers/events";
+import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { getProfile } from "@/lib/helpers/profiles";
 import Link from "next/link";
 import Tickets from "./Tickets";
-import { Separator } from "@/components/ui/separator";
 import Tags from "./Tags";
 import VendorTables from "./VendorTables";
 import Vendors from "./Vendors";
 import HostedBy from "./HostedBy";
-import { validateUser } from "@/lib/actions/auth";
 import ColorThief from "./ColorThief";
 
 export default async function EventsPage({
@@ -22,9 +23,11 @@ export default async function EventsPage({
 }: {
   event: Tables<"events">;
 }) {
-  const { data } = await validateUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await validateUser();
 
+  const profile = await getProfile(user?.id);
   const publicPosterUrl = await getPublicPosterUrl(event);
   const publicVenueMapUrl = await getPublicVenueMapUrl(event);
   const formattedDate = formatDate(event.date);
@@ -60,8 +63,10 @@ export default async function EventsPage({
             </h1>
           </div>
           <Tags event={event} />
-          <Tickets event={event} />
-          <VendorTables event={event} />
+          <div className="space-y-2">
+            <Tickets event={event} />
+            <VendorTables event={event} />
+          </div>
           <Separator />
           <div>
             <h1 className="font-semibold text-2xl">About</h1>
@@ -106,10 +111,10 @@ export default async function EventsPage({
           </div>
         </div>
       </div>
-      {organizer ? (
+      {organizer || profile.role === "admin" ? (
         <div className="fixed right-6 bottom-6">
           <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
-            <div className="opacity-80 sm:opacity-60 hover:opacity-100">
+            <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
               <svg
                 width="70"
                 height="70"

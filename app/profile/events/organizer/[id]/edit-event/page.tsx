@@ -1,23 +1,26 @@
 import { redirect } from "next/navigation";
+import { validateUser } from "@/lib/actions/auth";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { getProfile } from "@/lib/helpers/profiles";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEventForm from "./EditEventForm";
-import { validateUser } from "@/lib/actions/auth";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const { data } = await validateUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await validateUser();
   if (!user) {
-    redirect("/account");
+    redirect("/login");
   }
   const supabase = await createSupabaseServerClient();
-  const { data: event } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", params.id)
-    .single();
+  const profile = await getProfile(user.id);
+  const { event, eventError } = await getEventFromCleanedName(params.id);
+  if (eventError) {
+    redirect("/events");
+  }
 
   // redirect if not organizer to another page
-  if (event.organizer_id != user.id) {
+  if (event.organizer_id !== user.id && profile.role !== "admin") {
     redirect("/events");
   }
 
