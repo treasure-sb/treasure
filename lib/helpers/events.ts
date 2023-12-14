@@ -55,9 +55,22 @@ const formatDate = (date: string) => {
   return formattedDate;
 };
 
+const getEventFromCleanedName = async (cleanedName: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("cleaned_name", cleanedName)
+    .single();
+
+  const event: Tables<"events"> = eventData;
+  return { event, eventError };
+};
+
 export {
   getPublicPosterUrl,
   getPublicVenueMapUrl,
   formatStartTime,
+  getEventFromCleanedName,
   formatDate,
 };

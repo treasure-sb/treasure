@@ -4,11 +4,12 @@ import { validateUser } from "@/lib/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function LoggedInHeader() {
-  const { data } = await validateUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await validateUser();
 
   const supabase = await createSupabaseServerClient();
-  const { data: profile, error: fghfgh } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user?.id)
@@ -20,9 +21,16 @@ export default async function LoggedInHeader() {
 
   return (
     <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
-      <Link href="/" className="font-bold text-3xl">
-        Treasure
-      </Link>
+      <div className="relative">
+        <Link href="/" className="font-bold text-3xl">
+          Treasure
+        </Link>
+        {profile.role === "admin" && (
+          <p className="text-primary font-bold absolute bottom-[-14px] right-[-26px]">
+            admin
+          </p>
+        )}
+      </div>
       <Link href="/profile">
         {profile.avatar_url ? (
           <Avatar className="h-14 w-14">

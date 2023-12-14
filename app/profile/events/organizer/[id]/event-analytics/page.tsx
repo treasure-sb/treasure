@@ -1,29 +1,33 @@
 import AnalyticsCard from "./AnalyticsCard";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { Tables } from "@/types/supabase";
+import { redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
+  const eventCleanedName = params.id;
   const supabase = await createSupabaseServerClient();
-  const event_cleaned_name = params.id;
+  const { event, eventError } = await getEventFromCleanedName(eventCleanedName);
+  if (eventError) {
+    redirect("/events");
+  }
 
-  const { data: event, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", event_cleaned_name)
-    .single();
-
-  const { data: ticketsData, error } = await supabase
+  const { data: ticketsData, error: ticketsError } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", event.id);
+    .eq("event_id", event.id)
+    .single();
+
+  const tickets: Tables<"tickets">[] = ticketsData;
 
   return (
     <main className="m-auto max-w-lg">
       <div className="flex flex-col w-full space-y-4">
-        {ticketsData &&
-          ticketsData.map((ticket) => (
+        {tickets &&
+          tickets.map((ticket: Tables<"tickets">) => (
             <AnalyticsCard
               ticket={ticket}
-              sold={Math.round(ticket.quantity * 0.6)}
+              sold={ticket.quantity ? Math.round(ticket.quantity * 0.6) : 0}
             />
           ))}
       </div>
