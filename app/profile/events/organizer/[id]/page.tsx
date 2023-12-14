@@ -5,10 +5,11 @@ import { redirect } from "next/navigation";
 import { Accordion } from "@/components/ui/accordion";
 import { formatDate } from "@/lib/helpers/events";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
+import { getProfile } from "@/lib/helpers/profiles";
+import { validateUser } from "@/lib/actions/auth";
 import AttendeesOptions from "./AttendeesOptions";
 import EventOptions from "./EventOptions";
 
-// redirect if not organizer to another page
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
   const { data, error: eventError } = await supabase
@@ -22,6 +23,20 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   const event: Tables<"events"> = data;
+
+  const {
+    data: { user },
+  } = await validateUser();
+  if (!user) {
+    redirect("/events");
+  }
+
+  // redirect if user is not organizer or admin
+  const profile = await getProfile(user.id);
+  if (event.organizer_id !== user.id && profile.role !== "admin") {
+    redirect("/events");
+  }
+
   const shortFormattedDate = formatDate(event.date);
   const publicPosterUrl = await getPublicPosterUrl(event);
 
