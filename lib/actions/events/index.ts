@@ -15,6 +15,7 @@ import {
   createTicketTailorEventOccurence,
 } from "../ticket-tailor";
 import format from "date-fns/format";
+import EditEventForm from "@/app/profile/events/organizer/[id]/edit-event/EditEventForm";
 
 // Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
 const cleanedEventUrlName = (event_name: string, event_date: Date) => {
@@ -84,6 +85,17 @@ const createEvent = async (values: EventForm) => {
     ticketTailorEventOccurence
   );
   await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
+
+  // Create table tickets in ticket tailor
+  const table = [
+    {
+      ticket_name: "Table",
+      ticket_price: values.tables[0].table_price,
+      ticket_quantity: values.tables[0].table_quantity,
+    },
+  ] as EventFormTicket[];
+  await createTicketTailorTickets(table, ticketTailorEventData.id);
+
   await publishTicketTailorEvent(ticketTailorEventData.id);
 
   // check if there are previous events with the same name and same date
