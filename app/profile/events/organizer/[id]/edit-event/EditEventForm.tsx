@@ -68,13 +68,29 @@ const eventSchema = z.object({
   end_time: z.string().refine((value) => isValidTime(value), {
     message: "Must be a valid time (HH:mm)",
   }),
+  poster_url: z.union([z.instanceof(File), z.string()]),
 });
+
+const replacePoster = async (posterUrl: string, newPosterFile: File) => {
+  const supabase = createClient();
+
+  // remove old poster
+  await supabase.storage.from("posters").remove([posterUrl]);
+
+  // upload new poster
+  const { data, error } = await supabase.storage
+    .from("posters")
+    .upload(`posters${Date.now()}`, newPosterFile);
+
+  return data?.path || "";
+};
 
 export default function EditEventForm({
   event,
   posterUrl,
   priorTags,
 }: EventProps) {
+  const [imageUrl, setImageUrl] = useState<string>(posterUrl);
   const [tags, setTags] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
   const [event_tags, setEventTags] = useState<any[]>(
@@ -96,6 +112,7 @@ export default function EditEventForm({
       date: fixDate(event.date),
       start_time: event.start_time.slice(0, event.start_time.lastIndexOf(":")),
       end_time: event.end_time.slice(0, event.end_time.lastIndexOf(":")),
+      poster_url: event.poster_url,
     },
   });
 
@@ -131,7 +148,16 @@ export default function EditEventForm({
       ...form.getValues(),
       ...venueLocation,
     };
-    const supabase = createClient();
+
+    // replace poster if a new poster was uploaded
+    if (imageUrl !== posterUrl) {
+      const path = await replacePoster(
+        event.poster_url,
+        newForm.poster_url as File
+      );
+      newForm.poster_url = path;
+    }
+
     await editEvent(newForm, event.id, event_tags);
   };
 
@@ -144,6 +170,53 @@ export default function EditEventForm({
         >
           <div className="space-y-6">
             <h1 className="text-3xl font-semibold">Edit Event</h1>
+            <FormField
+              control={form.control}
+              name="poster_url"
+              render={({ field }) => (
+                <FormItem className="flex mx-auto justify-center items-center h-full w-full">
+                  <FormLabel
+                    className="hover:cursor-pointer relative group w-full"
+                    htmlFor="poster"
+                  >
+                    {imageUrl && (
+                      <div>
+                        <img
+                          src={imageUrl}
+                          alt="Uploaded image"
+                          className="w-full h-auto rounded-md"
+                        />
+                        <div className="w-full h-full absolute top-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center">
+                          <h1 className="hidden group-hover:block">
+                            Replace Poster
+                          </h1>
+                        </div>
+                      </div>
+                    )}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="poster"
+                      className="hidden"
+                      placeholder="Ticket Quantity"
+                      type="file"
+                      multiple={false}
+                      accept="image/png, image/jpeg"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (file) {
+                          setImageUrl(URL.createObjectURL(file));
+                        }
+                        field.onChange(file);
+                      }}
+                    />
+                  </FormControl>
+                  <div className="h-1">
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="name"
