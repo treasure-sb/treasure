@@ -1,6 +1,13 @@
-export default function Search({ fill }: { fill: string }) {
+export default function Search({
+  fill,
+  className,
+}: {
+  fill: string;
+  className?: string;
+}) {
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       width="30"
       height="30"

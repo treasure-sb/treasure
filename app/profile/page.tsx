@@ -51,6 +51,13 @@ export default async function Page() {
             Edit Profile
           </Button>
         </Link>
+        {profile.role === "admin" && (
+          <Link href="/profile/featured-events" className="">
+            <Button className="w-full" variant={"secondary"}>
+              Featured Events
+            </Button>
+          </Link>
+        )}
         <form
           className="border-b-2 border-b-secondary pb-6 mb-0"
           action={logoutUser}

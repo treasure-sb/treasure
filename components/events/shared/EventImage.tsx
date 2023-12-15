@@ -5,7 +5,7 @@ import { Tables } from "@/types/supabase";
 export default async function EventImage({
   event,
 }: {
-  event: Tables<"events">;
+  event: Partial<Tables<"events">>;
 }) {
   const publicUrl = await getPublicPosterUrl(event);
 

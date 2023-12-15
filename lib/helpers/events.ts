@@ -1,7 +1,7 @@
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "../../utils/supabase/server";
 
-const getPublicPosterUrl = async (event: Tables<"events">) => {
+const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
   const supabase = await createSupabaseServerClient();
   let publicPosterUrl = "";
   if (event.poster_url) {
