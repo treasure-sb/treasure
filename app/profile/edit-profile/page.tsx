@@ -1,15 +1,11 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditProfileForm from "./EditProfileForm";
 import { validateUser } from "@/lib/actions/auth";
-import { redirect } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 
 export default async function Page() {
-  const {
-    data: { user },
-  } = await validateUser();
-  if (!user) {
-    redirect("/login");
-  }
+  const { data: userData } = await validateUser();
+  const user: User = userData.user as User;
 
   const supabase = await createSupabaseServerClient();
   const { data: profile, error } = await supabase
