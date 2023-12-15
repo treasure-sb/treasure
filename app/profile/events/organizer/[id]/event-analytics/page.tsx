@@ -3,27 +3,12 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { validateUser } from "@/lib/actions/auth";
-import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const eventCleanedName = params.id;
   const supabase = await createSupabaseServerClient();
   const { event, eventError } = await getEventFromCleanedName(eventCleanedName);
   if (eventError) {
-    redirect("/events");
-  }
-
-  const {
-    data: { user },
-  } = await validateUser();
-  if (!user) {
-    redirect("/events");
-  }
-
-  // redirect if user is not organizer or admin
-  const profile = await getProfile(user.id);
-  if (event.organizer_id !== user.id && profile.role !== "admin") {
     redirect("/events");
   }
 

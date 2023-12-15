@@ -1,5 +1,32 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import createSupabaseServerClient from "./utils/supabase/server";
+import { getProfile } from "./lib/helpers/profiles";
+
+async function isUserOrganzierOrAdmin(
+  userId: string | undefined,
+  eventName: string
+) {
+  const profile = await getProfile(userId);
+  const supabase = await createSupabaseServerClient();
+  const { data: event } = await supabase
+    .from("events")
+    .select("organizer_id")
+    .eq("cleaned_name", eventName)
+    .single();
+
+  return event && (event.organizer_id === userId || profile.role === "admin");
+}
+
+function isOrganizerPage(pathname: string) {
+  const segments = pathname.split("/");
+  return (
+    segments.length > 3 &&
+    segments[1] === "profile" &&
+    segments[2] === "events" &&
+    segments[3] === "organizer"
+  );
+}
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -55,20 +82,30 @@ export async function middleware(request: NextRequest) {
   );
 
   const session = await supabase.auth.getSession();
+  const pathname = request.nextUrl.pathname;
+
+  // if the user is logged in and the route is /login or /signup, redirect to /
   if (
     session.data.session &&
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/signup")
+    (pathname === "/login" || pathname === "/signup")
   ) {
     response = NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (
-    !session.data.session &&
-    request.nextUrl.pathname === "/profile/create-event"
-  ) {
+  // if the user is not logged in and the route is /profile, redirect to /login
+  if (!session.data.session && pathname.includes("/profile")) {
     response = NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // check to see if the route is /profile/events/organizer/[id]/...
+  // if so, check to see if the user is the organizer of the event or admin
+  // if not, redirect to /profile/events
+  if (isOrganizerPage(pathname)) {
+    const userId = session.data.session?.user.id;
+    const eventName = request.nextUrl.pathname.split("/")[4];
+    if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
+      response = NextResponse.redirect(new URL("/profile/events", request.url));
+    }
+  }
   return response;
 }

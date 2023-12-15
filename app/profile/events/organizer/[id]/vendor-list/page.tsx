@@ -4,11 +4,9 @@ import InviteLink from "./InviteLink";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AcceptDeclineButton from "./AcceptDeclineButton";
-import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
-import { getProfile } from "@/lib/helpers/profiles";
 
 // maps each vendor to their profile picture
 const vendorsWithAvatars = async (vendors: any) => {
@@ -34,19 +32,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   const eventCleanedName = params.id;
   const { event, eventError } = await getEventFromCleanedName(eventCleanedName);
   if (eventError) {
-    redirect("/events");
-  }
-
-  const {
-    data: { user },
-  } = await validateUser();
-  if (!user) {
-    redirect("/events");
-  }
-
-  // redirect if user is not organizer or admin
-  const profile = await getProfile(user.id);
-  if (event.organizer_id !== user.id && profile.role !== "admin") {
     redirect("/events");
   }
 
