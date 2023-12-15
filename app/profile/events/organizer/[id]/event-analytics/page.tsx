@@ -3,7 +3,6 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { validateUser } from "@/lib/actions/auth";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const eventCleanedName = params.id;
