@@ -1,4 +1,3 @@
-import { Lexend_Deca } from "next/font/google";
 import { Raleway } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -12,12 +11,6 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-const lexend = Lexend_Deca({
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  style: "normal",
-});
-
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
@@ -26,7 +19,10 @@ const raleway = Raleway({
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Treasure",
+  title: {
+    default: "Treasure",
+    template: "%s | Treasure",
+  },
   description: "Events for everyone",
 };
 
