@@ -136,7 +136,7 @@ export interface Database {
           date: string
           description: string
           end_time: string
-          featured: number | null
+          featured: number
           id: string
           lat: number
           lng: number
@@ -155,7 +155,7 @@ export interface Database {
           date: string
           description: string
           end_time: string
-          featured?: number | null
+          featured?: number
           id?: string
           lat: number
           lng: number
@@ -174,7 +174,7 @@ export interface Database {
           date?: string
           description?: string
           end_time?: string
-          featured?: number | null
+          featured?: number
           id?: string
           lat?: number
           lng?: number

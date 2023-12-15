@@ -82,7 +82,7 @@ const getAllEventData = async (search: string, numEvents: number) => {
     .from("events")
     .select("*")
     .gte("date", today)
-    .order("featured", { ascending: true })
+    .order("featured", { ascending: false })
     .order("date", { ascending: true })
     .ilike("name", `%${search}%`)
     .range(0, numEvents);
