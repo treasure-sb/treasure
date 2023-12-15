@@ -4,10 +4,11 @@ import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const { data } = await validateUser();
-  const user = data.user;
+  const {
+    data: { user },
+  } = await validateUser();
   if (!user) {
-    redirect("/account");
+    redirect("/login");
   }
 
   const supabase = await createSupabaseServerClient();

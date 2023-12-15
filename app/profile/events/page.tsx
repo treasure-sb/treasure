@@ -1,10 +1,9 @@
 import { validateUser } from "@/lib/actions/auth";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import LoadingListEvents from "@/components/events/shared/LoadingListEvents";
 import { User } from "@supabase/supabase-js";
 import Filters from "../Filters";
 import ListUserEvents from "./ListUserEvents";
+import LoadingListEvents from "@/components/events/shared/LoadingListEvents";
 
 export default async function Page({
   searchParams,
@@ -12,10 +11,7 @@ export default async function Page({
   searchParams?: { filter?: string };
 }) {
   const { data: userData } = await validateUser();
-  if (!userData.user) {
-    redirect("/account");
-  }
-  const user: User = userData.user;
+  const user: User = userData.user as User;
 
   return (
     <main className="w-full max-w-6xl m-auto">

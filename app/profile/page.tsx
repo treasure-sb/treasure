@@ -7,15 +7,11 @@ import { getProfile } from "@/lib/helpers/profiles";
 import { validateUser, logoutUser } from "@/lib/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { redirect } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 
 export default async function Page() {
-  const {
-    data: { user },
-  } = await validateUser();
-  if (!user) {
-    redirect("/login");
-  }
+  const { data: userData } = await validateUser();
+  const user: User = userData.user as User;
 
   const supabase = await createSupabaseServerClient();
   const profile = await getProfile(user.id);
