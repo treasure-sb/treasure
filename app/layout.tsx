@@ -7,10 +7,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
-
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
