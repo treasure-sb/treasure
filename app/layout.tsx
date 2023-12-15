@@ -18,7 +18,7 @@ const raleway = Raleway({
 });
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL("https://ontreasure.xyz"),
   title: {
     default: "Treasure",
     template: "%s | Treasure",
