@@ -7,7 +7,6 @@ import CreateEventStepFour from "./CreateEventStepFour";
 import CreateEventStepFive from "./CreateEventStepFive";
 import CreateEventTables from "./CreateEventTables";
 import { EventForm } from "@/types/event";
-import { Progress } from "@/components/ui/progress";
 
 export default function Page() {
   const [step, setStep] = useState(1);
@@ -39,11 +38,19 @@ export default function Page() {
     venue_map_url: undefined,
   });
 
+  const progress = Array.from({ length: 6 }, (_, i) => (
+    <div
+      className={`rounded-full w-2 h-2 transition duration-500 ${
+        step === i + 1 ? "bg-primary" : "bg-secondary"
+      }`}
+    />
+  ));
+
   return (
     <main className="max-w-lg h-[calc(100vh-300px)] m-auto">
       <div className="space-y-2 mb-4">
+        <div className="flex justify-between mx-10 mb-4">{progress}</div>
         <h1 className="text-3xl font-semibold">Create Event</h1>
-        <Progress value={(step * 100) / 6} />
       </div>
       {step === 1 && (
         <CreateEventStepOne
