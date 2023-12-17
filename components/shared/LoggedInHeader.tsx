@@ -22,7 +22,7 @@ export default async function LoggedInHeader() {
   return (
     <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
       <div className="relative">
-        <Link href="/" className="font-bold text-3xl">
+        <Link href="/" className="font-semibold text-3xl">
           Treasure
         </Link>
         {profile.role === "admin" && (

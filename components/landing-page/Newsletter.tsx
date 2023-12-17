@@ -39,48 +39,45 @@ export default function Newsletter() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full my-20 space-y-6 max-w-4xl m-auto flex flex-col justify-center"
+        className="w-full my-20 justify-between flex flex-col md:flex-row"
       >
-        <h1 className="text-center text-3xl font-bold underline leading-relaxed md:text-5xl">
-          THE TRI-STATE’S TOP COLLECTOR EVENTS SENT STRAIGHT TO YOUR INBOX
-        </h1>
-        <h1 className="text-center">
-          One message a week on Sunday - so you never miss an event near you.
-        </h1>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="w-full md:w-[32rem] m-auto">
-              <FormControl>
-                <Input
-                  className="max-w-lg m-auto"
-                  placeholder="Email"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <h1 className="text-3xl font-semibold">Get the latest from Treasure</h1>
+        <div className="flex space-x-4 w-full md:max-w-md items-end">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="w-full md:w-[32rem] m-auto">
+                <FormControl>
+                  <Input
+                    className="max-w-lg m-auto"
+                    placeholder="Email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {subscribed ? (
+            <Button
+              disabled
+              type="submit"
+              className="landing-page-button border-primary w-full max-w-xl m-auto"
+              variant={"default"}
+            >
+              Subscribed
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="border-primary w-24 m-auto rounded-3xl"
+              variant={"outline"}
+            >
+              Subscribe
+            </Button>
           )}
-        />
-        {subscribed ? (
-          <Button
-            disabled
-            type="submit"
-            className="landing-page-button border-primary w-full max-w-xl m-auto"
-            variant={"default"}
-          >
-            Subscribed
-          </Button>
-        ) : (
-          <Button
-            type="submit"
-            className="landing-page-button border-primary w-full max-w-xl m-auto"
-            variant={"outline"}
-          >
-            Subscribe
-          </Button>
-        )}
+        </div>
       </form>
     </Form>
   );

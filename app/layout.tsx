@@ -9,7 +9,7 @@ import LoggedInHeader from "@/components/shared/LoggedInHeader";
 
 const raleway = Raleway({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "600", "700", "900"],
   style: "normal",
 });
 
@@ -31,19 +31,18 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={raleway.className}>
-      <body className="bg-background text-foreground p-6 px-4 flex flex-col justify-between">
+      <body className="bg-background text-foreground flex flex-col justify-between">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <div>
+          <div className="p-6 px-4">
             {user.data.user ? <LoggedInHeader /> : <Header />}
             {children}
             <Toaster />
           </div>
-          {/* <Footer /> */}
         </ThemeProvider>
         <Analytics />
       </body>
