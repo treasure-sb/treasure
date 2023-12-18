@@ -51,6 +51,11 @@ export default async function Page() {
             Edit Profile
           </Button>
         </Link>
+        <Link href={`/users/${profile.username}`} className="">
+          <Button className="w-full" variant={"secondary"}>
+            View Profile
+          </Button>
+        </Link>
         {profile.role === "admin" && (
           <Link href="/profile/featured-events" className="">
             <Button className="w-full" variant={"secondary"}>

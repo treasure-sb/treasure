@@ -226,6 +226,7 @@ export interface Database {
         Row: {
           avatar_url: string
           bio: string | null
+          created_at: string
           discriminator: number
           email: string
           first_name: string
@@ -239,6 +240,7 @@ export interface Database {
         Insert: {
           avatar_url?: string
           bio?: string | null
+          created_at?: string
           discriminator: number
           email: string
           first_name: string
@@ -252,6 +254,7 @@ export interface Database {
         Update: {
           avatar_url?: string
           bio?: string | null
+          created_at?: string
           discriminator?: number
           email?: string
           first_name?: string
