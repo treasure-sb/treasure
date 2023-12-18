@@ -1,13 +1,23 @@
-import Image from "next/image";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import Link from "next/link";
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileFilters from "./components/ProfileFilters";
+import ListProfileEvents from "./components/ListProfileEvents";
+import LoadingProfileListEvents from "./components/LoadingProfileListEvents";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import InstagramIcon from "@/components/icons/InstagramIcon";
-import TwitterIcon from "@/components/icons/TwitterIcon";
+import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: {
+    filter: string;
+  };
+}) {
+  const filter = searchParams?.filter || "Portfolio";
   const supabase = await createSupabaseServerClient();
   const { data: userData, error: userError } = await supabase
     .from("profiles")
@@ -21,42 +31,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const user: Tables<"profiles"> = userData;
 
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
-  let instaLink = "https://www.instagram.com/" + user.instagram;
-  let twitterLink = "https://www.twitter.com/" + user.twitter;
-
   return (
-    <main className="m-auto max-w-lg">
-      <div className="flex flex-col space-y-6 ">
-        <Avatar className="h-32 w-32 m-auto">
-          <AvatarImage src={publicUrl} />
-          <AvatarFallback>
-            {user.first_name[0]}
-            {user.last_name[0]}
-          </AvatarFallback>
-        </Avatar>
-        <div className="text-2xl m-auto font-semibold text-center">
-          @{user.username}
-        </div>
-        {user.instagram && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={instaLink}
-          >
-            <InstagramIcon />
-            <h1>@{user.instagram}</h1>
-          </Link>
+    <main className="m-auto max-w-lg md:max-w-6xl flex flex-col md:flex-row md:justify-between md:space-x-16">
+      <ProfileHeader user={user} />
+      <Separator className="md:hidden block my-6" />
+      <div className="mt-4 md:mt-0 text-lg w-full">
+        <ProfileFilters />
+        {filter === "Vending" && (
+          <Suspense fallback={<LoadingProfileListEvents />}>
+            <ListProfileEvents filter={filter} user={user} />
+          </Suspense>
         )}
-        {user.twitter && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={twitterLink}
-          >
-            <TwitterIcon />
-            <h1>@{user.twitter}</h1>
-          </Link>
+        {filter === "Hosting" && (
+          <Suspense fallback={<LoadingProfileListEvents />}>
+            <ListProfileEvents filter={filter} user={user} />
+          </Suspense>
         )}
       </div>
     </main>

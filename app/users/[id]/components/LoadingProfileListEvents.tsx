@@ -1,8 +1,9 @@
 import EventCardSkeleton from "@/components/events/skeletons/EventCardSkeleton";
 import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function LoadingListEvents() {
-  const CardSkeletonElements = Array.from({ length: 11 }, (_, index) => (
+export default function LoadingProfileListEvents() {
+  const CardSkeletonElements = Array.from({ length: 3 }, (_, index) => (
     <EventCardSkeleton key={`event-card-skeleton-${index}`} />
   ));
   const DesktopSkeletonElements = Array.from({ length: 12 }, (_, index) => (
@@ -11,10 +12,8 @@ export default function LoadingListEvents() {
 
   return (
     <>
-      <div className="space-y-8 md:hidden">
-        <EventDisplaySkeleton />
-        {CardSkeletonElements}
-      </div>
+      <Skeleton className="my-6 h-4 w-80" />
+      <div className="space-y-6 block md:hidden">{CardSkeletonElements}</div>
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {DesktopSkeletonElements}
       </div>

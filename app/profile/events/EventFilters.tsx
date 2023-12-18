@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
-export default function Filters() {
+export default function EventFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [active, setActive] = useState(
