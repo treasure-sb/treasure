@@ -6,7 +6,7 @@ export default function LoadingProfileListEvents() {
   const CardSkeletonElements = Array.from({ length: 3 }, (_, index) => (
     <EventCardSkeleton key={`event-card-skeleton-${index}`} />
   ));
-  const DesktopSkeletonElements = Array.from({ length: 12 }, (_, index) => (
+  const DesktopSkeletonElements = Array.from({ length: 6 }, (_, index) => (
     <EventDisplaySkeleton key={`desktop-display-skeleton-${index}`} />
   ));
 

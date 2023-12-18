@@ -20,12 +20,11 @@ export default async function ProfileHeader({
 
   const formattedJoinedDate = format(new Date(user.created_at), "MMMM, yyyy");
   return (
-    <div className="flex flex-col space-y-4 text-center mt-16">
+    <div className="flex flex-col space-y-4 text-center md:mt-16">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold">
           {user.first_name} {user.last_name}
         </h1>
-        <h1 className="text-sm md:text-md">@{user.username}</h1>
       </div>
       <Avatar className="h-32 w-32 md:h-52 md:w-52 m-auto">
         <AvatarImage src={publicUrl} />
@@ -40,7 +39,7 @@ export default async function ProfileHeader({
       </p>
       {user.instagram && (
         <Link
-          className="flex text-base space-x-2 justify-center align-middle"
+          className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
           href={instaLink}
         >
           <InstagramIcon />
@@ -49,7 +48,7 @@ export default async function ProfileHeader({
       )}
       {user.twitter && (
         <Link
-          className="flex text-base space-x-2 justify-center align-middle"
+          className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
           href={twitterLink}
         >
           <TwitterIcon />

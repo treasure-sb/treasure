@@ -34,7 +34,7 @@ export default async function Page({
   return (
     <main className="m-auto max-w-lg md:max-w-6xl flex flex-col md:flex-row md:justify-between md:space-x-16">
       <ProfileHeader user={user} />
-      <Separator className="md:hidden block my-6" />
+      <Separator className="md:hidden block mt-6 mb-0" />
       <div className="mt-4 md:mt-0 text-lg w-full">
         <ProfileFilters />
         {filter === "Vending" && (

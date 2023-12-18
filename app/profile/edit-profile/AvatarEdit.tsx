@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
-import Image from "next/image";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function AvatarEdit({
   avatarUrl,
@@ -19,15 +19,10 @@ export default function AvatarEdit({
         htmlFor="avatar"
       >
         {avatarUrl ? (
-          <div className="h-28 w-28 rounded-full overflow-hidden">
-            <Image
-              className="block w-full h-full object-cover"
-              alt="avatar"
-              src={avatarFileUrl ? avatarFileUrl : avatarUrl}
-              width={100}
-              height={100}
-            />
-          </div>
+          <Avatar className="h-32 w-32 m-auto">
+            <AvatarImage src={avatarFileUrl || avatarUrl} />
+            <AvatarFallback></AvatarFallback>
+          </Avatar>
         ) : null}
       </label>
       <input
