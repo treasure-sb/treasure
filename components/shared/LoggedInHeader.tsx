@@ -1,5 +1,6 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import TreasureEmerald from "../icons/TreasureEmerald";
 import { validateUser } from "@/lib/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -22,8 +23,12 @@ export default async function LoggedInHeader() {
   return (
     <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
       <div className="relative">
-        <Link href="/" className="font-semibold text-3xl">
-          Treasure
+        <Link
+          href="/"
+          className="font-semibold text-3xl flex items-center space-x-1"
+        >
+          <TreasureEmerald width={34} height={34} />
+          <h1>Treasure</h1>
         </Link>
         {profile.role === "admin" && (
           <p className="text-primary font-bold absolute bottom-[-14px] right-[-26px]">

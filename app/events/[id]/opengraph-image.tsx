@@ -14,7 +14,6 @@ export const size = {
 
 export const contentType = "image/png";
 
-// Image generation
 export default async function Image({ params }: { params: { id: string } }) {
   // get event and public poster url
   const supabase = await createSupabaseServerClient();

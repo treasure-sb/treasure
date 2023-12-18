@@ -8,6 +8,7 @@ import {
 import MainDisplay from "@/components/events/displays/MainDisplay";
 import EventCard from "@/components/events/cards/EventCard";
 import ListEvents from "@/components/events/shared/ListEvents";
+import NotFound from "@/components/icons/NotFound";
 
 export default async function ListMainEvents({
   numEvents,
@@ -67,7 +68,9 @@ export default async function ListMainEvents({
           CardComponent={EventCard}
         />
       ) : (
-        <div>No Events</div>
+        <div>
+          <h1 className="text-center">No Events</h1>
+        </div>
       )}
     </>
   );

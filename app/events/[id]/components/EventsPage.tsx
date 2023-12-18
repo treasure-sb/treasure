@@ -27,9 +27,12 @@ export default async function EventsPage({
     data: { user },
   } = await validateUser();
 
-  const profile = await getProfile(user?.id);
-  const publicPosterUrl = await getPublicPosterUrl(event);
-  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+  const [profile, publicPosterUrl, publicVenueMapUrl] = await Promise.all([
+    getProfile(user?.id),
+    getPublicPosterUrl(event),
+    getPublicVenueMapUrl(event),
+  ]);
+
   const formattedDate = formatDate(event.date);
   const formattedStartTime = formatStartTime(event.start_time);
   const organizer = event.organizer_id === user?.id ? true : false;
@@ -51,6 +54,7 @@ export default async function EventsPage({
             src={publicPosterUrl}
             width={500}
             height={500}
+            priority
           />
           <ColorThief public_url={publicPosterUrl} />
         </div>

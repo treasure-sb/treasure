@@ -63,7 +63,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.65, duration: 0.55, ease: "easeInOut" }}
-              className="text-black bg-gradient-to-r from-primary to-green-200 w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
+              className="text-black w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
             >
               Browse Events
             </motion.button>

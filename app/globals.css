@@ -57,31 +57,61 @@
   * {
     @apply border-border;
   }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-bar-color) var(--scroll-bar-bg-color);
+  }
+
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--scroll-bar-bg-color);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-bar-color);
+    border-radius: 20px;
+    border: 3px solid var(--scroll-bar-bg-color);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+  }
+
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
 }
 
-.landing-page-button {
-  @apply py-6 font-bold text-lg md:py-8 md:text-lg rounded-full;
-}
+@layer utilities {
+  .landing-footer-link {
+    @apply text-xs underline md:text-sm;
+  }
 
-.landing-page-underline {
-  text-decoration: underline;
-  text-decoration-color: var(--primary);
-}
+  .code-block {
+    max-height: 100px;
+    overflow: auto;
+    padding: 8px 7px 5px 15px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 7px;
+  }
 
-.landing-footer-link {
-  @apply text-xs underline md:text-sm;
-}
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none !important;
+  }
 
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none !important;
-}
-
-.scrollbar-hidden {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  .scrollbar-hidden {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+  }
 }
 
 pre {
@@ -89,39 +119,6 @@ pre {
   font-size: var(--code-font-size);
   line-height: var(--code-line-height);
   background-color: var(--code-bg-color);
-}
-
-.code-block {
-  max-height: 100px;
-  overflow: auto;
-  padding: 8px 7px 5px 15px;
-  margin: 0px 0px 0px 0px;
-  border-radius: 7px;
-}
-
-::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-bar-color) var(--scroll-bar-bg-color);
-}
-
-/* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--scroll-bar-bg-color);
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: var(--scroll-bar-color);
-  border-radius: 20px;
-  border: 3px solid var(--scroll-bar-bg-color);
 }
 
 @media only screen and (max-width: 640px) {
