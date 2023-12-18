@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import CreateEventStepOne from "./CreateEventStepOne";
-import CreateEventStepTwo from "./CreateEventStepTwo";
-import CreateEventStepThree from "./CreateEventStepThree";
-import CreateEventStepFour from "./CreateEventStepFour";
-import CreateEventStepFive from "./CreateEventStepFive";
-import CreateEventTables from "./CreateEventTables";
+import CreateEventStepOne from "./components/CreateEventStepOne";
+import CreateEventStepTwo from "./components/CreateEventStepTwo";
+import CreateEventStepThree from "./components/CreateEventStepThree";
+import CreateEventStepFour from "./components/CreateEventStepFour";
+import CreateEventStepFive from "./components/CreateEventStepFive";
+import CreateEventTables from "./components/CreateEventTables";
 import { EventForm } from "@/types/event";
 
 export default function Page() {

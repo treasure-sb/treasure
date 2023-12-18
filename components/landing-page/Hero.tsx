@@ -15,8 +15,8 @@ export default function Hero() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          delay: 0.4 + index * 0.04,
-          duration: 1,
+          delay: 0.3 + index * 0.03,
+          duration: 0.75,
           ease: "easeInOut",
         }}
         className={isSpace ? "" : "inline-block"}
@@ -62,8 +62,8 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.2, duration: 1, ease: "easeInOut" }}
-              className="text-black bg-gradient-to-r from-primary to-green-200 w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
+              transition={{ delay: 1.65, duration: 0.55, ease: "easeInOut" }}
+              className="text-black w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
             >
               Browse Events
             </motion.button>
@@ -74,7 +74,7 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.3, duration: 1, ease: "easeInOut" }}
+              transition={{ delay: 1.85, duration: 0.55, ease: "easeInOut" }}
               className="text-white w-40 md:w-52 md:py-8 md:rounded-full md:text-xl block font-semibold hover:bg-transparent"
             >
               Create Event
