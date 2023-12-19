@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 export default function TagFiltering() {
@@ -44,7 +43,12 @@ export default function TagFiltering() {
         <Button
           key={i}
           onClick={() => handleClick(tag)}
-          variant={tag === activeTag ? "default" : "secondary"}
+          variant={"outline"}
+          className={`${
+            tag === activeTag
+              ? "bg-tertiary text-black border-tertiary hover:bg-tertiary/90 hover:text-black font-semibold"
+              : "font-medium hover:bg-background md:hover:bg-secondary"
+          }`}
         >
           {tag}
         </Button>

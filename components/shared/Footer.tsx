@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full mt-20 mx-auto bg-gradient-to-r from-primary to-white text-black py-40">
+    <footer className="w-full mt-20 mx-auto py-10">
       <div className="max-w-6xl m-auto flex justify-between">
         <Link className="landing-footer-link" href="/events">
           Create an Event

@@ -15,8 +15,8 @@ export default function Hero() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          delay: 0.3 + index * 0.03,
-          duration: 0.75,
+          delay: 0 + index * 0.03,
+          duration: 0.65,
           ease: "easeInOut",
         }}
         className={isSpace ? "" : "inline-block"}
@@ -33,7 +33,7 @@ export default function Hero() {
   });
 
   return (
-    <div className="min-h-[calc(100vh-80px)] pt-36 w-full">
+    <div className="min-h-[calc(75vh-80px)] md:min-h-[calc(85vh-80px)] pt-28 w-full">
       <div className="relative">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -46,13 +46,13 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 0.3, y: 0 }}
-          transition={{ delay: 2.5, duration: 0.75, ease: "easeInOut" }}
+          transition={{ delay: 2, duration: 0.75, ease: "easeInOut" }}
           className="z-[-10] bg-green-200 w-60 h-60 md:w-[22rem] md:h-[22rem] top-[-60px] left-0 absolute rounded-full bg-opacity-40 blur-3xl"
         />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 0.3, y: 0 }}
-          transition={{ delay: 2.5, duration: 0.75, ease: "easeInOut" }}
+          transition={{ delay: 2, duration: 0.75, ease: "easeInOut" }}
           className="z-[-10] bg-green-200 w-60 h-60 md:w-[22rem] md:h-[22rem] top-2 right-5 absolute rounded-full bg-opacity-40 blur-3xl"
         />
       </div>
@@ -62,7 +62,7 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.65, duration: 0.55, ease: "easeInOut" }}
+              transition={{ delay: 1.15, duration: 0.55, ease: "easeInOut" }}
               className="text-black w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
             >
               Browse Events
@@ -74,7 +74,7 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.85, duration: 0.55, ease: "easeInOut" }}
+              transition={{ delay: 1.15, duration: 0.55, ease: "easeInOut" }}
               className="text-white w-40 md:w-52 md:py-8 md:rounded-full md:text-xl block font-semibold hover:bg-transparent"
             >
               Create Event

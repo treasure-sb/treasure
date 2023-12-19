@@ -66,7 +66,6 @@ export default async function VendorTables({
   const checkoutURL = await getTicketTailorCheckoutUrl(
     event.ticket_tailor_event_id === null ? "" : event.ticket_tailor_event_id
   );
-  console.log(checkoutURL);
 
   return (
     <>
@@ -89,7 +88,7 @@ export default async function VendorTables({
           </form>
         )} */}
           <Link target="_blank" href={checkoutURL}>
-            <Button className="bg-primary h-[70%] w-24 rounded-md text-background text-md font-bold py-4 px-4">
+            <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
               Buy Now
             </Button>
           </Link>
