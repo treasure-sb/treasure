@@ -15,8 +15,7 @@ export default async function Tags({ event }: { event: Tables<"events"> }) {
         <div className="flex gap-2 w-full flex-wrap">
           {tagsData.map((tag: any) => (
             <Badge
-              variant={"outline"}
-              className="border-tertiary p-2 px-4"
+              className="bg-tertiary p-1 px-4 hover:bg-tertiary text-black"
               key={tag.id}
             >
               {tag.tags.name}

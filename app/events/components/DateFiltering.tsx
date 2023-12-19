@@ -102,7 +102,9 @@ export default function DateFiltering() {
     <div className="flex space-x-1 items-center">
       <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
         <DropdownMenuTrigger asChild>
-          <Button>{hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}</Button>
+          <Button className="px-5">
+            {hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <div className="flex justify-center p-2">

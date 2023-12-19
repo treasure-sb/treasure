@@ -78,7 +78,6 @@ export default async function EventsPage({
           </div>
           <Separator />
           <Vendors event={event} />
-          <Separator />
           <HostedBy event={event} />
           <Separator />
           {event.venue_map_url ? (
