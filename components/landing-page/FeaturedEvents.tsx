@@ -21,8 +21,8 @@ export default async function FeaturedEvents() {
 
   return (
     <div className="w-full flex flex-col justify-center">
-      <div className="flex space-x-4 items-center mb-6">
-        <h1 className="font-semibold text-2xl md:text-3xl">Featured Events</h1>
+      <div className="flex space-x-4 items-end mb-6">
+        <h1 className="font-semibold text-2xl md:text-3xl">Trending</h1>
         <Link className="flex items-center space-x-2 group" href="/events">
           <p>See More</p>
           <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300" />
