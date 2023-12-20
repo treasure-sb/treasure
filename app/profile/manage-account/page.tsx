@@ -50,11 +50,6 @@ export default async function Page() {
             Manage Portfolio
           </Button>
         </Link>
-        <Link href={`/${profile.username}`} className="">
-          <Button className="w-full" variant={"secondary"}>
-            View Profile
-          </Button>
-        </Link>
         <form action={logoutUser}>
           <Button
             className="w-full bg-red-500 bg-opacity-50"
