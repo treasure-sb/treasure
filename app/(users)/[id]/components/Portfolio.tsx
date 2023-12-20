@@ -31,20 +31,24 @@ export default async function Portfolio({
   };
 
   const portfolioPictures = await getPortfolioPictures();
-
+  console.log(portfolioPictures.length);
   return (
     <div className="grid grid-cols-3 gap-2">
-      {portfolioPictures.map((picture, index) => (
-        <div className="relative aspect-square group" key={index}>
-          <Image
-            className="w-full h-full rounded-md"
-            width={400}
-            height={400}
-            src={picture.publicUrl}
-            alt="portfolio image"
-          />
-        </div>
-      ))}
+      {portfolioPictures?.length != 0 ? (
+        portfolioPictures.map((picture, index) => (
+          <div className="relative aspect-square group" key={index}>
+            <Image
+              className="w-full h-full rounded-md"
+              width={400}
+              height={400}
+              src={picture.publicUrl}
+              alt="portfolio image"
+            />
+          </div>
+        ))
+      ) : (
+        <div className="absolute"> No Photos Yet</div>
+      )}
     </div>
   );
 }
