@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import Upload from "./Upload";
 
 export default async function Page() {
   const supabase = await createSupabaseServerClient();
@@ -64,9 +65,6 @@ export default async function Page() {
                 <MoreHorizontal className="text-black absolute top-4 right-4 hover:cursor-pointer bg-white rounded-full" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="absolute right-[-12px]">
-                <DropdownMenuItem className="p-3 cursor-pointer">
-                  Replace
-                </DropdownMenuItem>
                 <form
                   action={async () => {
                     "use server";
@@ -89,22 +87,7 @@ export default async function Page() {
           </div>
         ))}
         {emptyImages.map((_, index) => (
-          <div
-            key={index}
-            className="relative aspect-square w-full h-full bg-slate-300 rounded-md flex justify-center items-center group"
-          >
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild className="z-20">
-                <MoreHorizontal className="text-black absolute top-4 right-4 hover:cursor-pointer bg-white rounded-full" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="absolute right-[-12px]">
-                <DropdownMenuItem className="p-3 cursor-pointer">
-                  Upload
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <EmptyImage />
-          </div>
+          <Upload user={user} key={index} />
         ))}
       </div>
     </main>
