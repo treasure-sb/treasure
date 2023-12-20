@@ -37,57 +37,32 @@ export default async function Page() {
         <h1 className="text-2xl m-auto font-semibold text-center">
           Welcome, {profile.first_name}!
         </h1>
-        <Link href="/profile/events">
-          <Button className="w-full">My Events</Button>
+        <Link href="/profile/create-event">
+          <Button className="w-full">Host an Event</Button>
         </Link>
-        <Link href="/profile/create-event" className="">
+        <Link href="/profile/edit-profile" className="">
           <Button className="w-full" variant={"secondary"}>
-            Host an Event
+            Edit Profile
           </Button>
         </Link>
-        <Link href="/profile/manage-account" className="">
+        <Link href="/profile/portfolio" className="">
           <Button className="w-full" variant={"secondary"}>
-            Manage Account
+            Manage Portfolio
           </Button>
         </Link>
-        {profile.role === "admin" && (
-          <Link href="/profile/featured-events" className="">
-            <Button className="w-full" variant={"secondary"}>
-              Featured Events
-            </Button>
-          </Link>
-        )}
-        <Link
-          href={`/${profile.username}`}
-          className="border-b-2 border-b-secondary pb-6 mb-0"
-        >
+        <Link href={`/${profile.username}`} className="">
           <Button className="w-full" variant={"secondary"}>
             View Profile
           </Button>
         </Link>
-        {profile.instagram && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={instaLink}
+        <form action={logoutUser}>
+          <Button
+            className="w-full bg-red-500 bg-opacity-50"
+            variant={"secondary"}
           >
-            <InstagramIcon />
-            <h1>@{profile.instagram}</h1>
-          </Link>
-        )}
-        {profile.twitter && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={twitterLink}
-          >
-            <TwitterIcon />
-            <h1>@{profile.twitter}</h1>
-          </Link>
-        )}
-        <div className="text-base text-center border-b-2 border-b-secondary pb-6 mb-0">
-          On Treasure since{" "}
-          <span className="text-primary">{formattedDate}</span>
-        </div>
-        <div className="text-base text-center">{profile.bio}</div>
+            Logout
+          </Button>
+        </form>
       </div>
     </main>
   );
