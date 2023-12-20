@@ -24,9 +24,6 @@ export default async function UserHeader({
     <div className="flex flex-col space-y-6 md:hidden">
       <div className="flex items-center text-center md:mt-16">
         <div className="space-y-4">
-          <h1 className="text-md font-bold">
-            {user.first_name} {user.last_name}
-          </h1>
           <Avatar className="h-28 w-28 m-auto">
             <AvatarImage src={publicUrl} />
             <AvatarFallback>
@@ -34,6 +31,9 @@ export default async function UserHeader({
               {user.last_name[0]}
             </AvatarFallback>
           </Avatar>
+          <h1 className="text-md font-bold">
+            {user.first_name} {user.last_name}
+          </h1>
         </div>
         <div className="w-full space-y-4">
           {user.instagram && (

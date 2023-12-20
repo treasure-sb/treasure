@@ -36,10 +36,10 @@ export default async function Page({
 
   return (
     <main className="m-auto max-w-lg md:max-w-6xl flex flex-col justify-between min-h-[calc(100vh-220px)]">
-      <div className="flex flex-col md:flex-row md:space-x-20">
+      <div className="flex flex-col md:flex-row md:space-x-8">
         <UserHeader user={user} />
         <Separator className="md:hidden block mt-6 mb-0" />
-        <div className="mt-4 md:mt-0 text-lg w-full">
+        <div className="mt-4 md:mt-0 text-lg w-full md:border-l md:pl-8">
           <UserFilters />
           {filter === "Events" ? (
             <Suspense fallback={<LoadingUserListEvents />}>
@@ -50,9 +50,6 @@ export default async function Page({
           )}
         </div>
       </div>
-      <p className="font-semibold my-6 block md:hidden bg-gradient-to-r from-primary to bg-green-200 text-transparent bg-clip-text text-center">
-        Joined Treasure {formattedJoinedDate}
-      </p>
     </main>
   );
 }

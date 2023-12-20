@@ -172,7 +172,7 @@ export default function Page({
               Log In
             </Link>
           </h1>
-          <div className="flex items-center justify-center my-4">
+          {/* <div className="flex items-center justify-center my-4">
             <hr className="flex-grow border-secondary" />
             <span className="mx-2">or</span>
             <hr className="flex-grow border-secondary" />
@@ -183,7 +183,7 @@ export default function Page({
           >
             <GoogleIcon />
             <h1>Sign up with Google</h1>
-          </Button>
+          </Button> */}
         </form>
       </Form>
     </main>

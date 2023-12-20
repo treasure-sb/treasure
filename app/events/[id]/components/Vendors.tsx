@@ -31,7 +31,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
           <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 sm:overflow-auto">
             {vendorsWithPublicUrls.map((vendor: any) => (
               <div className="flex flex-col space-y-1 items-center">
-                <Link href={`/users/${vendor.username}`}>
+                <Link href={`/${vendor.username}`}>
                   <Avatar className="h-24 w-24 m-auto">
                     <AvatarImage src={vendor.vendorPublicUrl} />
                     <AvatarFallback>

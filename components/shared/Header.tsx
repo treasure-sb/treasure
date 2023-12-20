@@ -17,7 +17,7 @@ export default function Header() {
             className="font-semibold text-3xl space-x-1 flex items-center justify-center mr-6"
           >
             <TreasureEmerald width={34} height={34} />
-            <h1>Treausre</h1>
+            <h1>Treasure</h1>
           </Link>
         </header>
       ) : (
