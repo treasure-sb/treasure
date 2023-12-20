@@ -2,7 +2,7 @@ import EventCardSkeleton from "@/components/events/skeletons/EventCardSkeleton";
 import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function LoadingProfileListEvents() {
+export default function LoadingUserListEvents() {
   const CardSkeletonElements = Array.from({ length: 3 }, (_, index) => (
     <EventCardSkeleton key={`event-card-skeleton-${index}`} />
   ));
