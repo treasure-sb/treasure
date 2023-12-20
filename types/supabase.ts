@@ -222,6 +222,35 @@ export interface Database {
           }
         ]
       }
+      portfolio_pictures: {
+        Row: {
+          id: string
+          picture_url: string
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          picture_url: string
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          picture_url?: string
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_pictures_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string

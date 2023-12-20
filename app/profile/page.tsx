@@ -51,6 +51,11 @@ export default async function Page() {
             Edit Profile
           </Button>
         </Link>
+        <Link href="/profile/portfolio" className="">
+          <Button className="w-full" variant={"secondary"}>
+            Edit Portfolio
+          </Button>
+        </Link>
         <Link href={`/users/${profile.username}`} className="">
           <Button className="w-full" variant={"secondary"}>
             View Profile

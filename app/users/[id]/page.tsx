@@ -1,12 +1,14 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import ProfileHeader from "./components/ProfileHeader";
-import ProfileFilters from "./components/ProfileFilters";
-import ListProfileEvents from "./components/ListProfileEvents";
-import LoadingProfileListEvents from "./components/LoadingProfileListEvents";
+import UserHeader from "./components/UserHeader";
+import UserFilters from "./components/UserFilters";
+import ListUserEvents from "./components/ListUserEvents";
+import LoadingUserListEvents from "./components/LoadingUserListEvents";
+import format from "date-fns/format";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
+import Portfolio from "./components/Portfolio";
 
 export default async function Page({
   params,
@@ -30,24 +32,27 @@ export default async function Page({
   }
 
   const user: Tables<"profiles"> = userData;
+  const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
 
   return (
-    <main className="m-auto max-w-lg md:max-w-6xl flex flex-col md:flex-row md:justify-between md:space-x-16">
-      <ProfileHeader user={user} />
-      <Separator className="md:hidden block mt-6 mb-0" />
-      <div className="mt-4 md:mt-0 text-lg w-full">
-        <ProfileFilters />
-        {filter === "Vending" && (
-          <Suspense fallback={<LoadingProfileListEvents />}>
-            <ListProfileEvents filter={filter} user={user} />
-          </Suspense>
-        )}
-        {filter === "Hosting" && (
-          <Suspense fallback={<LoadingProfileListEvents />}>
-            <ListProfileEvents filter={filter} user={user} />
-          </Suspense>
-        )}
+    <main className="m-auto max-w-lg md:max-w-6xl flex flex-col justify-between min-h-[calc(100vh-220px)]">
+      <div className="flex flex-col md:flex-row md:space-x-20">
+        <UserHeader user={user} />
+        <Separator className="md:hidden block mt-6 mb-0" />
+        <div className="mt-4 md:mt-0 text-lg w-full">
+          <UserFilters />
+          {filter === "Events" ? (
+            <Suspense fallback={<LoadingUserListEvents />}>
+              <ListUserEvents filter={filter} user={user} />
+            </Suspense>
+          ) : (
+            <Portfolio user={user} />
+          )}
+        </div>
       </div>
+      <p className="font-semibold my-6 block md:hidden bg-gradient-to-r from-primary to bg-green-200 text-transparent bg-clip-text text-center">
+        Joined Treasure {formattedJoinedDate}
+      </p>
     </main>
   );
 }

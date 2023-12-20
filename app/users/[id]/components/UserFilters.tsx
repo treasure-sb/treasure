@@ -3,7 +3,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export default function ProfileFilters() {
+export default function UserFilters() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [active, setActive] = useState(
@@ -23,10 +23,10 @@ export default function ProfileFilters() {
     replace(`${pathname}?${params.toString()}`);
   };
 
-  const filters = ["Portfolio", "Vending", "Hosting"];
+  const filters = ["Portfolio", "Events"];
 
   return (
-    <div className="flex space-x-2 md:justify-end">
+    <div className="flex space-x-2 md:justify-end pb-6">
       {filters.map((filter) => (
         <Button
           key={filter}
