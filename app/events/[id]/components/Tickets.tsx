@@ -5,13 +5,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
-import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
+import { validateUser } from "@/lib/actions/auth";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { User } from "@supabase/supabase-js";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import Link from "next/link";
 
-export default async function Tickets({ event }: { event: Tables<"events"> }) {
+export default async function Tickets({
+  event,
+  user,
+}: {
+  event: Tables<"events">;
+  user: User | null;
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: tickets, error: ticketError } = await supabase
     .from("tickets")
@@ -23,16 +33,36 @@ export default async function Tickets({ event }: { event: Tables<"events"> }) {
     return prev.price < cur.price ? prev : cur;
   }, 0);
 
-  const checkoutURL = await getTicketTailorCheckoutUrl(
-    event.ticket_tailor_event_id === null ? "" : event.ticket_tailor_event_id
-  );
+  // check to see if user is attending, if they are then show button as attending
+  const { data: attendingData, error: attendingError } = await supabase
+    .from("event_guests")
+    .select("*")
+    .eq("event_id", event.id)
+    .eq("guest_id", user?.id)
+    .select();
+
+  const handleAttending = async () => {
+    "use server";
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await validateUser();
+    if (!user) {
+      redirect("/login");
+    }
+
+    await supabase
+      .from("event_guests")
+      .insert([{ guest_id: user.id, event_id: event.id }]);
+    revalidatePath(`/events/${event.cleaned_name}`);
+  };
 
   return (
     <>
       {tickets && tickets.length > 0 ? (
         <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
-          <h1 className="text-lg">Tickets from ${cheapestTicket.price}</h1>
-          <Dialog>
+          <h1 className="text-lg">Tickets ${cheapestTicket.price} at door</h1>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14">
                 Buy Now
@@ -63,6 +93,18 @@ export default async function Tickets({ event }: { event: Tables<"events"> }) {
               </div>
             </DialogContent>
           </Dialog>
+           */}
+          {attendingData && attendingData.length > 0 ? (
+            <Button className="bg-tertiary h-[70%] w-fit text-background text-md font-bold hover:bg-tertiary/90 cursor-default">
+              Attending
+            </Button>
+          ) : (
+            <form action={handleAttending} className="h-[70%]">
+              <Button className="bg-primary h-full w-fit text-background text-md font-bold">
+                Mark as Attending
+              </Button>
+            </form>
+          )}
         </div>
       ) : (
         <h1>No Tickets</h1>

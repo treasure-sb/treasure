@@ -12,8 +12,10 @@ export default function UserFilters() {
   const { replace } = useRouter();
 
   const handleClick = (filter: string) => {
+    if (filter === active) return;
+
     const params = new URLSearchParams(searchParams);
-    if (filter === searchParams.get("filter")) {
+    if (filter === "Portfolio") {
       params.delete("filter");
       setActive("Portfolio");
     } else {
