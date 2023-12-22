@@ -57,7 +57,9 @@ export default async function UserHeader({
         </div>
       </div>
       <p className="text-center">{user.bio}</p>
-      <Button className="w-[50%] m-auto">Pay Now</Button>
+      <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
+        <Button className="w-full">Pay Now</Button>
+      </Link>
     </div>
   );
 

@@ -37,6 +37,9 @@ export default async function Page() {
         <h1 className="text-2xl m-auto font-semibold text-center">
           Welcome, {profile.first_name}!
         </h1>
+        <h1 className="text-xl m-auto font-semibold text-center">
+          Manage Account
+        </h1>
         <Link href="/profile/create-event">
           <Button className="w-full">Host an Event</Button>
         </Link>
