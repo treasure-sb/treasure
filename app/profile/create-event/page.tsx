@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { use, useState } from "react";
 import CreateEventStepOne from "./components/CreateEventStepOne";
 import CreateEventStepTwo from "./components/CreateEventStepTwo";
 import CreateEventStepThree from "./components/CreateEventStepThree";
@@ -7,8 +7,16 @@ import CreateEventStepFour from "./components/CreateEventStepFour";
 import CreateEventStepFive from "./components/CreateEventStepFive";
 import CreateEventTables from "./components/CreateEventTables";
 import { EventForm } from "@/types/event";
+import { useSearchParams } from "next/navigation";
+import { validateUser } from "@/lib/actions/auth";
+import { set } from "date-fns";
+import { useMemo } from "react";
+import { format } from "date-fns";
 
 export default function Page() {
+  const eventID = useSearchParams().get("data");
+  let eventData;
+
   const [step, setStep] = useState(1);
   const [eventForm, setEventForm] = useState<EventForm>({
     name: "",
@@ -37,6 +45,30 @@ export default function Page() {
     poster_url: undefined,
     venue_map_url: undefined,
   });
+
+  useMemo(() => {
+    if (eventID) {
+      eventData = JSON.parse(eventID);
+      console.log(eventData);
+      setEventForm({
+        ...eventForm,
+        name: eventData.name,
+        description: eventData.description,
+        venue_name: eventData.venue_name,
+        address: eventData.address,
+        lat: eventData.lat,
+        lng: eventData.lng,
+        start_time: eventData.start_time.slice(0, -3),
+        end_time: eventData.end_time.slice(0, -3),
+        tickets: eventData.tickets,
+        tables:
+          eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
+        tags: eventData.tags,
+        // poster_url: eventData.poster_url,
+        // venue_map_url: eventData.venue_map_url,
+      });
+    }
+  }, []);
 
   const progress = Array.from({ length: 6 }, (_, i) => (
     <div
