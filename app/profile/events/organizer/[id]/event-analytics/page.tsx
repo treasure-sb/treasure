@@ -15,10 +15,9 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { data: ticketsData, error: ticketsError } = await supabase
     .from("tickets")
     .select("*")
-    .eq("event_id", event.id)
-    .single();
+    .eq("event_id", event.id);
 
-  const tickets: Tables<"tickets">[] = ticketsData;
+  const tickets: Tables<"tickets">[] = ticketsData ? ticketsData : [];
 
   return (
     <main className="m-auto max-w-lg">
