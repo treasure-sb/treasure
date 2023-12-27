@@ -104,7 +104,7 @@ export default async function EventsPage({
     .select("*")
     .eq("event_id", event.id)
     .eq("guest_id", user?.id)
-    .select();
+    .single();
 
   const handleAttending = async () => {
     "use server";
@@ -115,7 +115,8 @@ export default async function EventsPage({
     if (!user) {
       redirect("/login");
     }
-    if (attendingData && attendingData.length > 0) {
+    console.log("attendingData", attendingData);
+    if (attendingData) {
       await supabase
         .from("event_guests")
         .delete()
@@ -220,7 +221,7 @@ export default async function EventsPage({
             </div>
           </Link>
         )}
-        {attendingData && attendingData.length > 0 ? (
+        {attendingData ? (
           <form action={handleAttending} className="h-[70%]">
             <Button className="opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white">
               Attending ✔
