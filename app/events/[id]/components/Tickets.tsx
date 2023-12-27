@@ -61,11 +61,11 @@ export default async function Tickets({
     <>
       {tickets && tickets.length > 0 ? (
         <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
-          <h1 className="text-lg">Tickets ${cheapestTicket.price} at door</h1>
-          {/* <Dialog>
+          <h1 className="text-lg">Tickets From ${cheapestTicket.price}</h1>
+          <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14">
-                Buy Now
+                View All
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -85,16 +85,16 @@ export default async function Tickets({
                         {ticket.name} ${ticket.price}
                       </h1>
                     </div>
-                    <Link target="_blank" href={checkoutURL}>
+                    {/* <Link target="_blank" href={""}>
                       <Button>Buy Now!</Button>
-                    </Link>
+                    </Link> */}
                   </div>
                 ))}
               </div>
             </DialogContent>
           </Dialog>
-           */}
-          {attendingData && attendingData.length > 0 ? (
+
+          {/* {attendingData && attendingData.length > 0 ? (
             <Button className="bg-tertiary h-[70%] w-fit text-background text-md font-bold hover:bg-tertiary/90 cursor-default">
               Attending
             </Button>
@@ -104,7 +104,7 @@ export default async function Tickets({
                 Mark as Attending
               </Button>
             </form>
-          )}
+          )} */}
         </div>
       ) : (
         <h1>No Tickets</h1>
