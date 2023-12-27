@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
+import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -32,18 +33,20 @@ export default async function RootLayout({
   return (
     <html lang="en" className={raleway.className}>
       <body className="bg-background text-foreground flex flex-col justify-between">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="p-6 px-4">
-            {user.data.user ? <LoggedInHeader /> : <Header />}
-            {children}
-            <Toaster />
-          </div>
-        </ThemeProvider>
+        <ReactQueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="p-6 px-4">
+              {user.data.user ? <LoggedInHeader /> : <Header />}
+              {children}
+              <Toaster />
+            </div>
+          </ThemeProvider>
+        </ReactQueryProvider>
         <Analytics />
       </body>
     </html>

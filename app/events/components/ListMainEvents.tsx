@@ -5,10 +5,7 @@ import {
   getTagData,
   getDateTagEventData,
 } from "@/lib/helpers/eventsFiltering";
-import MainDisplay from "@/components/events/displays/MainDisplay";
-import EventCard from "@/components/events/cards/EventCard";
-import ListEvents from "@/components/events/shared/ListEvents";
-import NotFound from "@/components/icons/NotFound";
+import ClientListEvents from "./ClientListEvents";
 
 export default async function ListMainEvents({
   numEvents,
@@ -22,51 +19,24 @@ export default async function ListMainEvents({
     search?: string;
   };
 }) {
-  const tagQuery = searchParams?.tag || null;
-  const fromQuery = searchParams?.from || null;
-  const untilQuery = searchParams?.until || null;
-  const search = searchParams?.search || null;
-  let events = [];
-
-  if (fromQuery && untilQuery && tagQuery) {
-    const { data: tagData, error: tagError } = await getTagData(tagQuery);
-    const { data: dateTagEventData, error: dateTagEventError } =
-      await getDateTagEventData(
-        search || "",
-        tagData?.id,
-        fromQuery,
-        untilQuery,
-        numEvents
-      );
-    events = dateTagEventData || [];
-  } else if (fromQuery && untilQuery) {
-    const { data: dateEventData, error: dateEventError } =
-      await getEventDataByDate(search || "", fromQuery, untilQuery, numEvents);
-    events = dateEventData || [];
-  } else if (tagQuery) {
-    const { data: tagData, error: tagError } = await getTagData(tagQuery);
-    const { data: eventData, error: eventError } = await getEventDataByTag(
-      search || "",
-      tagData?.id,
-      numEvents
-    );
-    events = eventData || [];
-  } else {
+  const fetchEvents = async (page: number) => {
+    "use server";
+    let events = [];
+    const search = searchParams?.search || null;
     const { data: allEventData, error: allEventError } = await getAllEventData(
       search || "",
-      numEvents
+      page
     );
     events = allEventData || [];
-  }
+    return events;
+  };
+
+  const events = await fetchEvents(1);
 
   return (
     <>
       {events && events.length > 0 ? (
-        <ListEvents
-          events={events}
-          DisplayComponent={MainDisplay}
-          CardComponent={EventCard}
-        />
+        <ClientListEvents events={events} fetchData={fetchEvents} />
       ) : (
         <div>
           <h1 className="text-center">No Events</h1>

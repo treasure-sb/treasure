@@ -8,7 +8,7 @@ export default function TagFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [activeTag, setActiveTag] = useState<string>("");
-  const { replace } = useRouter();
+  const { replace, refresh } = useRouter();
 
   useEffect(() => {
     setActiveTag(searchParams.get("tag") || "");
@@ -24,6 +24,7 @@ export default function TagFiltering() {
       params.set("tag", tag_name);
     }
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   const tags = [

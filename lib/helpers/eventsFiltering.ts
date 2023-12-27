@@ -4,6 +4,7 @@ import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
 
 const today = format(new Date(), "yyyy-MM-dd");
+const numEvents = 5;
 
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
@@ -76,7 +77,7 @@ const getEventDataByTag = async (
   return { data, error };
 };
 
-const getAllEventData = async (search: string, numEvents: number) => {
+const getAllEventData = async (search: string, page: number) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
@@ -85,7 +86,7 @@ const getAllEventData = async (search: string, numEvents: number) => {
     .order("featured", { ascending: false })
     .order("date", { ascending: true })
     .ilike("name", `%${search}%`)
-    .range(0, numEvents);
+    .range((page - 1) * numEvents, page * numEvents);
   return { data, error };
 };
 

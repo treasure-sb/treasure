@@ -19,7 +19,7 @@ export default function DateFiltering() {
   const [isCalenderOpen, setIsCalenderOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const { replace, refresh } = useRouter();
 
   const handleCalenderDateSelect = (date: Date | undefined) => {
     const params = new URLSearchParams(searchParams);
@@ -31,6 +31,7 @@ export default function DateFiltering() {
       setIsCalenderOpen(false);
     }
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   const handleClickToday = () => {
@@ -40,6 +41,7 @@ export default function DateFiltering() {
     params.set("from", todaysDateFormatted);
     params.set("until", todaysDateFormatted);
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   const handleClickTomorrow = () => {
@@ -51,6 +53,7 @@ export default function DateFiltering() {
     params.set("from", tomorrowFormatted);
     params.set("until", tomorrowFormatted);
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   const handleClickThisWeek = () => {
@@ -66,6 +69,7 @@ export default function DateFiltering() {
     params.set("from", todaysDateFormatted);
     params.set("until", endOfWeekDateFormatted);
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   const handleClearDate = () => {
@@ -73,6 +77,7 @@ export default function DateFiltering() {
     params.delete("from");
     params.delete("until");
     replace(`${pathname}?${params.toString()}`);
+    refresh();
   };
 
   // For displaying the date in the button
