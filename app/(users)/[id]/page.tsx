@@ -19,7 +19,7 @@ export default async function Page({
     filter: string;
   };
 }) {
-  const filter = searchParams?.filter || "Portfolio";
+  const filter = searchParams?.filter || "Events";
   const supabase = await createSupabaseServerClient();
   const { data: userData, error: userError } = await supabase
     .from("profiles")

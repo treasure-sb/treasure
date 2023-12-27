@@ -6,18 +6,16 @@ import { useState } from "react";
 export default function UserFilters() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [active, setActive] = useState(
-    searchParams.get("filter") || "Portfolio"
-  );
+  const [active, setActive] = useState(searchParams.get("filter") || "Events");
   const { replace } = useRouter();
 
   const handleClick = (filter: string) => {
     if (filter === active) return;
 
     const params = new URLSearchParams(searchParams);
-    if (filter === "Portfolio") {
+    if (filter === "Events") {
       params.delete("filter");
-      setActive("Portfolio");
+      setActive("Events");
     } else {
       params.set("filter", filter);
       setActive(filter);
@@ -25,7 +23,7 @@ export default function UserFilters() {
     replace(`${pathname}?${params.toString()}`);
   };
 
-  const filters = ["Portfolio", "Events"];
+  const filters = ["Events", "Portfolio"];
 
   return (
     <div className="flex space-x-2 md:justify-end pb-6">
