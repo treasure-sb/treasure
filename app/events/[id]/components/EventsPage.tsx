@@ -18,6 +18,8 @@ import Vendors from "./Vendors";
 import HostedBy from "./HostedBy";
 import ColorThief from "./ColorThief";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import EditEvent from "@/components/icons/EditEvent";
+import DuplicateEvent from "@/components/icons/DuplicateEvent";
 
 export default async function EventsPage({
   event,
@@ -146,7 +148,7 @@ export default async function EventsPage({
           <Separator />
           <div>
             <h1 className="font-semibold text-2xl">Location</h1>
-            <p> {capitalize(event.address)}</p>
+            <p>{capitalize(event.address)}</p>
             <Link
               target="_blank"
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -163,31 +165,15 @@ export default async function EventsPage({
           </div>
         </div>
       </div>
-      {organizer || profile.role === "admin" ? (
-        <div className="fixed right-6 bottom-6">
+      <div className="fixed right-6 bottom-6 flex flex-col space-y-4">
+        {(organizer || profile.role === "admin") && (
           <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
             <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
-              <svg
-                width="70"
-                height="70"
-                viewBox="0 0 120 120"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="60" cy="60" r="60" fill="#71D08C" />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M81.7101 42.6872L77.3176 38.2953C76.3 37.2778 74.6347 37.2784 73.6171 38.2953L70.2591 41.6528L78.3521 49.7447L81.7101 46.3866C82.7284 45.3684 82.7259 43.7003 81.7126 42.6847L81.7101 42.6872ZM68.4688 43.4422L76.5619 51.5341L48.7934 79.2991L38.0024 81.9966L40.7003 71.2072L68.4688 43.4422ZM81.3038 38.7009L83.5004 40.8972L83.4979 40.8997C85.4376 42.7003 85.562 46.1153 83.5004 48.1766L50.338 81.3341L50.3367 81.3328C50.1798 81.4897 49.9804 81.6078 49.7498 81.6653L36.5828 84.9566C35.6508 85.1947 34.8069 84.3541 35.0388 83.4266L38.3168 70.3159C38.3631 70.0759 38.4787 69.8472 38.6644 69.6616L71.8268 36.5047C73.8334 34.4984 77.1013 34.4984 79.1079 36.5047L81.3038 38.7009Z"
-                  fill="white"
-                />
-              </svg>
+              <EditEvent />
             </div>
           </Link>
-        </div>
-      ) : null}
-      {profile.role === "admin" ? (
-        <div className="fixed right-6 bottom-28">
+        )}
+        {profile.role === "admin" && (
           <Link
             href={{
               pathname: `/profile/create-event`,
@@ -195,35 +181,11 @@ export default async function EventsPage({
             }}
           >
             <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
-              <svg
-                width="70"
-                height="70"
-                viewBox="0 0 120 120"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="60" cy="60" r="60" fill="#71D08C" />
-                <path
-                  d="M76.8441 37H41.8764C40.7196 37 39.7731 37.9465 39.7731 39.1033V47.5166L43.9797 51.881V41.2066H74.7934V68.4972H65.1707C64.0138 68.4972 63.0674 69.4437 63.0674 70.6006V80.1181H43.9271V73.5452C43.822 73.44 43.7168 73.3875 43.6116 73.2823L39.7731 69.1808V82.2214C39.7731 83.3782 40.7196 84.3247 41.8764 84.3247H66.2223C66.7482 84.3247 67.3266 84.1144 67.6947 83.6937L78.369 73.072C78.7897 72.6513 79 72.1255 79 71.5996V39.1033C78.9474 37.9465 78.0009 37 76.8441 37Z"
-                  fill="white"
-                />
-                <path
-                  d="M50.3423 63.0286L36.0923 48.2002C35.0406 47.0959 33.2528 47.0434 32.1485 48.1476L29.8349 50.3561C28.7306 51.4077 28.7306 53.1956 29.7823 54.2998L44.0849 69.1282L50.3423 63.0286Z"
-                  fill="white"
-                />
-                <path
-                  d="M49.238 73.1771L54.286 74.9649C55.2325 75.2804 56.179 74.3865 55.8635 73.44L54.286 68.3395C53.9179 67.2352 53.3395 66.1836 52.5507 65.2897L46.2408 71.3367C47.1347 72.1255 48.1338 72.809 49.238 73.1771Z"
-                  fill="white"
-                />
-                <path
-                  d="M60.964 47.3589H57.7565C57.4935 47.3589 57.2832 47.5692 57.2832 47.8321V53.0378H52.0775C51.8146 53.0378 51.6042 53.2482 51.6042 53.5111V56.7186C51.6042 56.9815 51.8146 57.1919 52.0775 57.1919H57.2832V62.3976C57.2832 62.6605 57.4935 62.8708 57.7565 62.8708H60.964C61.2269 62.8708 61.4373 62.6605 61.4373 62.3976V57.1919H66.643C66.9059 57.1919 67.1162 56.9815 67.1162 56.7186V53.5111C67.1162 53.2482 66.9059 53.0378 66.643 53.0378H61.4373V47.8321C61.4373 47.5692 61.2269 47.3589 60.964 47.3589Z"
-                  fill="white"
-                />
-              </svg>
+              <DuplicateEvent />
             </div>
           </Link>
-        </div>
-      ) : null}
+        )}
+      </div>
     </main>
   );
 }
