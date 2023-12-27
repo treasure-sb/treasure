@@ -87,11 +87,11 @@ export default async function VendorTables({
             </Button>
           </form>
         )} */}
-          <Link target="_blank" href={checkoutURL}>
+          {/* <Link target="_blank" href={checkoutURL}>
             <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
               Buy Now
             </Button>
-          </Link>
+          </Link> */}
         </div>
       )}
     </>

@@ -20,6 +20,8 @@ import ColorThief from "./ColorThief";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export default async function EventsPage({
   event,
@@ -47,10 +49,11 @@ export default async function EventsPage({
     return capitalizedWords.join(" ");
   };
 
+  const supabase = await createSupabaseServerClient();
+
   // get event info for admin to send to create event page
   let eventInfo;
   if (profile.role === "admin") {
-    const supabase = await createSupabaseServerClient();
     const { data: tagsData, error: tagsError } = await supabase
       .from("event_tags")
       .select("tags(name,id)")
@@ -94,6 +97,38 @@ export default async function EventsPage({
     });
     eventInfo = { ...event, tags, tickets, tables };
   }
+
+  // check to see if user is attending, if they are then show button as attending
+  const { data: attendingData, error: attendingError } = await supabase
+    .from("event_guests")
+    .select("*")
+    .eq("event_id", event.id)
+    .eq("guest_id", user?.id)
+    .select();
+
+  const handleAttending = async () => {
+    "use server";
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await validateUser();
+    if (!user) {
+      redirect("/login");
+    }
+    if (attendingData && attendingData.length > 0) {
+      await supabase
+        .from("event_guests")
+        .delete()
+        .eq("event_id", event.id)
+        .eq("guest_id", user.id);
+      revalidatePath(`/events/${event.cleaned_name}`);
+    } else {
+      await supabase
+        .from("event_guests")
+        .insert([{ guest_id: user.id, event_id: event.id }]);
+      revalidatePath(`/events/${event.cleaned_name}`);
+    }
+  };
 
   return (
     <main className="w-full lg:w-fit m-auto">
@@ -165,14 +200,7 @@ export default async function EventsPage({
           </div>
         </div>
       </div>
-      <div className="fixed right-6 bottom-6 flex flex-col space-y-4">
-        {(organizer || profile.role === "admin") && (
-          <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
-            <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
-              <EditEvent />
-            </div>
-          </Link>
-        )}
+      <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
         {profile.role === "admin" && (
           <Link
             href={{
@@ -184,6 +212,26 @@ export default async function EventsPage({
               <DuplicateEvent />
             </div>
           </Link>
+        )}
+        {(organizer || profile.role === "admin") && (
+          <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
+            <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
+              <EditEvent />
+            </div>
+          </Link>
+        )}
+        {attendingData && attendingData.length > 0 ? (
+          <form action={handleAttending} className="h-[70%]">
+            <Button className="opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white">
+              Attending ✔
+            </Button>
+          </form>
+        ) : (
+          <form action={handleAttending} className="h-[70%]">
+            <Button className="hover:opacity-70 bg-tertiary hover:bg-tertiary h-full w-fit text-background text-md font-bold">
+              Not Attending
+            </Button>
+          </form>
         )}
       </div>
     </main>

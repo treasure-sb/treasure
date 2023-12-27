@@ -42,7 +42,6 @@ export default async function EventCard({
         if (ticket.name == "Table") {
           table += `${ticket.price}`;
         } else {
-          console.log(cheapest + " " + ticket.price);
           cheapest = cheapest < ticket.price ? cheapest : ticket.price;
         }
       });

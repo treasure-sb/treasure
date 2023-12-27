@@ -31,7 +31,7 @@ export default async function Portfolio({
   };
 
   const portfolioPictures = await getPortfolioPictures();
-  console.log(portfolioPictures.length);
+
   return (
     <div className="grid grid-cols-3 gap-2">
       {portfolioPictures?.length != 0 ? (
