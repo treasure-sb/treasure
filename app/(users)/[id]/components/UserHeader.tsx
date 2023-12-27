@@ -64,7 +64,7 @@ export default async function UserHeader({
   );
 
   const desktopHeader = (
-    <div className="md:flex md:flex-col md:space-y-4 md:text-center md:mt-16 hidden">
+    <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-16 hidden">
       <h1 className="text-2xl md:text-3xl font-bold">
         {user.first_name} {user.last_name}
       </h1>
@@ -76,24 +76,29 @@ export default async function UserHeader({
         </AvatarFallback>
       </Avatar>
       <p>{user.bio}</p>
-      {user.instagram && (
-        <Link
-          className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-          href={instaLink}
-        >
-          <InstagramIcon />
-          <h1>@{user.instagram}</h1>
-        </Link>
-      )}
-      {user.twitter && (
-        <Link
-          className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-          href={twitterLink}
-        >
-          <TwitterIcon />
-          <h1>@{user.twitter}</h1>
-        </Link>
-      )}
+      <div className="space-y-1">
+        {user.instagram && (
+          <Link
+            className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
+            href={instaLink}
+          >
+            <InstagramIcon />
+            <h1>@{user.instagram}</h1>
+          </Link>
+        )}
+        {user.twitter && (
+          <Link
+            className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
+            href={twitterLink}
+          >
+            <TwitterIcon />
+            <h1>@{user.twitter}</h1>
+          </Link>
+        )}
+      </div>
+      <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
+        <Button className="w-full">Pay Now</Button>
+      </Link>
       <p className="font-semibold bg-gradient-to-r hidden md:block from-primary to bg-green-200 text-transparent bg-clip-text">
         Joined Treasure {formattedJoinedDate}
       </p>
