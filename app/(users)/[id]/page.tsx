@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
 import Portfolio from "./components/Portfolio";
+import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
   params,
@@ -31,7 +32,9 @@ export default async function Page({
     redirect("/events");
   }
 
-  const user: Tables<"profiles"> = userData;
+  const profile = await getProfile(userData.id);
+
+  const user: Tables<"profiles"> = profile;
   const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
 
   return (

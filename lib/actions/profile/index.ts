@@ -12,13 +12,21 @@ const editProfile = async (values: profileForm) => {
 
   const { data, error } = await supabase
     .from("profiles")
-    .update({ first_name, last_name, instagram, twitter, bio, avatar_url })
+    .update({ first_name, last_name, bio, avatar_url })
     .eq("id", user?.id)
     .select();
-  if (!error) {
+
+  const { data: links, error: linksError } = await supabase
+    .from("links")
+    .insert([
+      { user_id: user?.id, username: instagram, type: "instagram" },
+      { user_id: user?.id, username: twitter, type: "twitter" },
+    ])
+    .select();
+  if (!linksError && !error) {
     redirect("/profile");
   } else {
-    console.log(error);
+    console.log("links error", linksError, "profile error", error);
   }
 };
 
