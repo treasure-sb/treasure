@@ -40,14 +40,9 @@ export default async function Page() {
         <Link href="/profile/events">
           <Button className="w-full">My Events</Button>
         </Link>
-        <Link href="/profile/create-event" className="">
-          <Button className="w-full" variant={"secondary"}>
-            Host an Event
-          </Button>
-        </Link>
         <Link href="/profile/manage-account" className="">
           <Button className="w-full" variant={"secondary"}>
-            Manage Account
+            Account
           </Button>
         </Link>
         {profile.role === "admin" && (
