@@ -5,16 +5,13 @@ import {
   getTagData,
   getDateTagEventData,
 } from "@/lib/helpers/eventsFiltering";
-import MainDisplay from "@/components/events/displays/MainDisplay";
-import EventCard from "@/components/events/cards/EventCard";
-import ListEvents from "@/components/events/shared/ListEvents";
-import NotFound from "@/components/icons/NotFound";
+import { getPublicPosterUrl, formatDate } from "@/lib/helpers/events";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import ClientListEvents from "./ClientListEvents";
 
 export default async function ListMainEvents({
-  numEvents,
   searchParams,
 }: {
-  numEvents: number;
   searchParams?: {
     tag?: string;
     from?: string;
@@ -22,50 +19,82 @@ export default async function ListMainEvents({
     search?: string;
   };
 }) {
-  const tagQuery = searchParams?.tag || null;
-  const fromQuery = searchParams?.from || null;
-  const untilQuery = searchParams?.until || null;
-  const search = searchParams?.search || null;
-  let events = [];
-
-  if (fromQuery && untilQuery && tagQuery) {
-    const { data: tagData, error: tagError } = await getTagData(tagQuery);
-    const { data: dateTagEventData, error: dateTagEventError } =
-      await getDateTagEventData(
+  const fetchEvents = async (page: number) => {
+    "use server";
+    let events = [];
+    const tagQuery = searchParams?.tag || null;
+    const fromQuery = searchParams?.from || null;
+    const untilQuery = searchParams?.until || null;
+    const search = searchParams?.search || null;
+    if (fromQuery && untilQuery && tagQuery) {
+      const { data: tagData, error: tagError } = await getTagData(tagQuery);
+      const { data: dateTagEventData, error: dateTagEventError } =
+        await getDateTagEventData(
+          search || "",
+          tagData?.id,
+          fromQuery,
+          untilQuery,
+          page
+        );
+      events = dateTagEventData || [];
+    } else if (fromQuery && untilQuery) {
+      const { data: dateEventData, error: dateEventError } =
+        await getEventDataByDate(search || "", fromQuery, untilQuery, page);
+      events = dateEventData || [];
+    } else if (tagQuery) {
+      const { data: tagData, error: tagError } = await getTagData(tagQuery);
+      const { data: eventData, error: eventError } = await getEventDataByTag(
         search || "",
         tagData?.id,
-        fromQuery,
-        untilQuery,
-        numEvents
+        page
       );
-    events = dateTagEventData || [];
-  } else if (fromQuery && untilQuery) {
-    const { data: dateEventData, error: dateEventError } =
-      await getEventDataByDate(search || "", fromQuery, untilQuery, numEvents);
-    events = dateEventData || [];
-  } else if (tagQuery) {
-    const { data: tagData, error: tagError } = await getTagData(tagQuery);
-    const { data: eventData, error: eventError } = await getEventDataByTag(
-      search || "",
-      tagData?.id,
-      numEvents
+      events = eventData || [];
+    } else {
+      const { data: allEventData, error: allEventError } =
+        await getAllEventData(search || "", page);
+      events = allEventData || [];
+    }
+    return events;
+  };
+
+  const fetchEventsData = async (page: number) => {
+    "use server";
+    const supabase = await createSupabaseServerClient();
+    const events: any = await fetchEvents(page);
+    const eventsWithDetails = await Promise.all(
+      events.map(async (event: any) => {
+        const ticketsPromise = supabase
+          .from("tickets")
+          .select("*")
+          .eq("event_id", event.id);
+
+        const publicPosterUrlPromise = getPublicPosterUrl(event);
+
+        const [ticketsResponse, publicPosterUrl] = await Promise.all([
+          ticketsPromise,
+          publicPosterUrlPromise,
+        ]);
+
+        return {
+          ...event,
+          tickets: ticketsResponse.data,
+          publicPosterUrl,
+          formattedDate: formatDate(event.date),
+        };
+      })
     );
-    events = eventData || [];
-  } else {
-    const { data: allEventData, error: allEventError } = await getAllEventData(
-      search || "",
-      numEvents
-    );
-    events = allEventData || [];
-  }
+    return eventsWithDetails;
+  };
+
+  const events = await fetchEventsData(1);
 
   return (
     <>
       {events && events.length > 0 ? (
-        <ListEvents
+        <ClientListEvents
           events={events}
-          DisplayComponent={MainDisplay}
-          CardComponent={EventCard}
+          fetchData={fetchEventsData}
+          searchParams={searchParams}
         />
       ) : (
         <div>
