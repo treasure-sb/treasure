@@ -45,6 +45,17 @@ export default async function ListUserEvents({
     if (appliedEvents) {
       events = appliedEvents;
     }
+  } else {
+    const { data: attendingEventsData, error: attendingEventsError } =
+      await supabase
+        .from("event_guests")
+        .select("events(*)")
+        .eq("guest_id", user.id);
+
+    const attendingEvents = attendingEventsData?.map((event) => event.events);
+    if (attendingEvents) {
+      events = attendingEvents;
+    }
   }
 
   return (
