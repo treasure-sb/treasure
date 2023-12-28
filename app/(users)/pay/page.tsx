@@ -3,6 +3,7 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PaymentForm from "./PaymentForm";
+import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
   searchParams,
@@ -23,7 +24,9 @@ export default async function Page({
     redirect("/");
   }
 
-  const vendor: Tables<"profiles"> = vendorData;
+  const profile = await getProfile(vendorData.id);
+
+  const vendor = profile;
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(vendor.avatar_url);
@@ -42,7 +45,7 @@ export default async function Page({
           </AvatarFallback>
         </Avatar>
       </div>
-      <PaymentForm />
+      <PaymentForm vendorID={vendor.id} />
     </main>
   );
 }
