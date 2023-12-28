@@ -10,7 +10,17 @@ const getProfile = async (id: string | undefined) => {
     .eq("id", id)
     .single();
 
-  const profile: Tables<"profiles"> = data || {};
+  const { data: links, error: linksError } = await supabase
+    .from("links")
+    .select("username, type")
+    .eq("user_id", id);
+
+  let joined = { ...data };
+  links?.forEach((link) => {
+    joined = { ...joined, [link.type]: link.username };
+  });
+
+  const profile: Tables<"profiles"> = joined || {};
   return profile;
 };
 
