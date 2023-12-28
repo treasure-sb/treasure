@@ -2,11 +2,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { Tables } from "@/types/supabase";
 
-export default async function Portfolio({
-  user,
-}: {
-  user: Tables<"profiles">;
-}) {
+export default async function Portfolio({ user }: { user: any }) {
   const supabase = await createSupabaseServerClient();
   const { data: portfolioData, error: portfolioError } = await supabase
     .from("portfolio_pictures")

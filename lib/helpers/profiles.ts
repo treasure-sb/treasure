@@ -20,7 +20,7 @@ const getProfile = async (id: string | undefined) => {
     joined = { ...joined, [link.type]: link.username };
   });
 
-  const profile: Tables<"profiles"> = joined || {};
+  const profile = joined || {};
   return profile;
 };
 

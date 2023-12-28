@@ -7,11 +7,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
-export default async function UserHeader({
-  user,
-}: {
-  user: Tables<"profiles">;
-}) {
+export default async function UserHeader({ user }: { user: any }) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
@@ -19,6 +15,11 @@ export default async function UserHeader({
   let instaLink = "https://www.instagram.com/" + user.instagram;
   let twitterLink = "https://www.twitter.com/" + user.twitter;
   const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
+
+  let hasPayments = false;
+  if (user.venmo || user.zelle || user.cashapp || user.paypal) {
+    hasPayments = true;
+  }
 
   const mobileHeader = (
     <div className="flex flex-col space-y-6 md:hidden">
@@ -57,9 +58,11 @@ export default async function UserHeader({
         </div>
       </div>
       <p className="text-center">{user.bio}</p>
-      <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
-        <Button className="w-full">Pay Now</Button>
-      </Link>
+      {hasPayments && (
+        <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
+          <Button className="w-full">Pay Now</Button>
+        </Link>
+      )}
     </div>
   );
 
@@ -96,9 +99,12 @@ export default async function UserHeader({
           </Link>
         )}
       </div>
-      <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
-        <Button className="w-full">Pay Now</Button>
-      </Link>
+      {hasPayments && (
+        <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
+          <Button className="w-full">Pay Now</Button>
+        </Link>
+      )}
+
       <p className="font-semibold bg-gradient-to-r hidden md:block from-primary to bg-green-200 text-transparent bg-clip-text">
         Joined Treasure {formattedJoinedDate}
       </p>

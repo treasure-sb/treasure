@@ -13,25 +13,27 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { submitPayment } from "@/lib/actions/vendors/submit-payments";
+import { vendorTransactionForm } from "@/types/profile";
 
 const formSchema = z.object({
   amount: z.string(),
-  itemName: z.string(),
+  item_name: z.string(),
 });
 
-export default function PaymentForm() {
+export default function PaymentForm(vendorID: any) {
   const [next, setNext] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: "0",
-      itemName: "",
+      item_name: "",
     },
   });
 
-  const onSubmit = () => {
-    console.log(form.getValues());
-  };
+  //this method never gets called but is necessary for the form not to redirect when we click a number
+  const onSubmit = () => {};
+
   const handleNumberClick = (number: string) => {
     const currentAmount = form.getValues().amount;
     if (currentAmount.length > 5) {
@@ -71,6 +73,15 @@ export default function PaymentForm() {
     </Button>
   ));
 
+  const submit = (type: string) => {
+    let newForm: vendorTransactionForm = {
+      ...form.getValues(),
+      method: type,
+      vendor_id: vendorID.vendorID,
+    };
+    submitPayment(newForm);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -98,7 +109,7 @@ export default function PaymentForm() {
           <div className="w-[80%] m-auto space-y-4">
             <FormField
               control={form.control}
-              name="itemName"
+              name="item_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -112,8 +123,19 @@ export default function PaymentForm() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
-              Pay with Paypal
+            <Button
+              className="w-[80%]"
+              type="button"
+              onClick={() => setNext(false)}
+            >
+              Back
+            </Button>
+            <Button
+              className="w-full"
+              type="button"
+              onClick={() => submit("venmo")}
+            >
+              Pay with venmo
             </Button>
           </div>
         ) : (

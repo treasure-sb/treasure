@@ -34,7 +34,7 @@ export default async function Page({
 
   const profile = await getProfile(userData.id);
 
-  const user: Tables<"profiles"> = profile;
+  const user = profile;
   const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
 
   return (
