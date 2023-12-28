@@ -22,7 +22,7 @@ export default async function LoggedInHeader() {
 
   return (
     <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
-      <div className="relative">
+      <div className="relative scale-90 -translate-x-4 sm:scale-100 sm:translate-x-0">
         <Link
           href="/"
           className="font-semibold text-3xl flex items-center space-x-1"
@@ -36,19 +36,28 @@ export default async function LoggedInHeader() {
           </p>
         )}
       </div>
-      <Link href="/profile">
-        {profile.avatar_url ? (
-          <Avatar className="h-14 w-14">
-            <AvatarImage src={publicUrl} />
-            <AvatarFallback>
-              {profile.first_name[0]}
-              {profile.last_name[0]}
-            </AvatarFallback>
-          </Avatar>
-        ) : (
-          <h1>My Profile</h1>
-        )}
-      </Link>
+      <div className="flex align-middle ">
+        <Link
+          href="/events"
+          className="my-auto font-semibold mr-6 text-lg relative group"
+        >
+          <span>Events</span>
+          <span className="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-hover:w-full"></span>
+        </Link>
+        <Link href="/profile">
+          {profile.avatar_url ? (
+            <Avatar className="h-14 w-14">
+              <AvatarImage src={publicUrl} />
+              <AvatarFallback>
+                {profile.first_name[0]}
+                {profile.last_name[0]}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <h1>My Profile</h1>
+          )}
+        </Link>
+      </div>
     </header>
   );
 }
