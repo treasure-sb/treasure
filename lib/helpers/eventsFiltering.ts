@@ -4,7 +4,7 @@ import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
 
 const today = format(new Date(), "yyyy-MM-dd");
-const numEvents = 5;
+const numEvents = 6;
 
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
@@ -22,15 +22,17 @@ const getDateTagEventData = async (
   tagId: string,
   from: string,
   until: string,
-  numEvents: number
+  page: number
 ) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
     .select("*, event_tags!inner(*)")
     .gte("date", today)
     .ilike("name", `%${search}%`)
-    .range(0, numEvents)
+    .range(startIndex, endIndex)
     .gte("date", from)
     .lte("date", until)
     .order("featured", { ascending: true })
@@ -44,8 +46,10 @@ const getEventDataByDate = async (
   search: string,
   from: string,
   until: string,
-  numEvents: number
+  page: number
 ) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
@@ -53,7 +57,7 @@ const getEventDataByDate = async (
     .ilike("name", `%${search}%`)
     .order("featured", { ascending: true })
     .order("date", { ascending: true })
-    .range(0, numEvents)
+    .range(startIndex, endIndex)
     .gte("date", from)
     .lte("date", until);
   return { data, error };
@@ -62,31 +66,35 @@ const getEventDataByDate = async (
 const getEventDataByTag = async (
   search: string,
   tagId: string,
-  numEvents: number
+  page: number
 ) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
     .select("*, event_tags!inner(*)")
     .gte("date", today)
     .ilike("name", `%${search}%`)
-    .range(0, numEvents)
-    .order("featured", { ascending: true })
+    .range(startIndex, endIndex)
+    .order("featured", { ascending: false })
     .order("date", { ascending: true })
     .eq("event_tags.tag_id", tagId);
   return { data, error };
 };
 
 const getAllEventData = async (search: string, page: number) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
     .select("*")
     .gte("date", today)
+    .range(startIndex, endIndex)
     .order("featured", { ascending: false })
     .order("date", { ascending: true })
-    .ilike("name", `%${search}%`)
-    .range((page - 1) * numEvents, page * numEvents);
+    .ilike("name", `%${search}%`);
   return { data, error };
 };
 

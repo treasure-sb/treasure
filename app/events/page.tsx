@@ -13,7 +13,6 @@ export default function Page({
   };
 }) {
   const tagQuery = searchParams?.tag || null;
-  let numEvents = 5;
 
   return (
     <main className="max-w-full md:max-w-6xl xl:max-w-7xl m-auto">
@@ -27,7 +26,7 @@ export default function Page({
         )}
         <h2 className="font-bold text-gray-500">In New York, NY</h2>
       </div>
-      <ListMainEvents numEvents={numEvents} searchParams={searchParams} />
+      <ListMainEvents searchParams={searchParams} />
     </main>
   );
 }

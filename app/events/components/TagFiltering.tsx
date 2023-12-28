@@ -3,16 +3,18 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function TagFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [activeTag, setActiveTag] = useState<string>("");
-  const { replace, refresh } = useRouter();
+  const { replace, refresh, push } = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setActiveTag(searchParams.get("tag") || "");
-  }, []);
+  }, [searchParams]);
 
   const handleClick = (tag_name: string) => {
     const params = new URLSearchParams(searchParams);
@@ -24,7 +26,6 @@ export default function TagFiltering() {
       params.set("tag", tag_name);
     }
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   const tags = [
