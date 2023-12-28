@@ -164,24 +164,6 @@ export default async function EventsPage({
             <p className="leading-8">{event.description}</p>
           </div>
           <Separator />
-          <Vendors event={event} />
-          <HostedBy event={event} />
-          <Separator />
-          {event.venue_map_url ? (
-            <>
-              <div className="font-semibold text-2xl my-4 w-full">
-                Venue Map
-              </div>
-              <Image
-                className="rounded-xl mb-6 lg:mb-0"
-                alt="venue map image"
-                src={publicVenueMapUrl}
-                width={500}
-                height={200}
-              />
-            </>
-          ) : null}
-          <Separator />
           <div>
             <h1 className="font-semibold text-2xl">Location</h1>
             <p>{capitalize(event.address)}</p>
@@ -199,6 +181,24 @@ export default async function EventsPage({
               </Button>
             </Link>
           </div>
+          <Separator />
+          <Vendors event={event} />
+          <HostedBy event={event} />
+          <Separator />
+          {event.venue_map_url ? (
+            <>
+              <div className="font-semibold text-2xl my-4 w-full">
+                Venue Map
+              </div>
+              <Image
+                className="rounded-xl mb-6 lg:mb-0"
+                alt="venue map image"
+                src={publicVenueMapUrl}
+                width={500}
+                height={200}
+              />
+            </>
+          ) : null}
         </div>
       </div>
       <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
