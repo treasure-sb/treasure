@@ -7,7 +7,7 @@ export default function AvatarEdit({
   avatarUrl,
   setAvatarFile,
 }: {
-  avatarUrl: string | null;
+  avatarUrl?: string | undefined;
   setAvatarFile: Dispatch<SetStateAction<File | null>>;
 }) {
   const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null);
@@ -18,12 +18,14 @@ export default function AvatarEdit({
         className="hover:cursor-pointer w-28 h-28 rounded-full"
         htmlFor="avatar"
       >
-        {avatarUrl ? (
+        {avatarUrl || avatarFileUrl ? (
           <Avatar className="h-32 w-32 m-auto">
             <AvatarImage src={avatarFileUrl || avatarUrl} />
             <AvatarFallback></AvatarFallback>
           </Avatar>
-        ) : null}
+        ) : (
+          <div className="h-32 w-32 m-auto rounded-full bg-gray-200" />
+        )}
       </label>
       <input
         name="avatar"

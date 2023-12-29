@@ -10,6 +10,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProfile } from "@/lib/helpers/profiles";
+import AssignEvent from "./AssignEvent";
 import Link from "next/link";
 import Tickets from "./Tickets";
 import Tags from "./Tags";
@@ -115,7 +116,7 @@ export default async function EventsPage({
     if (!user) {
       redirect("/login");
     }
-    console.log("attendingData", attendingData);
+
     if (attendingData) {
       await supabase
         .from("event_guests")
@@ -203,16 +204,19 @@ export default async function EventsPage({
       </div>
       <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
         {profile.role === "admin" && (
-          <Link
-            href={{
-              pathname: `/profile/create-event`,
-              query: { data: JSON.stringify(eventInfo) },
-            }}
-          >
-            <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
-              <DuplicateEvent />
-            </div>
-          </Link>
+          <>
+            <AssignEvent />
+            <Link
+              href={{
+                pathname: `/profile/create-event`,
+                query: { data: JSON.stringify(eventInfo) },
+              }}
+            >
+              <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
+                <DuplicateEvent />
+              </div>
+            </Link>
+          </>
         )}
         {(organizer || profile.role === "admin") && (
           <Link href={`/profile/events/organizer/${event.cleaned_name}`}>

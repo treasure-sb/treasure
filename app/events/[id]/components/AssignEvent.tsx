@@ -1,0 +1,101 @@
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useQuery } from "@tanstack/react-query";
+import { createClient } from "@/utils/supabase/client";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import AssignEventIcon from "@/components/icons/AssignEventIcon";
+
+export default function AssignEvent() {
+  const supabase = createClient();
+  const [search, setSearch] = useState("");
+
+  const fetchProfiles = async (search: string) => {
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("temporary_profiles")
+      .select("*")
+      .or(`username.ilike.%${search}%,first_name.ilike.%${search}%`)
+      .limit(6);
+
+    if (profilesData) {
+      const profilesWithAvatar = await Promise.all(
+        profilesData.map(async (profile) => {
+          const {
+            data: { publicUrl },
+          } = await supabase.storage
+            .from("avatars")
+            .getPublicUrl(profile.avatar_url);
+          return {
+            ...profile,
+            avatar_url: publicUrl,
+          };
+        })
+      );
+      return profilesWithAvatar;
+    }
+  };
+
+  const { data, isFetching } = useQuery({
+    queryKey: ["profiles", search],
+    queryFn: async () => {
+      const profiles = await fetchProfiles(search);
+      return profiles;
+    },
+    enabled: search.length > 0,
+  });
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    setSearch(term);
+  }, 300);
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="hover:cursor-pointer opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
+          <AssignEventIcon />
+        </div>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Assign event to a temporary profile</DialogTitle>
+          <Input
+            onChange={(e) => handleSearch(e.target.value)}
+            type="text"
+            autoComplete="off"
+            id="search"
+            placeholder="Search Profile"
+            className="pl-0"
+          />
+        </DialogHeader>
+        {data && search.trim().length > 0
+          ? data?.map((profile) => (
+              <div className="flex justify-between items-center">
+                <div className="flex space-x-1 items-center">
+                  <Avatar className="h-14 w-14">
+                    <AvatarImage src={profile.avatar_url} />
+                  </Avatar>
+                  <div>
+                    <p className="text-lg font-semibold">
+                      {profile.first_name} {profile.last_name}
+                    </p>
+                    <p className="text-sm text-gray-400">@{profile.username}</p>
+                  </div>
+                </div>
+                <Button>Assign</Button>
+              </div>
+            ))
+          : null}
+      </DialogContent>
+    </Dialog>
+  );
+}

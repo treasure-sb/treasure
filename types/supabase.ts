@@ -9,6 +9,36 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      event_guests: {
+        Row: {
+          event_id: string
+          guest_id: string
+        }
+        Insert: {
+          event_id: string
+          guest_id: string
+        }
+        Update: {
+          event_id?: string
+          guest_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_guests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_guests_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_tags: {
         Row: {
           event_id: string
@@ -142,6 +172,7 @@ export interface Database {
           lng: number
           name: string
           organizer_id: string
+          organizer_type: string
           poster_url: string
           start_time: string
           ticket_tailor_event_id: string | null
@@ -161,6 +192,7 @@ export interface Database {
           lng: number
           name: string
           organizer_id: string
+          organizer_type?: string
           poster_url: string
           start_time: string
           ticket_tailor_event_id?: string | null
@@ -180,6 +212,7 @@ export interface Database {
           lng?: number
           name?: string
           organizer_id?: string
+          organizer_type?: string
           poster_url?: string
           start_time?: string
           ticket_tailor_event_id?: string | null
@@ -192,6 +225,35 @@ export interface Database {
             columns: ["organizer_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      links: {
+        Row: {
+          id: number
+          type: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          id?: number
+          type?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          id?: number
+          type?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "links_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -256,42 +318,36 @@ export interface Database {
           avatar_url: string
           bio: string | null
           created_at: string
-          discriminator: number
-          email: string
+          discriminator: number | null
+          email: string | null
           first_name: string
           id: string
-          instagram: string | null
           last_name: string
           role: string
-          twitter: string | null
           username: string
         }
         Insert: {
           avatar_url?: string
           bio?: string | null
           created_at?: string
-          discriminator: number
-          email: string
+          discriminator?: number | null
+          email?: string | null
           first_name: string
-          id: string
-          instagram?: string | null
+          id?: string
           last_name: string
           role?: string
-          twitter?: string | null
           username: string
         }
         Update: {
           avatar_url?: string
           bio?: string | null
           created_at?: string
-          discriminator?: number
-          email?: string
+          discriminator?: number | null
+          email?: string | null
           first_name?: string
           id?: string
-          instagram?: string | null
           last_name?: string
           role?: string
-          twitter?: string | null
           username?: string
         }
         Relationships: [
@@ -316,6 +372,36 @@ export interface Database {
         Update: {
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      temporary_profiles: {
+        Row: {
+          avatar_url: string
+          created_at: string
+          first_name: string
+          id: string
+          instagram: string | null
+          last_name: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string
+          created_at?: string
+          first_name: string
+          id?: string
+          instagram?: string | null
+          last_name: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string
+          created_at?: string
+          first_name?: string
+          id?: string
+          instagram?: string | null
+          last_name?: string
+          username?: string
         }
         Relationships: []
       }
@@ -416,6 +502,41 @@ export interface Database {
           token?: string | null
         }
         Relationships: []
+      }
+      vendor_transactions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          id: number
+          item_name: string | null
+          method: string
+          vendor_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          id?: number
+          item_name?: string | null
+          method: string
+          vendor_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          id?: number
+          item_name?: string | null
+          method?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_transactions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
