@@ -26,6 +26,21 @@ export default async function Page({
 
   const profile = await getProfile(vendorData.id);
 
+  let paymentMethods = [];
+  if (profile.venmo && profile.venmo !== "") {
+    paymentMethods.push(["venmo", profile.venmo]);
+  }
+  if (profile.zelle && profile.zelle !== "") {
+    paymentMethods.push(["zelle", profile.zelle]);
+  }
+  if (profile.cashapp && profile.cashapp !== "") {
+    paymentMethods.push(["cashapp", profile.cashapp]);
+  }
+  if (profile.paypal && profile.paypal !== "") {
+    paymentMethods.push(["paypal", profile.paypal]);
+  }
+  console.log(paymentMethods);
+
   const vendor = profile;
   const {
     data: { publicUrl },
@@ -45,7 +60,11 @@ export default async function Page({
           </AvatarFallback>
         </Avatar>
       </div>
-      <PaymentForm vendorID={vendor.id} />
+      <PaymentForm
+        vendorID={vendor.id}
+        paymentMethods={paymentMethods}
+        route={vendor.username}
+      />
     </main>
   );
 }

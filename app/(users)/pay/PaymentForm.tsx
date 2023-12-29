@@ -15,13 +15,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { submitPayment } from "@/lib/actions/vendors/submit-payments";
 import { vendorTransactionForm } from "@/types/profile";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { get } from "http";
+import { ca, de } from "date-fns/locale";
 
 const formSchema = z.object({
   amount: z.string(),
   item_name: z.string(),
 });
 
-export default function PaymentForm(vendorID: any) {
+export default function PaymentForm({
+  vendorID,
+  paymentMethods,
+  route,
+}: {
+  vendorID: any;
+  paymentMethods: any[][];
+  route: any;
+}) {
   const [next, setNext] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,14 +84,37 @@ export default function PaymentForm(vendorID: any) {
       {config.label}
     </Button>
   ));
+  const getRoute = (method: string[]) => {
+    let rte = "";
+    switch (method[0]) {
+      case "venmo":
+        rte =
+          "https://account.venmo.com/payment-link?note=" +
+          form.getValues().item_name.replaceAll(" ", "%20") +
+          "&amount=" +
+          form.getValues().amount +
+          "&recipients=" +
+          method[1].replaceAll(" ", "%20") +
+          "&txn=pay";
+        break;
+      case "zelle":
+        break;
+      case "cashapp":
+        rte = "https://cash.app/$" + method[1] + "/" + form.getValues().amount;
+        break;
+      case "paypal":
+        break;
+    }
+    return rte;
+  };
 
   const submit = (type: string) => {
     let newForm: vendorTransactionForm = {
       ...form.getValues(),
       method: type,
-      vendor_id: vendorID.vendorID,
+      vendor_id: vendorID,
     };
-    submitPayment(newForm);
+    submitPayment(newForm, route);
   };
 
   return (
@@ -130,13 +165,20 @@ export default function PaymentForm(vendorID: any) {
             >
               Back
             </Button>
-            <Button
-              className="w-full"
-              type="button"
-              onClick={() => submit("venmo")}
-            >
-              Pay with venmo
-            </Button>
+            <div className="flex flex-col space-y-4">
+              {paymentMethods.map((method: string[]) => (
+                <Link
+                  className="w-full"
+                  target="_blank"
+                  href={getRoute(method)}
+                  onClick={() => submit(method[0])}
+                >
+                  <Button className="w-full" type="button">
+                    Pay with {method[0]}
+                  </Button>
+                </Link>
+              ))}
+            </div>
           </div>
         ) : (
           <>

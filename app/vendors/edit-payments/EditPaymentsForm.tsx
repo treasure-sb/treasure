@@ -16,9 +16,9 @@ import { editPaymentMethods } from "@/lib/actions/vendors/vendor-payments";
 
 const paymentsSchema = z.object({
   venmo: z.string().optional(),
-  zelle: z.string().optional(),
+  // zelle: z.string().optional(),
   cashapp: z.string().optional(),
-  paypal: z.string().optional(),
+  // paypal: z.string().optional(),
 });
 
 interface EventFormProps {
@@ -31,9 +31,9 @@ export default function EditPaymentsForm({ payments }: EventFormProps) {
     resolver: zodResolver(paymentsSchema),
     defaultValues: {
       venmo: payments.venmo === null ? "" : payments.venmo,
-      zelle: payments.zelle === null ? "" : payments.zelle,
+      // zelle: payments.zelle === null ? "" : payments.zelle,
       cashapp: payments.cashapp === null ? "" : payments.cashapp,
-      paypal: payments.paypal === null ? "" : payments.paypal,
+      // paypal: payments.paypal === null ? "" : payments.paypal,
     },
   });
 
@@ -69,7 +69,7 @@ export default function EditPaymentsForm({ payments }: EventFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="zelle"
                 render={({ field }) => (
@@ -82,7 +82,7 @@ export default function EditPaymentsForm({ payments }: EventFormProps) {
                     </div>
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="cashapp"
@@ -97,7 +97,7 @@ export default function EditPaymentsForm({ payments }: EventFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="paypal"
                 render={({ field }) => (
@@ -110,7 +110,7 @@ export default function EditPaymentsForm({ payments }: EventFormProps) {
                     </div>
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
             <Button type="submit" className="w-full py-6">
               Save
