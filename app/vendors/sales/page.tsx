@@ -3,6 +3,8 @@ import { validateUser, logoutUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import TransactionCard from "./components/TransactionCard";
+import { formatDate } from "@/lib/helpers/events";
 
 export default async function Page() {
   const { data: userData } = await validateUser();
@@ -12,7 +14,8 @@ export default async function Page() {
   const { data, error } = await supabase
     .from("vendor_transactions")
     .select("*")
-    .eq("vendor_id", user.id);
+    .eq("vendor_id", user.id)
+    .order("created_at", { ascending: false });
 
   return (
     <main className="m-auto max-w-lg">
@@ -21,13 +24,11 @@ export default async function Page() {
           Vendors Corner
         </h1>
         {data?.map((transaction) => (
-          <div className="flex flex-col border">
-            <div className="flex flex-col">
-              <p>Amount: ${transaction.amount}</p>
-              <p>Item Name: {transaction.item_name}</p>
-              <p>Method: {transaction.method}</p>
-              <p>Created At: {transaction.created_at}</p>
-            </div>
+          <div className="flex flex-col">
+            <TransactionCard
+              transaction={transaction}
+              formattedDate={formatDate(transaction.created_at)}
+            />
           </div>
         ))}
       </div>
