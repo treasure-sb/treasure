@@ -113,6 +113,7 @@ export default function PaymentForm({
       method: type,
       vendor_id: vendorID,
     };
+    if (type === "venmo") await new Promise((f) => setTimeout(f, 200));
     await submitPayment(newForm, route);
   };
 
@@ -168,7 +169,7 @@ export default function PaymentForm({
               {paymentMethods.map((method: string[]) => (
                 <Link
                   className="w-full"
-                  target="_blank"
+                  target={method[0] === "venmo" ? "_self" : "_blank"}
                   href={getRoute(method)}
                   onClick={() => submit(method[0])}
                 >
