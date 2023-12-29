@@ -3,7 +3,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { vendorTransactionForm } from "@/types/profile";
 
-const submitPayment = async (values: vendorTransactionForm) => {
+const submitPayment = async (values: vendorTransactionForm, route: string) => {
   const supabase = await createSupabaseServerClient();
 
   console.log(values);
@@ -12,6 +12,7 @@ const submitPayment = async (values: vendorTransactionForm) => {
     .insert([values]);
 
   console.log(del, deleteError);
+  redirect("/" + route);
 };
 
 export { submitPayment };
