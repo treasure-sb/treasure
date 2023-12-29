@@ -39,7 +39,6 @@ export default async function Page({
   if (profile.paypal && profile.paypal !== "") {
     paymentMethods.push(["paypal", profile.paypal]);
   }
-  console.log(paymentMethods);
 
   const vendor = profile;
   const {
