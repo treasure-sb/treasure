@@ -89,13 +89,12 @@ export default function PaymentForm({
     switch (method[0]) {
       case "venmo":
         rte =
-          "https://account.venmo.com/payment-link?note=" +
+          "https://venmo.com/" +
+          method[1].replaceAll(" ", "%20") +
+          "?txn=pay&note=" +
           form.getValues().item_name.replaceAll(" ", "%20") +
           "&amount=" +
-          form.getValues().amount +
-          "&recipients=" +
-          method[1].replaceAll(" ", "%20") +
-          "&txn=pay";
+          form.getValues().amount;
         break;
       case "zelle":
         break;
@@ -108,13 +107,13 @@ export default function PaymentForm({
     return rte;
   };
 
-  const submit = (type: string) => {
+  const submit = async (type: string) => {
     let newForm: vendorTransactionForm = {
       ...form.getValues(),
       method: type,
       vendor_id: vendorID,
     };
-    submitPayment(newForm, route);
+    await submitPayment(newForm, route);
   };
 
   return (
