@@ -181,7 +181,7 @@ export default function PaymentForm({
               <Link
                 className="w-full"
                 href={"/" + route}
-                onClick={() => submit("cash")}
+                onClick={() => submit("in person")}
               >
                 <Button className="w-full" type="button">
                   Pay in Person
