@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6">
-        <h1 className="text-xl m-auto font-semibold text-center">
+        <h1 className="text-2xl m-auto font-semibold text-center">
           Manage Account
         </h1>
         <Link href="/profile/create-event">
@@ -23,7 +23,12 @@ export default async function Page() {
         </Link>
         <Link href="/profile/portfolio" className="">
           <Button className="w-full" variant={"secondary"}>
-            Manage Portfolio
+            Portfolio Photos
+          </Button>
+        </Link>
+        <Link href="/vendors" className="">
+          <Button className="w-full" variant={"secondary"}>
+            Vendors Corner
           </Button>
         </Link>
         <form action={logoutUser}>

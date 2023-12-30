@@ -11,7 +11,7 @@ export default async function ListUserEvents({
   user,
 }: {
   filter: string;
-  user: Tables<"profiles">;
+  user: any;
 }) {
   const today = format(new Date(), "yyyy-MM-dd");
   const supabase = await createSupabaseServerClient();

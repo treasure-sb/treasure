@@ -22,6 +22,7 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
   const supabase = createClient();
   const { refresh } = useRouter();
   const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const fetchProfiles = async (search: string) => {
     const { data: profilesData, error: profilesError } = await supabase
@@ -66,11 +67,12 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
       .from("events")
       .update({ organizer_id: profileId, organizer_type: "temporary_profile" })
       .eq("id", event.id);
+    setIsOpen(false);
     refresh();
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="hover:cursor-pointer opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
           <AssignEventIcon />

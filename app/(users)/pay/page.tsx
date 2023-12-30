@@ -1,8 +1,8 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PaymentForm from "./PaymentForm";
+import { getProfile, getProfileLinks } from "@/lib/helpers/profiles";
 
 export default async function Page({
   searchParams,
@@ -23,7 +23,19 @@ export default async function Page({
     redirect("/");
   }
 
-  const vendor: Tables<"profiles"> = vendorData;
+  const { profile } = await getProfile(vendorData.id);
+  const { links } = await getProfileLinks(vendorData.id);
+  const paymentMethods: string[][] = [];
+
+  const paymentTypes = ["venmo", "zelle", "cashapp", "paypal"];
+  const filteredLinks = links.filter((link) =>
+    paymentTypes.includes(link.type)
+  );
+  filteredLinks.forEach((link) => {
+    paymentMethods.push([link.type, link.username]);
+  });
+
+  const vendor = profile;
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(vendor.avatar_url);
@@ -42,7 +54,11 @@ export default async function Page({
           </AvatarFallback>
         </Avatar>
       </div>
-      <PaymentForm />
+      <PaymentForm
+        vendorID={vendor.id}
+        paymentMethods={paymentMethods}
+        route={vendor.username}
+      />
     </main>
   );
 }
