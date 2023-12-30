@@ -18,11 +18,8 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  first_name: z.string().min(1, {
+  business_name: z.string().min(1, {
     message: "First Name is required",
-  }),
-  last_name: z.string().min(1, {
-    message: "Last Name is required",
   }),
   username: z.string().min(1, {
     message: "Username is required",
@@ -35,6 +32,11 @@ export default function Page() {
   const supabase = createClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      business_name: "",
+      username: "",
+      instagram: "",
+    },
   });
 
   const onSubmit = async () => {
@@ -67,23 +69,11 @@ export default function Page() {
         >
           <FormField
             control={form.control}
-            name="first_name"
+            name="business_name"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="First Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="last_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Last Name" {...field} />
+                  <Input placeholder="Business Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

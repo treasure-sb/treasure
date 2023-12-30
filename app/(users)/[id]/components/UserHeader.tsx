@@ -72,13 +72,17 @@ export default async function UserHeader({
         <div className="space-y-4">
           <Avatar className="h-28 w-28 m-auto">
             <AvatarImage src={publicUrl} />
-            <AvatarFallback>
-              {user.first_name[0]}
-              {user.last_name[0]}
-            </AvatarFallback>
+            <AvatarFallback />
           </Avatar>
           <h1 className="text-md font-bold">
-            {user.first_name} {user.last_name}
+            {isProfile() ? (
+              <>
+                {(user as Tables<"profiles">).first_name}{" "}
+                {(user as Tables<"profiles">).last_name}
+              </>
+            ) : (
+              <>{(user as Tables<"temporary_profiles">).business_name}</>
+            )}
           </h1>
         </div>
         <div className="w-full space-y-4">
@@ -109,14 +113,18 @@ export default async function UserHeader({
   const desktopHeader = (
     <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-16 hidden">
       <h1 className="text-2xl md:text-3xl font-bold">
-        {user.first_name} {user.last_name}
+        {isProfile() ? (
+          <>
+            {(user as Tables<"profiles">).first_name}{" "}
+            {(user as Tables<"profiles">).last_name}
+          </>
+        ) : (
+          <>{(user as Tables<"temporary_profiles">).business_name}</>
+        )}
       </h1>
       <Avatar className="h-32 w-32 md:h-52 md:w-52 m-auto">
         <AvatarImage src={publicUrl} />
-        <AvatarFallback>
-          {user.first_name[0]}
-          {user.last_name[0]}
-        </AvatarFallback>
+        <AvatarFallback />
       </Avatar>
       {isProfile() && (
         <p className="text-center">{(user as Tables<"profiles">).bio}</p>

@@ -34,13 +34,14 @@ const editProfile = async (values: profileForm) => {
 const createTemporaryProfile = async (
   values: Partial<profileForm> & {
     username: string;
+    business_name: string;
   }
 ) => {
   const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, username, avatar_url, instagram } = values;
+  const { business_name, username, avatar_url, instagram } = values;
   const { data, error: userError } = await supabase
     .from("temporary_profiles")
-    .insert([{ first_name, last_name, username, avatar_url, instagram }])
+    .insert([{ business_name, username, avatar_url, instagram }])
     .select();
 
   if (!userError) {
