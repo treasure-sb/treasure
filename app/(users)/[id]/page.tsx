@@ -14,13 +14,13 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { username: string };
+  params: { id: string };
   searchParams?: {
     filter: string;
     type: string;
   };
 }) {
-  const username = params.username;
+  const username = params.id;
   const filter = searchParams?.filter || "Events";
   const type = searchParams?.type || "profile";
   let user: Tables<"profiles"> | Tables<"temporary_profiles">;
