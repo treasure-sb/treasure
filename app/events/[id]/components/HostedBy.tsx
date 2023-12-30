@@ -36,7 +36,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
     organizer = tempUserData;
   }
 
-  const { username, avatar_url, first_name, last_name } = organizer;
+  const { username, avatar_url } = organizer;
   const {
     data: { publicUrl: organizerPublicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(avatar_url);
@@ -50,10 +50,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
         >
           <Avatar className="h-24 w-24 m-auto">
             <AvatarImage src={organizerPublicUrl} />
-            <AvatarFallback>
-              {first_name[0]}
-              {last_name[0]}
-            </AvatarFallback>
+            <AvatarFallback />
           </Avatar>
         </Link>
         <span>@{username}</span>

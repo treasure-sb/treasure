@@ -28,7 +28,7 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
     const { data: profilesData, error: profilesError } = await supabase
       .from("temporary_profiles")
       .select("*")
-      .or(`username.ilike.%${search}%,first_name.ilike.%${search}%`)
+      .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
       .limit(6);
 
     if (profilesData) {
@@ -92,7 +92,10 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
         </DialogHeader>
         {data && search.trim().length > 0
           ? data?.map((profile) => (
-              <div className="flex justify-between items-center">
+              <div
+                key={profile.id}
+                className="flex justify-between items-center"
+              >
                 <div className="flex space-x-3 items-center">
                   <Avatar className="h-14 w-14">
                     <AvatarFallback />
@@ -100,7 +103,7 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
                   </Avatar>
                   <div>
                     <p className="text-lg font-semibold">
-                      {profile.first_name} {profile.last_name}
+                      {profile.business_name}
                     </p>
                     <p className="text-sm text-gray-400">@{profile.username}</p>
                   </div>

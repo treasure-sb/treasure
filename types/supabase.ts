@@ -370,29 +370,26 @@ export interface Database {
       temporary_profiles: {
         Row: {
           avatar_url: string
+          business_name: string
           created_at: string
-          first_name: string
           id: string
           instagram: string | null
-          last_name: string
           username: string
         }
         Insert: {
           avatar_url?: string
+          business_name: string
           created_at?: string
-          first_name: string
           id?: string
           instagram?: string | null
-          last_name: string
           username: string
         }
         Update: {
           avatar_url?: string
+          business_name?: string
           created_at?: string
-          first_name?: string
           id?: string
           instagram?: string | null
-          last_name?: string
           username?: string
         }
         Relationships: []
