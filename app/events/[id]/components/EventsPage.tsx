@@ -54,7 +54,7 @@ export default async function EventsPage({
 
   // get event info for admin to send to create event page
   let eventInfo;
-  if (profile.role === "admin") {
+  if (profile && profile.role === "admin") {
     const { data: tagsData, error: tagsError } = await supabase
       .from("event_tags")
       .select("tags(name,id)")
@@ -203,7 +203,7 @@ export default async function EventsPage({
         </div>
       </div>
       <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
-        {profile.role === "admin" && (
+        {profile && profile.role === "admin" && (
           <>
             <AssignEvent event={event} />
             <Link
@@ -218,7 +218,7 @@ export default async function EventsPage({
             </Link>
           </>
         )}
-        {(organizer || profile.role === "admin") && (
+        {(organizer || (profile && profile.role === "admin")) && (
           <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
             <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
               <EditEvent />
