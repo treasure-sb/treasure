@@ -19,7 +19,7 @@ export default async function ListEventsHosting({
   return (
     <>
       <p className="mb-6 font-semibold">
-        Upcoming events {user.first_name} is hosting
+        Upcoming events {user.business_name} is hosting
       </p>
       <div className="md:hidden block space-y-4 relative">
         {eventsHosting.map((event) => (
