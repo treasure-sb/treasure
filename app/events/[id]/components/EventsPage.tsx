@@ -33,7 +33,7 @@ export default async function EventsPage({
     data: { user },
   } = await validateUser();
 
-  const [profile, publicPosterUrl, publicVenueMapUrl] = await Promise.all([
+  const [{ profile }, publicPosterUrl, publicVenueMapUrl] = await Promise.all([
     getProfile(user?.id),
     getPublicPosterUrl(event),
     getPublicVenueMapUrl(event),
@@ -205,7 +205,7 @@ export default async function EventsPage({
       <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
         {profile.role === "admin" && (
           <>
-            <AssignEvent />
+            <AssignEvent event={event} />
             <Link
               href={{
                 pathname: `/profile/create-event`,

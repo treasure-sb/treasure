@@ -12,12 +12,15 @@ import { createClient } from "@/utils/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Tables } from "@/types/supabase";
+import { useRouter } from "next/navigation";
 import AssignEventIcon from "@/components/icons/AssignEventIcon";
 
-export default function AssignEvent() {
+export default function AssignEvent({ event }: { event: Tables<"events"> }) {
   const supabase = createClient();
+  const { refresh } = useRouter();
   const [search, setSearch] = useState("");
 
   const fetchProfiles = async (search: string) => {
@@ -45,7 +48,7 @@ export default function AssignEvent() {
     }
   };
 
-  const { data, isFetching } = useQuery({
+  const { data } = useQuery({
     queryKey: ["profiles", search],
     queryFn: async () => {
       const profiles = await fetchProfiles(search);
@@ -57,6 +60,14 @@ export default function AssignEvent() {
   const handleSearch = useDebouncedCallback((term: string) => {
     setSearch(term);
   }, 300);
+
+  const handleAssign = async (profileId: string) => {
+    await supabase
+      .from("events")
+      .update({ organizer_id: profileId, organizer_type: "temporary_profile" })
+      .eq("id", event.id);
+    refresh();
+  };
 
   return (
     <Dialog>
@@ -80,8 +91,9 @@ export default function AssignEvent() {
         {data && search.trim().length > 0
           ? data?.map((profile) => (
               <div className="flex justify-between items-center">
-                <div className="flex space-x-1 items-center">
+                <div className="flex space-x-3 items-center">
                   <Avatar className="h-14 w-14">
+                    <AvatarFallback />
                     <AvatarImage src={profile.avatar_url} />
                   </Avatar>
                   <div>
@@ -91,7 +103,7 @@ export default function AssignEvent() {
                     <p className="text-sm text-gray-400">@{profile.username}</p>
                   </div>
                 </div>
-                <Button>Assign</Button>
+                <Button onClick={() => handleAssign(profile.id)}>Assign</Button>
               </div>
             ))
           : null}

@@ -6,3 +6,7 @@ export interface profileForm {
   bio: string;
   avatar_url: string;
 }
+
+export interface LinkType {
+  [key: string]: string;
+}

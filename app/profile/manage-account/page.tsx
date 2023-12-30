@@ -14,14 +14,11 @@ export default async function Page() {
   const user: User = userData.user as User;
 
   const supabase = await createSupabaseServerClient();
-  const profile = await getProfile(user.id);
+  const { profile } = await getProfile(user.id);
 
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
-
-  let instaLink = "https://www.instagram.com/" + profile.instagram;
-  let twitterLink = "https://www.twitter.com/" + profile.twitter;
   const formattedDate = format(new Date(user.created_at), "MMMM do, yyyy");
 
   return (

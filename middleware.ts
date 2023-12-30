@@ -7,7 +7,7 @@ async function isUserOrganzierOrAdmin(
   userId: string | undefined,
   eventName: string
 ) {
-  const profile = await getProfile(userId);
+  const { profile } = await getProfile(userId);
   const supabase = await createSupabaseServerClient();
   const { data: event } = await supabase
     .from("events")

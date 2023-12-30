@@ -219,34 +219,26 @@ export interface Database {
           venue_map_url?: string | null
           venue_name?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "events_organizer_id_fkey"
-            columns: ["organizer_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       links: {
         Row: {
           id: number
-          type: string | null
-          user_id: string | null
-          username: string | null
+          type: string
+          user_id: string
+          username: string
         }
         Insert: {
           id?: number
-          type?: string | null
-          user_id?: string | null
-          username?: string | null
+          type: string
+          user_id: string
+          username: string
         }
         Update: {
           id?: number
-          type?: string | null
-          user_id?: string | null
-          username?: string | null
+          type?: string
+          user_id?: string
+          username?: string
         }
         Relationships: [
           {
