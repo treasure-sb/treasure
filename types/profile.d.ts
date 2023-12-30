@@ -7,6 +7,10 @@ export interface profileForm {
   avatar_url: string;
 }
 
+export interface LinkType {
+  [key: string]: string;
+}
+
 export interface paymentsForm {
   venmo: string;
   zelle: string;

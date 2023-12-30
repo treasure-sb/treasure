@@ -9,7 +9,7 @@ export default async function Page() {
   const user: User = userData.user as User;
 
   const supabase = await createSupabaseServerClient();
-  const profile = await getProfile(user.id);
+  const { profile } = await getProfile(user.id);
 
   const {
     data: { publicUrl },

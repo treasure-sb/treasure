@@ -63,6 +63,7 @@ export default async function ListUserEvents({
                 <SeeMore>
                   {eventsAttending.map((event) => (
                     <EventCard
+                      key={event.id + "card"}
                       event={event}
                       redirectTo={`/events/${event.cleaned_name}`}
                     />
@@ -72,7 +73,7 @@ export default async function ListUserEvents({
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
                 <SeeMore>
                   {eventsAttending.map((event) => (
-                    <MainDisplay event={event} />
+                    <MainDisplay key={event.id + "display"} event={event} />
                   ))}
                 </SeeMore>
               </div>

@@ -1,9 +1,8 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PaymentForm from "./PaymentForm";
-import { getProfile } from "@/lib/helpers/profiles";
+import { getProfile, getProfileLinks } from "@/lib/helpers/profiles";
 
 export default async function Page({
   searchParams,
@@ -24,21 +23,17 @@ export default async function Page({
     redirect("/");
   }
 
-  const profile = await getProfile(vendorData.id);
+  const { profile } = await getProfile(vendorData.id);
+  const { links } = await getProfileLinks(vendorData.id);
+  const paymentMethods: string[][] = [];
 
-  let paymentMethods = [];
-  if (profile.venmo && profile.venmo !== "") {
-    paymentMethods.push(["venmo", profile.venmo]);
-  }
-  if (profile.zelle && profile.zelle !== "") {
-    paymentMethods.push(["zelle", profile.zelle]);
-  }
-  if (profile.cashapp && profile.cashapp !== "") {
-    paymentMethods.push(["cashapp", profile.cashapp]);
-  }
-  if (profile.paypal && profile.paypal !== "") {
-    paymentMethods.push(["paypal", profile.paypal]);
-  }
+  const paymentTypes = ["venmo", "zelle", "cashapp", "paypal"];
+  const filteredLinks = links.filter((link) =>
+    paymentTypes.includes(link.type)
+  );
+  filteredLinks.forEach((link) => {
+    paymentMethods.push([link.type, link.username]);
+  });
 
   const vendor = profile;
   const {

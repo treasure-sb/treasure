@@ -3,23 +3,68 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import InstagramIcon from "@/components/icons/InstagramIcon";
 import TwitterIcon from "@/components/icons/TwitterIcon";
+import { getProfileLinks } from "@/lib/helpers/profiles";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
-export default async function UserHeader({ user }: { user: any }) {
+export default async function UserHeader({
+  user,
+}: {
+  user: Tables<"profiles"> | Tables<"temporary_profiles">;
+}) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
-  let instaLink = "https://www.instagram.com/" + user.instagram;
-  let twitterLink = "https://www.twitter.com/" + user.twitter;
   const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
 
-  let hasPayments = false;
-  if (user.venmo || user.zelle || user.cashapp || user.paypal) {
-    hasPayments = true;
-  }
+  // determine if user is a profile or a temp profile
+  const isProfile = () => "bio" in user;
+
+  const fetchUserLinks = async () => {
+    const { links } = await getProfileLinks(user.id);
+    const filteredLinks = links.filter(
+      (link) => link.type === "instagram" || link.type === "twitter"
+    );
+
+    const listLinks = filteredLinks.map((link: Tables<"links">) => {
+      if (link.type === "instagram") {
+        return {
+          url: "https://www.instagram.com/" + link.username,
+          icon: <InstagramIcon />,
+          username: link.username,
+        };
+      } else if (link.type === "twitter") {
+        return {
+          url: "https://www.twitter.com/" + link.username,
+          icon: <TwitterIcon />,
+          username: link.username,
+        };
+      } else {
+        return {
+          url: link.username,
+          icon: <></>,
+          username: link.username,
+        };
+      }
+    });
+    return listLinks;
+  };
+
+  const renderLinks = async () => {
+    const fetchedLinks = await fetchUserLinks();
+    return fetchedLinks.map((link, index) => (
+      <Link
+        key={index}
+        href={link.url}
+        className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
+      >
+        {link.icon}
+        <h1>@{link.username}</h1>
+      </Link>
+    ));
+  };
 
   const mobileHeader = (
     <div className="flex flex-col space-y-6 md:hidden">
@@ -37,29 +82,24 @@ export default async function UserHeader({ user }: { user: any }) {
           </h1>
         </div>
         <div className="w-full space-y-4">
-          {user.instagram && (
-            <Link
-              className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-              href={instaLink}
-            >
-              <InstagramIcon />
-              <h1>@{user.instagram}</h1>
-            </Link>
-          )}
-          {user.twitter && (
-            <Link
-              className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-              href={twitterLink}
-            >
-              <TwitterIcon />
-              <h1>@{user.twitter}</h1>
-            </Link>
-          )}
+          {isProfile()
+            ? await renderLinks()
+            : (user as Tables<"temporary_profiles">).instagram && (
+                <Link
+                  href={`https://www.instagram.com/${
+                    (user as Tables<"temporary_profiles">).instagram
+                  }`}
+                >
+                  <h1>@{(user as Tables<"temporary_profiles">).instagram}</h1>
+                </Link>
+              )}
         </div>
       </div>
-      <p className="text-center">{user.bio}</p>
-      {hasPayments && (
-        <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
+      {isProfile() && (
+        <p className="text-center">{(user as Tables<"profiles">).bio}</p>
+      )}
+      {isProfile() && (
+        <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
           <Button className="w-full">Pay Now</Button>
         </Link>
       )}
@@ -78,33 +118,27 @@ export default async function UserHeader({ user }: { user: any }) {
           {user.last_name[0]}
         </AvatarFallback>
       </Avatar>
-      <p>{user.bio}</p>
+      {isProfile() && (
+        <p className="text-center">{(user as Tables<"profiles">).bio}</p>
+      )}
       <div className="space-y-1">
-        {user.instagram && (
-          <Link
-            className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-            href={instaLink}
-          >
-            <InstagramIcon />
-            <h1>@{user.instagram}</h1>
-          </Link>
-        )}
-        {user.twitter && (
-          <Link
-            className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
-            href={twitterLink}
-          >
-            <TwitterIcon />
-            <h1>@{user.twitter}</h1>
-          </Link>
-        )}
+        {isProfile()
+          ? await renderLinks()
+          : (user as Tables<"temporary_profiles">).instagram && (
+              <Link
+                href={`https://www.instagram.com/${
+                  (user as Tables<"temporary_profiles">).instagram
+                }`}
+              >
+                <h1>@{(user as Tables<"temporary_profiles">).instagram}</h1>
+              </Link>
+            )}
       </div>
-      {hasPayments && (
+      {isProfile() && (
         <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
           <Button className="w-full">Pay Now</Button>
         </Link>
       )}
-
       <p className="font-semibold bg-gradient-to-r hidden md:block from-primary to bg-green-200 text-transparent bg-clip-text">
         Joined Treasure {formattedJoinedDate}
       </p>

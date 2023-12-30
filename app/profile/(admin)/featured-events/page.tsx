@@ -14,7 +14,7 @@ export default async function Page({
 }) {
   const { data: userData } = await validateUser();
   const user: User = userData.user as User;
-  const profile = await getProfile(user.id);
+  const { profile } = await getProfile(user.id);
 
   if (profile.role !== "admin") {
     redirect("/profile/events");

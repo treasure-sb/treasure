@@ -1,15 +1,14 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import UserHeader from "./components/UserHeader";
 import UserFilters from "./components/UserFilters";
 import ListUserEvents from "./components/ListUserEvents";
 import LoadingUserListEvents from "./components/LoadingUserListEvents";
-import format from "date-fns/format";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
 import Portfolio from "./components/Portfolio";
-import { getProfile } from "@/lib/helpers/profiles";
+import { getProfileByUsername, getTempProfile } from "@/lib/helpers/profiles";
+import ListEventsHosting from "./components/ListEventsHosting";
 
 export default async function Page({
   params,
@@ -18,24 +17,30 @@ export default async function Page({
   params: { id: string };
   searchParams?: {
     filter: string;
+    type: string;
   };
 }) {
+  const username = params.id;
   const filter = searchParams?.filter || "Events";
-  const supabase = await createSupabaseServerClient();
-  const { data: userData, error: userError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("username", params.id)
-    .single();
+  const type = searchParams?.type || "profile";
+  let user: Tables<"profiles"> | Tables<"temporary_profiles">;
 
-  if (userError) {
-    redirect("/events");
+  if (type === "profile") {
+    const { profile, error } = await getProfileByUsername(username);
+    if (error) {
+      redirect("/events");
+    }
+    user = profile;
+  } else {
+    const { tempProfile, error } = await getTempProfile(username);
+    if (error) {
+      redirect("/events");
+    }
+    user = tempProfile;
   }
 
-  const profile = await getProfile(userData.id);
-
-  const user = profile;
-  const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
+  // determine if user is a profile or a temp profile
+  const isProfile = () => "bio" in user;
 
   return (
     <main className="m-auto max-w-lg md:max-w-6xl flex flex-col justify-between min-h-[calc(100vh-220px)]">
@@ -43,13 +48,24 @@ export default async function Page({
         <UserHeader user={user} />
         <Separator className="md:hidden block mt-6 mb-0" />
         <div className="mt-4 md:mt-0 text-lg w-full md:border-l md:pl-8">
-          <UserFilters />
-          {filter === "Events" ? (
-            <Suspense fallback={<LoadingUserListEvents />}>
-              <ListUserEvents filter={filter} user={user} />
-            </Suspense>
+          {isProfile() ? (
+            <>
+              <UserFilters />
+              {filter === "Events" ? (
+                <Suspense fallback={<LoadingUserListEvents />}>
+                  <ListUserEvents
+                    filter={filter}
+                    user={user as Tables<"profiles">}
+                  />
+                </Suspense>
+              ) : (
+                <Portfolio user={user as Tables<"profiles">} />
+              )}
+            </>
           ) : (
-            <Portfolio user={user} />
+            <Suspense fallback={<LoadingUserListEvents />}>
+              <ListEventsHosting user={user as Tables<"temporary_profiles">} />
+            </Suspense>
           )}
         </div>
       </div>

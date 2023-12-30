@@ -1,5 +1,6 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { profileForm } from "@/types/profile";
 
@@ -30,4 +31,21 @@ const editProfile = async (values: profileForm) => {
   }
 };
 
-export { editProfile };
+const createTemporaryProfile = async (
+  values: Partial<profileForm> & {
+    username: string;
+  }
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { first_name, last_name, username, avatar_url, instagram } = values;
+  const { data, error: userError } = await supabase
+    .from("temporary_profiles")
+    .insert([{ first_name, last_name, username, avatar_url, instagram }])
+    .select();
+
+  if (!userError) {
+    redirect("/profile");
+  }
+};
+
+export { editProfile, createTemporaryProfile };

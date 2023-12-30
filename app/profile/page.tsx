@@ -1,8 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import format from "date-fns/format";
-import InstagramIcon from "@/components/icons/InstagramIcon";
-import TwitterIcon from "@/components/icons/TwitterIcon";
 import { getProfile } from "@/lib/helpers/profiles";
 import { validateUser, logoutUser } from "@/lib/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,14 +12,12 @@ export default async function Page() {
   const user: User = userData.user as User;
 
   const supabase = await createSupabaseServerClient();
-  const profile = await getProfile(user.id);
+  const { profile } = await getProfile(user.id);
 
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
-  let instaLink = "https://www.instagram.com/" + profile.instagram;
-  let twitterLink = "https://www.twitter.com/" + profile.twitter;
   const formattedDate = format(new Date(user.created_at), "MMMM do, yyyy");
 
   return (
@@ -46,11 +42,18 @@ export default async function Page() {
           </Button>
         </Link>
         {profile.role === "admin" && (
-          <Link href="/profile/featured-events" className="">
-            <Button className="w-full" variant={"secondary"}>
-              Featured Events
-            </Button>
-          </Link>
+          <>
+            <Link href="/profile/featured-events" className="">
+              <Button className="w-full" variant={"secondary"}>
+                Featured Events
+              </Button>
+            </Link>
+            <Link href="/profile/create-profile" className="">
+              <Button className="w-full" variant={"secondary"}>
+                Create Temporary Profile
+              </Button>
+            </Link>
+          </>
         )}
         <Link
           href={`/${profile.username}`}
@@ -60,24 +63,6 @@ export default async function Page() {
             View Profile
           </Button>
         </Link>
-        {profile.instagram && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={instaLink}
-          >
-            <InstagramIcon />
-            <h1>@{profile.instagram}</h1>
-          </Link>
-        )}
-        {profile.twitter && (
-          <Link
-            className="flex text-base space-x-4 justify-center align-middle"
-            href={twitterLink}
-          >
-            <TwitterIcon />
-            <h1>@{profile.twitter}</h1>
-          </Link>
-        )}
         <div className="text-base text-center border-b-2 border-b-secondary pb-6 mb-0">
           On Treasure since{" "}
           <span className="text-primary">{formattedDate}</span>
