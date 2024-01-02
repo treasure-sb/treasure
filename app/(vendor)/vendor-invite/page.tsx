@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventDisplay from "@/components/events/displays/MainDisplay";
-import { validateUser } from "@/lib/actions/auth";
+import EventDisplay from "@/components/events/shared/EventDisplay";
 import AcceptButton from "./AcceptButton";
 import { Button } from "@/components/ui/button";
+import { validateUser } from "@/lib/actions/auth";
+import { redirect } from "next/navigation";
 
 export default async function Page({
   searchParams,
