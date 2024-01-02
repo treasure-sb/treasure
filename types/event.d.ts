@@ -70,3 +70,16 @@ export interface EditEventForm {
   end_time: string;
   poster_url: string | File;
 }
+
+export interface SearchParams {
+  tag?: string;
+  from?: string;
+  until?: string;
+  search?: string;
+}
+
+export type EventDisplayData = Tables<"events"> & {
+  tickets: Tables<"tickets">[] | null;
+  publicPosterUrl: string;
+  formattedDate: string;
+};

@@ -1,12 +1,12 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
-import InviteLink from "./InviteLink";
-import { Tables } from "@/types/supabase";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AcceptDeclineButton from "./AcceptDeclineButton";
+import InviteLink from "./components/InviteLink";
+import AcceptDeclineButton from "./components/AcceptDeclineButton";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { Tables } from "@/types/supabase";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // maps each vendor to their profile picture
 const vendorsWithAvatars = async (vendors: any) => {

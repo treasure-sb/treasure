@@ -1,8 +1,8 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
-import EventCard from "@/components/events/cards/EventCard";
-import MainDisplay from "@/components/events/displays/MainDisplay";
+import EventCard from "@/components/events/shared/EventCard";
+import EventDisplay from "@/components/events/shared/EventDisplay";
 import format from "date-fns/format";
 import SeeMore from "./SeeMore";
+import { getUserEventsDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
 
@@ -14,20 +14,14 @@ export default async function ListUserEvents({
   user: any;
 }) {
   const today = format(new Date(), "yyyy-MM-dd");
-  const supabase = await createSupabaseServerClient();
   let eventsAttending: Tables<"events">[] = [];
   let pastEvents: Tables<"events">[] = [];
 
-  const { data: eventsData, error: eventsError } = await supabase
-    .from("event_guests")
-    .select("*, events(*)")
-    .eq("guest_id", user.id)
-    .order("date", { ascending: false, foreignTable: "events" });
+  const events = await getUserEventsDisplayData(1, "Attending", user);
 
-  if (eventsData) {
-    eventsData.forEach((eventData) => {
-      if (eventData.events) {
-        const event = eventData.events;
+  if (events) {
+    events.forEach((event) => {
+      if (event) {
         const isPastEvent = new Date(event.date) < new Date(today);
 
         if (isPastEvent) {
@@ -63,6 +57,7 @@ export default async function ListUserEvents({
                 <SeeMore>
                   {eventsAttending.map((event) => (
                     <EventCard
+                      showLikeButton={false}
                       key={event.id + "card"}
                       event={event}
                       redirectTo={`/events/${event.cleaned_name}`}
@@ -73,7 +68,7 @@ export default async function ListUserEvents({
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
                 <SeeMore>
                   {eventsAttending.map((event) => (
-                    <MainDisplay key={event.id + "display"} event={event} />
+                    <EventDisplay key={event.id + "display"} event={event} />
                   ))}
                 </SeeMore>
               </div>
@@ -93,6 +88,7 @@ export default async function ListUserEvents({
                 <SeeMore>
                   {pastEvents.map((event) => (
                     <EventCard
+                      showLikeButton={false}
                       event={event}
                       redirectTo={`/events/${event.cleaned_name}`}
                     />
@@ -102,7 +98,7 @@ export default async function ListUserEvents({
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
                 <SeeMore>
                   {pastEvents.map((event) => (
-                    <MainDisplay event={event} />
+                    <EventDisplay event={event} />
                   ))}
                 </SeeMore>
               </div>

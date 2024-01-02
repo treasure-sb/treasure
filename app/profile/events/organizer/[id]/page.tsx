@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { Accordion } from "@/components/ui/accordion";
 import { formatDate } from "@/lib/helpers/events";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
-import AttendeesOptions from "./AttendeesOptions";
-import EventOptions from "./EventOptions";
+import AttendeesOptions from "./components/AttendeesOptions";
+import EventOptions from "./components/EventOptions";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
