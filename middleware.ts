@@ -93,7 +93,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // if the user is not logged in and the route is /profile, redirect to /login
-  if (!session.data.session && pathname.includes("/profile")) {
+  if (
+    !session.data.session &&
+    (pathname.includes("/profile") || pathname.includes("/vendors"))
+  ) {
     response = NextResponse.redirect(new URL("/login", request.url));
   }
 
