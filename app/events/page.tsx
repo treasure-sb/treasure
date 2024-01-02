@@ -1,32 +1,28 @@
-import TagFiltering from "./components/TagFiltering";
-import FilteringButtons from "./components/FilteringButtons";
-import ListMainEvents from "./components/ListMainEvents";
+import TagFiltering from "./components/filtering/TagFiltering";
+import FilteringOptions from "./components/filtering/FilteringOptions";
+import Events from "./components/Events";
+import { SearchParams } from "@/types/event";
 
 export default function Page({
   searchParams,
 }: {
-  searchParams?: {
-    tag?: string;
-    from?: string;
-    until?: string;
-    search?: string;
-  };
+  searchParams?: SearchParams;
 }) {
-  const tagQuery = searchParams?.tag || null;
+  const tag = searchParams?.tag || null;
 
   return (
     <main className="max-w-full md:max-w-6xl xl:max-w-7xl m-auto">
-      <FilteringButtons />
+      <FilteringOptions />
       <TagFiltering />
       <div className="my-4">
-        {tagQuery ? (
-          <h1 className="font-semibold text-2xl">Popular {tagQuery} Events</h1>
+        {tag ? (
+          <h1 className="font-semibold text-2xl">Popular {tag} Events</h1>
         ) : (
           <h1 className="font-semibold text-2xl">Popular Events</h1>
         )}
         <h2 className="font-bold text-gray-500">In New York, NY</h2>
       </div>
-      <ListMainEvents searchParams={searchParams} />
+      <Events searchParams={searchParams} />
     </main>
   );
 }

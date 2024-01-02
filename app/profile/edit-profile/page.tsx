@@ -1,5 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EditProfileForm from "./EditProfileForm";
+import EditProfileForm from "./components/EditProfileForm";
 import { validateUser } from "@/lib/actions/auth";
 import { User } from "@supabase/supabase-js";
 import { getProfile } from "@/lib/helpers/profiles";

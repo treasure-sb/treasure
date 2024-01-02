@@ -1,18 +1,8 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { Tables } from "@/types/supabase";
+import { EventDisplayData } from "@/types/event";
 
-export default function ClientMainDisplay({
-  event,
-}: {
-  event: Tables<"events"> & {
-    tickets: any[];
-    publicPosterUrl: string;
-    formattedDate: string;
-  };
-}) {
+export default function CardDisplay({ event }: { event: EventDisplayData }) {
   return (
     <div className="group aspect-square w-full">
       <Link href={`/events/${event.cleaned_name}`}>
@@ -23,9 +13,11 @@ export default function ClientMainDisplay({
           width={200}
           height={200}
         />
-        <h1 className="text-xl mt-2">{event.name}</h1>
-        <h1>
-          <span className="text-primary">{event.formattedDate}</span>{" "}
+        <h1 className="text-xl mt-2 font-bold">{event.name}</h1>
+        <h1 className="font-semibold">
+          <span className="text-primary text-sm font-normal">
+            {event.formattedDate}
+          </span>{" "}
           {event.venue_name}
         </h1>
         <div>

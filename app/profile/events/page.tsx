@@ -1,8 +1,8 @@
 import { validateUser } from "@/lib/actions/auth";
 import { Suspense } from "react";
 import { User } from "@supabase/supabase-js";
-import EventFilters from "./EventFilters";
-import ListUserEvents from "./ListUserEvents";
+import EventFilters from "./components/EventFilters";
+import UserEvents from "./components/UserEvents";
 import LoadingListEvents from "@/components/events/shared/LoadingListEvents";
 
 export default async function Page({
@@ -18,7 +18,7 @@ export default async function Page({
       <h1 className="font-bold text-2xl w-full">My Events</h1>
       <EventFilters />
       <Suspense fallback={<LoadingListEvents />}>
-        <ListUserEvents searchParams={searchParams} user={user} />
+        <UserEvents searchParams={searchParams} user={user} />
       </Suspense>
     </main>
   );

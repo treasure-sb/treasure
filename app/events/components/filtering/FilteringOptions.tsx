@@ -9,7 +9,26 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import Search from "@/components/icons/Search";
 
-export default function FilteringButtons() {
+/**
+ * FilteringButtons provides filtering options for events. It includes buttons for location filtering,
+ * date filtering through a `DateFiltering` component, and a search input for event names.
+ *
+ * State:
+ * - clickedSearch: Boolean indicating if the search input is active.
+ *
+ * Behavior:
+ * - Toggles the visibility of the search input based on user interaction.
+ * - Focuses on the search input when activated.
+ * - Debounces the search input to control the frequency of search term updates.
+ * - Updates URL query parameters based on the search terms and handles search cancelation.
+ *
+ * Components:
+ * - `DateFiltering`: For selecting date ranges.
+ * - `Input`: For entering search terms.
+ * - `Button`: For toggling search input and other filter options.
+ * - `Cancel`: For canceling the current search.
+ */
+export default function FilteringOptions() {
   const [clickedSearch, setClickedSearch] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const pathname = usePathname();

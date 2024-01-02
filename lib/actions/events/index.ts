@@ -15,7 +15,6 @@ import {
   createTicketTailorEventOccurence,
 } from "../ticket-tailor";
 import format from "date-fns/format";
-import EditEventForm from "@/app/profile/events/organizer/[id]/edit-event/EditEventForm";
 
 // Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
 const cleanedEventUrlName = (event_name: string, event_date: Date) => {
@@ -194,4 +193,27 @@ const createTableTicket = async (
   });
 };
 
-export { createEvent };
+const likeEvent = async (event_id: string, user_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("event_likes")
+    .insert([
+      {
+        event_id,
+        user_id,
+      },
+    ])
+    .select();
+  return { data, error };
+};
+
+const unlikeEvent = async (event_id: string, user_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  await supabase
+    .from("event_likes")
+    .delete()
+    .eq("event_id", event_id)
+    .eq("user_id", user_id);
+};
+
+export { createEvent, likeEvent, unlikeEvent };

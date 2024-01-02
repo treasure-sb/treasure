@@ -1,6 +1,6 @@
 "use client";
 
-import AvatarEdit from "../../edit-profile/AvatarEdit";
+import AvatarEdit from "../../edit-profile/components/AvatarEdit";
 import * as z from "zod";
 import { createTemporaryProfile } from "@/lib/actions/profile";
 import { createClient } from "@/utils/supabase/client";
