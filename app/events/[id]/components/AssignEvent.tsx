@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
+import { fetchTemporaryProfiles } from "@/lib/helpers/profiles";
 import AssignEventIcon from "@/components/icons/AssignEventIcon";
 
 export default function AssignEvent({ event }: { event: Tables<"events"> }) {
@@ -24,35 +25,10 @@ export default function AssignEvent({ event }: { event: Tables<"events"> }) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchProfiles = async (search: string) => {
-    const { data: profilesData, error: profilesError } = await supabase
-      .from("temporary_profiles")
-      .select("*")
-      .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
-      .limit(6);
-
-    if (profilesData) {
-      const profilesWithAvatar = await Promise.all(
-        profilesData.map(async (profile) => {
-          const {
-            data: { publicUrl },
-          } = await supabase.storage
-            .from("avatars")
-            .getPublicUrl(profile.avatar_url);
-          return {
-            ...profile,
-            avatar_url: publicUrl,
-          };
-        })
-      );
-      return profilesWithAvatar;
-    }
-  };
-
   const { data } = useQuery({
     queryKey: ["profiles", search],
     queryFn: async () => {
-      const profiles = await fetchProfiles(search);
+      const profiles = await fetchTemporaryProfiles(search);
       return profiles;
     },
     enabled: search.length > 0,

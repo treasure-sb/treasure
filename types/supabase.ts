@@ -39,6 +39,36 @@ export interface Database {
           }
         ]
       }
+      event_likes: {
+        Row: {
+          event_id: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_likes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_tags: {
         Row: {
           event_id: string
@@ -351,6 +381,27 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      signup_invite_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          temp_profile_username: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          temp_profile_username: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          temp_profile_username?: string
+          token?: string
+        }
+        Relationships: []
       }
       tags: {
         Row: {
