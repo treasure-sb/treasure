@@ -28,6 +28,16 @@ function isOrganizerPage(pathname: string) {
   );
 }
 
+async function verifySignupInviteToken(token: string) {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("signup_invite_tokens")
+    .select("*")
+    .eq("token", token)
+    .single();
+  return data;
+}
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -90,6 +100,18 @@ export async function middleware(request: NextRequest) {
     (pathname === "/login" || pathname === "/signup")
   ) {
     response = NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // if a signup invite token is preset and it is not valid, redirect to /signup
+  if (
+    pathname === "/signup" &&
+    request.nextUrl.searchParams.get("signup_invite_token")
+  ) {
+    const token = request.nextUrl.searchParams.get("signup_invite_token");
+    const verifyToken = await verifySignupInviteToken(token as string);
+    if (!verifyToken) {
+      response = NextResponse.redirect(new URL("/signup", request.url));
+    }
   }
 
   // if the user is not logged in and the route is /profile, redirect to /login

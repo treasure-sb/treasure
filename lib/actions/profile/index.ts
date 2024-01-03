@@ -4,6 +4,37 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { profileForm } from "@/types/profile";
 
+interface createProfileData {
+  first_name: string;
+  last_name: string;
+  username: string;
+  discriminator: number;
+  email: string;
+  id: string;
+}
+
+const createProfile = async (createProfileData: createProfileData) => {
+  const supabase = await createSupabaseServerClient();
+  const { first_name, last_name, username, discriminator, email, id } =
+    createProfileData;
+  const { data, error } = await supabase
+    .from("profiles")
+    .insert([
+      {
+        first_name,
+        last_name,
+        username,
+        discriminator,
+        email,
+        id,
+      },
+    ])
+    .select();
+
+  const profileData: Tables<"profiles"> | null = data ? data[0] : null;
+  return { profileData, error };
+};
+
 const editProfile = async (values: profileForm) => {
   const supabase = await createSupabaseServerClient();
   const { first_name, last_name, instagram, twitter, bio, avatar_url } = values;
@@ -31,6 +62,21 @@ const editProfile = async (values: profileForm) => {
   }
 };
 
+const createLink = async (user_id: string, username: string, type: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("links")
+    .insert([{ user_id, username, type }])
+    .select();
+
+  return { data, error };
+};
+
+const updateProfileAvatar = async (avatar_url: string, user_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  await supabase.from("profiles").update({ avatar_url }).eq("id", user_id);
+};
+
 const createTemporaryProfile = async (
   values: Partial<profileForm> & {
     username: string;
@@ -49,4 +95,10 @@ const createTemporaryProfile = async (
   }
 };
 
-export { editProfile, createTemporaryProfile };
+export {
+  editProfile,
+  createLink,
+  updateProfileAvatar,
+  createTemporaryProfile,
+  createProfile,
+};

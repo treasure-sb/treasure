@@ -53,6 +53,11 @@ export default async function Page() {
                 Create Temporary Profile
               </Button>
             </Link>
+            <Link href="/profile/assign">
+              <Button variant={"secondary"} className="w-full">
+                Assign User to Temporary Profile
+              </Button>
+            </Link>
           </>
         )}
         <Link

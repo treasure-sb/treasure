@@ -16,7 +16,6 @@ import { signUp } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import Link from "next/link";
-import GoogleIcon from "@/components/icons/GoogleIcon";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -39,11 +38,17 @@ const formSchema = z.object({
 export default function Page({
   searchParams,
 }: {
-  searchParams: { invite_token: string; event_id: string };
+  searchParams: {
+    signup_invite_token?: string;
+    temporary_profile: string;
+    invite_token: string;
+    event_id: string;
+  };
 }) {
   const [emailExistsError, setEmailExistsError] = useState(false);
   const [emailsConfirmationError, setEmailConfirmationError] = useState(false);
   const { replace } = useRouter();
+  const signup_invite_token = searchParams.signup_invite_token;
   const invite_token = searchParams.invite_token || null;
   const event_id = searchParams.event_id || null;
 
@@ -64,17 +69,17 @@ export default function Page({
     }
 
     try {
-      const response = await signUp(formData);
-
+      const response = await signUp(formData, signup_invite_token);
+      console.log(response);
       if (response?.error?.type === "email_taken") {
         setEmailExistsError(true);
       }
 
-      if (response?.data && invite_token && event_id) {
+      if (response?.profileData && invite_token && event_id) {
         replace(
           `/vendor-invite?invite_token=${invite_token}&event_id=${event_id}`
         );
-      } else if (response?.data) {
+      } else if (response?.profileData) {
         replace("/");
       }
     } catch (err) {
@@ -172,18 +177,6 @@ export default function Page({
               Log In
             </Link>
           </h1>
-          {/* <div className="flex items-center justify-center my-4">
-            <hr className="flex-grow border-secondary" />
-            <span className="mx-2">or</span>
-            <hr className="flex-grow border-secondary" />
-          </div>
-          <Button
-            type="button"
-            className="bg-white w-full hover:bg-white space-x-2"
-          >
-            <GoogleIcon />
-            <h1>Sign up with Google</h1>
-          </Button> */}
         </form>
       </Form>
     </main>
