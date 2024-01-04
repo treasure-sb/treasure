@@ -1,3 +1,5 @@
+import { UseFormReturn } from "react-hook-form";
+
 export interface profileForm {
   first_name: string;
   last_name: string;
@@ -24,3 +26,25 @@ export interface vendorTransactionForm {
   amount: string;
   method: string;
 }
+
+type EditProfileFormData = {
+  first_name: string;
+  last_name: string;
+  bio?: string;
+  social_links?: {
+    username: string;
+    application: string;
+    type: string;
+  }[];
+  payment_links?: {
+    username: string;
+    application: string;
+    type: string;
+  }[];
+};
+
+export type EditProfileFormReturn = UseFormReturn<
+  EditProfileFormData,
+  any,
+  undefined
+>;

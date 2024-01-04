@@ -1,6 +1,6 @@
 "use client";
-import CashappIcon from "@/components/icons/CashappIcon";
-import VenmoIcon from "@/components/icons/VenmoIcon";
+import CashappIcon from "@/components/icons/applications/CashappIcon";
+import VenmoIcon from "@/components/icons/applications/VenmoIcon";
 import CashIcon from "@/components/icons/CashIcon";
 
 export default function TransactionCard({

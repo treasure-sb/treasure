@@ -253,18 +253,21 @@ export interface Database {
       }
       links: {
         Row: {
+          application: string
           id: number
           type: string
           user_id: string
           username: string
         }
         Insert: {
+          application: string
           id?: number
-          type: string
+          type?: string
           user_id: string
           username: string
         }
         Update: {
+          application?: string
           id?: number
           type?: string
           user_id?: string
@@ -335,6 +338,24 @@ export interface Database {
           }
         ]
       }
+      profile_transfers: {
+        Row: {
+          id: string
+          new_user_id: string | null
+          temp_profile_id: string | null
+        }
+        Insert: {
+          id?: string
+          new_user_id?: string | null
+          temp_profile_id?: string | null
+        }
+        Update: {
+          id?: string
+          new_user_id?: string | null
+          temp_profile_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string
@@ -386,19 +407,19 @@ export interface Database {
         Row: {
           created_at: string
           id: string
-          temp_profile_username: string
+          temp_profile_id: string
           token: string
         }
         Insert: {
           created_at?: string
           id?: string
-          temp_profile_username: string
+          temp_profile_id: string
           token: string
         }
         Update: {
           created_at?: string
           id?: string
-          temp_profile_username?: string
+          temp_profile_id?: string
           token?: string
         }
         Relationships: []
