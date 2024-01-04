@@ -12,10 +12,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tables } from "@/types/supabase";
+import { useState, useEffect } from "react";
 import { editProfile } from "@/lib/actions/profile";
-import AvatarEdit from "./AvatarEdit";
-import { useState } from "react";
+import { createLinks, updateLinks, deleteLinks } from "@/lib/actions/links";
 import { createClient } from "@/utils/supabase/client";
+import PaymentLinks from "./PaymentLinks";
+import AvatarEdit from "./AvatarEdit";
+import SocialLinks from "./SocialLinks";
+
+const LinkSchema = z.object({
+  username: z.string().min(1, {
+    message: "Username is required",
+  }),
+  application: z.string().min(1, {
+    message: "Application is required",
+  }),
+  type: z.string(),
+});
 
 const profileSchema = z.object({
   first_name: z.string().min(1, {
@@ -24,40 +38,71 @@ const profileSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
-  instagram: z.string().optional(),
-  twitter: z.string().optional(),
   bio: z.string().optional(),
+  social_links: z.array(LinkSchema).optional(),
+  payment_links: z.array(LinkSchema).optional(),
 });
 
 interface EventFormProps {
   profile: any;
   avatarUrl: string;
+  userLinks: Partial<Tables<"links">>[] | undefined;
 }
 
 export default function EditProfileForm({
   profile,
   avatarUrl,
+  userLinks,
 }: EventFormProps) {
+  const [saving, setSaving] = useState(false);
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
-
-  //   Form Stuff
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      first_name: profile.first_name === null ? "" : profile.first_name,
-      last_name: profile.last_name === null ? "" : profile.last_name,
-      instagram: profile.instagram === null ? "" : profile.instagram,
-      twitter: profile.twitter === null ? "" : profile.twitter,
-      bio: profile.bio === null ? "" : profile.bio,
+      first_name: profile.first_name || "",
+      last_name: profile.last_name || "",
+      bio: profile.bio || "",
     },
   });
 
-  //Form submit
+  useEffect(() => {
+    if (userLinks) {
+      form.reset({
+        ...form.getValues(),
+        social_links: userLinks.filter((link) => link.type === "social"),
+        payment_links: userLinks.filter((link) => link.type === "payment"),
+      });
+    }
+  }, [userLinks, form]);
+
   const onSubmit = async () => {
+    setSaving(true);
     const newForm = {
       ...profile,
       ...form.getValues(),
     };
+
+    const userFormLinks = [
+      ...(form.getValues().social_links ?? []),
+      ...(form.getValues().payment_links ?? []),
+    ];
+
+    const removedLinks = userLinks?.filter(
+      (obj) =>
+        !userFormLinks.some((obj2) => obj2.application === obj.application)
+    );
+
+    const addedLinks = userFormLinks.filter(
+      (obj) => !userLinks?.some((obj2) => obj2.application === obj.application)
+    );
+
+    const updatedLinks = userFormLinks.filter((obj) =>
+      userLinks?.some((obj2) => {
+        if (obj2.application === obj.application) {
+          return obj2.username !== obj.username;
+        }
+      })
+    );
 
     if (newAvatarFile) {
       const newAvatarSupabaseUrl = `avatar${Date.now()}`;
@@ -71,7 +116,14 @@ export default function EditProfileForm({
         .upload(newAvatarSupabaseUrl, newAvatarFile);
     }
 
-    await editProfile(newForm);
+    const editPromise = [
+      await editProfile(newForm),
+      await createLinks(addedLinks, profile.id),
+      await updateLinks(updatedLinks, profile.id),
+      removedLinks ? await deleteLinks(removedLinks, profile.id) : null,
+    ];
+    await Promise.all(editPromise);
+    setSaving(false);
   };
 
   return (
@@ -85,7 +137,7 @@ export default function EditProfileForm({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col justify-between h-full"
           >
-            <div className="space-y-6">
+            <div className="space-y-6 my-10 flex flex-col">
               <FormField
                 control={form.control}
                 name="first_name"
@@ -116,34 +168,6 @@ export default function EditProfileForm({
               />
               <FormField
                 control={form.control}
-                name="instagram"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Instagram Handle" {...field} />
-                    </FormControl>
-                    <div className="h-1">
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="twitter"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Twitter Handle" {...field} />
-                    </FormControl>
-                    <div className="h-1">
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="bio"
                 render={({ field }) => (
                   <FormItem>
@@ -156,9 +180,21 @@ export default function EditProfileForm({
                   </FormItem>
                 )}
               />
+              <SocialLinks
+                form={form}
+                userSocialLinks={userLinks?.filter(
+                  (link) => link.type === "social"
+                )}
+              />
+              <PaymentLinks
+                form={form}
+                userPaymentLinks={userLinks?.filter(
+                  (link) => link.type === "payment"
+                )}
+              />
             </div>
-            <Button type="submit" className="w-full py-6">
-              Save
+            <Button type="submit" disabled={saving} className="w-full py-6">
+              {saving ? "Saving..." : "Save"}
             </Button>
           </form>
         </Form>

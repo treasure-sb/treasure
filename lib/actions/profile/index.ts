@@ -35,41 +35,22 @@ const createProfile = async (createProfileData: createProfileData) => {
   return { profileData, error };
 };
 
-const editProfile = async (values: profileForm) => {
+const editProfile = async (values: any) => {
   const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, instagram, twitter, bio, avatar_url } = values;
+  const { first_name, last_name, bio, avatar_url } = values;
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("profiles")
     .update({ first_name, last_name, bio, avatar_url })
     .eq("id", user?.id)
     .select();
 
-  const { data: links, error: linksError } = await supabase
-    .from("links")
-    .insert([
-      { user_id: user?.id, username: instagram, type: "instagram" },
-      { user_id: user?.id, username: twitter, type: "twitter" },
-    ])
-    .select();
-  if (!linksError && !error) {
+  if (!error) {
     redirect("/profile");
-  } else {
-    console.log("links error", linksError, "profile error", error);
   }
-};
-
-const createLink = async (user_id: string, username: string, type: string) => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("links")
-    .insert([{ user_id, username, type }])
-    .select();
-
-  return { data, error };
 };
 
 const updateProfileAvatar = async (avatar_url: string, user_id: string) => {
@@ -97,7 +78,6 @@ const createTemporaryProfile = async (
 
 export {
   editProfile,
-  createLink,
   updateProfileAvatar,
   createTemporaryProfile,
   createProfile,

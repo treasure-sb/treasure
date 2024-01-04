@@ -3,8 +3,8 @@ export default function TwitterIcon() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="white"
-      height="24"
-      width="24"
+      height="40"
+      width="40"
       version="1.1"
       id="Layer_1"
       viewBox="0 0 310 310"

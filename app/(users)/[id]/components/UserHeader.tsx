@@ -1,8 +1,8 @@
 import format from "date-fns/format";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
-import InstagramIcon from "@/components/icons/InstagramIcon";
-import TwitterIcon from "@/components/icons/TwitterIcon";
+import InstagramIcon from "@/components/icons/applications/InstagramIcon";
+import TwitterIcon from "@/components/icons/applications/TwitterIcon";
 import { getProfileLinks } from "@/lib/helpers/profiles";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

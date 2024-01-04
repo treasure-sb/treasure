@@ -2,43 +2,10 @@ export default function InstagramIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      height="24"
+      height="40"
+      width="40"
       viewBox="0 0 120 120"
-      width="24"
     >
-      <defs>
-        <linearGradient id="b">
-          <stop offset="0" stopColor="#3771c8" />
-          <stop stopColor="#3771c8" offset=".128" />
-          <stop offset="1" stopColor="#60f" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="a">
-          <stop offset="0" stopColor="#fd5" />
-          <stop offset=".1" stopColor="#fd5" />
-          <stop offset=".5" stopColor="#ff543e" />
-          <stop offset="1" stopColor="#c837ab" />
-        </linearGradient>
-        <radialGradient
-          id="c"
-          cx="158.429"
-          cy="578.088"
-          r="65"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(0 -1.98198 1.8439 0 -1031.402 454.004)"
-          fx="158.429"
-          fy="578.088"
-        />
-        <radialGradient
-          id="d"
-          cx="147.694"
-          cy="473.455"
-          r="65"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(.17394 .86872 -3.5818 .71718 1648.348 -458.493)"
-          fx="147.694"
-          fy="473.455"
-        />
-      </defs>
       <path
         fill="url(#c)"
         d="M65.03 0C37.888 0 29.95.028 28.407.156c-5.57.463-9.036 1.34-12.812 3.22-2.91 1.445-5.205 3.12-7.47 5.468C4 13.126 1.5 18.394.595 24.656c-.44 3.04-.568 3.66-.594 19.188-.01 5.176 0 11.988 0 21.125 0 27.12.03 35.05.16 36.59.45 5.42 1.3 8.83 3.1 12.56 3.44 7.14 10.01 12.5 17.75 14.5 2.68.69 5.64 1.07 9.44 1.25 1.61.07 18.02.12 34.44.12 16.42 0 32.84-.02 34.41-.1 4.4-.207 6.955-.55 9.78-1.28 7.79-2.01 14.24-7.29 17.75-14.53 1.765-3.64 2.66-7.18 3.065-12.317.088-1.12.125-18.977.125-36.81 0-17.836-.04-35.66-.128-36.78-.41-5.22-1.305-8.73-3.127-12.44-1.495-3.037-3.155-5.305-5.565-7.624C116.9 4 111.64 1.5 105.372.596 102.335.157 101.73.027 86.19 0H65.03z"

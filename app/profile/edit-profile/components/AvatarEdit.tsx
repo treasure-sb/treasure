@@ -2,6 +2,7 @@
 
 import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import EditPencilIcon from "@/components/icons/EditPencilIcon";
 
 export default function AvatarEdit({
   avatarUrl,
@@ -15,7 +16,7 @@ export default function AvatarEdit({
   return (
     <form className="relative flex justify-center">
       <label
-        className="hover:cursor-pointer w-28 h-28 rounded-full"
+        className="relative hover:cursor-pointer w-28 h-28 rounded-full"
         htmlFor="avatar"
       >
         {avatarUrl || avatarFileUrl ? (
@@ -26,6 +27,7 @@ export default function AvatarEdit({
         ) : (
           <div className="h-32 w-32 m-auto rounded-full bg-gray-200" />
         )}
+        <EditPencilIcon className="absolute bottom-[-10px] right-[-10px]" />
       </label>
       <input
         name="avatar"

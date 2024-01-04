@@ -4,8 +4,8 @@ import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventSearch from "./EventSearch";
-import FeatureEventDisplay from "./FeatureEventDisplay";
+import EventSearch from "./components/EventSearch";
+import FeatureEventDisplay from "./components/FeatureEventDisplay";
 
 export default async function Page({
   searchParams,
