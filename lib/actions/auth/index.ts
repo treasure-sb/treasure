@@ -4,7 +4,8 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getSignupInviteData } from "@/lib/helpers/auth";
 import { getTempProfileFromID } from "@/lib/helpers/profiles";
-import { createLink, updateProfileAvatar, createProfile } from "../profile";
+import { updateProfileAvatar, createProfile } from "../profile";
+import { createLink } from "../links";
 import { User } from "@supabase/supabase-js";
 import { capitalize } from "@/lib/utils";
 import {
