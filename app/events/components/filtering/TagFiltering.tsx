@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * A React component for filtering events based on predefined tags. It displays a series of buttons, each representing a tag.
@@ -27,7 +26,6 @@ export default function TagFiltering() {
   const pathname = usePathname();
   const [activeTag, setActiveTag] = useState<string>("");
   const { replace } = useRouter();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     setActiveTag(searchParams.get("tag") || "");

@@ -70,7 +70,6 @@ export default function Page({
 
     try {
       const response = await signUp(formData, signup_invite_token);
-      console.log(response);
       if (response?.error?.type === "email_taken") {
         setEmailExistsError(true);
       }
