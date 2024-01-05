@@ -6,7 +6,6 @@ import { useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { getEventsDisplayData } from "@/lib/helpers/events";
 import { EventDisplayData, SearchParams } from "@/types/event";
-import { Button } from "@/components/ui/button";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import EventCard from "@/components/events/shared/EventCard";
 import EventDisplay from "@/components/events/shared/EventDisplay";
@@ -36,7 +35,7 @@ export default function ListEvents({
   const { data, fetchNextPage, isLoading } = useInfiniteQuery({
     initialPageParam: 1,
     queryKey: ["events", serializedParams],
-    queryFn: async ({ pageParam = 1 }) =>
+    queryFn: async ({ pageParam }) =>
       await getEventsDisplayData(pageParam, searchParams),
     getNextPageParam: (lastPage, pages) => {
       if (lastPage && lastPage.length < 6) return undefined;
