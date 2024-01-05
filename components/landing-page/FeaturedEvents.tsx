@@ -1,20 +1,11 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import FeaturedEventDisplay from "./FeaturedEventDisplay";
 import Link from "next/link";
-import format from "date-fns/format";
-import { Tables } from "@/types/supabase";
 import ArrowPointingRight from "../icons/ArrowPointingRight";
+import { Tables } from "@/types/supabase";
+import { getAllEventData } from "@/lib/helpers/eventsFiltering";
 
 export default async function FeaturedEvents() {
-  const supabase = await createSupabaseServerClient();
-  const today = format(new Date(), "yyyy-MM-dd");
-  const { data: eventsData, error: eventsError } = await supabase
-    .from("events")
-    .select("*")
-    .order("featured", { ascending: false })
-    .gte("date", today)
-    .range(0, 5);
-
+  const { data: eventsData } = await getAllEventData("", 1);
   const events: Tables<"events">[] = eventsData || [];
   const eventsA = events.slice(0, 4);
   const eventsB = events.slice(4, 6);

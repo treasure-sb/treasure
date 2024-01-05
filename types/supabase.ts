@@ -206,6 +206,7 @@ export interface Database {
           poster_url: string
           start_time: string
           ticket_tailor_event_id: string | null
+          tickets_status: number
           venue_map_url: string | null
           venue_name: string
         }
@@ -226,6 +227,7 @@ export interface Database {
           poster_url: string
           start_time: string
           ticket_tailor_event_id?: string | null
+          tickets_status?: number
           venue_map_url?: string | null
           venue_name: string
         }
@@ -246,6 +248,7 @@ export interface Database {
           poster_url?: string
           start_time?: string
           ticket_tailor_event_id?: string | null
+          tickets_status?: number
           venue_map_url?: string | null
           venue_name?: string
         }

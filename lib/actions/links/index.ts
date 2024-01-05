@@ -1,11 +1,36 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { Tables } from "@/types/supabase";
 
 interface LinkType {
   username: string;
   application: string;
   type: string;
 }
+
+const getSocialLinks = async (user_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("links")
+    .select("*")
+    .eq("user_id", user_id)
+    .eq("type", "social");
+
+  const links: Tables<"links">[] = data || [];
+  return { links, error };
+};
+
+const getPaymentLinks = async (user_id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("links")
+    .select("*")
+    .eq("user_id", user_id)
+    .eq("type", "payment");
+
+  const links: Tables<"links">[] = data || [];
+  return { links, error };
+};
 
 const createLink = async (user_id: string, username: string, type: string) => {
   const supabase = await createSupabaseServerClient();
@@ -57,4 +82,12 @@ const deleteLinks = async (links: any[], user_id: string) => {
   return { data, error };
 };
 
-export { createLink, createLinks, updateLink, updateLinks, deleteLinks };
+export {
+  getSocialLinks,
+  getPaymentLinks,
+  createLink,
+  createLinks,
+  updateLink,
+  updateLinks,
+  deleteLinks,
+};

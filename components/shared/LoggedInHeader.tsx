@@ -1,21 +1,13 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TreasureEmerald from "../icons/TreasureEmerald";
-import { validateUser } from "@/lib/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getProfile } from "@/lib/helpers/profiles";
+import { User } from "@supabase/supabase-js";
 
-export default async function LoggedInHeader() {
-  const {
-    data: { user },
-  } = await validateUser();
-
+export default async function LoggedInHeader({ user }: { user: User | null }) {
   const supabase = await createSupabaseServerClient();
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user?.id)
-    .single();
-
+  const { profile } = await getProfile(user?.id);
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
@@ -44,7 +36,7 @@ export default async function LoggedInHeader() {
           <span>Events</span>
           <span className="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-hover:w-full"></span>
         </Link>
-        <Link href="/profile">
+        <Link href={`/${profile.username}`}>
           {profile.avatar_url ? (
             <Avatar className="h-14 w-14">
               <AvatarImage src={publicUrl} />
