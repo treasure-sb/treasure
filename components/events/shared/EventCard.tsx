@@ -1,6 +1,5 @@
 import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
-import { Tables } from "@/types/supabase";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
@@ -16,40 +15,10 @@ export default function EventCard({
   event: EventDisplayData;
   showLikeButton?: boolean;
 }) {
-  const { tickets, publicPosterUrl, formattedDate } = event;
-
-  function ticketsText() {
-    let text = "";
-    if (tickets && tickets?.length < 4) {
-      let table = "";
-      tickets?.map((ticket: Tables<"tickets">) => {
-        if (ticket.name == "Table") {
-          table += `${ticket.name} $${ticket.price} | `;
-        } else {
-          text += `${ticket.name} $${ticket.price} | `;
-        }
-      });
-      text =
-        table == ""
-          ? text.substring(0, text.length - 2)
-          : text + table.substring(0, table.length - 2);
-    } else {
-      let table = "";
-      let cheapest = 1000000;
-      tickets?.forEach((ticket: Tables<"tickets">) => {
-        if (ticket.name == "Table") {
-          table += `${ticket.price}`;
-        } else {
-          cheapest = cheapest < ticket.price ? cheapest : ticket.price;
-        }
-      });
-      text += `From $${cheapest} | Table $${table}`;
-    }
-    return text;
-  }
+  const { publicPosterUrl, formattedDate } = event;
 
   return (
-    <div className="w-full h-25 flex items-center justify-between">
+    <div className="w-full h-25 flex items-center justify-betwee">
       <Link className="max-w-[90%] min-w-[90%]" href={redirectTo}>
         <div className="flex space-x-4">
           <div
@@ -71,7 +40,6 @@ export default function EventCard({
             <p className="text-lg font-bold truncate">{event.name}</p>
             <p className="text-primary text-xs">{formattedDate} </p>
             <p className="text-sm font-semibold truncate">{event.venue_name}</p>
-            <p className="text-sm overflow-hidden truncate">{ticketsText()}</p>
           </div>
         </div>
       </Link>

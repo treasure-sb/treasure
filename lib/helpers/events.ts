@@ -223,7 +223,7 @@ const fetchUserEventsFromFilter = async (
 };
 
 /**
- * Fetches event data along with additional details such as tickets, public poster URL, and formatted date.
+ * Fetches event data along with additional details such as public poster URL and formatted date.
  * This data is used for displaying events either as a card or display.
  *
  * @param {number} page - The page number for pagination.
@@ -234,28 +234,15 @@ const getEventsDisplayData = async (
   page: number,
   searchParams: SearchParams | undefined
 ) => {
-  const supabase = await createSupabaseServerClient();
   const events: Tables<"events">[] = await fetchEventsFromFilters(
     page,
     searchParams
   );
   return Promise.all(
     events.map(async (event: Tables<"events">) => {
-      const ticketsPromise = supabase
-        .from("tickets")
-        .select("*")
-        .eq("event_id", event.id);
-
-      const publicPosterUrlPromise = getPublicPosterUrl(event);
-
-      const [ticketsResponse, publicPosterUrl] = await Promise.all([
-        ticketsPromise,
-        publicPosterUrlPromise,
-      ]);
-
+      const publicPosterUrl = await getPublicPosterUrl(event);
       return {
         ...event,
-        tickets: ticketsResponse.data,
         publicPosterUrl,
         formattedDate: formatDate(event.date),
       };
@@ -264,7 +251,7 @@ const getEventsDisplayData = async (
 };
 
 /**
- * Fetches user specific event data along with additional details such as tickets, public poster URL, and formatted date.
+ * Fetches user specific event data along with additional details such as public poster URL and formatted date.
  * This data is used for displaying events either as a card or display.
  *
  * @param {number} page - The page number for pagination.
@@ -277,25 +264,13 @@ const getUserEventsDisplayData = async (
   filter: string | null,
   user: User | Tables<"temporary_profiles">
 ) => {
-  const supabase = await createSupabaseServerClient();
   const events = await fetchUserEventsFromFilter(page, filter, user);
   return Promise.all(
     events.map(async (event: Tables<"events">) => {
-      const ticketsPromise = supabase
-        .from("tickets")
-        .select("*")
-        .eq("event_id", event.id);
-
-      const publicPosterUrlPromise = getPublicPosterUrl(event);
-
-      const [ticketsResponse, publicPosterUrl] = await Promise.all([
-        ticketsPromise,
-        publicPosterUrlPromise,
-      ]);
+      const publicPosterUrl = await getPublicPosterUrl(event);
 
       return {
         ...event,
-        tickets: ticketsResponse.data,
         publicPosterUrl,
         formattedDate: formatDate(event.date),
       };

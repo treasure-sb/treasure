@@ -1,5 +1,5 @@
-import { Raleway } from "next/font/google";
 import "./globals.css";
+import { Raleway } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { validateUser } from "@/lib/actions/auth";
 import { Toaster } from "@/components/ui/toaster";

@@ -20,13 +20,6 @@ export default function CardDisplay({ event }: { event: EventDisplayData }) {
           </span>{" "}
           {event.venue_name}
         </h1>
-        <div>
-          {event.tickets?.map((ticket: any) => (
-            <h1 key={ticket.id}>
-              ${ticket.price} {ticket.name}
-            </h1>
-          ))}
-        </div>
       </Link>
     </div>
   );
