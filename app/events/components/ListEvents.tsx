@@ -6,8 +6,8 @@ import { useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { getEventsDisplayData } from "@/lib/helpers/events";
 import { EventDisplayData, SearchParams } from "@/types/event";
+import { Button } from "@/components/ui/button";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
-import ArrowPointingDown from "@/components/icons/ArrowPointingDown";
 import EventCard from "@/components/events/shared/EventCard";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
@@ -33,7 +33,7 @@ export default function ListEvents({
 }) {
   const serializedParams = JSON.stringify(searchParams);
   const [fetchingPage, setFetchingPage] = useState(false);
-  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
+  const { data, fetchNextPage, isLoading } = useInfiniteQuery({
     initialPageParam: 1,
     queryKey: ["events", serializedParams],
     queryFn: async ({ pageParam = 1 }) =>
@@ -71,10 +71,6 @@ export default function ListEvents({
     fetchPage();
   }, [entry, desktopEntry]);
 
-  useEffect(() => {
-    refetch();
-  }, [serializedParams, refetch]);
-
   return (
     <>
       <div className="space-y-8 md:hidden block">
@@ -103,6 +99,7 @@ export default function ListEvents({
         <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
           {allEvents?.map((event, i) => (
             <div
+              className="hover:translate-y-[-.75rem] transition duration-500"
               ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
               key={event.id + "display"}
             >

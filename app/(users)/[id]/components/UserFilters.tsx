@@ -1,7 +1,8 @@
 "use client";
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function UserFilters() {
   const searchParams = useSearchParams();
@@ -23,19 +24,19 @@ export default function UserFilters() {
     replace(`${pathname}?${params.toString()}`);
   };
 
-  const filters = ["Events", "Portfolio"];
-
   return (
-    <div className="flex space-x-2 md:justify-end pb-6">
-      {filters.map((filter) => (
-        <Button
-          key={filter}
-          onClick={() => handleClick(filter)}
-          variant={active === filter ? "default" : "secondary"}
-        >
-          {filter}
-        </Button>
-      ))}
-    </div>
+    <Tabs
+      defaultValue={searchParams.get("filter") || "Events"}
+      className="flex items-center"
+    >
+      <TabsList className="m-auto">
+        <TabsTrigger onClick={() => handleClick("Events")} value="Events">
+          Events
+        </TabsTrigger>
+        <TabsTrigger onClick={() => handleClick("Photos")} value="Photos">
+          Photos
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 }

@@ -31,8 +31,6 @@ export default async function Page({
   filteredLinks.forEach((link) => {
     paymentMethods.push([link.application, link.username]);
   });
-  console.log(paymentMethods);
-
   const vendor = profile;
   const {
     data: { publicUrl },

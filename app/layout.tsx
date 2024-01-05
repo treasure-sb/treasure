@@ -28,7 +28,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await validateUser();
+  const {
+    data: { user },
+  } = await validateUser();
 
   return (
     <html lang="en" className={raleway.className}>
@@ -41,7 +43,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <div className="p-6 px-4">
-              {user.data.user ? <LoggedInHeader /> : <Header />}
+              {user ? <LoggedInHeader user={user} /> : <Header />}
               {children}
               <Toaster />
             </div>
