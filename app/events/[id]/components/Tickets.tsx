@@ -19,7 +19,7 @@ export default async function Tickets({
   event,
   user,
 }: {
-  event: Tables<"events">;
+  event: any;
   user: User | null;
 }) {
   const supabase = await createSupabaseServerClient();
@@ -40,6 +40,10 @@ export default async function Tickets({
     .eq("event_id", event.id)
     .eq("guest_id", user?.id)
     .select();
+
+  let checkoutURL = await getTicketTailorCheckoutUrl(
+    event.ticket_tailor_event_id
+  );
 
   return (
     <>
@@ -71,9 +75,11 @@ export default async function Tickets({
                             {ticket.name} ${ticket.price}
                           </h1>
                         </div>
-                        {/* <Link target="_blank" href={""}>
-                      <Button>Buy Now!</Button>
-                    </Link> */}
+                        {event.tickets_status === 1 ? (
+                          <Link target="_blank" href={checkoutURL}>
+                            <Button>Buy Now!</Button>
+                          </Link>
+                        ) : null}
                       </div>
                     ))}
                   </div>
@@ -85,7 +91,16 @@ export default async function Tickets({
               {cheapestTicket.price === 0 ? (
                 <h1 className="text-lg">Tickets are Free!</h1>
               ) : (
-                <h1 className="text-lg">Tickets ${cheapestTicket.price}</h1>
+                <>
+                  <h1 className="text-lg">Tickets ${cheapestTicket.price}</h1>
+                  {event.tickets_status === 1 ? (
+                    <Link target="_blank" href={checkoutURL}>
+                      <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                        Buy Now!
+                      </Button>
+                    </Link>
+                  ) : null}
+                </>
               )}
             </>
           )}

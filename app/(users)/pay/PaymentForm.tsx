@@ -84,7 +84,7 @@ export default function PaymentForm({
   const getRoute = (method: string[]) => {
     let rte = "";
     switch (method[0]) {
-      case "venmo":
+      case "Venmo":
         rte =
           "https://venmo.com/" +
           method[1].replaceAll(" ", "%20") +
@@ -93,9 +93,9 @@ export default function PaymentForm({
           "&amount=" +
           form.getValues().amount;
         break;
-      case "zelle":
+      case "Zelle":
         break;
-      case "cashapp":
+      case "Cashapp":
         rte = "https://cash.app/$" + method[1] + "/" + form.getValues().amount;
         break;
       case "paypal":

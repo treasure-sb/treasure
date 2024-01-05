@@ -8,11 +8,7 @@ import { table } from "console";
 import Link from "next/link";
 import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
 
-export default async function VendorTables({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
+export default async function VendorTables({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
   const { data: userData } = await validateUser();
   const user = userData.user;
@@ -87,11 +83,13 @@ export default async function VendorTables({
             </Button>
           </form>
         )} */}
-          {/* <Link target="_blank" href={checkoutURL}>
-            <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
-              Buy Now
-            </Button>
-          </Link> */}
+          {event.tickets_status === 1 ? (
+            <Link target="_blank" href={checkoutURL}>
+              <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                Buy Now
+              </Button>
+            </Link>
+          ) : null}
         </div>
       )}
     </>
