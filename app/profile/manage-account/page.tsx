@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { validateUser, logoutUser } from "@/lib/actions/auth";
+import { logoutUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
-import { User } from "@supabase/supabase-js";
 
 export default async function Page() {
-  const { data: userData } = await validateUser();
-  const user: User = userData.user as User;
-
   return (
     <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6">

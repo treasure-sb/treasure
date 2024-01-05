@@ -47,14 +47,21 @@ export default function ListEvents({
 
   const allEvents = data?.pages.flat();
   const lastEventRef = useRef<HTMLElement>(null);
+  const lastEventRefDesktop = useRef<HTMLElement>(null);
+
   const { ref, entry } = useIntersection({
     root: lastEventRef.current,
     threshold: 1,
   });
 
+  const { ref: desktopRef, entry: desktopEntry } = useIntersection({
+    root: lastEventRefDesktop.current,
+    threshold: 1,
+  });
+
   useEffect(() => {
     const fetchPage = async () => {
-      if (entry?.isIntersecting) {
+      if (entry?.isIntersecting || desktopEntry?.isIntersecting) {
         setFetchingPage(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         await fetchNextPage();
@@ -62,7 +69,7 @@ export default function ListEvents({
       }
     };
     fetchPage();
-  }, [entry]);
+  }, [entry, desktopEntry]);
 
   useEffect(() => {
     refetch();
@@ -93,18 +100,22 @@ export default function ListEvents({
         )}
       </div>
       <div className="md:flex flex-col hidden">
-        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
           {allEvents?.map((event, i) => (
-            <div key={event.id + "display"}>
+            <div
+              ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
+              key={event.id + "display"}
+            >
               <EventDisplay event={event} />
             </div>
           ))}
         </div>
-        {hasNextPage && (
-          <ArrowPointingDown
-            onClick={fetchNextPage}
-            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
-          />
+        {fetchingPage && (
+          <div className="flex flex-row items-center justify-center mt-16">
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0} />
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0.1} />
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0.2} />
+          </div>
         )}
       </div>
     </>

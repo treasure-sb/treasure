@@ -79,7 +79,6 @@ export interface SearchParams {
 }
 
 export type EventDisplayData = Tables<"events"> & {
-  tickets: Tables<"tickets">[] | null;
   publicPosterUrl: string;
   formattedDate: string;
 };
