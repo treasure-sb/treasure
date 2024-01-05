@@ -24,18 +24,15 @@ export default async function UserHeader({
 
   const fetchUserLinks = async () => {
     const { links } = await getProfileLinks(user.id);
-    const filteredLinks = links.filter(
-      (link) => link.type === "instagram" || link.type === "twitter"
-    );
-
+    const filteredLinks = links.filter((link) => link.type === "social");
     const listLinks = filteredLinks.map((link: Tables<"links">) => {
-      if (link.type === "instagram") {
+      if (link.application === "Instagram") {
         return {
           url: "https://www.instagram.com/" + link.username,
           icon: <InstagramIcon />,
           username: link.username,
         };
-      } else if (link.type === "twitter") {
+      } else if (link.application === "Twitter") {
         return {
           url: "https://www.twitter.com/" + link.username,
           icon: <TwitterIcon />,
@@ -58,10 +55,10 @@ export default async function UserHeader({
       <Link
         key={index}
         href={link.url}
-        className="flex text-base space-x-2 justify-center align-middle w-fit m-auto"
+        className="flex text-base space-x-1 justify-center align-middle w-fit m-auto"
       >
-        {link.icon}
-        <h1>@{link.username}</h1>
+        <div className="scale-75">{link.icon}</div>
+        <h1 className="my-auto">@{link.username}</h1>
       </Link>
     ));
   };

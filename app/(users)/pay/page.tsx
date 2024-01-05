@@ -27,13 +27,11 @@ export default async function Page({
   const { links } = await getProfileLinks(vendorData.id);
   const paymentMethods: string[][] = [];
 
-  const paymentTypes = ["venmo", "zelle", "cashapp", "paypal"];
-  const filteredLinks = links.filter((link) =>
-    paymentTypes.includes(link.type)
-  );
+  const filteredLinks = links.filter((link) => link.type === "payment");
   filteredLinks.forEach((link) => {
-    paymentMethods.push([link.type, link.username]);
+    paymentMethods.push([link.application, link.username]);
   });
+  console.log(paymentMethods);
 
   const vendor = profile;
   const {
