@@ -1,19 +1,22 @@
 import format from "date-fns/format";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
+import ProfileOptions from "./ProfileOptions";
+import ColorThief from "./ColorThief";
+import CopyProfileLink from "./utilities/CopyProfileLink";
 import { socialLinkData } from "@/lib/helpers/links";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/actions/links";
-import { validateUser } from "@/lib/actions/auth";
-import ProfileOptions from "./ProfileOptions";
-import ColorThief from "./ColorThief";
+import QRCode from "./utilities/QRCode";
 
 export default async function UserHeader({
   user,
+  ownProfile = false,
 }: {
   user: Tables<"profiles"> | Tables<"temporary_profiles">;
+  ownProfile: boolean;
 }) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -23,12 +26,6 @@ export default async function UserHeader({
 
   // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
-
-  // determine if logged in user is viewing their own profile
-  const {
-    data: { user: loggedInUser },
-  } = await validateUser();
-  const ownProfile = loggedInUser && loggedInUser.id === user.id;
 
   const fetchUserLinksData = async () => {
     const { links } = await getSocialLinks(user.id);
@@ -74,10 +71,14 @@ export default async function UserHeader({
               <>{(user as Tables<"temporary_profiles">).business_name}</>
             )}
           </h1>
-          <Avatar className="h-40 w-40 m-auto">
-            <AvatarImage src={publicUrl} />
-            <AvatarFallback />
-          </Avatar>
+          <div className="relative w-fit m-auto">
+            <Avatar className="h-40 w-40 m-auto">
+              <AvatarImage src={publicUrl} />
+              <AvatarFallback />
+            </Avatar>
+            <CopyProfileLink username={user.username} />
+            {isProfile && <QRCode />}
+          </div>
           {isProfile && (
             <p className="text-center text-sm">
               {(user as Tables<"profiles">).bio}

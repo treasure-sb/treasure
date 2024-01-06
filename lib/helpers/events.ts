@@ -207,13 +207,13 @@ const filterFunctions: FilterFunctions = {
  *
  * @param {number} page - The page number for pagination, determining which set of events to fetch.
  * @param {string | null} filter - The filter criteria ('Hosting', 'Applied', or null for 'Attending').
- * @param {User | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
+ * @param {Tables<"profiles"> | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
  * @returns {Promise<any[]>} - A promise that resolves to an array of events based on the filter criteria.
  */
 const fetchUserEventsFromFilter = async (
   page: number,
   filter: string | null,
-  user: User | Tables<"temporary_profiles">
+  user: Tables<"profiles"> | Tables<"temporary_profiles">
 ) => {
   const fetchFunction =
     filter && filter in filterFunctions
@@ -256,13 +256,13 @@ const getEventsDisplayData = async (
  *
  * @param {number} page - The page number for pagination.
  * @param {string | null} filter - The filter criteria ('Hosting', 'Applied', or null for 'Attending').
- * @param {User | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
+ * @param {Tables<"profiles"> | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
  * @returns {Promise<EventDisplayData[]>} - A promise that resolves to an array of events with additional details.
  */
 const getUserEventsDisplayData = async (
   page: number,
   filter: string | null,
-  user: User | Tables<"temporary_profiles">
+  user: Tables<"profiles"> | Tables<"temporary_profiles">
 ) => {
   const events = await fetchUserEventsFromFilter(page, filter, user);
   return Promise.all(
