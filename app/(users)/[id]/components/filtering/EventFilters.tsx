@@ -36,9 +36,12 @@ export default function EventFilters({
 
   const renderFilters = () => {
     return filterOptions.map(({ name, Icon }) => (
-      <div key={name} className="relative w-[33%]">
+      <div
+        onClick={() => handleClick(name)}
+        key={name}
+        className="relative w-[33%] hover:cursor-pointer"
+      >
         <Icon
-          onClick={() => handleClick(name)}
           className={`w-8 h-8 stroke-1 m-auto ${
             active === name ? "text-white" : ""
           }`}

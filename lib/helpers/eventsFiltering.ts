@@ -5,6 +5,7 @@ import format from "date-fns/format";
 
 const today = format(new Date(), "yyyy-MM-dd");
 const numEvents = 6;
+const numUserEvents = 6;
 
 /**
  * Retrieves the ID of a tag based on its name.
@@ -146,12 +147,148 @@ const getAllEventData = async (search: string, page: number) => {
  */
 const getEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numEvents;
+  const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numEvents - 1;
   const { data, error } = await supabase
     .from("event_guests")
     .select("events(*)")
     .eq("guest_id", userId)
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches upcoming events that a user is attending.
+ * This function queries the 'event_guests' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getUpcomingEventsAttending = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_guests")
+    .select("events!inner(*)")
+    .eq("guest_id", userId)
+    .gte("events.date", today)
+    .order("id", { foreignTable: "events", ascending: true })
+    .order("date", { foreignTable: "events", ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches upcoming events that a user has liked.
+ * This function queries the 'event_likes' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getUpcomingEventsLiked = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_likes")
+    .select("events!inner(*)")
+    .eq("user_id", userId)
+    .gte("events.date", today)
+    .order("events(date)", { ascending: true })
+    .order("events(id)", { ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches upcoming events that a user has liked.
+ * This function queries the 'event_likes' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getUpcomingEventsHosting = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("organizer_id", userId)
+    .gte("date", today)
+    .order("date", { ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches past events that a user attended.
+ * This function queries the 'event_guests' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getPastEventsAttending = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_guests")
+    .select("events!inner(*)")
+    .eq("guest_id", userId)
+    .lt("events.date", today)
+    .order("events(date)", { ascending: false })
+    .order("events(id)", { ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches past events that a user has liked.
+ * This function queries the 'event_likes' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getPastEventsLiked = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_likes")
+    .select("events!inner(*)")
+    .eq("user_id", userId)
+    .lt("events.date", today)
+    .order("events(date)", { ascending: false })
+    .order("events(id)", { ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
+/**
+ * Fetches past events that a user has liked.
+ * This function queries the 'event_likes' table to retrieve events based on the guest's user ID.
+ *
+ * @param {number} page - The current page number for pagination purposes.
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<{data: any, error: any}>} - A promise that resolves to an object containing event data and any potential error.
+ */
+const getPastEventsHosting = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("organizer_id", userId)
+    .lt("date", today)
+    .order("date", { ascending: true })
     .range(startIndex, endIndex);
   return { data, error };
 };
@@ -166,8 +303,8 @@ const getEventsAttending = async (page: number, userId: string) => {
  */
 const getEventsApplied = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numEvents;
-  const endIndex = startIndex + numEvents - 1;
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("vendor_applications")
     .select("events(*)")
@@ -186,8 +323,8 @@ const getEventsApplied = async (page: number, userId: string) => {
  */
 const getEventsHosting = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numEvents;
-  const endIndex = startIndex + numEvents - 1;
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("events")
     .select("*")
@@ -206,8 +343,8 @@ const getEventsHosting = async (page: number, userId: string) => {
  */
 const getEventsLiked = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numEvents;
-  const endIndex = startIndex + numEvents - 1;
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("event_likes")
     .select("events(*)")
@@ -219,6 +356,12 @@ const getEventsLiked = async (page: number, userId: string) => {
 export {
   getTagData,
   getDateTagEventData,
+  getUpcomingEventsAttending,
+  getPastEventsAttending,
+  getUpcomingEventsLiked,
+  getUpcomingEventsHosting,
+  getPastEventsHosting,
+  getPastEventsLiked,
   getEventDataByDate,
   getEventDataByTag,
   getAllEventData,

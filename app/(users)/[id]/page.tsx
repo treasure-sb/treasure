@@ -53,9 +53,9 @@ export default async function Page({
 
   return (
     <main className="m-auto max-w-lg md:max-w-6xl flex flex-col justify-between min-h-[calc(100vh-220px)]">
-      <div className="flex flex-col md:flex-row md:space-x-8">
+      <div className="flex flex-col md:flex-row md:space-x-8 relative">
         <UserHeader user={user} ownProfile={ownProfile} />
-        <div className="mt-4 md:mt-0 text-lg w-full md:border-l md:pl-8">
+        <div className="mt-4 md:mt-0 text-lg w-full">
           {isProfile ? (
             <>
               <UserFilters />

@@ -10,6 +10,9 @@ import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProfile } from "@/lib/helpers/profiles";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { CalendarCheck2Icon, CalendarX2Icon } from "lucide-react";
 import AssignEvent from "./AssignEvent";
 import Link from "next/link";
 import Tickets from "./Tickets";
@@ -21,8 +24,6 @@ import ColorThief from "./ColorThief";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export default async function EventsPage({
   event,
@@ -228,13 +229,15 @@ export default async function EventsPage({
         {attendingData ? (
           <form action={handleAttending} className="h-[70%]">
             <Button className="opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white">
-              Attending ✔
+              <h1>Attending</h1>
+              <CalendarCheck2Icon className="ml-2" />
             </Button>
           </form>
         ) : (
           <form action={handleAttending} className="h-[70%]">
             <Button className="hover:opacity-70 bg-tertiary hover:bg-tertiary h-full w-fit text-background text-md font-bold">
-              Not Attending
+              <h1>Not Attending</h1>
+              <CalendarX2Icon className="ml-2" />
             </Button>
           </form>
         )}

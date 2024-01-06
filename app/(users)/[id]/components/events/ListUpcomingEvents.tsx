@@ -8,7 +8,7 @@ import ArrowPointingDown from "@/components/icons/ArrowPointingDown";
 import EventCard from "@/components/events/shared/EventCard";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
-export default function ListEvents({
+export default function ListUpcomingEvents({
   events,
   user,
   loggedInUser,
@@ -21,7 +21,7 @@ export default function ListEvents({
 }) {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
-    queryKey: ["user-events", eventFilter],
+    queryKey: ["user-events-upcoming", eventFilter],
     queryFn: async ({ pageParam }) =>
       await getUserEventsDisplayData(pageParam, eventFilter, true, user),
     getNextPageParam: (lastPage, pages) => {
@@ -34,7 +34,8 @@ export default function ListEvents({
   const allEvents = data?.pages.flat();
 
   return (
-    <>
+    <div>
+      <h1 className="font-semibold mb-4">Upcoming Events {eventFilter}</h1>
       <div className="space-y-8 md:hidden block">
         {allEvents.map((event) => (
           <div key={event.id + "card"}>
@@ -64,6 +65,6 @@ export default function ListEvents({
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

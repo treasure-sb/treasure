@@ -191,6 +191,7 @@ export interface Database {
       events: {
         Row: {
           address: string
+          city: string
           cleaned_name: string
           created_at: string
           date: string
@@ -205,6 +206,7 @@ export interface Database {
           organizer_type: string
           poster_url: string
           start_time: string
+          state: string
           ticket_tailor_event_id: string | null
           tickets_status: number
           venue_map_url: string | null
@@ -212,6 +214,7 @@ export interface Database {
         }
         Insert: {
           address: string
+          city?: string
           cleaned_name: string
           created_at?: string
           date: string
@@ -226,6 +229,7 @@ export interface Database {
           organizer_type?: string
           poster_url: string
           start_time: string
+          state?: string
           ticket_tailor_event_id?: string | null
           tickets_status?: number
           venue_map_url?: string | null
@@ -233,6 +237,7 @@ export interface Database {
         }
         Update: {
           address?: string
+          city?: string
           cleaned_name?: string
           created_at?: string
           date?: string
@@ -247,6 +252,7 @@ export interface Database {
           organizer_type?: string
           poster_url?: string
           start_time?: string
+          state?: string
           ticket_tailor_event_id?: string | null
           tickets_status?: number
           venue_map_url?: string | null

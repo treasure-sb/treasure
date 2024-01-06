@@ -15,7 +15,7 @@ export default function ColorThief({ publicUrl }: { publicUrl: string }) {
         style={{
           backgroundColor: data && data.length > 1 ? data[0] : "transparent",
         }}
-        className={`absolute w-full h-full rounded-full z-[-5] blur-[42px] top-[-20px] left-0 ${
+        className={`absolute w-full h-full md:h-60 rounded-full z-[-5] blur-[42px] top-[-20px] left-0 md:blur-3xl ${
           data ? transitionClass : initialClass
         }`}
       />
@@ -23,7 +23,7 @@ export default function ColorThief({ publicUrl }: { publicUrl: string }) {
         style={{
           backgroundColor: data && data.length > 1 ? data[1] : "transparent",
         }}
-        className={`absolute bottom-0 right-0 w-full h-full rounded-full z-[-10] blur-[42px]  ${
+        className={`absolute bottom-[-30px] right-0 w-full h-full md:h-60 md:top-40 rounded-full z-[-10] blur-[42px] md:blur-3xl  ${
           data ? transitionClass : initialClass
         }`}
       />

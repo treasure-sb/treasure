@@ -8,11 +8,15 @@ import {
   getAllEventData,
   getEventDataByDate,
   getDateTagEventData,
+  getUpcomingEventsAttending,
+  getPastEventsAttending,
   getEventDataByTag,
   getEventsHosting,
   getEventsApplied,
-  getEventsAttending,
-  getEventsLiked,
+  getUpcomingEventsLiked,
+  getPastEventsLiked,
+  getUpcomingEventsHosting,
+  getPastEventsHosting,
 } from "./eventsFiltering";
 import createSupabaseServerClient from "../../utils/supabase/server";
 
@@ -28,10 +32,10 @@ type FetchOperation = (
  * Type definition for the filter functions.
  */
 interface FilterFunctions {
-  Hosting: (page: number, userId: string) => Promise<any>;
-  Applied: (page: number, userId: string) => Promise<any>;
-  Attending: (page: number, userId: string) => Promise<any>;
-  Liked: (page: number, userId: string) => Promise<any>;
+  Hosting: (page: number, userId: string, upcoming: boolean) => Promise<any>;
+  Applied: (page: number, userId: string, upcoming: boolean) => Promise<any>;
+  Attending: (page: number, userId: string, upcoming: boolean) => Promise<any>;
+  Liked: (page: number, userId: string, upcoming: boolean) => Promise<any>;
 }
 
 const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
@@ -171,24 +175,55 @@ const fetchEventsFromFilters = async (
   return await operation(page, searchParams);
 };
 
-const fetchHostingEvents = async (page: number, userId: string) => {
-  const { data } = await getEventsHosting(page, userId);
-  return data || [];
+const fetchHostingEvents = async (
+  page: number,
+  userId: string,
+  upcoming: boolean
+) => {
+  if (upcoming) {
+    const { data } = await getUpcomingEventsHosting(page, userId);
+    return data;
+  } else {
+    const { data } = await getPastEventsHosting(page, userId);
+    return data;
+  }
 };
 
-const fetchAppliedEvents = async (page: number, userId: string) => {
+const fetchAppliedEvents = async (
+  page: number,
+  userId: string,
+  upcoming: boolean
+) => {
   const { data } = await getEventsApplied(page, userId);
   return data?.map((event) => event.events) || [];
 };
 
-const fetchAttendingEvents = async (page: number, userId: string) => {
-  const { data } = await getEventsAttending(page, userId);
-  return data?.map((event) => event.events) || [];
+const fetchAttendingEvents = async (
+  page: number,
+  userId: string,
+  upcoming: boolean
+) => {
+  if (upcoming) {
+    const { data } = await getUpcomingEventsAttending(page, userId);
+    return data?.map((event) => event.events) || [];
+  } else {
+    const { data } = await getPastEventsAttending(page, userId);
+    return data?.map((event) => event.events) || [];
+  }
 };
 
-const fetchLikedEvents = async (page: number, userId: string) => {
-  const { data } = await getEventsLiked(page, userId);
-  return data?.map((event) => event.events) || [];
+const fetchLikedEvents = async (
+  page: number,
+  userId: string,
+  upcoming: boolean
+) => {
+  if (upcoming) {
+    const { data } = await getUpcomingEventsLiked(page, userId);
+    return data?.map((event) => event.events) || [];
+  } else {
+    const { data } = await getPastEventsLiked(page, userId);
+    return data?.map((event) => event.events) || [];
+  }
 };
 
 /**
@@ -213,13 +248,14 @@ const filterFunctions: FilterFunctions = {
 const fetchUserEventsFromFilter = async (
   page: number,
   filter: string | null,
-  user: Tables<"profiles"> | Tables<"temporary_profiles">
+  user: Tables<"profiles"> | Tables<"temporary_profiles">,
+  upcoming: boolean
 ) => {
   const fetchFunction =
     filter && filter in filterFunctions
       ? filterFunctions[filter as keyof FilterFunctions]
       : fetchAttendingEvents;
-  return await fetchFunction(page, user.id);
+  return await fetchFunction(page, user.id, upcoming);
 };
 
 /**
@@ -262,9 +298,10 @@ const getEventsDisplayData = async (
 const getUserEventsDisplayData = async (
   page: number,
   filter: string | null,
+  upcoming: boolean,
   user: Tables<"profiles"> | Tables<"temporary_profiles">
 ) => {
-  const events = await fetchUserEventsFromFilter(page, filter, user);
+  const events = await fetchUserEventsFromFilter(page, filter, user, upcoming);
   return Promise.all(
     events.map(async (event: Tables<"events">) => {
       const publicPosterUrl = await getPublicPosterUrl(event);
