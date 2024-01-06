@@ -1,10 +1,26 @@
+import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import Image from "next/image";
 import { EventDisplayData } from "@/types/event";
+import LikeButton from "@/components/events/shared/LikeButton";
 
-export default function CardDisplay({ event }: { event: EventDisplayData }) {
+export default function CardDisplay({
+  event,
+  user,
+  showLikeButton = true,
+}: {
+  user?: User | null;
+  event: EventDisplayData;
+  showLikeButton?: boolean;
+}) {
   return (
-    <div className="group aspect-square w-full">
+    <div className="group aspect-square w-full relative">
+      {showLikeButton && (
+        <div className="absolute right-2 top-2 p-2 bg-black rounded-full">
+          <LikeButton event={event} user={user} />
+        </div>
+      )}
+
       <Link href={`/events/${event.cleaned_name}`}>
         <Image
           className="object-cover h-full w-full rounded-md"
@@ -13,6 +29,7 @@ export default function CardDisplay({ event }: { event: EventDisplayData }) {
           width={200}
           height={200}
         />
+
         <h1 className="text-xl mt-2 font-bold line-clamp-2">{event.name}</h1>
         <h1 className="text-base font-normal">
           <span className="text-primary text-base font-normal">

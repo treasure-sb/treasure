@@ -68,7 +68,11 @@ export default async function ListUserEvents({
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
                 <SeeMore>
                   {eventsAttending.map((event) => (
-                    <EventDisplay key={event.id + "display"} event={event} />
+                    <EventDisplay
+                      key={event.id + "display"}
+                      event={event}
+                      showLikeButton={false}
+                    />
                   ))}
                 </SeeMore>
               </div>
@@ -98,7 +102,7 @@ export default async function ListUserEvents({
               <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
                 <SeeMore>
                   {pastEvents.map((event) => (
-                    <EventDisplay event={event} />
+                    <EventDisplay event={event} showLikeButton={false} />
                   ))}
                 </SeeMore>
               </div>
