@@ -87,7 +87,7 @@ export default async function UserHeader({
           )}
         </div>
       </div>
-      {isProfile && paymentLinks.length > 0 && (
+      {isProfile && (
         <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
           <Button className="w-full p-6 text-lg font-bold bg-primary">
             Pay Now
