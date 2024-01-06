@@ -11,15 +11,17 @@ export default function EventFilters({
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [active, setActive] = useState(searchParams.get("events") || "Hosting");
+  const [active, setActive] = useState(
+    searchParams.get("events") || "Attending"
+  );
   const { replace } = useRouter();
 
   const handleClick = (filter: string) => {
     if (filter === active) return;
     const params = new URLSearchParams(searchParams);
 
-    if (filter === "Hosting") {
-      setActive("Hosting");
+    if (filter === "Attending") {
+      setActive("Attending");
       params.delete("events");
     } else {
       setActive(filter);

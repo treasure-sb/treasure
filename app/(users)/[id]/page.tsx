@@ -24,7 +24,7 @@ export default async function Page({
 }) {
   const username = params.id;
   const filter = searchParams?.tab || "Events";
-  const eventsFilter = searchParams?.events || "Hosting";
+  const eventsFilter = searchParams?.events || "Attending";
   const type = searchParams?.type || "profile";
   let user: Tables<"profiles"> | Tables<"temporary_profiles">;
 
