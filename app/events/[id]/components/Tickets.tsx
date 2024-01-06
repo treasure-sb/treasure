@@ -19,7 +19,7 @@ export default async function Tickets({
   event,
   user,
 }: {
-  event: any;
+  event: Tables<"events">;
   user: User | null;
 }) {
   const supabase = await createSupabaseServerClient();
@@ -42,7 +42,7 @@ export default async function Tickets({
     .select();
 
   let checkoutURL = await getTicketTailorCheckoutUrl(
-    event.ticket_tailor_event_id
+    event.ticket_tailor_event_id || ""
   );
 
   return (
@@ -77,7 +77,7 @@ export default async function Tickets({
                         </div>
                         {event.tickets_status === 1 ? (
                           <Link target="_blank" href={checkoutURL}>
-                            <Button>Buy Now!</Button>
+                            <Button>Buy Now</Button>
                           </Link>
                         ) : null}
                       </div>
@@ -96,7 +96,7 @@ export default async function Tickets({
                   {event.tickets_status === 1 ? (
                     <Link target="_blank" href={checkoutURL}>
                       <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
-                        Buy Now!
+                        Buy Now
                       </Button>
                     </Link>
                   ) : null}

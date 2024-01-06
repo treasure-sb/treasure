@@ -8,7 +8,11 @@ import { table } from "console";
 import Link from "next/link";
 import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
 
-export default async function VendorTables({ event }: { event: any }) {
+export default async function VendorTables({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: userData } = await validateUser();
   const user = userData.user;

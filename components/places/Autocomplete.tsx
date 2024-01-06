@@ -29,8 +29,18 @@ const PlacesAutocomplete = ({
     setValue(address, false);
     clearSuggestions();
     const result = await getGeocode({ address });
+    let city = "";
+    let state = "";
+    result[0].address_components.forEach((component) => {
+      if (component.types.includes("locality")) {
+        city = component.short_name;
+      } else if (component.types.includes("administrative_area_level_1")) {
+        state = component.short_name;
+      }
+    });
     const { lat, lng } = await getLatLng(result[0]);
-    setVenueLocation({ address, lat, lng });
+
+    setVenueLocation({ address, lat, lng, city, state });
   };
 
   return (

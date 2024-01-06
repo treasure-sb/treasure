@@ -24,6 +24,9 @@ import ColorThief from "./ColorThief";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
+import LikeButton from "@/components/events/shared/LikeButton";
+import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
+import HeartIcon from "@/components/icons/HeartIcon";
 
 export default async function EventsPage({
   event,
@@ -133,10 +136,57 @@ export default async function EventsPage({
     }
   };
 
+  // check to see if user liked, if they did then show button as liked
+  const { data: likedData, error: likedError } = await supabase
+    .from("event_likes")
+    .select("*")
+    .eq("event_id", event.id)
+    .eq("user_id", user?.id)
+    .single();
+
+  const handleLiked = async () => {
+    "use server";
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await validateUser();
+    if (!user) {
+      redirect("/login");
+    }
+
+    if (likedData) {
+      await supabase
+        .from("event_likes")
+        .delete()
+        .eq("event_id", event.id)
+        .eq("user_id", user.id);
+      revalidatePath(`/events/${event.cleaned_name}`);
+    } else {
+      await supabase
+        .from("event_likes")
+        .insert([{ user_id: user.id, event_id: event.id }]);
+      revalidatePath(`/events/${event.cleaned_name}`);
+    }
+  };
+
   return (
     <main className="w-full lg:w-fit m-auto">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <div className="relative lg:sticky lg:top-0 h-fit max-w-lg mx-auto lg:pt-8">
+          {likedData ? (
+            <form action={handleLiked}>
+              <Button className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
+                <FilledHeartIcon />
+              </Button>
+            </form>
+          ) : (
+            <form action={handleLiked}>
+              <Button className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
+                <HeartIcon />
+              </Button>
+            </form>
+          )}
+
           <Image
             className="rounded-xl mb-6 lg:mb-0 m-auto"
             alt="event poster image"

@@ -73,7 +73,7 @@ export default function ListEvents({
   return (
     <>
       <div className="space-y-8 md:hidden block">
-        <EventDisplay event={events[0]} />
+        <EventDisplay event={events[0]} user={user} />
         {allEvents?.slice(1).map((event, i) => (
           <div
             key={event.id + "card"}
@@ -102,7 +102,7 @@ export default function ListEvents({
               ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
               key={event.id + "display"}
             >
-              <EventDisplay event={event} />
+              <EventDisplay event={event} user={user} />
             </div>
           ))}
         </div>
