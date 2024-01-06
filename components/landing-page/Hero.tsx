@@ -69,7 +69,7 @@ export default function Hero() {
             </motion.button>
           </Button>
         </Link>
-        <Link className="mt-6" href="/profile/create-event">
+        {/* <Link className="mt-6" href="/profile/create-event">
           <Button variant={"ghost"} asChild>
             <motion.button
               initial={{ opacity: 0, y: 20 }}
@@ -80,7 +80,7 @@ export default function Hero() {
               Create Event
             </motion.button>
           </Button>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
