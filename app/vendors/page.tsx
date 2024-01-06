@@ -16,7 +16,7 @@ export default async function Page() {
         <Link href="/vendors/sales" className="">
           <Button className="w-full">Sales</Button>
         </Link>
-        <Link href="/vendors/edit-payments">
+        <Link href="/profile/edit-profile">
           <Button className="w-full" variant={"secondary"}>
             Payment Methods
           </Button>
