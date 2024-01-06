@@ -8,7 +8,7 @@ import { socialLinkData } from "@/lib/helpers/links";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { getSocialLinks } from "@/lib/actions/links";
+import { getPaymentLinks, getSocialLinks } from "@/lib/actions/links";
 import QRCode from "./utilities/QRCode";
 
 export default async function UserHeader({
@@ -22,7 +22,6 @@ export default async function UserHeader({
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
-  const formattedJoinedDate = format(new Date(user.created_at), "MMMM yyyy");
 
   // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
@@ -52,6 +51,8 @@ export default async function UserHeader({
     ));
   };
 
+  const { links: paymentLinks } = await getPaymentLinks(user.id);
+
   const mobileHeader = (
     <div className="flex flex-col space-y-4 md:hidden relative">
       <div className="text-center md:mt-16">
@@ -77,7 +78,7 @@ export default async function UserHeader({
               <AvatarFallback />
             </Avatar>
             <CopyProfileLink username={user.username} />
-            {isProfile && <QRCode username={user.username} />}
+            {ownProfile && <QRCode username={user.username} />}
           </div>
           {isProfile && (
             <p className="text-center text-sm">
@@ -86,9 +87,9 @@ export default async function UserHeader({
           )}
         </div>
       </div>
-      {isProfile && (
+      {isProfile && paymentLinks.length > 0 && (
         <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
-          <Button className="w-full p-6 text-lg font-bold bg-tertiary hover:bg-tertiary/80">
+          <Button className="w-full p-6 text-lg font-bold bg-primary">
             Pay Now
           </Button>
         </Link>
@@ -128,9 +129,9 @@ export default async function UserHeader({
           <AvatarFallback />
         </Avatar>
         <CopyProfileLink username={user.username} />
-        {isProfile && <QRCode username={user.username} />}
+        {ownProfile && <QRCode username={user.username} />}
       </div>
-      {isProfile && (
+      {ownProfile && (
         <p className="text-center">{(user as Tables<"profiles">).bio}</p>
       )}
       <div className="m-auto flex space-x-4 justify-center items-center overflow-scroll scrollbar-hidden">
@@ -146,9 +147,9 @@ export default async function UserHeader({
               </Link>
             )}
       </div>
-      {isProfile && (
+      {isProfile && paymentLinks.length > 0 && (
         <Link className="m-auto w-60" href={`/pay?vendor=${user.username}`}>
-          <Button className="w-full p-6 text-lg font-bold bg-tertiary hover:bg-tertiary/80">
+          <Button className="w-full p-6 text-lg font-bold bg-primary">
             Pay Now
           </Button>
         </Link>

@@ -46,6 +46,6 @@ export default async function Events({
       )}
     </div>
   ) : (
-    <div className="md:mt-10">No Events</div>
+    <div className="md:mt-10">No Events {eventsFilter}</div>
   );
 }

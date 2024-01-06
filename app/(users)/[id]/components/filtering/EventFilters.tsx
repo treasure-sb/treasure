@@ -47,7 +47,7 @@ export default function EventFilters({
           }`}
         />
         {active === name && (
-          <div className="absolute h-[1px] w-full bg-tertiary bottom-[-9px]" />
+          <div className="absolute h-[1px] w-full bg-primary bottom-[-9px]" />
         )}
       </div>
     ));

@@ -42,14 +42,15 @@ const editProfile = async (values: any) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
     .update({ first_name, last_name, bio, avatar_url })
     .eq("id", user?.id)
     .select();
 
-  if (!error) {
-    redirect("/profile");
+  if (!error && data) {
+    const profile: Tables<"profiles"> = data[0];
+    redirect(`/${profile.username}`);
   }
 };
 
