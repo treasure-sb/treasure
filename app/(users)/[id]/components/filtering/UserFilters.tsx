@@ -2,24 +2,26 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import EventFilters from "./EventFilters";
 
 export default function UserFilters() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [active, setActive] = useState(searchParams.get("filter") || "Events");
+  const [active, setActive] = useState(searchParams.get("tab") || "Events");
   const { replace } = useRouter();
 
-  const handleClick = (filter: string) => {
-    if (filter === active) return;
+  const handleClick = (tab: string) => {
+    if (tab === active) return;
 
     const params = new URLSearchParams(searchParams);
-    if (filter === "Events") {
-      params.delete("filter");
+    if (tab === "Events") {
+      params.delete("tab");
       setActive("Events");
     } else {
-      params.set("filter", filter);
-      setActive(filter);
+      params.delete("events");
+      params.set("tab", tab);
+      setActive(tab);
     }
     replace(`${pathname}?${params.toString()}`);
   };
@@ -27,9 +29,9 @@ export default function UserFilters() {
   return (
     <Tabs
       defaultValue={searchParams.get("filter") || "Events"}
-      className="flex items-center"
+      className="flex items-center flex-col"
     >
-      <TabsList className="m-auto">
+      <TabsList className="m-auto mb-2">
         <TabsTrigger onClick={() => handleClick("Events")} value="Events">
           Events
         </TabsTrigger>
@@ -37,6 +39,9 @@ export default function UserFilters() {
           Photos
         </TabsTrigger>
       </TabsList>
+      <TabsContent asChild className="w-[80%]" value="Events">
+        <EventFilters />
+      </TabsContent>
     </Tabs>
   );
 }

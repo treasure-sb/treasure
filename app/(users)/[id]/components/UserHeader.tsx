@@ -1,19 +1,22 @@
 import format from "date-fns/format";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
+import ProfileOptions from "./ProfileOptions";
+import ColorThief from "./ColorThief";
+import CopyProfileLink from "./utilities/CopyProfileLink";
 import { socialLinkData } from "@/lib/helpers/links";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/actions/links";
-import { validateUser } from "@/lib/actions/auth";
-import ProfileOptions from "./ProfileOptions";
-import ColorThief from "./ColorThief";
+import QRCode from "./utilities/QRCode";
 
 export default async function UserHeader({
   user,
+  ownProfile = false,
 }: {
   user: Tables<"profiles"> | Tables<"temporary_profiles">;
+  ownProfile: boolean;
 }) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -23,12 +26,6 @@ export default async function UserHeader({
 
   // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
-
-  // determine if logged in user is viewing their own profile
-  const {
-    data: { user: loggedInUser },
-  } = await validateUser();
-  const ownProfile = loggedInUser && loggedInUser.id === user.id;
 
   const fetchUserLinksData = async () => {
     const { links } = await getSocialLinks(user.id);
@@ -74,10 +71,14 @@ export default async function UserHeader({
               <>{(user as Tables<"temporary_profiles">).business_name}</>
             )}
           </h1>
-          <Avatar className="h-40 w-40 m-auto">
-            <AvatarImage src={publicUrl} />
-            <AvatarFallback />
-          </Avatar>
+          <div className="relative w-fit m-auto">
+            <Avatar className="h-40 w-40 m-auto">
+              <AvatarImage src={publicUrl} />
+              <AvatarFallback />
+            </Avatar>
+            <CopyProfileLink username={user.username} />
+            {isProfile && <QRCode username={user.username} />}
+          </div>
           {isProfile && (
             <p className="text-center text-sm">
               {(user as Tables<"profiles">).bio}
@@ -110,7 +111,7 @@ export default async function UserHeader({
   );
 
   const desktopHeader = (
-    <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-16 hidden">
+    <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-32 hidden w-[40%] sticky top-0">
       <h1 className="text-2xl md:text-3xl font-bold">
         {isProfile ? (
           <>
@@ -121,14 +122,18 @@ export default async function UserHeader({
           <>{(user as Tables<"temporary_profiles">).business_name}</>
         )}
       </h1>
-      <Avatar className="h-32 w-32 md:h-52 md:w-52 m-auto">
-        <AvatarImage src={publicUrl} />
-        <AvatarFallback />
-      </Avatar>
+      <div className="relative w-fit m-auto">
+        <Avatar className="h-32 w-32 md:h-52 md:w-52 m-auto">
+          <AvatarImage src={publicUrl} />
+          <AvatarFallback />
+        </Avatar>
+        <CopyProfileLink username={user.username} />
+        {isProfile && <QRCode username={user.username} />}
+      </div>
       {isProfile && (
         <p className="text-center">{(user as Tables<"profiles">).bio}</p>
       )}
-      <div className="space-y-1">
+      <div className="m-auto flex space-x-4 justify-center items-center overflow-scroll scrollbar-hidden">
         {isProfile
           ? await renderLinks()
           : (user as Tables<"temporary_profiles">).instagram && (
@@ -142,13 +147,13 @@ export default async function UserHeader({
             )}
       </div>
       {isProfile && (
-        <Link className="m-auto w-full" href={`/pay?vendor=${user.username}`}>
-          <Button className="w-full">Pay Now</Button>
+        <Link className="m-auto w-60" href={`/pay?vendor=${user.username}`}>
+          <Button className="w-full p-6 text-lg font-bold bg-tertiary hover:bg-tertiary/80">
+            Pay Now
+          </Button>
         </Link>
       )}
-      <p className="font-semibold bg-gradient-to-r hidden md:block from-primary to bg-green-200 text-transparent bg-clip-text">
-        Joined Treasure {formattedJoinedDate}
-      </p>
+      <ColorThief publicUrl={publicUrl} />
     </div>
   );
 
