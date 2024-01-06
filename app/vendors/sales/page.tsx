@@ -20,9 +20,7 @@ export default async function Page() {
   return (
     <main className="m-auto max-w-lg">
       <div className="flex flex-col space-y-6">
-        <h1 className="text-2xl m-auto font-semibold text-center">
-          Vendors Corner
-        </h1>
+        <h1 className="text-2xl m-auto font-semibold text-center">Sales</h1>
         {data?.map((transaction) => (
           <div className="flex flex-col">
             <TransactionCard

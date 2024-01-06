@@ -26,7 +26,11 @@ export default async function ListEventsHosting({
       </div>
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:relative">
         {events.map((event) => (
-          <EventDisplay key={event.id + "display"} event={event} />
+          <EventDisplay
+            showLikeButton={false}
+            key={event.id + "display"}
+            event={event}
+          />
         ))}
       </div>
     </>
