@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { validateUser } from "@/lib/actions/auth";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/shared/Header";
 import LoggedInHeader from "@/components/shared/LoggedInHeader";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
@@ -50,6 +51,7 @@ export default async function RootLayout({
           </ThemeProvider>
         </ReactQueryProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
