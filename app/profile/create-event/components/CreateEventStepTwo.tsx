@@ -70,6 +70,7 @@ export default function Step2({
       ...eventForm,
       ...form.getValues(),
     };
+    console.log(newForm);
     setEventForm(newForm);
     onNext();
   };

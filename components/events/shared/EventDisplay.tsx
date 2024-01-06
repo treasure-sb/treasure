@@ -13,12 +13,12 @@ export default function CardDisplay({ event }: { event: EventDisplayData }) {
           width={200}
           height={200}
         />
-        <h1 className="text-xl mt-2 font-bold">{event.name}</h1>
-        <h1 className="font-semibold">
-          <span className="text-primary text-sm font-normal">
+        <h1 className="text-xl mt-2 font-bold line-clamp-2">{event.name}</h1>
+        <h1 className="text-base font-normal">
+          <span className="text-primary text-base font-normal">
             {event.formattedDate}
           </span>{" "}
-          {event.venue_name}
+          {event.city + ", " + event.state}
         </h1>
       </Link>
     </div>

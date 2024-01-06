@@ -19,7 +19,7 @@ export default async function Tickets({
   event,
   user,
 }: {
-  event: any;
+  event: Tables<"events">;
   user: User | null;
 }) {
   const supabase = await createSupabaseServerClient();
@@ -42,7 +42,7 @@ export default async function Tickets({
     .select();
 
   let checkoutURL = await getTicketTailorCheckoutUrl(
-    event.ticket_tailor_event_id
+    event.ticket_tailor_event_id || ""
   );
 
   return (

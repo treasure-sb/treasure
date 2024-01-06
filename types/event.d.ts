@@ -21,6 +21,8 @@ export interface EventForm {
   address: string;
   lng: number;
   lat: number;
+  city: string;
+  state: string;
   date: Date | undefined;
   start_time: string;
   end_time: string;

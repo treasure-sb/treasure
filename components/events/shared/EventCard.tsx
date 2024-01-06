@@ -36,10 +36,12 @@ export default function EventCard({
               sizes="100px"
             />
           </div>
-          <div className="max-w-[65%]">
-            <p className="text-lg font-bold truncate">{event.name}</p>
-            <p className="text-primary text-xs">{formattedDate} </p>
-            <p className="text-sm font-semibold truncate">{event.venue_name}</p>
+          <div className="max-w-[65%] my-auto">
+            <p className="text-lg font-bold line-clamp-2">{event.name}</p>
+            <p className="text-primary text-sm font-normal">{formattedDate} </p>
+            <p className="text-sm font-normal truncate">
+              {event.city + ", " + event.state}
+            </p>
           </div>
         </div>
       </Link>
