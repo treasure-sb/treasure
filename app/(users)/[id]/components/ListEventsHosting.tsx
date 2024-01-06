@@ -8,7 +8,7 @@ export default async function ListEventsHosting({
 }: {
   user: Tables<"temporary_profiles">;
 }) {
-  const events = await getUserEventsDisplayData(1, "Hosting", user);
+  const events = await getUserEventsDisplayData(1, "Hosting", true, user);
   return (
     <>
       <p className="mb-6 font-semibold">

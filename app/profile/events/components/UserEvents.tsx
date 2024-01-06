@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ListUserEvents from "./ListUserEvents";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
 import { getUserEventsDisplayData } from "@/lib/helpers/events";
@@ -23,7 +22,7 @@ export default async function UserEvents({
   searchParams?: { filter?: string };
 }) {
   const filter = searchParams?.filter || null;
-  const events = await getUserEventsDisplayData(1, filter, user);
+  const events: any[] = [];
 
   return (
     <>
@@ -70,9 +69,7 @@ export default async function UserEvents({
             </>
           )}
         </div>
-      ) : (
-        <ListUserEvents user={user} events={events} filter={filter} />
-      )}
+      ) : null}
     </>
   );
 }
