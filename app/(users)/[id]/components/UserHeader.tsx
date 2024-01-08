@@ -112,7 +112,15 @@ export default async function UserHeader({
   );
 
   const desktopHeader = (
-    <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-32 hidden w-[40%] sticky top-0">
+    <div
+      className="md:flex md:flex-col md:space-y-6 
+    md:text-center md:mt-8 hidden w-[40%] sticky top-0"
+    >
+      {ownProfile && (
+        <div className="w-full flex justify-end">
+          <ProfileOptions />
+        </div>
+      )}
       <h1 className="text-2xl md:text-3xl font-bold">
         {isProfile ? (
           <>
