@@ -42,15 +42,15 @@ export default function Page({
     signup_invite_token?: string;
     temporary_profile: string;
     invite_token: string;
-    event_id: string;
+    event: string;
   };
 }) {
+  const { replace } = useRouter();
   const [emailExistsError, setEmailExistsError] = useState(false);
   const [emailsConfirmationError, setEmailConfirmationError] = useState(false);
-  const { replace } = useRouter();
   const signup_invite_token = searchParams.signup_invite_token;
   const invite_token = searchParams.invite_token || null;
-  const event_id = searchParams.event_id || null;
+  const event = searchParams.event || null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,21 +68,17 @@ export default function Page({
       return;
     }
 
-    try {
-      const response = await signUp(formData, signup_invite_token);
-      if (response?.error?.type === "email_taken") {
-        setEmailExistsError(true);
-      }
+    const { error, profileData } = await signUp(formData, signup_invite_token);
+    if (error?.type === "email_taken") {
+      setEmailExistsError(true);
+    }
 
-      if (response?.profileData && invite_token && event_id) {
-        replace(
-          `/vendor-invite?invite_token=${invite_token}&event_id=${event_id}`
-        );
-      } else if (response?.profileData) {
-        replace("/");
-      }
-    } catch (err) {
-      console.log(err);
+    if (profileData && invite_token && event) {
+      replace(`/vendor-invite?invite_token=${invite_token}&event_id=${event}`);
+    } else if (profileData && event) {
+      replace(`/events/${event}`);
+    } else if (profileData) {
+      replace("/");
     }
   };
 
@@ -172,7 +168,10 @@ export default function Page({
           </Button>
           <h1 className="text-center text-sm">
             Already have an account?{" "}
-            <Link className="text-primary" href="/login">
+            <Link
+              className="text-primary"
+              href={event ? `/login?event=${event}` : `/login`}
+            >
               Log In
             </Link>
           </h1>

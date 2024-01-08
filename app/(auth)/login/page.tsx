@@ -11,11 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import * as z from "zod";
 import { useState } from "react";
-import Link from "next/link";
-import GoogleIcon from "@/components/icons/GoogleIcon";
 import { login } from "@/lib/actions/auth";
+import { useRouter } from "next/navigation";
+import * as z from "zod";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -26,7 +26,15 @@ const formSchema = z.object({
   }),
 });
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: {
+    event: string;
+  };
+}) {
+  const event = searchParams.event || null;
+  const { replace } = useRouter();
   const [loginError, setLoginError] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,13 +45,15 @@ export default function Page() {
   });
 
   const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-    try {
-      const response = await login(formData);
-      if (response?.error) {
-        setLoginError(true);
-      }
-    } catch (err) {
-      console.log(err);
+    const { data, error } = await login(formData);
+    if (error) {
+      setLoginError(true);
+    }
+
+    if (data && event) {
+      replace(`/events/${event}`);
+    } else {
+      replace("/");
     }
   };
 
@@ -87,22 +97,13 @@ export default function Page() {
           </Button>
           <h1 className="text-center text-sm">
             Don't have an account?{" "}
-            <Link className="text-primary" href="/signup">
+            <Link
+              className="text-primary"
+              href={event ? `/signup?event=${event}` : "/signup"}
+            >
               Sign up
             </Link>
           </h1>
-          {/* <div className="flex items-center justify-center my-4">
-            <hr className="flex-grow border-secondary" />
-            <span className="mx-2">or</span>
-            <hr className="flex-grow border-secondary" />
-          </div>
-          <Button
-            type="button"
-            className="bg-white w-full hover:bg-white space-x-2"
-          >
-            <GoogleIcon />
-            <h1>Login with Google</h1>
-          </Button> */}
         </form>
       </Form>
     </main>
