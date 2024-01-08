@@ -1,9 +1,12 @@
+"use client";
+
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import { likeEvent, unlikeEvent } from "@/lib/actions/events";
+import { Tables } from "@/types/supabase";
 import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
 import HeartIcon from "@/components/icons/HeartIcon";
 
@@ -11,14 +14,14 @@ import HeartIcon from "@/components/icons/HeartIcon";
  * The LikeButton component allows a user to like or unlike an event.
  * It shows a filled heart icon if the event is liked, and an empty heart icon otherwise.
  *
- * @param {EventDisplayData} event - The event data.
+ * @param {EventDisplayData | Tables<"events">} event - The event data.
  * @param {User | null} user - The current user.
  */
 export default function LikeButton({
   event,
   user,
 }: {
-  event: EventDisplayData;
+  event: EventDisplayData | Tables<"events">;
   user?: User | null;
 }) {
   const { data } = useQuery({
@@ -28,7 +31,7 @@ export default function LikeButton({
       const supabase = createClient();
       const { data: likedEvents } = await supabase
         .from("event_likes")
-        .select("*")
+        .select("user_id")
         .eq("event_id", event.id)
         .eq("user_id", user.id);
       return likedEvents && likedEvents.length > 0;
@@ -40,7 +43,7 @@ export default function LikeButton({
 
   const handleLike = async () => {
     if (!user) {
-      push("/login");
+      push(`/login?event=${event.cleaned_name}`);
       return;
     }
     // Optimistically update the UI
@@ -51,7 +54,7 @@ export default function LikeButton({
 
   const handleUnlike = async () => {
     if (!user) {
-      push("/login");
+      push(`/login?event=${event.cleaned_name}`);
       return;
     }
     // Optimistically update the UI

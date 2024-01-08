@@ -21,7 +21,7 @@ export default function ListPastEvents({
 }) {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
-    queryKey: ["user-events-past", eventFilter],
+    queryKey: ["user-events-past", eventFilter, user.id],
     queryFn: async ({ pageParam }) =>
       await getUserEventsDisplayData(pageParam, eventFilter, false, user),
     getNextPageParam: (lastPage, pages) => {

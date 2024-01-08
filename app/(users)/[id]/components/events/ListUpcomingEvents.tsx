@@ -21,7 +21,7 @@ export default function ListUpcomingEvents({
 }) {
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
-    queryKey: ["user-events-upcoming", eventFilter],
+    queryKey: ["user-events-upcoming", eventFilter, user.id],
     queryFn: async ({ pageParam }) =>
       await getUserEventsDisplayData(pageParam, eventFilter, true, user),
     getNextPageParam: (lastPage, pages) => {
