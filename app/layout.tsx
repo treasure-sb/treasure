@@ -35,7 +35,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={raleway.className}>
-      <body className="bg-background text-foreground flex flex-col justify-between">
+      <body className="bg-background text-foreground flex flex-col justify-between overflow-x-hidden w-screen">
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"
