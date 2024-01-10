@@ -60,9 +60,15 @@ export default function ListUpcomingEvents({
               className="hover:translate-y-[-.75rem] transition duration-500"
               key={event.id + "display"}
             >
-              <EventDisplay event={event} />
+              <EventDisplay event={event} user={loggedInUser} />
             </div>
           ))}
+          {hasNextPage && (
+            <ArrowPointingDown
+              onClick={fetchNextPage}
+              className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
+            />
+          )}
         </div>
       </div>
     </div>

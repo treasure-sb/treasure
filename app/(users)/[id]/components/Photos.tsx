@@ -2,9 +2,9 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import { Tables } from "@/types/supabase";
 
-export default async function Portfolio({ user }: { user: any }) {
+export default async function Photos({ user }: { user: any }) {
   const supabase = await createSupabaseServerClient();
-  const { data: portfolioData, error: portfolioError } = await supabase
+  const { data: portfolioData } = await supabase
     .from("portfolio_pictures")
     .select("*")
     .eq("user_id", user.id);
@@ -29,7 +29,7 @@ export default async function Portfolio({ user }: { user: any }) {
   const portfolioPictures = await getPortfolioPictures();
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2 mt-6">
       {portfolioPictures?.length != 0 ? (
         portfolioPictures.map((picture, index) => (
           <div className="relative aspect-square group" key={index}>

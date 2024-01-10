@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { DateRange } from "react-day-picker";
 import Cancel from "@/components/icons/Cancel";
 
 /**
@@ -48,28 +49,6 @@ export default function DateFiltering() {
     refresh();
   };
 
-  const handleClickToday = () => {
-    const todaysDateFormatted = format(new Date(), "yyyy-MM-dd");
-
-    const params = new URLSearchParams(searchParams);
-    params.set("from", todaysDateFormatted);
-    params.set("until", todaysDateFormatted);
-    replace(`${pathname}?${params.toString()}`);
-    refresh();
-  };
-
-  const handleClickTomorrow = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowFormatted = format(tomorrow, "yyyy-MM-dd");
-
-    const params = new URLSearchParams(searchParams);
-    params.set("from", tomorrowFormatted);
-    params.set("until", tomorrowFormatted);
-    replace(`${pathname}?${params.toString()}`);
-    refresh();
-  };
-
   const handleClickThisWeek = () => {
     const today = new Date();
     const endOfWeek = new Date(today);
@@ -82,6 +61,46 @@ export default function DateFiltering() {
     const params = new URLSearchParams(searchParams);
     params.set("from", todaysDateFormatted);
     params.set("until", endOfWeekDateFormatted);
+    replace(`${pathname}?${params.toString()}`);
+    refresh();
+  };
+
+  const handleClickThisMonth = () => {
+    const today = new Date();
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    const todaysDateFormatted = format(today, "yyyy-MM-dd");
+    const endOfMonthDateFormatted = format(endOfMonth, "yyyy-MM-dd");
+
+    const params = new URLSearchParams(searchParams);
+    params.set("from", todaysDateFormatted);
+    params.set("until", endOfMonthDateFormatted);
+    replace(`${pathname}?${params.toString()}`);
+    refresh();
+  };
+
+  const handleClickNextMonth = () => {
+    const today = new Date();
+    const startOfNextMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      1
+    );
+    const endOfNextMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 2,
+      0
+    );
+
+    const startOfNextMonthDateFormatted = format(
+      startOfNextMonth,
+      "yyyy-MM-dd"
+    );
+    const endOfNextMonthDateFormatted = format(endOfNextMonth, "yyyy-MM-dd");
+
+    const params = new URLSearchParams(searchParams);
+    params.set("from", startOfNextMonthDateFormatted);
+    params.set("until", endOfNextMonthDateFormatted);
     replace(`${pathname}?${params.toString()}`);
     refresh();
   };
@@ -127,14 +146,14 @@ export default function DateFiltering() {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <div className="flex justify-center p-2">
-            <DropdownMenuItem onClick={handleClickToday}>
-              Today
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleClickTomorrow}>
-              Tomorrow
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleClickThisWeek}>
               This Week
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleClickThisMonth}>
+              This Month
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleClickNextMonth}>
+              Next Month
             </DropdownMenuItem>
           </div>
           <DropdownMenuSeparator />

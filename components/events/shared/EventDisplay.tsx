@@ -1,7 +1,8 @@
+"use client";
 import { User } from "@supabase/supabase-js";
+import { EventDisplayData } from "@/types/event";
 import Link from "next/link";
 import Image from "next/image";
-import { EventDisplayData } from "@/types/event";
 import LikeButton from "@/components/events/shared/LikeButton";
 
 export default function CardDisplay({
