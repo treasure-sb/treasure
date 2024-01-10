@@ -53,17 +53,23 @@ export default function ListPastEvents({
           />
         )}
       </div>
-      <div className="md:flex flex-col hidden">
+      <div className="md:flex md:flex-col hidden">
         <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {allEvents?.map((event) => (
             <div
               className="hover:translate-y-[-.75rem] transition duration-500"
               key={event.id + "display"}
             >
-              <EventDisplay event={event} />
+              <EventDisplay event={event} user={loggedInUser} />
             </div>
           ))}
         </div>
+        {hasNextPage && (
+          <ArrowPointingDown
+            onClick={fetchNextPage}
+            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
+          />
+        )}
       </div>
     </div>
   );

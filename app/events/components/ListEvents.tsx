@@ -38,7 +38,7 @@ export default function ListEvents({
     queryFn: async ({ pageParam }) =>
       await getEventsDisplayData(pageParam, searchParams),
     getNextPageParam: (lastPage, pages) => {
-      if (lastPage && lastPage.length < 6) return undefined;
+      if (lastPage && lastPage.length < 12) return undefined;
       return pages.length + 1;
     },
     initialData: { pages: [events], pageParams: [1] },

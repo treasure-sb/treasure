@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,9 +15,11 @@ import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
-import Autocomplete from "../../../../components/places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import Autocomplete from "../../../../components/places/Autocomplete";
+import * as z from "zod";
 
 interface Step1Props {
   onNext: () => void;
@@ -124,7 +125,12 @@ export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Small Description" {...field} />
+                    <Textarea
+                      rows={8}
+                      className="text-md"
+                      placeholder="Description"
+                      {...field}
+                    />
                   </FormControl>
                   <div className="h-1">
                     <FormMessage />

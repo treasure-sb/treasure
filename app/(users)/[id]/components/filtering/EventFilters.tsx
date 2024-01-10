@@ -1,14 +1,22 @@
+"use client";
+
 import { Heart } from "lucide-react";
 import { CalendarCheck2Icon } from "lucide-react";
 import { CrownIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function EventFilters({
-  isLoggedInProfile,
-}: {
-  isLoggedInProfile?: boolean;
-}) {
+/**
+ * EventFilters is a React component for rendering a filter bar with different event-related options.
+ *
+ * It displays filter options such as 'Hosting', 'Attending', and 'Liked' as interactive icons.
+ * Clicking on these icons allows users to filter events based on their participation or interest.
+ * The active filter is highlighted, and clicking on a filter updates the URL's search parameters accordingly.
+ *
+ * It takes in an optional boolean prop 'isHosting' to determine whether to display the 'Hosting' filter option.
+ *
+ */
+export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [active, setActive] = useState(
@@ -31,17 +39,22 @@ export default function EventFilters({
   };
 
   const filterOptions = [
-    { name: "Hosting", Icon: CrownIcon },
     { name: "Attending", Icon: CalendarCheck2Icon },
+    { name: "Hosting", Icon: CrownIcon },
     { name: "Liked", Icon: Heart },
   ];
 
   const renderFilters = () => {
-    return filterOptions.map(({ name, Icon }) => (
+    let filtersToDisplay = filterOptions;
+    if (!isHosting) {
+      filtersToDisplay = filterOptions.filter(({ name }) => name !== "Hosting");
+    }
+
+    return filtersToDisplay.map(({ name, Icon }) => (
       <div
         onClick={() => handleClick(name)}
         key={name}
-        className="relative w-[33%] hover:cursor-pointer"
+        className="relative w-full hover:cursor-pointer"
       >
         <Icon
           className={`w-8 h-8 stroke-1 m-auto ${

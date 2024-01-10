@@ -4,7 +4,7 @@ import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
 
 const today = format(new Date(), "yyyy-MM-dd");
-const numEvents = 6;
+const numEvents = 12;
 const numUserEvents = 6;
 
 /**
