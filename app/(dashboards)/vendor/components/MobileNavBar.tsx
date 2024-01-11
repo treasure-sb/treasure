@@ -6,7 +6,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { AlignLeftIcon, Settings, LogOut, Table } from "lucide-react";
+import {
+  AlignLeftIcon,
+  Settings,
+  LogOut,
+  Table,
+  BadgeDollarSignIcon,
+} from "lucide-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
@@ -15,7 +21,7 @@ export default function MobileNavBar() {
   return (
     <Sheet>
       <SheetTrigger>
-        <AlignLeftIcon size={38} />
+        <AlignLeftIcon className="stroke-1" size={38} />
       </SheetTrigger>
       <SheetContent side={"left"}>
         <SheetHeader className="mt-6">
@@ -37,6 +43,12 @@ export default function MobileNavBar() {
             >
               <LayoutDashboardIcon className="stroke-1" size={28} />{" "}
               <p>Dashboard</p>
+            </Button>
+            <Button
+              variant={"ghost"}
+              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+            >
+              <BadgeDollarSignIcon className="stroke-1" /> <p>Sales</p>
             </Button>
             <Button
               variant={"ghost"}
