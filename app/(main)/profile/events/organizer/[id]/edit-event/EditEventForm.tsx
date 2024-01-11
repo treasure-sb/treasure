@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
-import Autocomplete from "../../../../../../components/places/Autocomplete";
+import Autocomplete from "../../../../../../../components/places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
