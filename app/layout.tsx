@@ -1,12 +1,8 @@
 import "./globals.css";
 import { Raleway } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { validateUser } from "@/lib/actions/auth";
-import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Header from "@/components/shared/Header";
-import LoggedInHeader from "@/components/shared/LoggedInHeader";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 
 const raleway = Raleway({
@@ -29,13 +25,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const {
-    data: { user },
-  } = await validateUser();
-
   return (
     <html lang="en" className={raleway.className}>
-      <body className="bg-background text-foreground flex flex-col justify-between">
+      <body className="bg-background text-foreground">
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"
@@ -43,11 +35,7 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="p-6 px-4">
-              {user ? <LoggedInHeader user={user} /> : <Header />}
-              {children}
-              <Toaster />
-            </div>
+            {children}
           </ThemeProvider>
         </ReactQueryProvider>
         <Analytics />
