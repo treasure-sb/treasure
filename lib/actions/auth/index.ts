@@ -170,7 +170,7 @@ const createUserProfile = async (
 const login = async (form: LoginForm) => {
   const { email, password } = form;
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -184,7 +184,7 @@ const login = async (form: LoginForm) => {
     };
   }
 
-  redirect("/");
+  return { data, error };
 };
 
 export { validateUser, logoutUser, signUp, login };

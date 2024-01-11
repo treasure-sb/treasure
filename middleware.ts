@@ -91,14 +91,14 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const session = await supabase.auth.getSession();
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
   const pathname = request.nextUrl.pathname;
 
   // if the user is logged in and the route is /login or /signup, redirect to /
-  if (
-    session.data.session &&
-    (pathname === "/login" || pathname === "/signup")
-  ) {
+  if (session && (pathname === "/login" || pathname === "/signup")) {
     response = NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -116,7 +116,7 @@ export async function middleware(request: NextRequest) {
 
   // if the user is not logged in and the route is /profile, redirect to /login
   if (
-    !session.data.session &&
+    !session &&
     (pathname.includes("/profile") || pathname.includes("/vendors"))
   ) {
     response = NextResponse.redirect(new URL("/login", request.url));
@@ -126,7 +126,7 @@ export async function middleware(request: NextRequest) {
   // if so, check to see if the user is the organizer of the event or admin
   // if not, redirect to /profile/events
   if (isOrganizerPage(pathname)) {
-    const userId = session.data.session?.user.id;
+    const userId = session?.user.id;
     const eventName = request.nextUrl.pathname.split("/")[4];
     if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
       response = NextResponse.redirect(new URL("/profile/events", request.url));

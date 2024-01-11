@@ -10,9 +10,6 @@ import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProfile } from "@/lib/helpers/profiles";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { CalendarCheck2Icon, CalendarX2Icon } from "lucide-react";
 import AssignEvent from "./AssignEvent";
 import Link from "next/link";
 import Tickets from "./Tickets";
@@ -25,8 +22,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import LikeButton from "@/components/events/shared/LikeButton";
-import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
-import HeartIcon from "@/components/icons/HeartIcon";
+import AttendingEvent from "./AttendingEvent";
 
 export default async function EventsPage({
   event,
@@ -103,90 +99,13 @@ export default async function EventsPage({
     eventInfo = { ...event, tags, tickets, tables };
   }
 
-  // check to see if user is attending, if they are then show button as attending
-  const { data: attendingData, error: attendingError } = await supabase
-    .from("event_guests")
-    .select("*")
-    .eq("event_id", event.id)
-    .eq("guest_id", user?.id)
-    .single();
-
-  const handleAttending = async () => {
-    "use server";
-    const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await validateUser();
-    if (!user) {
-      redirect("/login");
-    }
-
-    if (attendingData) {
-      await supabase
-        .from("event_guests")
-        .delete()
-        .eq("event_id", event.id)
-        .eq("guest_id", user.id);
-      revalidatePath(`/events/${event.cleaned_name}`);
-    } else {
-      await supabase
-        .from("event_guests")
-        .insert([{ guest_id: user.id, event_id: event.id }]);
-      revalidatePath(`/events/${event.cleaned_name}`);
-    }
-  };
-
-  // check to see if user liked, if they did then show button as liked
-  const { data: likedData, error: likedError } = await supabase
-    .from("event_likes")
-    .select("*")
-    .eq("event_id", event.id)
-    .eq("user_id", user?.id)
-    .single();
-
-  const handleLiked = async () => {
-    "use server";
-    const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await validateUser();
-    if (!user) {
-      redirect("/login");
-    }
-
-    if (likedData) {
-      await supabase
-        .from("event_likes")
-        .delete()
-        .eq("event_id", event.id)
-        .eq("user_id", user.id);
-      revalidatePath(`/events/${event.cleaned_name}`);
-    } else {
-      await supabase
-        .from("event_likes")
-        .insert([{ user_id: user.id, event_id: event.id }]);
-      revalidatePath(`/events/${event.cleaned_name}`);
-    }
-  };
-
   return (
     <main className="w-full lg:w-fit m-auto">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <div className="relative lg:sticky lg:top-0 h-fit max-w-lg mx-auto lg:pt-8">
-          {likedData ? (
-            <form action={handleLiked}>
-              <Button className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
-                <FilledHeartIcon />
-              </Button>
-            </form>
-          ) : (
-            <form action={handleLiked}>
-              <Button className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
-                <HeartIcon />
-              </Button>
-            </form>
-          )}
-
+          <div className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
+            <LikeButton event={event} user={user} />
+          </div>
           <Image
             className="rounded-xl mb-6 lg:mb-0 m-auto"
             alt="event poster image"
@@ -276,21 +195,7 @@ export default async function EventsPage({
             </div>
           </Link>
         )}
-        {attendingData ? (
-          <form action={handleAttending} className="h-[70%]">
-            <Button className="opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white">
-              <h1>Attending</h1>
-              <CalendarCheck2Icon className="ml-2" />
-            </Button>
-          </form>
-        ) : (
-          <form action={handleAttending} className="h-[70%]">
-            <Button className="hover:opacity-70 bg-tertiary hover:bg-tertiary h-full w-fit text-background text-md font-bold">
-              <h1>Not Attending</h1>
-              <CalendarX2Icon className="ml-2" />
-            </Button>
-          </form>
-        )}
+        <AttendingEvent event={event} user={user} />
       </div>
     </main>
   );

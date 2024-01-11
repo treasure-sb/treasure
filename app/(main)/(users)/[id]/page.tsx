@@ -1,13 +1,11 @@
 import UserHeader from "./components/UserHeader";
-import UserFilters from "./components/filtering/UserFilters";
-import LoadingUserListEvents from "./components/LoadingUserListEvents";
-import Portfolio from "./components/Portfolio";
+import UserOptions from "./components/filtering/UserOptions";
+import Photos from "./components/Photos";
 import ListEventsHosting from "./components/ListEventsHosting";
 import Events from "./components/events/Events";
+import { getEventsHosting } from "@/lib/helpers/eventsFiltering";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { Separator } from "@/components/ui/separator";
-import { Suspense } from "react";
 import { getProfileByUsername, getTempProfile } from "@/lib/helpers/profiles";
 import { validateUser } from "@/lib/actions/auth";
 
@@ -23,7 +21,7 @@ export default async function Page({
   };
 }) {
   const username = params.id;
-  const filter = searchParams?.tab || "Events";
+  const tab = searchParams?.tab || "Events";
   const eventsFilter = searchParams?.events || "Attending";
   const type = searchParams?.type || "profile";
   let user: Tables<"profiles"> | Tables<"temporary_profiles">;
@@ -45,6 +43,10 @@ export default async function Page({
   // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
 
+  // determine if user is hosting any events
+  const { data: hostingData } = await getEventsHosting(1, user.id);
+  const isHosting = hostingData ? hostingData.length > 0 : false;
+
   // determine if logged in user is viewing their own profile
   const {
     data: { user: loggedInUser },
@@ -52,32 +54,26 @@ export default async function Page({
   const ownProfile = (loggedInUser && loggedInUser.id === user.id) || false;
 
   return (
-    <main className="m-auto max-w-lg md:max-w-6xl flex flex-col justify-between min-h-[calc(100vh-220px)]">
-      <div className="flex flex-col md:flex-row md:space-x-8 relative">
-        <UserHeader user={user} ownProfile={ownProfile} />
-        <div className="mt-4 md:mt-0 text-lg w-full">
-          {isProfile ? (
-            <>
-              <UserFilters />
-              <Separator className="md:hidden block my-6 mt-2" />
-              {filter === "Photos" ? (
-                <Portfolio user={user as Tables<"profiles">} />
-              ) : (
-                <Suspense fallback={<LoadingUserListEvents />}>
-                  <Events
-                    eventsFilter={eventsFilter}
-                    user={user as Tables<"profiles">}
-                    loggedInUser={loggedInUser}
-                  />
-                </Suspense>
-              )}
-            </>
-          ) : (
-            <Suspense fallback={<LoadingUserListEvents />}>
-              <ListEventsHosting user={user as Tables<"temporary_profiles">} />
-            </Suspense>
-          )}
-        </div>
+    <main className="m-auto max-w-lg md:max-w-6xl md:flex md:space-x-8 relative min-h-[calc(100vh-220px)]">
+      <UserHeader user={user} ownProfile={ownProfile} />
+      <div className="mt-6 md:mt-0 text-lg w-full">
+        {isProfile ? (
+          <>
+            <UserOptions />
+            {tab === "Photos" ? (
+              <Photos user={user as Tables<"profiles">} />
+            ) : (
+              <Events
+                eventsFilter={eventsFilter}
+                user={user as Tables<"profiles">}
+                loggedInUser={loggedInUser}
+                isHosting={isHosting}
+              />
+            )}
+          </>
+        ) : (
+          <ListEventsHosting user={user as Tables<"temporary_profiles">} />
+        )}
       </div>
     </main>
   );

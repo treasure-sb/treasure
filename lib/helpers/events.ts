@@ -305,7 +305,6 @@ const getUserEventsDisplayData = async (
   return Promise.all(
     events.map(async (event: Tables<"events">) => {
       const publicPosterUrl = await getPublicPosterUrl(event);
-
       return {
         ...event,
         publicPosterUrl,

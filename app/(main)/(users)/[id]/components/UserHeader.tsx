@@ -1,7 +1,5 @@
-import format from "date-fns/format";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
-import ProfileOptions from "./ProfileOptions";
 import ColorThief from "./ColorThief";
 import CopyProfileLink from "./utilities/CopyProfileLink";
 import { socialLinkData } from "@/lib/helpers/links";
@@ -9,6 +7,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getPaymentLinks, getSocialLinks } from "@/lib/actions/links";
+import { Settings } from "lucide-react";
 import QRCode from "./utilities/QRCode";
 
 export default async function UserHeader({
@@ -58,7 +57,9 @@ export default async function UserHeader({
       <div className="text-center md:mt-16">
         {ownProfile && (
           <div className="w-full flex justify-end">
-            <ProfileOptions />
+            <Link href="/profile">
+              <Settings className="w-8 h-8 hover:cursor-pointer stroke-1 mr-3" />
+            </Link>
           </div>
         )}
         <div className="space-y-4 m-auto">
@@ -112,7 +113,17 @@ export default async function UserHeader({
   );
 
   const desktopHeader = (
-    <div className="md:flex md:flex-col md:space-y-6 md:text-center md:mt-32 hidden w-[40%] sticky top-0">
+    <div
+      className="md:flex md:flex-col md:space-y-6 
+    md:text-center md:mt-8 hidden w-[40%] sticky top-0"
+    >
+      {ownProfile && (
+        <div className="w-full flex justify-end">
+          <Link href="/profile">
+            <Settings className="w-8 h-8 hover:cursor-pointer stroke-1 mr-3" />
+          </Link>
+        </div>
+      )}
       <h1 className="text-2xl md:text-3xl font-bold">
         {isProfile ? (
           <>
