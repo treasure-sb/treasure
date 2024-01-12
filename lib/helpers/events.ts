@@ -274,16 +274,7 @@ const getEventsDisplayData = async (
     page,
     searchParams
   );
-  return Promise.all(
-    events.map(async (event: Tables<"events">) => {
-      const publicPosterUrl = await getPublicPosterUrl(event);
-      return {
-        ...event,
-        publicPosterUrl,
-        formattedDate: formatDate(event.date),
-      };
-    })
-  );
+  return await eventDisplayData(events);
 };
 
 /**
@@ -302,6 +293,10 @@ const getUserEventsDisplayData = async (
   user: Tables<"profiles"> | Tables<"temporary_profiles">
 ) => {
   const events = await fetchUserEventsFromFilter(page, filter, user, upcoming);
+  return await eventDisplayData(events);
+};
+
+const eventDisplayData = async (events: any[]) => {
   return Promise.all(
     events.map(async (event: Tables<"events">) => {
       const publicPosterUrl = await getPublicPosterUrl(event);
@@ -317,6 +312,7 @@ const getUserEventsDisplayData = async (
 export {
   getPublicPosterUrl,
   getPublicVenueMapUrl,
+  eventDisplayData,
   formatStartTime,
   getEventFromCleanedName,
   formatDate,
