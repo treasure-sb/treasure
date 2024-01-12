@@ -40,7 +40,7 @@ export default function Page() {
   });
 
   const onSubmit = async () => {
-    let avatarSupabaseUrl = "default_avatar.jpeg";
+    let avatarSupabaseUrl = "default_avatar";
     if (avatarFile) {
       avatarSupabaseUrl = `avatar${Date.now()}`;
       await supabase.storage
