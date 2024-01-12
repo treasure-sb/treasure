@@ -37,7 +37,7 @@ export default function Tables() {
           <Skeleton className="w-full h-[80%] rounded-md" />
         </div>
       )}
-      {eventsData && tablesData && (
+      {eventsData && eventsData.length > 0 && (
         <>
           <p className="mb-2">
             You're vending at{" "}
