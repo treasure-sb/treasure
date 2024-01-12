@@ -33,7 +33,7 @@ export default function Sales() {
           </>
         )}
         {data &&
-          data.map((transaction) => {
+          data.slice(0, 6).map((transaction) => {
             return (
               <TransactionCard
                 key={transaction.id}
