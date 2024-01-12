@@ -6,16 +6,7 @@ import * as z from "zod";
 import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import ApplicationForm from "./ApplicationForm";
 
 export default async function Page({
   searchParams: { event_id },
@@ -38,22 +29,28 @@ export default async function Page({
   const publicPosterUrl = await getPublicPosterUrl(event);
 
   return (
-    <main className="w-full lg:w-fit m-auto">
-      <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
-        <div className="lg:max-w-lg">
-          <Image
-            className="rounded-xl mb-6 lg:mb-0 m-auto lg:sticky lg:top-10"
-            alt="event poster image"
-            src={publicPosterUrl}
-            width={500}
-            height={500}
-          />
+    <main className="w-full m-auto">
+      <div className="flex-col flex space-y-4 w-full max-w-screen-lg mx-auto">
+        <div className=" flex flex-row lg:space-x-10 justify-center">
+          <div className="sm:max-w-lg">
+            <Image
+              className="rounded-xl lg:mb-0 m-auto lg:sticky lg:top-10"
+              alt="event poster image"
+              src={publicPosterUrl}
+              width={150}
+              height={150}
+            />
+          </div>
+          <div className="my-auto">
+            <h1 className="text-xl font-semibold ">{event.name}</h1>
+            <h2 className="text-base">Vendor Application</h2>
+          </div>
         </div>
-        <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8">
-          <h1 className="text-4xl font-semibold">
-            {event.name} Vendor Application
-          </h1>
-        </div>
+        <ApplicationForm
+          toc={event.toc}
+          comment={event.comment}
+          event_id={event.id}
+        />
       </div>
     </main>
   );

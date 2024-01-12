@@ -11,19 +11,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // maps each vendor to their profile picture
 const vendorsWithAvatars = async (vendors: any) => {
   const supabase = await createSupabaseServerClient();
-  const vendorAvatarPromiseMap = vendors.map(
-    async (vendor: Tables<"profiles">) => {
-      let {
-        data: { publicUrl: vendorPublicUrl },
-      } = await supabase.storage
-        .from("avatars")
-        .getPublicUrl(vendor.avatar_url);
-      return {
-        ...vendor,
-        vendorPublicUrl,
-      };
-    }
-  );
+  const vendorAvatarPromiseMap = vendors.map(async (vendor: any) => {
+    let {
+      data: { publicUrl: vendorPublicUrl },
+    } = await supabase.storage
+      .from("avatars")
+      .getPublicUrl(vendor.profiles.avatar_url);
+    return {
+      ...vendor,
+      vendorPublicUrl,
+    };
+  });
   return Promise.all(vendorAvatarPromiseMap);
 };
 
@@ -41,21 +39,21 @@ export default async function Page({ params }: { params: { id: string } }) {
     .select("profiles(*)")
     .eq("event_id", event.id);
 
-  const vendors = vendorData?.map((data) => data.profiles);
-  const publicVendors = (await vendorsWithAvatars(vendors)) || [];
+  const publicVendors = (await vendorsWithAvatars(vendorData)) || [];
 
   // get vendor applications for event along with their profile pictures
   const { data: vendorApplicationData, error: vendorApplicationError } =
     await supabase
       .from("vendor_applications")
-      .select("profiles(*)")
+      .select("*,profiles(*)")
       .eq("event_id", event.id);
 
   const vendorApplications = vendorApplicationData?.map(
     (data) => data.profiles
   );
+
   const publicApplications =
-    (await vendorsWithAvatars(vendorApplications)) || [];
+    (await vendorsWithAvatars(vendorApplicationData)) || [];
 
   // have to handle this if user is logged in or not
   const handleAccept = async (vendor_id: string) => {
@@ -67,7 +65,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       .insert([{ event_id: event.id, vendor_id: vendor_id }]);
     await supabase
       .from("vendor_applications")
-      .delete()
+      .update({ status: 2 })
       .eq("vendor_id", vendor_id)
       .eq("event_id", event.id);
     revalidatePath(`/events/${eventCleanedName}/vendor-list`);
@@ -94,17 +92,17 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex gap-2 flex-wrap mb-10">
           {publicVendors.map((vendor: any) => (
-            <div className="flex flex-col space-y-1 items-center">
-              <Link href={`/users/${vendor.username}`}>
+            <div className="flex flex-col space-y-2">
+              <Link href={`/users/${vendor.profiles.username}`}>
                 <Avatar className="h-24 w-24 m-auto">
                   <AvatarImage src={vendor.vendorPublicUrl} />
                   <AvatarFallback>
-                    {vendor.first_name[0]}
-                    {vendor.last_name[0]}
+                    {vendor.profiles.first_name[0]}
+                    {vendor.profiles.last_name[0]}
                   </AvatarFallback>
                 </Avatar>
               </Link>
-              <span>@{vendor.username}</span>
+              <h1 className="text-center">{vendor.profiles.username}</h1>
             </div>
           ))}
         </div>
@@ -115,34 +113,44 @@ export default async function Page({ params }: { params: { id: string } }) {
       ) : (
         <div className="flex flex-col gap-2 flex-wrap">
           {publicApplications.map((vendor: any) => (
-            <div className="flex space-y-1 items-start justify-between">
-              <div>
-                <Link href={`/users/${vendor.username}`}>
-                  <Avatar className="h-24 w-24 m-auto">
-                    <AvatarImage src={vendor.vendorPublicUrl} />
-                    <AvatarFallback>
-                      {vendor.first_name[0]}
-                      {vendor.last_name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-                <span>@{vendor.username}</span>
-              </div>
-              <div>
-                <AcceptDeclineButton
-                  handleClick={handleAccept}
-                  vendor_id={vendor.id}
-                  event_id={event.id}
-                  type="0"
-                />
-                <AcceptDeclineButton
-                  handleClick={handleDecline}
-                  vendor_id={vendor.id}
-                  event_id={event.id}
-                  type="1"
-                />
-              </div>
-            </div>
+            <>
+              {vendor.status === 0 ? (
+                <div className="flex gap-4 items-center justify-between">
+                  <div className="flex flex-col space-y-2">
+                    <Link href={`/users/${vendor.profiles.username}`}>
+                      <Avatar className="h-24 w-24 m-auto">
+                        <AvatarImage src={vendor.vendorPublicUrl} />
+                        <AvatarFallback>
+                          {vendor.profiles.first_name[0]}
+                          {vendor.profiles.last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Link>
+                    <h1 className="text-center">{vendor.profiles.username}</h1>
+                  </div>
+                  <div className="flex flex-col my-auto w-full">
+                    <h1 className="font-semibold">Contact</h1>
+                    <h2 className="text-sm">{vendor.contact}</h2>
+                    <h1 className="mt-4 font-semibold">Collection</h1>
+                    <h2 className="text-sm">{vendor.collection_type}</h2>
+                  </div>
+                  <div>
+                    <AcceptDeclineButton
+                      handleClick={handleAccept}
+                      vendor_id={vendor.profiles.id}
+                      event_id={event.id}
+                      type="0"
+                    />
+                    <AcceptDeclineButton
+                      handleClick={handleDecline}
+                      vendor_id={vendor.profiles.id}
+                      event_id={event.id}
+                      type="1"
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </>
           ))}
         </div>
       )}

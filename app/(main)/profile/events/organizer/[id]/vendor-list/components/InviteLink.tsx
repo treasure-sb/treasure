@@ -25,7 +25,7 @@ export default function InviteLink({ event_url }: { event_url: string }) {
       }
     };
 
-    const naviagtorCopy = async () => {
+    const navigatorCopy = async () => {
       try {
         const inviteToken = uuidv4();
         await createInviteToken(inviteToken);
@@ -43,7 +43,7 @@ export default function InviteLink({ event_url }: { event_url: string }) {
       }
     };
 
-    await naviagtorCopy();
+    await navigatorCopy();
   };
 
   return (

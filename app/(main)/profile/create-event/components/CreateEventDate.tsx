@@ -50,7 +50,7 @@ const stepTwoSchema = z.object({
   }),
 });
 
-export default function Step2({
+export default function EventDate({
   onNext,
   onBack,
   eventForm,

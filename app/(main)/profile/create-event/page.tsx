@@ -1,17 +1,14 @@
 "use client";
 import { use, useState } from "react";
-import CreateEventStepOne from "./components/CreateEventStepOne";
-import CreateEventStepTwo from "./components/CreateEventStepTwo";
-import CreateEventStepThree from "./components/CreateEventStepThree";
-import CreateEventStepFour from "./components/CreateEventStepFour";
-import CreateEventStepFive from "./components/CreateEventStepFive";
+import CreateEventName from "./components/CreateEventName";
+import CreateEventDate from "./components/CreateEventDate";
+import CreateEventTickets from "./components/CreateEventTickets";
+import CreateEventPoster from "./components/CreateEventPoster";
+import CreateEventVenueMap from "./components/CreateEventVenueMap";
 import CreateEventTables from "./components/CreateEventTables";
 import { EventForm } from "@/types/event";
 import { useSearchParams } from "next/navigation";
-import { validateUser } from "@/lib/actions/auth";
-import { set } from "date-fns";
 import { useMemo } from "react";
-import { format } from "date-fns";
 
 export default function Page() {
   const eventID = useSearchParams().get("data");
@@ -44,6 +41,8 @@ export default function Page() {
       },
     ],
     tags: [],
+    table_public: 0,
+    vendor_app: [],
     poster_url: undefined,
     venue_map_url: undefined,
   });
@@ -68,6 +67,11 @@ export default function Page() {
         tables:
           eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
         tags: eventData.tags,
+        table_public: eventData.table_public,
+        vendor_app:
+          eventData.toc === ""
+            ? []
+            : [{ TaC: eventData.toc, comment: eventData.comment }],
         // poster_url: eventData.poster_url,
         // venue_map_url: eventData.venue_map_url,
       });
@@ -89,14 +93,14 @@ export default function Page() {
         <h1 className="text-3xl font-semibold">Create Event</h1>
       </div>
       {step === 1 && (
-        <CreateEventStepOne
+        <CreateEventName
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
         />
       )}
       {step === 2 && (
-        <CreateEventStepTwo
+        <CreateEventDate
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
@@ -104,7 +108,7 @@ export default function Page() {
         />
       )}
       {step === 3 && (
-        <CreateEventStepThree
+        <CreateEventTickets
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
@@ -120,7 +124,7 @@ export default function Page() {
         />
       )}
       {step === 5 && (
-        <CreateEventStepFour
+        <CreateEventPoster
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
@@ -128,7 +132,7 @@ export default function Page() {
         />
       )}
       {step === 6 && (
-        <CreateEventStepFive
+        <CreateEventVenueMap
           eventForm={eventForm}
           onBack={() => setStep(step - 1)}
         />

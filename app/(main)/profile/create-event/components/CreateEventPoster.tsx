@@ -28,7 +28,7 @@ const stepTwoSchema = z.object({
   poster_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
-export default function Step4({
+export default function EventPoster({
   onNext,
   onBack,
   eventForm,

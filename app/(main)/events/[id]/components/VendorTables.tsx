@@ -87,13 +87,23 @@ export default async function VendorTables({
             </Button>
           </form>
         )} */}
-          {event.tickets_status === 1 ? (
-            <Link target="_blank" href={checkoutURL}>
+          {event.table_public === 0 ? (
+            <>
+              {event.tickets_status === 1 ? (
+                <Link target="_blank" href={checkoutURL}>
+                  <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                    Buy Now
+                  </Button>
+                </Link>
+              ) : null}
+            </>
+          ) : (
+            <Link href={{ pathname: `/apply`, query: { event_id: event.id } }}>
               <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
-                Buy Now
+                Apply Now
               </Button>
             </Link>
-          ) : null}
+          )}
         </div>
       )}
     </>
