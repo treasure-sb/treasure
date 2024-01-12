@@ -14,6 +14,11 @@ export interface EventFormTag {
   tag_id: string;
 }
 
+export interface EventVendorApplication {
+  TaC: string;
+  comment: string;
+}
+
 export interface EventForm {
   name: string;
   description: string;
@@ -29,6 +34,8 @@ export interface EventForm {
   tickets: EventFormTicket[];
   tables: EventFormTable[];
   tags: EventFormTag[];
+  table_public: number;
+  vendor_app: EventVendorApplication[];
   poster_url: File | string | undefined;
   venue_map_url: File | string | undefined;
 }

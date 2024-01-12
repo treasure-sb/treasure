@@ -38,7 +38,11 @@ const stepOneSchema = z.object({
   }),
 });
 
-export default function Step1({ onNext, eventForm, setEventForm }: Step1Props) {
+export default function EventName({
+  onNext,
+  eventForm,
+  setEventForm,
+}: Step1Props) {
   const [tags, setTags] = useState<any[]>([]);
   const [tagSearch, setTagSearch] = useState("");
   const [venueLocation, setVenueLocation] = useState<EventFormLocation | null>(

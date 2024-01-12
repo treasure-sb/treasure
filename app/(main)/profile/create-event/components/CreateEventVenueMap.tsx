@@ -29,7 +29,7 @@ const stepTwoSchema = z.object({
   venue_map_url: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
-export default function Step5({ onBack, eventForm }: Step5Props) {
+export default function EventVenueMap({ onBack, eventForm }: Step5Props) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const form = useForm<z.infer<typeof stepTwoSchema>>({

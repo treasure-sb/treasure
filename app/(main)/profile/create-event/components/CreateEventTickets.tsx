@@ -37,7 +37,7 @@ const ticketSchema = z.object({
       return !isNaN(Number(num)) && Number(num) > 0;
     },
     {
-      message: "Must be a valid ticket price",
+      message: "Must be a valid ticket quantity",
     }
   ),
   ticket_name: z.string().min(1, {
@@ -49,7 +49,7 @@ const stepTwoSchema = z.object({
   tickets: z.array(ticketSchema),
 });
 
-export default function Step3({
+export default function EventTickets({
   onNext,
   onBack,
   eventForm,
@@ -57,6 +57,7 @@ export default function Step3({
 }: Step3Props) {
   const form = useForm<z.infer<typeof stepTwoSchema>>({
     resolver: zodResolver(stepTwoSchema),
+    mode: "onBlur",
     defaultValues: {
       tickets: eventForm.tickets,
     },
@@ -158,7 +159,7 @@ export default function Step3({
               >
                 Add Ticket Tier
               </Button>{" "}
-              {numTickets > 1 && (
+              {numTickets && (
                 <Button
                   type="button"
                   onClick={removeTicketTier}

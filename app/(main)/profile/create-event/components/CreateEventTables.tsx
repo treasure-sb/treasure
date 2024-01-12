@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Step3Props {
   onNext: () => void;
@@ -42,11 +44,20 @@ const ticketSchema = z.object({
   ),
 });
 
-const tablesSchema = z.object({
-  tables: z.array(ticketSchema),
+const vendorAppSchema = z.object({
+  TaC: z.string().min(1, {
+    message: "Terms is required",
+  }),
+  comment: z.string(),
 });
 
-export default function Step3({
+const tablesSchema = z.object({
+  tables: z.array(ticketSchema),
+  table_public: z.number().default(0).optional(),
+  vendor_app: z.array(vendorAppSchema),
+});
+
+export default function EventTables({
   onNext,
   onBack,
   eventForm,
@@ -54,8 +65,11 @@ export default function Step3({
 }: Step3Props) {
   const form = useForm<z.infer<typeof tablesSchema>>({
     resolver: zodResolver(tablesSchema),
+    mode: "onBlur",
     defaultValues: {
       tables: eventForm.tables,
+      table_public: eventForm.table_public,
+      vendor_app: eventForm.vendor_app,
     },
   });
 
@@ -65,6 +79,25 @@ export default function Step3({
   });
   const [numTables, setNumTables] = useState(1);
 
+  const {
+    fields: fieldVendorApp,
+    append: appendVendorApp,
+    remove: removeVendorApp,
+  } = useFieldArray({
+    control: form.control,
+    name: "vendor_app",
+  });
+
+  const checkClicked = () => {
+    form.getValues().table_public === 0
+      ? form.setValue("table_public", 1)
+      : form.setValue("table_public", 0);
+
+    form.getValues().vendor_app?.length === 1
+      ? removeVendorApp(0)
+      : appendVendorApp({ TaC: "", comment: "" });
+  };
+
   const handleNext = () => {
     const newForm = {
       ...eventForm,
@@ -72,7 +105,6 @@ export default function Step3({
     };
     setEventForm(newForm);
     onNext();
-    console.log(newForm);
   };
 
   return (
@@ -82,7 +114,7 @@ export default function Step3({
           onSubmit={form.handleSubmit(handleNext)}
           className="flex flex-col justify-between h-full"
         >
-          <div className="space-y-6 mb-10">
+          <div className="space-y-6">
             {fields.map((field, index) => {
               return (
                 <div key={field.id}>
@@ -122,6 +154,68 @@ export default function Step3({
                 </div>
               );
             })}
+            <div className="flex space-x-3">
+              <FormField
+                control={form.control}
+                name={`table_public`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value === 0 ? false : true}
+                        onCheckedChange={() => checkClicked()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div>Check if this is a private event</div>
+            </div>
+            <div className="space-y-6">
+              {fieldVendorApp.map((field, index) => {
+                return (
+                  <div key={field.id}>
+                    <FormField
+                      control={form.control}
+                      name={`vendor_app.${index}.TaC`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              rows={5}
+                              placeholder="Terms and Conditions"
+                              {...field}
+                            />
+                          </FormControl>
+                          <div className="h-1">
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`vendor_app.${index}.comment`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              rows={5}
+                              placeholder="Any other comments?"
+                              {...field}
+                              className="mt-6"
+                            />
+                          </FormControl>
+                          <div className="h-1">
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div className="flex space-x-2">
             <Button className="w-full py-6" onClick={() => onBack()}>
