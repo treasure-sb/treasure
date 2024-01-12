@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -14,12 +15,16 @@ import {
   BadgeDollarSignIcon,
 } from "lucide-react";
 import { LayoutDashboardIcon } from "lucide-react";
+import { useStore } from "../store";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 
-export default function MobileNavBar() {
+export default function MobileHeaderOptions() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { currentPage } = useStore();
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
         <AlignLeftIcon className="stroke-1" size={38} />
       </SheetTrigger>
@@ -37,25 +42,35 @@ export default function MobileNavBar() {
         </SheetHeader>
         <div className="flex flex-col justify-between h-[80%] mx-4 mt-10">
           <div className="flex flex-col space-y-4">
-            <Button
-              variant={"ghost"}
-              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-            >
-              <LayoutDashboardIcon className="stroke-1" size={28} />{" "}
-              <p>Dashboard</p>
-            </Button>
-            <Button
-              variant={"ghost"}
-              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-            >
-              <BadgeDollarSignIcon className="stroke-1" /> <p>Sales</p>
-            </Button>
-            <Button
-              variant={"ghost"}
-              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-            >
-              <Table className="stroke-1" /> <p>My Tables</p>
-            </Button>
+            <Link className="w-full" href="/vendor">
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant={currentPage === "dashboard" ? "secondary" : "ghost"}
+                className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+              >
+                <LayoutDashboardIcon className="stroke-1" size={28} />{" "}
+                <p>Dashboard</p>
+              </Button>
+            </Link>
+            <Link className="w-full" href="/vendor/sales">
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant={currentPage === "sales" ? "secondary" : "ghost"}
+                className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+              >
+                <BadgeDollarSignIcon className="stroke-1" size={28} />{" "}
+                <p>Sales</p>
+              </Button>
+            </Link>
+            <Link className="w-full" href="/vendor/tables">
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant={currentPage === "tables" ? "secondary" : "ghost"}
+                className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+              >
+                <Table className="stroke-1" /> <p>My Tables</p>
+              </Button>
+            </Link>
             <Button
               variant={"ghost"}
               className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"

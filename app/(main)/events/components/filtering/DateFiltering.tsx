@@ -20,6 +20,8 @@ import Cancel from "@/components/icons/Cancel";
  * It offers quick selections for 'Today', 'Tomorrow', and 'This Week', as well as a calendar for custom date selection.
  * The selected date range is displayed on the button and can be cleared using a cancel icon.
  *
+ * TODO: Refactor to make more DRY
+ *
  * State:
  * - date: The currently selected date.
  * - isCalenderOpen: Boolean indicating if the calendar dropdown is open.

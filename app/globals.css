@@ -96,6 +96,10 @@
     @apply text-xs underline md:text-sm;
   }
 
+  .dashboard-spacing {
+    @apply mt-6 md:mt-0 md:px-8 md:p-10;
+  }
+
   .code-block {
     max-height: 100px;
     overflow: auto;

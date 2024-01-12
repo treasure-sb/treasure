@@ -61,7 +61,7 @@
     "use-places-autocomplete": "^4.0.1",
     "uuid": "^9.0.1",
     "zod": "^3.22.4",
-    "zustand": "^4.4.6"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/mailchimp__mailchimp_marketing": "^3.0.17",
