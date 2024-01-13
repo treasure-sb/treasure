@@ -15,9 +15,9 @@ export default function TransactionCard({
       <div className="flex space-x-4">
         {(() => {
           switch (transaction.method) {
-            case "cashapp":
+            case "Cashapp":
               return <CashappIcon />;
-            case "venmo":
+            case "Venmo":
               return <VenmoIcon />;
             default:
               return <CashIcon />;
