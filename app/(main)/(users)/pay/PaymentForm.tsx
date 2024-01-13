@@ -16,6 +16,10 @@ import { Input } from "@/components/ui/input";
 import { submitPayment } from "@/lib/actions/vendors/submit-payments";
 import { vendorTransactionForm } from "@/types/profile";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import CashappIcon from "@/components/icons/applications/CashappIcon";
+import VenmoIcon from "@/components/icons/applications/VenmoIcon";
+import CashIcon from "@/components/icons/CashIcon";
 
 const formSchema = z.object({
   amount: z.string(),
@@ -48,9 +52,24 @@ export default function PaymentForm({
     if (currentAmount.length > 5) {
       return;
     }
-
-    const newAmount =
-      currentAmount === "0" ? number : `${currentAmount}${number}`;
+    let newAmount = "";
+    if (number === ".") {
+      if (currentAmount === "0") {
+        newAmount = "0.";
+      } else if (currentAmount.includes(".")) {
+        return;
+      } else {
+        newAmount = `${currentAmount}${number}`;
+      }
+    } else {
+      if (
+        currentAmount.includes(".") &&
+        currentAmount.split(".")[1].length === 2
+      ) {
+        return;
+      }
+      newAmount = currentAmount === "0" ? number : `${currentAmount}${number}`;
+    }
     form.setValue("amount", newAmount);
   };
 
@@ -66,7 +85,7 @@ export default function PaymentForm({
       label: (i + 1).toString(),
       onClick: () => handleNumberClick((i + 1).toString()),
     })),
-    { label: ".", onClick: () => {} },
+    { label: ".", onClick: () => handleNumberClick(".") },
     { label: "0", onClick: () => handleNumberClick("0") },
     { label: "<", onClick: handleNumberDelete },
   ];
@@ -155,35 +174,65 @@ export default function PaymentForm({
                 </FormItem>
               )}
             />
-            <Button
-              className="w-[80%]"
-              type="button"
-              onClick={() => setNext(false)}
-            >
-              Back
-            </Button>
-            <div className="flex flex-col space-y-4">
-              {paymentMethods.map((method: string[]) => (
-                <Link
-                  className="w-full"
-                  target={method[0] === "venmo" ? "_self" : "_blank"}
-                  href={getRoute(method)}
-                  onClick={() => submit(method[0])}
-                >
-                  <Button className="w-full" type="button">
-                    Pay with {method[0]}
-                  </Button>
-                </Link>
-              ))}
-              <Link
+            <div className="flex gap-6">
+              <Button
                 className="w-full"
-                href={"/" + route}
-                onClick={() => submit("in person")}
+                type="button"
+                onClick={() => setNext(false)}
               >
-                <Button className="w-full" type="button">
-                  Pay in Person
-                </Button>
-              </Link>
+                Back
+              </Button>
+              <Dialog>
+                <DialogTrigger className="hover:scale-110 transition duration-300 focus:outline-none w-full">
+                  <Button className="w-full" type="button">
+                    Pay
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="flex items-center justify-center w-fit focus:outline-none">
+                  <div className="flex flex-col space-y-4">
+                    {paymentMethods.map((method: string[]) => (
+                      <Link
+                        className=""
+                        target={method[0] === "Venmo" ? "_self" : "_blank"}
+                        href={getRoute(method)}
+                        onClick={() => submit(method[0])}
+                      >
+                        <Button
+                          className="w-full flex justify-start py-6"
+                          variant={"outline"}
+                          type="button"
+                        >
+                          {(() => {
+                            switch (method[0]) {
+                              case "Cashapp":
+                                return <CashappIcon />;
+                              case "Venmo":
+                                return <VenmoIcon />;
+                              default:
+                                return <CashIcon />;
+                            }
+                          })()}
+                          <span className="ml-4">Pay with {method[0]}</span>
+                        </Button>
+                      </Link>
+                    ))}
+                    <Link
+                      className=""
+                      href={"/" + route}
+                      onClick={() => submit("in person")}
+                    >
+                      <Button
+                        className="w-full flex justify-start py-6"
+                        variant={"outline"}
+                        type="button"
+                      >
+                        <CashIcon />
+                        <span className="ml-4">Pay in Person</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         ) : (
