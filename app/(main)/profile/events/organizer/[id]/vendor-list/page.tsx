@@ -79,6 +79,8 @@ export default async function Page({ params }: { params: { id: string } }) {
       .update({ status: 1 })
       .eq("vendor_id", vendor_id)
       .eq("event_id", event_id);
+
+    revalidatePath(`/events/${eventCleanedName}/vendor-list`);
   };
 
   return (
@@ -107,52 +109,57 @@ export default async function Page({ params }: { params: { id: string } }) {
           ))}
         </div>
       )}
-      <h1 className="font-semibold text-xl mt-10 mb-6">Vendor Applications</h1>
-      {publicApplications.length == 0 ? (
-        <div className="text-lg">Your event currently has no vendors</div>
-      ) : (
-        <div className="flex flex-col gap-2 flex-wrap">
-          {publicApplications.map((vendor: any) => (
-            <>
-              {vendor.status === 0 ? (
-                <div className="flex gap-4 items-center justify-between">
-                  <div className="flex flex-col space-y-2">
-                    <Link href={`/users/${vendor.profiles.username}`}>
-                      <Avatar className="h-24 w-24 m-auto">
-                        <AvatarImage src={vendor.vendorPublicUrl} />
-                        <AvatarFallback>
-                          {vendor.profiles.first_name[0]}
-                          {vendor.profiles.last_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Link>
-                    <h1 className="text-center">{vendor.profiles.username}</h1>
+
+      {publicApplications.length === 0 ? null : (
+        <>
+          <h1 className="font-semibold text-xl mt-10 mb-6">
+            Vendor Applications
+          </h1>
+          <div className="flex flex-col gap-2 flex-wrap">
+            {publicApplications.map((vendor: any) => (
+              <>
+                {vendor.status === 0 ? (
+                  <div className="flex gap-4 items-center justify-between">
+                    <div className="flex flex-col space-y-2">
+                      <Link href={`/users/${vendor.profiles.username}`}>
+                        <Avatar className="h-24 w-24 m-auto">
+                          <AvatarImage src={vendor.vendorPublicUrl} />
+                          <AvatarFallback>
+                            {vendor.profiles.first_name[0]}
+                            {vendor.profiles.last_name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
+                      <h1 className="text-center">
+                        {vendor.profiles.username}
+                      </h1>
+                    </div>
+                    <div className="flex flex-col my-auto w-full">
+                      <h1 className="font-semibold">Contact</h1>
+                      <h2 className="text-sm">{vendor.contact}</h2>
+                      <h1 className="mt-4 font-semibold">Collection</h1>
+                      <h2 className="text-sm">{vendor.collection_type}</h2>
+                    </div>
+                    <div className="flex gap-4">
+                      <AcceptDeclineButton
+                        handleClick={handleDecline}
+                        vendor_id={vendor.profiles.id}
+                        event_id={event.id}
+                        type="1"
+                      />
+                      <AcceptDeclineButton
+                        handleClick={handleAccept}
+                        vendor_id={vendor.profiles.id}
+                        event_id={event.id}
+                        type="0"
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col my-auto w-full">
-                    <h1 className="font-semibold">Contact</h1>
-                    <h2 className="text-sm">{vendor.contact}</h2>
-                    <h1 className="mt-4 font-semibold">Collection</h1>
-                    <h2 className="text-sm">{vendor.collection_type}</h2>
-                  </div>
-                  <div>
-                    <AcceptDeclineButton
-                      handleClick={handleAccept}
-                      vendor_id={vendor.profiles.id}
-                      event_id={event.id}
-                      type="0"
-                    />
-                    <AcceptDeclineButton
-                      handleClick={handleDecline}
-                      vendor_id={vendor.profiles.id}
-                      event_id={event.id}
-                      type="1"
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </>
-          ))}
-        </div>
+                ) : null}
+              </>
+            ))}
+          </div>
+        </>
       )}
     </main>
   );

@@ -23,13 +23,14 @@ export default function AcceptDeclineButton({
           </Button>
         ) : (
           <Button
-            className="w-full"
+            className="w-10 h-10 overflow-hidden rounded-full"
+            variant={"outline"}
             onClick={async () => {
               console.log("clicked");
               await handleClick(vendor_id, event_id);
             }}
           >
-            {type === "0" ? "Accept" : "Decline"}
+            {type === "0" ? "✓" : "x"}
           </Button>
         )}
       </div>
