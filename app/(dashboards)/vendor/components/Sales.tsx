@@ -23,7 +23,7 @@ export default function Sales() {
   });
 
   return (
-    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme">
+    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme overflow-hidden">
       <h1 className="text-2xl font-semibold text-left mb-6">Sales</h1>
       <div className="space-y-4">
         {(isLoading || !user) && (
