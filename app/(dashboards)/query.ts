@@ -7,7 +7,7 @@ import { User } from "@supabase/supabase-js";
 export const useProfile = () => {
   const user = useUser();
   const { data } = useQuery({
-    queryKey: ["user-avatar"],
+    queryKey: ["user-avatar", user],
     queryFn: async () => {
       const supabase = createClient();
       const { profile } = await getProfile(user?.id);

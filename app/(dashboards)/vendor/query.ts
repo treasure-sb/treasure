@@ -6,7 +6,7 @@ import { useUser } from "../query";
 export const useTables = () => {
   const user = useUser();
   const { data, isLoading } = useQuery({
-    queryKey: ["tables"],
+    queryKey: ["tables", user],
     queryFn: async () => {
       const supabase = createClient();
       const { data: tablesData } = await supabase
