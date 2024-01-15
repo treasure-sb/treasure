@@ -46,8 +46,19 @@ export default function SalesDateFiltering() {
     updateUrlParams(beginningOfLastWeek, endOfLastWeek);
   };
 
+  const handleAll = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("from");
+    params.delete("until");
+    replace(`${pathname}?${params.toString()}`);
+    refresh();
+  };
+
   const handleSelect = (value: string) => {
     switch (value) {
+      case "all-time":
+        handleAll();
+        break;
       case "this-week":
         handleThisWeek();
         break;
@@ -65,9 +76,10 @@ export default function SalesDateFiltering() {
   return (
     <Select onValueChange={(value) => handleSelect(value)}>
       <SelectTrigger className="w-32">
-        <SelectValue placeholder="Sort by" />
+        <SelectValue placeholder="All Time" />
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="all-time">All Time</SelectItem>
         <SelectItem value="this-week">This Week</SelectItem>
         <SelectItem value="this-month">This Month</SelectItem>
         <SelectItem value="last-week">Last Week</SelectItem>

@@ -42,12 +42,14 @@ export default function HostSidebar() {
               <div className="absolute w-[2px] h-full bg-primary right-[-34px] top-0" />
             )}
           </Link>
-          <Button
-            variant={"ghost"}
-            className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-          >
-            <Settings className="stroke-1" size={28} /> <p>Settings</p>
-          </Button>
+          <Link className="w-full" href="/profile">
+            <Button
+              variant={"ghost"}
+              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+            >
+              <Settings className="stroke-1" size={28} /> <p>Settings</p>
+            </Button>
+          </Link>
         </div>
       </div>
       <Button

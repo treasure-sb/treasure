@@ -55,12 +55,14 @@ export default function HostMobileSidebar() {
                 <Calendar className="stroke-1" size={28} /> <p>Events</p>
               </Button>
             </Link>
-            <Button
-              variant={"ghost"}
-              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-            >
-              <Settings className="stroke-1" size={28} /> <p>Settings</p>
-            </Button>
+            <Link className="w-full" href="/profile">
+              <Button
+                variant={"ghost"}
+                className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+              >
+                <Settings className="stroke-1" size={28} /> <p>Settings</p>
+              </Button>
+            </Link>
           </div>
           <Button
             variant={"ghost"}
