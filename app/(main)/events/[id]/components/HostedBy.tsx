@@ -53,7 +53,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
             <AvatarFallback />
           </Avatar>
         </Link>
-        <span>@{username}</span>
+        <span className="font-semibold">{username}</span>
       </div>
     </>
   );

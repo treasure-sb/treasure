@@ -1,8 +1,8 @@
 export default function CashIcon() {
   return (
     <svg
-      width="60"
-      height="60"
+      width="40"
+      height="40"
       viewBox="0 0 103 102"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

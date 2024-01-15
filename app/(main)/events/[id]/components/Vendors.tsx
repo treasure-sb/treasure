@@ -32,7 +32,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
             {vendorsWithPublicUrls.map((vendor: any) => (
               <div className="flex flex-col space-y-1 items-center">
                 <Link href={`/${vendor.username}`}>
-                  <Avatar className="h-24 w-24 m-auto">
+                  <Avatar className="h-20 w-20 m-auto">
                     <AvatarImage src={vendor.vendorPublicUrl} />
                     <AvatarFallback>
                       {vendor.first_name[0]}
@@ -40,7 +40,12 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
                     </AvatarFallback>
                   </Avatar>
                 </Link>
-                <span>@{vendor.username}</span>
+                <div className="items-center text-center">
+                  <div className="font-semibold text-base">
+                    {vendor.first_name + " " + vendor.last_name}
+                  </div>
+                  <div className="text-sm ">@{vendor.username}</div>
+                </div>
               </div>
             ))}
           </div>
