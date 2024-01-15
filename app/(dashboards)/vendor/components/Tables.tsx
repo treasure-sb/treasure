@@ -1,37 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { createClient } from "@/utils/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { eventDisplayData } from "@/lib/helpers/events";
-import { useUser } from "../../query";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useTables } from "../query";
 
 export default function Tables() {
-  const user = useUser();
-  const { data, isLoading } = useQuery({
-    queryKey: ["tables"],
-    queryFn: async () => {
-      if (!user) return null;
-      const supabase = createClient();
-      const { data: tablesData } = await supabase
-        .from("event_tickets")
-        .select("*, events!inner(*), tickets!inner(*)")
-        .eq("attendee_id", user.id)
-        .eq("tickets.name", "Table");
-
-      if (!tablesData) return null;
-
-      const events = tablesData.map((table) => table.events);
-      const eventsData = await eventDisplayData(events);
-      return { eventsData, tablesData };
-    },
-    enabled: !!user,
-  });
-
+  const { data, isLoading } = useTables();
   const { eventsData } = data ?? {};
+
   return (
     <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme">
       <h1 className="text-2xl font-semibold text-left mb-6">Tables</h1>
-      {(isLoading || !user) && (
+      {isLoading && (
         <div className="h-60 space-y-4">
           <Skeleton className="w-full h-6" />
           <Skeleton className="w-full h-[80%] rounded-md" />

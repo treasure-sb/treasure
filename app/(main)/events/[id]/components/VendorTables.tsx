@@ -1,12 +1,8 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
-import { User } from "@supabase/supabase-js";
-import { table } from "console";
-import Link from "next/link";
-import { getTicketTailorCheckoutUrl } from "@/lib/actions/ticket-tailor";
 
 export default async function VendorTables({
   event,
@@ -14,42 +10,9 @@ export default async function VendorTables({
   event: Tables<"events">;
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: userData } = await validateUser();
-  const user = userData.user;
-
-  let applicantData = null;
-  // if (user) {
-  //   const { data, error } = await supabase
-  //     .from("vendor_applications")
-  //     .select("*")
-  //     .eq("event_id", event.id)
-  //     .eq("vendor_id", user.id)
-  //     .single();
-  //   applicantData = data;
-  // }
-
-  // const handleApply = async () => {
-  //   "use server";
-  //   const {
-  //     data: { user },
-  //   } = await validateUser();
-  //   if (!user) {
-  //     redirect("/signup");
-  //   }
-
-  //   const supabase = await createSupabaseServerClient();
-  //   const { data: applicationData, error } = await supabase
-  //     .from("vendor_applications")
-  //     .insert([
-  //       {
-  //         event_id: event.id,
-  //         vendor_id: user.id,
-  //       },
-  //     ]);
-  //   if (!error) {
-  //     redirect("/profile/events");
-  //   }
-  // };
+  const {
+    data: { user },
+  } = await validateUser();
 
   const { data: table, error } = await supabase
     .from("tickets")
@@ -58,44 +21,25 @@ export default async function VendorTables({
     .eq("name", "Table")
     .single();
 
-  let tablePrice = "100";
-  if (!error) {
-    tablePrice = table.price;
-  }
-
-  const checkoutURL = await getTicketTailorCheckoutUrl(
-    event.ticket_tailor_event_id === null ? "" : event.ticket_tailor_event_id
-  );
+  const tablePrice = table?.price || 0;
+  const hasStripePriceId = table?.stripe_price_id;
 
   return (
     <>
       {!error && (
         <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
           <h1 className="text-lg">Tables from ${tablePrice}</h1>
-          {/* FIXME: waiting to get rid of ticket tailor */}
-          {/* {applicantData ? (
-          <Button
-            disabled
-            className="w-24 h-[70%] rounded-md text-background text-md font-bold bg-tertiary hover:bg-tertiary"
-          >
-            Applied!
-          </Button>
-        ) : (
-          <form className="h-[70%]" action={handleApply}>
-            <Button className="h-full w-24 rounded-md text-background text-md font-bold">
-              Apply Now
-            </Button>
-          </form>
-        )} */}
           {event.table_public === 0 ? (
             <>
-              {event.tickets_status === 1 ? (
-                <Link target="_blank" href={checkoutURL}>
+              {hasStripePriceId && (
+                <Link
+                  href={`/checkout?price_id=${table.stripe_price_id}&user_id=${user?.id}&event_id=${event.id}&ticket_id=${table.id}&quantity=1`}
+                >
                   <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
                     Buy Now
                   </Button>
                 </Link>
-              ) : null}
+              )}
             </>
           ) : (
             <Link href={{ pathname: `/apply`, query: { event_id: event.id } }}>

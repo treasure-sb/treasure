@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 type Store = {
-  currentPage: string;
+  currentPage: string | null;
   setCurrentPage: (page: string) => void;
 };
 
