@@ -21,7 +21,7 @@ export default function Page({
   }, []);
 
   return (
-    <main className="dashboard-spacing">
+    <>
       <h1 className="font-semibold text-3xl mb-6">Sales</h1>
       <div className="flex justify-between">
         <h1 className="text-4xl relative">
@@ -35,6 +35,6 @@ export default function Page({
         </h1>
         <SalesDateFiltering />
       </div>
-    </main>
+    </>
   );
 }

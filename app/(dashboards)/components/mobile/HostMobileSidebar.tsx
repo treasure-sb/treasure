@@ -7,19 +7,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  AlignLeftIcon,
-  Settings,
-  LogOut,
-  Table,
-  BadgeDollarSignIcon,
-} from "lucide-react";
+import { AlignLeftIcon, Settings, LogOut, Calendar } from "lucide-react";
 import { LayoutDashboardIcon } from "lucide-react";
-import { useStore } from "../store";
+import { useStore } from "../../vendor/store";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 
-export default function MobileHeaderOptions() {
+export default function HostMobileSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { currentPage } = useStore();
 
@@ -42,7 +36,7 @@ export default function MobileHeaderOptions() {
         </SheetHeader>
         <div className="flex flex-col justify-between h-[80%] mx-4 mt-10">
           <div className="flex flex-col space-y-4">
-            <Link className="w-full" href="/vendor">
+            <Link className="w-full" href="/host">
               <Button
                 onClick={() => setIsOpen(false)}
                 variant={currentPage === "dashboard" ? "secondary" : "ghost"}
@@ -52,23 +46,13 @@ export default function MobileHeaderOptions() {
                 <p>Dashboard</p>
               </Button>
             </Link>
-            <Link className="w-full" href="/vendor/sales">
+            <Link className="w-full" href="/host/events">
               <Button
                 onClick={() => setIsOpen(false)}
-                variant={currentPage === "sales" ? "secondary" : "ghost"}
+                variant={currentPage === "events" ? "secondary" : "ghost"}
                 className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
               >
-                <BadgeDollarSignIcon className="stroke-1" size={28} />{" "}
-                <p>Sales</p>
-              </Button>
-            </Link>
-            <Link className="w-full" href="/vendor/tables">
-              <Button
-                onClick={() => setIsOpen(false)}
-                variant={currentPage === "tables" ? "secondary" : "ghost"}
-                className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
-              >
-                <Table className="stroke-1" /> <p>My Tables</p>
+                <Calendar className="stroke-1" size={28} /> <p>Events</p>
               </Button>
             </Link>
             <Button

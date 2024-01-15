@@ -117,7 +117,9 @@ export async function middleware(request: NextRequest) {
   // if the user is not logged in and the route is /profile, redirect to /login
   if (
     !session &&
-    (pathname.includes("/profile") || pathname.includes("/vendors"))
+    (pathname.includes("/profile") ||
+      pathname.includes("/vendor") ||
+      pathname.includes("/host"))
   ) {
     response = NextResponse.redirect(new URL("/login", request.url));
   }

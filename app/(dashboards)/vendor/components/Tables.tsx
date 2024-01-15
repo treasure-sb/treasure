@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { useStore } from "../store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { eventDisplayData } from "@/lib/helpers/events";
+import { useUser } from "../../query";
 import Image from "next/image";
 
 export default function Tables() {
-  const { user } = useStore();
+  const user = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["tables"],
     queryFn: async () => {
@@ -27,9 +27,9 @@ export default function Tables() {
     enabled: !!user,
   });
 
-  const { eventsData, tablesData } = data ?? {};
+  const { eventsData } = data ?? {};
   return (
-    <div className="bg-background border-[1px] p-6 rounded-3xl my-4">
+    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme">
       <h1 className="text-2xl font-semibold text-left mb-6">Tables</h1>
       {(isLoading || !user) && (
         <div className="h-60 space-y-4">
@@ -45,11 +45,11 @@ export default function Tables() {
           </p>
           <div className="group aspect-square w-full relative">
             <Image
-              className="object-cover h-full w-full rounded-md"
+              className="object-cover h-40 w-40 rounded-md"
               alt="image"
               src={eventsData[0].publicPosterUrl}
-              width={200}
-              height={200}
+              width={100}
+              height={100}
             />
           </div>
         </>
