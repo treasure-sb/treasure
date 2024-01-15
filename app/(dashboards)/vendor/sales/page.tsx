@@ -32,7 +32,7 @@ export default function Page({
 
   const user = useUser();
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["sales", from, until],
+    queryKey: ["sales", from, until, user],
     queryFn: async () => {
       if (!user) return null;
       const supabase = createClient();
