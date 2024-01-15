@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/client";
 import { formatDate } from "@/lib/helpers/events";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "../../query";
-import TransactionCard from "@/app/(main)/vendors/sales/components/TransactionCard";
+import TransactionCard from "@/app/(dashboards)/vendor/sales/components/TransactionCard";
 
 export default function Sales() {
   const user = useUser();
