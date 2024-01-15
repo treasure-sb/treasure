@@ -93,7 +93,7 @@ export default async function Tickets({
               ) : (
                 <>
                   <h1 className="text-lg">Tickets ${cheapestTicket.price}</h1>
-                  {event.tickets_status === 1 ? (
+                  {event.tickets_status === 2 ? (
                     <Link target="_blank" href={checkoutURL}>
                       <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
                         Buy Now

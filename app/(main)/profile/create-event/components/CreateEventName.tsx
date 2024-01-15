@@ -16,9 +16,10 @@ import { EventForm } from "@/types/event";
 import { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
-import Autocomplete from "@/components/places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import Autocomplete from "@/components/places/Autocomplete";
 
 interface Step1Props {
   onNext: () => void;
@@ -128,7 +129,7 @@ export default function EventName({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Small Description" {...field} />
+                    <Textarea rows={8} placeholder="Description" {...field} />
                   </FormControl>
                   <div className="h-1">
                     <FormMessage />

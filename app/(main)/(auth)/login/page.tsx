@@ -52,7 +52,7 @@ export default function Page({
 
     if (data && event) {
       replace(`/events/${event}`);
-    } else {
+    } else if (!error) {
       replace("/");
     }
   };
