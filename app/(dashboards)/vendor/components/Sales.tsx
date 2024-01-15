@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { useStore } from "../store";
 import { formatDate } from "@/lib/helpers/events";
 import { Skeleton } from "@/components/ui/skeleton";
-import TransactionCard from "@/app/(main)/vendors/sales/components/TransactionCard";
+import { useUser } from "../../query";
+import TransactionCard from "@/app/(dashboards)/vendor/sales/components/TransactionCard";
 
 export default function Sales() {
-  const { user } = useStore();
+  const user = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["sales"],
     queryFn: async () => {
@@ -23,7 +23,7 @@ export default function Sales() {
   });
 
   return (
-    <div className="bg-background border-[1px] p-6 rounded-3xl my-4">
+    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme">
       <h1 className="text-2xl font-semibold text-left mb-6">Sales</h1>
       <div className="space-y-4">
         {(isLoading || !user) && (

@@ -1,37 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { createClient } from "@/utils/supabase/client";
-import { useStore } from "../store";
-import { Skeleton } from "@/components/ui/skeleton";
-import { eventDisplayData } from "@/lib/helpers/events";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useTables } from "../query";
 
 export default function Tables() {
-  const { user } = useStore();
-  const { data, isLoading } = useQuery({
-    queryKey: ["tables"],
-    queryFn: async () => {
-      if (!user) return null;
-      const supabase = createClient();
-      const { data: tablesData } = await supabase
-        .from("event_tickets")
-        .select("*, events!inner(*), tickets!inner(*)")
-        .eq("attendee_id", user.id)
-        .eq("tickets.name", "Table");
+  const { data, isLoading } = useTables();
+  const { eventsData } = data ?? {};
 
-      if (!tablesData) return null;
-
-      const events = tablesData.map((table) => table.events);
-      const eventsData = await eventDisplayData(events);
-      return { eventsData, tablesData };
-    },
-    enabled: !!user,
-  });
-
-  const { eventsData, tablesData } = data ?? {};
   return (
-    <div className="bg-background border-[1px] p-6 rounded-3xl my-4">
+    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme">
       <h1 className="text-2xl font-semibold text-left mb-6">Tables</h1>
-      {(isLoading || !user) && (
+      {isLoading && (
         <div className="h-60 space-y-4">
           <Skeleton className="w-full h-6" />
           <Skeleton className="w-full h-[80%] rounded-md" />
@@ -45,11 +23,11 @@ export default function Tables() {
           </p>
           <div className="group aspect-square w-full relative">
             <Image
-              className="object-cover h-full w-full rounded-md"
+              className="object-cover h-40 w-40 rounded-md"
               alt="image"
               src={eventsData[0].publicPosterUrl}
-              width={200}
-              height={200}
+              width={100}
+              height={100}
             />
           </div>
         </>
