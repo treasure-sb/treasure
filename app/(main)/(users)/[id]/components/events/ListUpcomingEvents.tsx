@@ -49,27 +49,27 @@ export default function ListUpcomingEvents({
         {hasNextPage && (
           <ArrowPointingDown
             onClick={fetchNextPage}
-            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
+            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto mt-6"
           />
         )}
       </div>
       <div className="md:flex flex-col hidden">
-        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
+        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-12">
           {allEvents?.map((event) => (
             <div
-              className="hover:translate-y-[-.75rem] transition duration-500"
+              className="hover:translate-y-[-.30rem] transition duration-500"
               key={event.id + "display"}
             >
               <EventDisplay event={event} user={loggedInUser} />
             </div>
           ))}
-          {hasNextPage && (
-            <ArrowPointingDown
-              onClick={fetchNextPage}
-              className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
-            />
-          )}
         </div>
+        {hasNextPage && (
+          <ArrowPointingDown
+            onClick={fetchNextPage}
+            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto mt-6"
+          />
+        )}
       </div>
     </div>
   );

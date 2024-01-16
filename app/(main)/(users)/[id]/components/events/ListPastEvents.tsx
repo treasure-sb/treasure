@@ -32,7 +32,6 @@ export default function ListPastEvents({
   });
 
   const allEvents = data?.pages.flat();
-
   return (
     <div>
       <h1 className="font-semibold mb-4">Past Events {eventFilter}</h1>
@@ -49,15 +48,15 @@ export default function ListPastEvents({
         {hasNextPage && (
           <ArrowPointingDown
             onClick={fetchNextPage}
-            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
+            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto mt-6"
           />
         )}
       </div>
       <div className="md:flex md:flex-col hidden">
-        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-12">
           {allEvents?.map((event) => (
             <div
-              className="hover:translate-y-[-.75rem] transition duration-500"
+              className="hover:translate-y-[-.30rem] transition duration-500"
               key={event.id + "display"}
             >
               <EventDisplay event={event} user={loggedInUser} />
@@ -67,7 +66,7 @@ export default function ListPastEvents({
         {hasNextPage && (
           <ArrowPointingDown
             onClick={fetchNextPage}
-            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto"
+            className="hover:translate-y-1 hover:cursor-pointer transition duration-300 m-auto mt-6"
           />
         )}
       </div>
