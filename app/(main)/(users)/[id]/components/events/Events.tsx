@@ -32,7 +32,7 @@ export default async function Events({
   return (
     <div>
       <EventFilters isHosting={isHosting} />
-      <Separator className="md:hidden block my-6 mt-2" />
+      <Separator className="block my-6 mt-2" />
       {upcomingEvents.length > 0 || pastEvents.length > 0 ? (
         <div className="space-y-10 md:mt-10">
           {upcomingEvents.length > 0 && (
