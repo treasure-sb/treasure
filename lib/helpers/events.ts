@@ -99,7 +99,6 @@ const formatDate = (date: string) => {
     weekday: "short",
     day: "numeric",
     month: "short",
-    timeZone: "UTC",
   });
   return formattedDate;
 };
