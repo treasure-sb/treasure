@@ -247,7 +247,10 @@ export default function Page({
               <>
                 <Dialog>
                   <DialogTrigger className="hover:scale-110 transition duration-300 focus:outline-none w-full">
-                    <button onClick={() => showMobileTransaction(transaction)}>
+                    <button
+                      className="w-full text-left"
+                      onClick={() => showMobileTransaction(transaction)}
+                    >
                       <TransactionCard
                         key={transaction.id}
                         transaction={transaction}
