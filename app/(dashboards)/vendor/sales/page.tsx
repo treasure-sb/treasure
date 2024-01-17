@@ -126,7 +126,7 @@ export default function Page({
       </div>
       {/* ------------------------------- Desktop Transactions ------------------------------- */}
       <div className="hidden p-4 sm:grid grid-cols-2 gap-4 w-full">
-        <div className=" sm:flex flex-col gap-3 p-6 w-full max-w-md dashboard-section-theme rounded-3xl">
+        <div className=" sm:flex flex-col gap-3 p-6 w-full h-fit max-w-md dashboard-section-theme rounded-3xl">
           {data &&
             data?.map((transaction, i) => {
               return (
