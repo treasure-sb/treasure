@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function EventDisplaySkeleton() {
   return (
-    <div className="aspect-square animate-pulse space-y-2">
+    <div className="aspect-h-1 aspect-w-1 animate-pulse space-y-2">
       <Skeleton className="w-full h-full rounded-md" />
       <Skeleton className="w-[40%] h-4" />
       <Skeleton className="w-[50%] h-4" />

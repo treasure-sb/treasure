@@ -21,7 +21,7 @@ export default function FeatureEventDisplay({
 
   return (
     <div>
-      <div className="aspect-square">
+      <div className="aspect-h-1 aspect-w-1">
         <EventImage event={event} />
       </div>
       <h1 className="text-primary mt-2">{event.name}</h1>

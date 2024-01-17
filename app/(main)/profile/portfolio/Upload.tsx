@@ -32,7 +32,7 @@ export default function Upload({ user }: { user: User }) {
 
   return (
     <>
-      <div className="relative aspect-square w-full h-full bg-slate-300 rounded-md flex justify-center items-center group">
+      <div className="relative aspect-h-1 aspect-w-1 w-full h-full bg-slate-300 rounded-md flex justify-center items-center group">
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild className="z-20">
             <MoreHorizontal className="text-black absolute top-4 right-4 hover:cursor-pointer bg-white rounded-full" />

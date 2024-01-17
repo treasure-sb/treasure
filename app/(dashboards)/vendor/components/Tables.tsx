@@ -21,7 +21,7 @@ export default function Tables() {
             You're vending at{" "}
             <span className="font-semibold">{eventsData[0].name}!</span>
           </p>
-          <div className="group aspect-square w-full relative">
+          <div className="group aspect-h-1 aspect-w-1 w-full relative">
             <Image
               className="object-cover h-40 w-40 rounded-md"
               alt="image"
