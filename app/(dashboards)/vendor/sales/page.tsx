@@ -144,7 +144,6 @@ export default function Page({
                         weekday: "short",
                         day: "numeric",
                         month: "short",
-                        timeZone: "UTC",
                       })}
                     />
                   </button>
@@ -205,7 +204,6 @@ export default function Page({
                       weekday: "short",
                       day: "numeric",
                       month: "short",
-                      timeZone: "UTC",
                     }) +
                       " at " +
                       new Date(
@@ -213,7 +211,6 @@ export default function Page({
                       ).toLocaleTimeString(undefined, {
                         hour: "2-digit",
                         minute: "2-digit",
-                        timeZone: "UTC",
                       })}
                   </div>
                 </div>
@@ -260,7 +257,6 @@ export default function Page({
                           weekday: "short",
                           day: "numeric",
                           month: "short",
-                          timeZone: "UTC",
                         })}
                       />
                     </button>
@@ -318,7 +314,6 @@ export default function Page({
                                   weekday: "short",
                                   day: "numeric",
                                   month: "short",
-                                  timeZone: "UTC",
                                 }) +
                                   " at " +
                                   new Date(
@@ -326,7 +321,6 @@ export default function Page({
                                   ).toLocaleTimeString(undefined, {
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                    timeZone: "UTC",
                                   })}
                               </div>
                             </div>

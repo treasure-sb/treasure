@@ -48,7 +48,6 @@ export default function Sales() {
                   weekday: "short",
                   day: "numeric",
                   month: "short",
-                  timeZone: "UTC",
                 })}
               />
             );
