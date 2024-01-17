@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/helpers/events";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "../../query";
 import TransactionCard from "@/app/(dashboards)/vendor/sales/components/TransactionCard";
+import Link from "next/link";
 
 export default function Sales() {
   const user = useUser();
@@ -23,7 +24,10 @@ export default function Sales() {
   });
 
   return (
-    <div className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme overflow-hidden">
+    <Link
+      className="border-[1px] p-6 rounded-3xl my-4 md:my-0 dashboard-section-theme sm:hover:opacity-70 overflow-hidden"
+      href="/vendor/sales"
+    >
       <h1 className="text-2xl font-semibold text-left mb-6">Sales</h1>
       <div className="space-y-4">
         {(isLoading || !user) && (
@@ -50,6 +54,6 @@ export default function Sales() {
             );
           })}
       </div>
-    </div>
+    </Link>
   );
 }
