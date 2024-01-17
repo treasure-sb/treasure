@@ -10,6 +10,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getProfile } from "@/lib/helpers/profiles";
+import EventPoster from "./EventPoster";
 import AssignEvent from "./AssignEvent";
 import Link from "next/link";
 import Tickets from "./Tickets";
@@ -103,17 +104,10 @@ export default async function EventsPage({
     <main className="w-full lg:w-fit m-auto">
       <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
         <div className="relative lg:sticky lg:top-0 h-fit max-w-lg mx-auto lg:pt-8">
-          <div className="absolute right-2 top-2 lg:top-10 p-2 bg-black rounded-full hover:bg-black">
+          <div className="absolute right-2 top-2 lg:top-10 p-2 z-10 bg-black rounded-full hover:bg-black">
             <LikeButton event={event} user={user} />
           </div>
-          <Image
-            className="rounded-xl mb-6 lg:mb-0 m-auto"
-            alt="event poster image"
-            src={publicPosterUrl}
-            width={500}
-            height={500}
-            priority
-          />
+          <EventPoster posterUrl={publicPosterUrl} />
           <ColorThief public_url={publicPosterUrl} />
         </div>
         <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8">

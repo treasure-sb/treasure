@@ -14,7 +14,7 @@ export default async function FeaturedEventDisplay({
     .getPublicUrl(event.poster_url);
 
   return (
-    <div className="relative group aspect-square w-full hover:translate-y-[-.5rem] transition duration-500">
+    <div className="relative group w-full hover:translate-y-[-.5rem] transition duration-500 h-96">
       <Link href={`/events/${event.cleaned_name}`}>
         <Image
           className="object-cover w-full h-full rounded-md group-hover:bg-black group-hover:opacity-50 transition duration-300"

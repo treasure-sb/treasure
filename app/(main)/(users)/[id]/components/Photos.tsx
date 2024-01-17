@@ -32,7 +32,7 @@ export default async function Photos({ user }: { user: any }) {
     <div className="grid grid-cols-3 gap-2 mt-6">
       {portfolioPictures?.length != 0 ? (
         portfolioPictures.map((picture, index) => (
-          <div className="relative aspect-square group" key={index}>
+          <div className="relative aspect-h-1 aspect-w-1 group" key={index}>
             <Image
               className="w-full h-full rounded-md"
               width={400}

@@ -12,6 +12,7 @@ import {
   generateUniqueLocalDiscriminator,
   getPreviousDiscriminators,
 } from "@/lib/helpers/auth";
+import { sendWelcomeEmail } from "../emails";
 
 interface SignUpForm {
   email: string;
@@ -90,6 +91,8 @@ const signUp = async (form: SignUpForm, signup_invite_token?: string) => {
       return { error: transferResult.error };
     }
   }
+
+  await sendWelcomeEmail(email, firstName);
 
   return { profileData };
 };

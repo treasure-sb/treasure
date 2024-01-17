@@ -59,7 +59,7 @@ export default async function Page() {
       <h1 className="font-bold text-2xl w-full mb-10">My Portfolio</h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
         {portfolioPictures.map((picture, index) => (
-          <div className="relative aspect-square group" key={index}>
+          <div className="relative aspect-h-1 aspect-w-1 group" key={index}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="z-20">
                 <MoreHorizontal className="text-black absolute top-4 right-4 hover:cursor-pointer bg-white rounded-full" />
