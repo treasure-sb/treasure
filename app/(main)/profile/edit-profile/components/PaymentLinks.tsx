@@ -1,6 +1,6 @@
 "use client";
 
-import { getPaymentIcon, paymentLinkData } from "@/lib/helpers/links";
+import { paymentLinkData } from "@/lib/helpers/links";
 import { Button } from "@/components/ui/button";
 import { useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -71,7 +71,9 @@ export default function PaymentLinks({
       {fields.map((field, index) => {
         return (
           <div key={field.id} className="flex space-x-2 items-center">
-            <div className="mr-2">{getPaymentIcon(field.application)}</div>
+            <div className="mr-2">
+              {paymentLinkData[field.application].icon}
+            </div>
             <FormField
               control={form.control}
               name={`payment_links.${index}.username`}

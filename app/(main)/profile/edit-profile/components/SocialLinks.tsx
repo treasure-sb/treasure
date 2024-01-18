@@ -1,6 +1,6 @@
 "use client";
 
-import { getSocialIcon, socialLinkData } from "@/lib/helpers/links";
+import { socialLinkData } from "@/lib/helpers/links";
 import { Tables } from "@/types/supabase";
 import { EditProfileFormReturn } from "@/types/profile";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,7 @@ export default function SocialLinks({
       {fields.map((field, index) => {
         return (
           <div key={field.id} className="flex space-x-2 items-center">
-            <div className="mr-2">{getSocialIcon(field.application)}</div>
+            <div className="mr-2">{socialLinkData[field.application].icon}</div>
             <FormField
               control={form.control}
               name={`social_links.${index}.username`}

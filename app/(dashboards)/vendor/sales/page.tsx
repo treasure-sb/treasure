@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 import { parseLocalDate } from "@/lib/utils";
-import format from "date-fns/format";
-import SalesDateFiltering from "./components/SalesDateFiltering";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "../../query";
 import { createClient } from "@/utils/supabase/client";
-import TransactionCard from "./components/TransactionCard";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
-import CashappIcon from "@/components/icons/applications/CashappIcon";
-import VenmoIcon from "@/components/icons/applications/VenmoIcon";
-import CashIcon from "@/components/icons/CashIcon";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { paymentLinkData } from "@/lib/helpers/links";
+import { motion } from "framer-motion";
+import CashIcon from "@/components/icons/CashIcon";
+import TransactionCard from "./components/TransactionCard";
+import format from "date-fns/format";
+import SalesDateFiltering from "./components/SalesDateFiltering";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page({
   searchParams,
@@ -37,6 +38,7 @@ export default function Page({
 
   useEffect(() => {
     refetch();
+    setSelectedTransaction(null);
   }, [from, until]);
 
   const user = useUser();
@@ -65,9 +67,8 @@ export default function Page({
     },
     enabled: !!user,
   });
-  let sales = 0;
-  data?.map((transaction) => (sales += transaction.amount));
 
+  const sales = data?.reduce((acc, transaction) => acc + transaction.amount, 0);
   const showDesktopTransaction = (
     transaction: Tables<"vendor_transactions">
   ) => {
@@ -76,8 +77,6 @@ export default function Page({
     else {
       setSelectedTransaction(transaction);
     }
-
-    console.log(selectedTransaction);
   };
 
   const showMobileTransaction = (
@@ -89,7 +88,7 @@ export default function Page({
   const deleteTransaction = async () => {
     setSelectedTransaction(null);
     const supabase = createClient();
-    const { data, error } = await supabase
+    await supabase
       .from("vendor_transactions")
       .delete()
       .eq("id", selectedTransaction?.id);
@@ -102,14 +101,22 @@ export default function Page({
     console.log("edited");
   };
 
+  const loadingSkeletons = Array.from({ length: 5 }).map((_, i) => (
+    <Skeleton key={i} className="w-full h-12" />
+  ));
+
   return (
     <>
       <h1 className="font-semibold text-3xl mb-6">Sales</h1>
       <div className="flex justify-between mb-6">
-        <h1 className="text-4xl relative">
-          ${sales}
+        <div className="text-5xl relative">
+          {isLoading || !user ? (
+            <Skeleton className="h-12 w-32" />
+          ) : (
+            <h1>${sales}</h1>
+          )}
           {(!from || !until) && (
-            <span className="text-sm block text-left text-primary font-semibold">
+            <span className="text-lg block text-left text-primary font-semibold">
               All Time Sales
             </span>
           )}
@@ -119,20 +126,28 @@ export default function Page({
               {format(parseLocalDate(until), "MMMM d")}
             </span>
           )}
-        </h1>
+        </div>
         <div className="mt-auto">
           <SalesDateFiltering />
         </div>
       </div>
       {/* ------------------------------- Desktop Transactions ------------------------------- */}
-      <div className="hidden p-4 sm:grid grid-cols-2 gap-4 w-full">
-        <div className=" sm:flex flex-col gap-3 p-6 w-full h-fit max-w-md dashboard-section-theme rounded-3xl">
+      <motion.div
+        layout
+        transition={{ layout: { duration: 0.75, type: "spring" } }}
+        className="hidden p-4 sm:flex justify-center space-x-4"
+      >
+        <motion.div
+          layout="position"
+          className="space-y-4 p-6 w-full h-fit max-w-md dashboard-section-theme rounded-3xl"
+        >
+          {(isLoading || !user) && <>{loadingSkeletons}</>}
           {data &&
-            data?.map((transaction, i) => {
+            data.map((transaction, i) => {
               return (
                 <>
                   <button
-                    className="text-left"
+                    className="text-left w-full"
                     onClick={() => showDesktopTransaction(transaction)}
                   >
                     <TransactionCard
@@ -153,23 +168,27 @@ export default function Page({
                 </>
               );
             })}
-        </div>
+          {data && data.length === 0 && (
+            <div className="text-center text-gray-400">
+              No transactions found
+            </div>
+          )}
+        </motion.div>
         {selectedTransaction && (
-          <div className="flex flex-col gap-3 p-6 w-full max-w-md dashboard-section-theme rounded-3xl h-fit sticky top-0">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.75 }}
+            className="flex flex-col gap-3 p-6 w-full max-w-md dashboard-section-theme rounded-3xl h-fit sticky top-0"
+          >
             <div className="group w-full overflow-hidden">
               <div className="flex flex-col gap-20">
                 <div className="text-center mx-auto flex-col flex gap-2">
                   <div className="mx-auto scale-150 p-2">
-                    {(() => {
-                      switch (selectedTransaction.method) {
-                        case "Cashapp":
-                          return <CashappIcon />;
-                        case "Venmo":
-                          return <VenmoIcon />;
-                        default:
-                          return <CashIcon />;
-                      }
-                    })()}
+                    {paymentLinkData[selectedTransaction.method]?.icon || (
+                      <CashIcon />
+                    )}
                   </div>
                   <div>
                     <div className="text-xl">
@@ -179,16 +198,8 @@ export default function Page({
                         : '" No Comment "'}
                     </div>
                     <div className="text-sm text-gray-400">
-                      {(() => {
-                        switch (selectedTransaction.method) {
-                          case "Cashapp":
-                            return "Payment made through Cashapp";
-                          case "Venmo":
-                            return "Payment made through Venmo";
-                          default:
-                            return "Payment made in Cash";
-                        }
-                      })()}
+                      {paymentLinkData[selectedTransaction.method]
+                        ?.payment_subtext || "Payment made in Cash"}
                     </div>
                   </div>
                 </div>
@@ -233,17 +244,18 @@ export default function Page({
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
       {/* ------------------------------- Mobile Transactions  ------------------------------- */}
       <div className="sm:hidden flex flex-col gap-3 p-6 dashboard-section-theme rounded-3xl">
+        {(isLoading || !user) && <>{loadingSkeletons}</>}
         {data &&
           data?.map((transaction, i) => {
             return (
               <>
                 <Dialog>
-                  <DialogTrigger className="hover:scale-110 transition duration-300 focus:outline-none w-full">
+                  <DialogTrigger className="hover:scale-105 transition duration-500 focus:outline-none w-full">
                     <button
                       className="w-full text-left"
                       onClick={() => showMobileTransaction(transaction)}
@@ -268,16 +280,8 @@ export default function Page({
                           <div className="flex flex-col gap-20">
                             <div className="text-center mx-auto flex-col flex gap-2">
                               <div className="mx-auto scale-150 p-2">
-                                {(() => {
-                                  switch (selectedTransaction.method) {
-                                    case "Cashapp":
-                                      return <CashappIcon />;
-                                    case "Venmo":
-                                      return <VenmoIcon />;
-                                    default:
-                                      return <CashIcon />;
-                                  }
-                                })()}
+                                {paymentLinkData[selectedTransaction.method]
+                                  ?.icon || <CashIcon />}
                               </div>
                               <div>
                                 <div className="text-xl">
@@ -289,16 +293,8 @@ export default function Page({
                                     : '" No Comment "'}
                                 </div>
                                 <div className="text-sm text-gray-400">
-                                  {(() => {
-                                    switch (selectedTransaction.method) {
-                                      case "Cashapp":
-                                        return "Payment made through Cashapp";
-                                      case "Venmo":
-                                        return "Payment made through Venmo";
-                                      default:
-                                        return "Payment made in Cash";
-                                    }
-                                  })()}
+                                  {paymentLinkData[selectedTransaction.method]
+                                    ?.payment_subtext || "Payment made in Cash"}
                                 </div>
                               </div>
                             </div>
@@ -326,13 +322,6 @@ export default function Page({
                             </div>
 
                             <div className="flex w-full justify-center gap-[10%] mt-4">
-                              {/* <Button
-                                className="w-[45%]"
-                                onClick={editTransaction}
-                                variant={"secondary"}
-                              >
-                                Edit
-                              </Button> */}
                               <DialogClose className="w-[45%]">
                                 <Button
                                   className="w-full"
@@ -354,6 +343,9 @@ export default function Page({
               </>
             );
           })}
+        {data && data.length === 0 && (
+          <div className="text-center text-gray-400">No transactions found</div>
+        )}
       </div>
     </>
   );
