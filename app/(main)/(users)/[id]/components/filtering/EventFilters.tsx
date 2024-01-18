@@ -20,7 +20,7 @@ export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [active, setActive] = useState(
-    searchParams.get("events") || "Attending"
+    searchParams.get("events") || isHosting ? "Hosting" : "Attending"
   );
   const { replace } = useRouter();
 
@@ -28,19 +28,14 @@ export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
     if (filter === active) return;
     const params = new URLSearchParams(searchParams);
 
-    if (filter === "Attending") {
-      setActive("Attending");
-      params.delete("events");
-    } else {
-      setActive(filter);
-      params.set("events", filter);
-    }
+    setActive(filter);
+    params.set("events", filter);
     replace(`${pathname}?${params.toString()}`);
   };
 
   const filterOptions = [
-    { name: "Attending", Icon: CalendarCheck2Icon },
     { name: "Hosting", Icon: CrownIcon },
+    { name: "Attending", Icon: CalendarCheck2Icon },
     { name: "Liked", Icon: Heart },
   ];
 

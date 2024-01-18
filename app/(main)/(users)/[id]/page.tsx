@@ -22,6 +22,7 @@ export default async function Page({
 }) {
   const username = params.id;
   const tab = searchParams?.tab || "Events";
+  const filter = searchParams?.events;
   const type = searchParams?.type || "profile";
   let user: Tables<"profiles"> | Tables<"temporary_profiles">;
 
@@ -45,7 +46,11 @@ export default async function Page({
   // determine if user is hosting any events
   const { data: hostingData } = await getEventsHosting(1, user.id);
   const isHosting = hostingData ? hostingData.length > 0 : false;
-  const eventsFilter = searchParams?.events || "Attending";
+  const eventsFilter = filter
+    ? filter
+    : isHosting && !searchParams?.events
+    ? "Hosting"
+    : "Attending";
 
   // determine if logged in user is viewing their own profile
   const {
