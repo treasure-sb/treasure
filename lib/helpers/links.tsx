@@ -14,6 +14,16 @@ type SocialLinkData = {
   [key: string]: SocialLink;
 };
 
+type PaymentLink = {
+  url: string;
+  icon: JSX.Element;
+  payment_subtext: string;
+};
+
+type PaymentLinkData = {
+  [key: string]: PaymentLink;
+};
+
 export const socialLinkData: SocialLinkData = {
   Instagram: {
     url: "https://instagram.com/",
@@ -33,39 +43,15 @@ export const socialLinkData: SocialLinkData = {
   },
 };
 
-export const paymentLinkData = {
+export const paymentLinkData: PaymentLinkData = {
   Venmo: {
     url: "https://venmo.com/",
     icon: <VenmoIcon />,
+    payment_subtext: "Payment made through Venmo",
   },
   Cashapp: {
     url: "https://cash.app/",
     icon: <CashappIcon />,
+    payment_subtext: "Payment made through Cashapp",
   },
-};
-
-export const getSocialIcon = (application: string): JSX.Element | null => {
-  switch (application) {
-    case "Instagram":
-      return <InstagramIcon size={40} />;
-    case "Twitter":
-      return <Twitter size={40} />;
-    case "TikTok":
-      return <TikTokIcon />;
-    case "Whatnot":
-      return <WhatNotIcon />;
-    default:
-      return null;
-  }
-};
-
-export const getPaymentIcon = (application: string) => {
-  switch (application) {
-    case "Venmo":
-      return <VenmoIcon />;
-    case "Cashapp":
-      return <CashappIcon />;
-    default:
-      return null;
-  }
 };

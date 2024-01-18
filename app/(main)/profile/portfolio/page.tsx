@@ -56,10 +56,10 @@ export default async function Page() {
   const emptyImages = Array.from({ length: 6 - portfolioPictures.length });
   return (
     <main className="w-full max-w-6xl m-auto">
-      <h1 className="font-bold text-2xl w-full mb-10">My Portfolio</h1>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+      <h1 className="font-bold text-2xl w-full mb-10">My Photos</h1>
+      <div className="grid grid-cols-3 gap-2 m-auto">
         {portfolioPictures.map((picture, index) => (
-          <div className="relative aspect-h-1 aspect-w-1 group" key={index}>
+          <div className="relative group h-full w-full" key={index}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="z-20">
                 <MoreHorizontal className="text-black absolute top-4 right-4 hover:cursor-pointer bg-white rounded-full" />

@@ -23,7 +23,7 @@ export default function Sales() {
   });
 
   return (
-    <div className="border-[1px] p-6 rounded-3xl my-4 sm:my-0 dashboard-section-theme sm:hover:opacity-70 overflow-hidden">
+    <div className="border-[1px] p-6 rounded-3xl my-4 sm:my-0 dashboard-section-theme sm:hover:opacity-70 transition duration-500 overflow-hidden">
       <Link href="/vendor/sales">
         <h1 className="text-2xl font-semibold text-left mb-6">Sales</h1>
         <div className="space-y-4">
