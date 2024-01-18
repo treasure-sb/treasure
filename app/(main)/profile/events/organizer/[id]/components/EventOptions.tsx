@@ -97,14 +97,14 @@ export default async function EventOptions({
     <AccordionItem value="item-1">
       <AccordionTrigger>Event Options</AccordionTrigger>
       <AccordionContent className="flex flex-col space-y-4 items-center">
-        <Link
+        {/* <Link
           className="w-[90%]"
           href={`/profile/events/organizer/${event.cleaned_name}/event-analytics`}
         >
           <Button className="w-full" variant={"ghost"}>
             Event Analytics
           </Button>
-        </Link>
+        </Link> */}
         <Link
           className="w-[90%]"
           href={`/profile/events/organizer/${event.cleaned_name}/edit-event`}

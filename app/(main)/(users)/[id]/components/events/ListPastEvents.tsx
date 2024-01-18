@@ -32,9 +32,21 @@ export default function ListPastEvents({
   });
 
   const allEvents = data?.pages.flat();
+
+  type formatPastEventType = {
+    [key: string]: string;
+  };
+  const formatPastEvent: formatPastEventType = {
+    Attending: "Attended",
+    Hosting: "Hosted",
+    Liked: "Liked",
+  };
+
   return (
     <div>
-      <h1 className="font-semibold mb-4">Past Events {eventFilter}</h1>
+      <h1 className="font-semibold mb-4">
+        Past Events {formatPastEvent[eventFilter]}
+      </h1>
       <div className="space-y-8 md:hidden block">
         {allEvents.map((event) => (
           <div key={event.id + "card"}>

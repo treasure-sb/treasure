@@ -36,7 +36,7 @@ export default function HostMobileSidebar() {
         </SheetHeader>
         <div className="flex flex-col justify-between h-[80%] mx-4 mt-10">
           <div className="flex flex-col space-y-4">
-            <Link className="w-full" href="/host">
+            {/* <Link className="w-full" href="/host">
               <Button
                 onClick={() => setIsOpen(false)}
                 variant={currentPage === "dashboard" ? "secondary" : "ghost"}
@@ -45,7 +45,7 @@ export default function HostMobileSidebar() {
                 <LayoutDashboardIcon className="stroke-1" size={28} />{" "}
                 <p>Dashboard</p>
               </Button>
-            </Link>
+            </Link> */}
             <Link className="w-full" href="/host/events">
               <Button
                 onClick={() => setIsOpen(false)}
@@ -58,7 +58,7 @@ export default function HostMobileSidebar() {
             <Link className="w-full" href="/profile">
               <Button
                 variant={"ghost"}
-                className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+                className="rounded-sm w-full text-lg justify-start space-x-2 p-6 font-normal"
               >
                 <Settings className="stroke-1" size={28} /> <p>Settings</p>
               </Button>
