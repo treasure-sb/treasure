@@ -13,11 +13,11 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { paymentLinkData } from "@/lib/helpers/links";
 import { motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 import CashIcon from "@/components/icons/CashIcon";
 import TransactionCard from "./components/TransactionCard";
 import format from "date-fns/format";
 import SalesDateFiltering from "./components/SalesDateFiltering";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page({
   searchParams,
@@ -117,11 +117,11 @@ export default function Page({
           )}
           {(!from || !until) && (
             <span className="text-lg block text-left text-primary font-semibold">
-              All Time Sales
+              All Time
             </span>
           )}
           {from && until && (
-            <span className="text-sm block text-left text-primary font-semibold">
+            <span className="text-lg block text-left text-primary font-semibold">
               {format(parseLocalDate(from), "MMMM d")} -{" "}
               {format(parseLocalDate(until), "MMMM d")}
             </span>

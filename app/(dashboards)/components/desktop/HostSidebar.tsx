@@ -19,7 +19,7 @@ export default function HostSidebar() {
           <h1>Treasure</h1>
         </Link>
         <div className="space-y-6 flex flex-col">
-          <Link className="w-full relative" href="/host">
+          {/* <Link className="w-full relative" href="/host">
             <Button
               variant={"ghost"}
               className="w-full rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
@@ -30,7 +30,7 @@ export default function HostSidebar() {
             {currentPage === "dashboard" && (
               <div className="absolute w-[2px] h-full bg-primary right-[-34px] top-0" />
             )}
-          </Link>
+          </Link> */}
           <Link className="w-full relative" href="/host/events">
             <Button
               variant={"ghost"}
@@ -45,7 +45,7 @@ export default function HostSidebar() {
           <Link className="w-full" href="/profile">
             <Button
               variant={"ghost"}
-              className="rounded-sm text-lg justify-start space-x-2 p-6 font-normal"
+              className="rounded-sm w-full text-lg justify-start space-x-2 p-6 font-normal"
             >
               <Settings className="stroke-1" size={28} /> <p>Settings</p>
             </Button>

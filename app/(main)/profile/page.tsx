@@ -30,7 +30,7 @@ export default async function Page() {
           Joined Treasure {formattedDate}
         </p>
         <Separator />
-        <Link href="/host" className="">
+        <Link href="/host/events" className="">
           <Button className="w-full">Host Dashboard</Button>
         </Link>
         <Link href="/vendor" className="">

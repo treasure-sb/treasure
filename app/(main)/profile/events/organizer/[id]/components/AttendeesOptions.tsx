@@ -16,19 +16,19 @@ export default function AttendeesOptions({
     <AccordionItem value="item-2">
       <AccordionTrigger>Attendees Options</AccordionTrigger>
       <AccordionContent className="flex flex-col space-y-4 items-center">
-        <Link
+        {/* <Link
           className="w-[90%]"
           href={`/profile/events/organizer/${event.cleaned_name}/message`}
         >
           <Button className="w-full" variant={"ghost"}>
             Message Guests
           </Button>
-        </Link>
-        <Link className="w-[90%]" href="">
+        </Link> */}
+        {/* <Link className="w-[90%]" href="">
           <Button className="w-full" variant={"ghost"}>
             Guest List
           </Button>
-        </Link>
+        </Link> */}
         <Link
           className=" w-[90%] relative"
           href={`/profile/events/organizer/${event.cleaned_name}/vendor-list`}

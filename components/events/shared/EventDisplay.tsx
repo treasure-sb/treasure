@@ -10,10 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function CardDisplay({
   event,
   user,
+  redirect,
   showLikeButton = true,
 }: {
   user?: User | null;
   event: EventDisplayData;
+  redirect?: string;
   showLikeButton?: boolean;
 }) {
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ export default function CardDisplay({
         </div>
       )}
 
-      <Link href={`/events/${event.cleaned_name}`}>
+      <Link href={redirect || `/events/${event.cleaned_name}`}>
         <div className="relative aspect-w-1 aspect-h-1">
           <Image
             className={`object-cover h-full w-full rounded-md ${imageVisibility}`}

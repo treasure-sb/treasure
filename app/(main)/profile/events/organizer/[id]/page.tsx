@@ -7,6 +7,9 @@ import { formatDate } from "@/lib/helpers/events";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import AttendeesOptions from "./components/AttendeesOptions";
 import EventOptions from "./components/EventOptions";
+import { Button } from "@/components/ui/button";
+import CopyEventLink from "./components/CopyEventLink";
+import Link from "next/link";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
@@ -48,6 +51,12 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="text-lg text-primary">{shortFormattedDate} </div>
               <span className="text-lg text-white">{event.venue_name}</span>
             </div>
+          </div>
+          <div className="flex space-x-2">
+            <Link href={`/events/${event.cleaned_name}`}>
+              <Button variant={"secondary"}>View Event</Button>
+            </Link>
+            <CopyEventLink eventName={event.cleaned_name} />
           </div>
           <Accordion type="multiple">
             <EventOptions event={event} />
