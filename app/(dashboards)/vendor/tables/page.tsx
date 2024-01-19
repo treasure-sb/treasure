@@ -3,10 +3,12 @@
 import { useEffect } from "react";
 import { useStore } from "../store";
 import { useTables } from "../query";
+import { useUser } from "../../query";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
 export default function Page() {
   const { setCurrentPage } = useStore();
+  const user = useUser();
   const { data } = useTables();
   const { eventsData } = data ?? {};
 
@@ -23,7 +25,7 @@ export default function Page() {
             className="hover:translate-y-[-.75rem] transition duration-500"
             key={event.id}
           >
-            <EventDisplay event={event} />
+            <EventDisplay user={user} event={event} />
           </div>
         ))}
       </div>

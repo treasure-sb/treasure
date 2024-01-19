@@ -147,7 +147,7 @@ export default async function EventsPage({
             </Link>
           </div>
           <Separator />
-          <Vendors event={event} />
+          {/* <Vendors event={event} /> */}
           <HostedBy event={event} />
           <Separator />
           {event.venue_map_url ? (
