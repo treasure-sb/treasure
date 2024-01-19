@@ -47,6 +47,7 @@ export default function Page() {
             key={event.id}
           >
             <EventDisplay
+              user={user}
               redirect={`/profile/events/organizer/${event.cleaned_name}`}
               event={event}
             />

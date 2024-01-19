@@ -27,9 +27,11 @@ export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("*, vendors:profiles!event_vendors(*)")
+    .select("*")
     .eq("cleaned_name", params.id)
     .single();
+
+  console.log(eventData, eventError);
 
   if (eventError) {
     redirect("/events");
