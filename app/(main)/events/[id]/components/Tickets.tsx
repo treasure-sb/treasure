@@ -27,7 +27,8 @@ export default async function Tickets({
     .from("tickets")
     .select("*")
     .eq("event_id", event.id)
-    .neq("name", "Table");
+    .neq("name", "Table")
+    .order("price", { ascending: true });
 
   const cheapestTicket = tickets?.reduce((prev: any, cur: any) => {
     return prev.price < cur.price ? prev : cur;
@@ -75,7 +76,8 @@ export default async function Tickets({
                             {ticket.name} ${ticket.price}
                           </h1>
                         </div>
-                        {event.tickets_status === 1 ? (
+                        {event.sales_status === "ATTENDEES_ONLY" ||
+                        event.sales_status === "SELLING_ALL" ? (
                           <Link target="_blank" href={checkoutURL}>
                             <Button>Buy Now</Button>
                           </Link>

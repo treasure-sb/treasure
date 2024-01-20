@@ -62,6 +62,7 @@ export default function EventPoster({
           onSubmit={form.handleSubmit(handleNext)}
           className="flex flex-col justify-between h-full"
         >
+          <div className="text-lg font-semibold text-primary">Event Poster</div>
           <FormField
             control={form.control}
             name="poster_url"

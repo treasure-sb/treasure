@@ -106,9 +106,12 @@ export default function EventName({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleNext)}
-          className="flex flex-col justify-between h-full"
+          className="flex flex-col justify-between h-full gap-6"
         >
           <div className="space-y-2">
+            <div className="text-lg font-semibold text-primary">
+              General Event Information
+            </div>
             <FormField
               control={form.control}
               name="name"
@@ -129,7 +132,7 @@ export default function EventName({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea rows={8} placeholder="Description" {...field} />
+                    <Textarea rows={6} placeholder="Description" {...field} />
                   </FormControl>
                   <div className="h-1">
                     <FormMessage />

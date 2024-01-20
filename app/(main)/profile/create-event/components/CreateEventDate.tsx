@@ -82,6 +82,7 @@ export default function EventDate({
           className="flex flex-col justify-between h-full"
         >
           <div className="space-y-6">
+            <div className="text-lg font-semibold text-primary">Event Time</div>
             <FormField
               control={form.control}
               name="start_time"

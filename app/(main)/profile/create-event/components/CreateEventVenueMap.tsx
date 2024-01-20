@@ -78,6 +78,7 @@ export default function EventVenueMap({ onBack, eventForm }: Step5Props) {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col justify-between h-full"
         >
+          <div className="text-lg font-semibold text-primary">Venue Map</div>
           <FormField
             control={form.control}
             name="venue_map_url"

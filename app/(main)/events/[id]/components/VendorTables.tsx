@@ -1,3 +1,10 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,45 +21,109 @@ export default async function VendorTables({
     data: { user },
   } = await validateUser();
 
-  const { data: table, error } = await supabase
-    .from("tickets")
+  const { data: tables, error } = await supabase
+    .from("tables")
     .select("*")
     .eq("event_id", event.id)
-    .eq("name", "Table")
-    .single();
+    .order("price", { ascending: true });
 
-  const tablePrice = table?.price || 0;
-  const hasStripePriceId = table?.stripe_price_id;
+  const cheapestTable = tables?.reduce((prev: any, cur: any) => {
+    return prev.price < cur.price ? prev : cur;
+  }, 0);
+
+  const hasStripePriceId = tables ? tables[0].stripe_price_id : false;
 
   return (
     <>
-      {!error && (
+      {tables && tables.length > 0 ? (
         <div className="bg-secondary w-full h-20 items-center rounded-md flex justify-between px-5 font-bold">
-          <h1 className="text-lg">Tables from ${tablePrice}</h1>
-          {event.tickets_status > 0 &&
-            (event.table_public === 0 ? (
-              <>
-                {hasStripePriceId && (
+          <h1 className="text-lg">Tables From ${cheapestTable.price}</h1>
+          {tables && tables.length > 1 ? (
+            <>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14">
+                    View All
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl p-4 mb-6 text-center border-b-2">
+                      Tables
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col space-y-4">
+                    {tables?.map((table: Tables<"tables">) => (
+                      <div
+                        key={table.id}
+                        className="flex justify-between items-center"
+                      >
+                        <div>
+                          <h1 className="font-semibold text-xl">
+                            {table.section_name} ${table.price}
+                          </h1>
+                        </div>
+                        {(event.sales_status === "TABLES_ONLY" ||
+                          event.sales_status === "SELLING_ALL") &&
+                          (event.vendor_exclusivity === "PUBLIC" ? (
+                            <>
+                              {hasStripePriceId && (
+                                <Link
+                                  href={`/checkout?price_id=${tables[0].stripe_price_id}&user_id=${user?.id}&event_id=${event.id}&ticket_id=${tables[0].id}&quantity=1`}
+                                >
+                                  <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                                    Buy Now
+                                  </Button>
+                                </Link>
+                              )}
+                            </>
+                          ) : (
+                            <Link
+                              href={{
+                                pathname: `/apply`,
+                                query: { event_id: event.id },
+                              }}
+                            >
+                              <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                                Apply Now
+                              </Button>
+                            </Link>
+                          ))}
+                      </div>
+                    ))}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </>
+          ) : (
+            <>
+              {(event.sales_status === "TABLES_ONLY" ||
+                event.sales_status === "SELLING_ALL") &&
+                (event.vendor_exclusivity === "PUBLIC" ? (
+                  <>
+                    {hasStripePriceId && (
+                      <Link
+                        href={`/checkout?price_id=${tables[0].stripe_price_id}&user_id=${user?.id}&event_id=${event.id}&ticket_id=${tables[0].id}&quantity=1`}
+                      >
+                        <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
+                          Buy Now
+                        </Button>
+                      </Link>
+                    )}
+                  </>
+                ) : (
                   <Link
-                    href={`/checkout?price_id=${table.stripe_price_id}&user_id=${user?.id}&event_id=${event.id}&ticket_id=${table.id}&quantity=1`}
+                    href={{ pathname: `/apply`, query: { event_id: event.id } }}
                   >
                     <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
-                      Buy Now
+                      Apply Now
                     </Button>
                   </Link>
-                )}
-              </>
-            ) : (
-              <Link
-                href={{ pathname: `/apply`, query: { event_id: event.id } }}
-              >
-                <Button className="bg-primary h-[70%] w-24 text-background text-md font-bold px-14 py-4">
-                  Apply Now
-                </Button>
-              </Link>
-            ))}
+                ))}
+            </>
+          )}
         </div>
-      )}
+      ) : null}
     </>
   );
 }
