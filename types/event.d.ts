@@ -5,8 +5,13 @@ export interface EventFormTicket {
 }
 
 export interface EventFormTable {
+  section_name: string;
   table_price: string;
   table_quantity: string;
+  table_provided: boolean;
+  space_allocated: string;
+  number_vendors_allowed: string;
+  additional_information?: string | undefined;
 }
 
 export interface EventFormTag {
@@ -15,8 +20,16 @@ export interface EventFormTag {
 }
 
 export interface EventVendorApplication {
-  TaC: string;
-  comment: string;
+  check_in_time: string;
+  check_in_location: string;
+  wifi_availability: boolean;
+  additional_information?: string;
+  terms: EventTerms[];
+}
+
+export interface EventTerms {
+  term_id: number;
+  term: string;
 }
 
 export interface EventForm {
@@ -35,7 +48,9 @@ export interface EventForm {
   tables: EventFormTable[];
   tags: EventFormTag[];
   table_public: number;
-  vendor_app: EventVendorApplication[];
+  application_vendor_information: EventVendorApplication;
+  sales_status: string;
+  vendor_exclusivity: string;
   poster_url: File | string | undefined;
   venue_map_url: File | string | undefined;
 }

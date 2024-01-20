@@ -31,8 +31,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("cleaned_name", params.id)
     .single();
 
-  console.log(eventData, eventError);
-
   if (eventError) {
     redirect("/events");
   }

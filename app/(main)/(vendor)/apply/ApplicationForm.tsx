@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { submitVendorApp } from "@/lib/actions/vendors/submit-application";
+import { Tables } from "@/types/supabase";
 
 const applicationSchema = z.object({
   collection_type: z.string().min(1, {
@@ -43,7 +44,7 @@ export default function ApplicationForm({
   comment,
   event_id,
 }: {
-  toc: string;
+  toc: Tables<"application_terms_and_conditions">[];
   comment: string;
   event_id: string;
 }) {
@@ -123,11 +124,11 @@ export default function ApplicationForm({
               <h1 className="text-xl font-semibold mb-2">
                 Terms and Conditions
               </h1>
-              <h2 className="text-sm sm:text-base">
-                {toc !== ""
-                  ? toc
-                  : "You have the right to remain silent. Anything you say can be used against you in court. You have the right to talk to a lawyer for advice before we ask you any questions. You have the right to have a lawyer with you during questioning."}
-              </h2>
+              <ul className="list-disc list-outside ml-5 flex flex-col gap-3">
+                {toc.map((term) => (
+                  <li className="text-sm sm:text-base">{term.term}</li>
+                ))}
+              </ul>
             </div>
           </div>
           <div>

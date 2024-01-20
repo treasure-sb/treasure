@@ -25,7 +25,15 @@ export default async function Page({
     .eq("id", event_id)
     .single();
 
+  const { data: eventTerms, error: termsError } = await supabase
+    .from("application_terms_and_conditions")
+    .select("*")
+    .eq("event_id", event_id);
+
   const event: Tables<"events"> = eventData;
+  const terms: Tables<"application_terms_and_conditions">[] = eventTerms
+    ? eventTerms
+    : [];
   const publicPosterUrl = await getPublicPosterUrl(event);
 
   return (
@@ -47,7 +55,7 @@ export default async function Page({
           </div>
         </div>
         <ApplicationForm
-          toc={event.toc}
+          toc={terms}
           comment={event.comment}
           event_id={event.id}
         />

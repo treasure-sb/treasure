@@ -92,12 +92,33 @@ export default function EventTickets({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleNext)}
-          className="flex flex-col justify-between h-full"
+          className="flex flex-col justify-between h-full gap-6"
         >
-          <div className="space-y-6 mb-10">
+          <div className="space-y-6">
+            <div className="text-lg font-semibold text-primary">Tickets</div>
             {fields.map((field, index) => {
               return (
-                <div key={field.id}>
+                <div className="flex flex-col gap-4" key={field.id}>
+                  <div className="text-base font-semibold text-primary">
+                    {"Ticket " + (index + 1)}
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name={`tickets.${index}.ticket_name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Ticket Name (eg. GA)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name={`tickets.${index}.ticket_price`}
@@ -131,23 +152,6 @@ export default function EventTickets({
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name={`tickets.${index}.ticket_name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            placeholder="Ticket Name (eg. GA)"
-                            {...field}
-                          />
-                        </FormControl>
-                        <div className="h-1">
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
                 </div>
               );
             })}
@@ -159,7 +163,7 @@ export default function EventTickets({
               >
                 Add Ticket Tier
               </Button>{" "}
-              {numTickets && (
+              {numTickets > 1 && (
                 <Button
                   type="button"
                   onClick={removeTicketTier}
