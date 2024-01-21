@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,11 +7,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { formatDate, formatStartTime } from "@/lib/helpers/events";
+import { formatDate } from "@/lib/helpers/events";
+import { convertToStandardTime } from "@/lib/utils";
 
 export default function PreviewEvent({ event }: { event: any }) {
   const formattedDate = formatDate(event.date);
-  const formattedStartTime = formatStartTime(event.start_time);
+  const formattedStartTime = convertToStandardTime(event.start_time);
 
   const cheapestTicket = event.tickets?.reduce((prev: any, current: any) => {
     return prev.ticket_price < current.ticket_price ? prev : current;
