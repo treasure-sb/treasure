@@ -3,9 +3,10 @@ import { use, useState } from "react";
 import CreateEventName from "./components/CreateEventName";
 import CreateEventDate from "./components/CreateEventDate";
 import CreateEventTickets from "./components/CreateEventTickets";
+import CreateEventVendorInfo from "./components/CreateEventVendorInfo";
+import CreateEventTables from "./components/CreateEventTables";
 import CreateEventPoster from "./components/CreateEventPoster";
 import CreateEventVenueMap from "./components/CreateEventVenueMap";
-import CreateEventTables from "./components/CreateEventTables";
 import { EventForm } from "@/types/event";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
@@ -36,13 +37,25 @@ export default function Page() {
     ],
     tables: [
       {
+        section_name: "",
         table_price: "",
         table_quantity: "",
+        table_provided: false,
+        space_allocated: "",
+        number_vendors_allowed: "",
       },
     ],
     tags: [],
     table_public: 0,
-    vendor_app: [],
+    application_vendor_information: {
+      check_in_time: "07:30",
+      check_in_location: "",
+      wifi_availability: false,
+      additional_information: undefined,
+      terms: [{ term_id: 1, term: "" }],
+    },
+    sales_status: "NO_SALE",
+    vendor_exclusivity: "PUBLIC",
     poster_url: undefined,
     venue_map_url: undefined,
   });
@@ -68,17 +81,15 @@ export default function Page() {
           eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
         tags: eventData.tags,
         table_public: eventData.table_public,
-        vendor_app:
-          eventData.toc === ""
-            ? []
-            : [{ TaC: eventData.toc, comment: eventData.comment }],
+        sales_status: eventData.sales_status,
+        vendor_exclusivity: eventData.vendor_exclusivity,
         // poster_url: eventData.poster_url,
         // venue_map_url: eventData.venue_map_url,
       });
     }
   }, []);
 
-  const progress = Array.from({ length: 6 }, (_, i) => (
+  const progress = Array.from({ length: 7 }, (_, i) => (
     <div
       className={`rounded-full w-2 h-2 transition duration-500 ${
         step === i + 1 ? "bg-primary" : "bg-secondary"
@@ -116,7 +127,7 @@ export default function Page() {
         />
       )}
       {step === 4 && (
-        <CreateEventTables
+        <CreateEventVendorInfo
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
@@ -124,7 +135,7 @@ export default function Page() {
         />
       )}
       {step === 5 && (
-        <CreateEventPoster
+        <CreateEventTables
           eventForm={eventForm}
           setEventForm={setEventForm}
           onNext={() => setStep(step + 1)}
@@ -132,6 +143,14 @@ export default function Page() {
         />
       )}
       {step === 6 && (
+        <CreateEventPoster
+          eventForm={eventForm}
+          setEventForm={setEventForm}
+          onNext={() => setStep(step + 1)}
+          onBack={() => setStep(step - 1)}
+        />
+      )}
+      {step === 7 && (
         <CreateEventVenueMap
           eventForm={eventForm}
           onBack={() => setStep(step - 1)}

@@ -25,7 +25,8 @@ interface Step3Props {
   setEventForm: Dispatch<SetStateAction<EventForm>>;
 }
 
-const ticketSchema = z.object({
+const tableSchema = z.object({
+  section_name: z.string().min(1, { message: "Section name is required" }),
   table_price: z.string().refine(
     (num) => {
       return !isNaN(Number(num)) && Number(num) >= 0;
@@ -39,22 +40,31 @@ const ticketSchema = z.object({
       return !isNaN(Number(num)) && Number(num) > 0;
     },
     {
-      message: "Must be a valid number of tables",
+      message: "Must be a number",
     }
   ),
-});
-
-const vendorAppSchema = z.object({
-  TaC: z.string().min(1, {
-    message: "Terms is required",
-  }),
-  comment: z.string(),
+  table_provided: z.boolean().default(false),
+  space_allocated: z.string().refine(
+    (num) => {
+      return !isNaN(Number(num)) && Number(num) >= 0;
+    },
+    {
+      message: "Must be a number",
+    }
+  ),
+  number_vendors_allowed: z.string().refine(
+    (num) => {
+      return !isNaN(Number(num)) && Number(num) >= 0;
+    },
+    {
+      message: "Must be a number",
+    }
+  ),
+  additional_information: z.string().optional(),
 });
 
 const tablesSchema = z.object({
-  tables: z.array(ticketSchema),
-  table_public: z.number().default(0).optional(),
-  vendor_app: z.array(vendorAppSchema),
+  tables: z.array(tableSchema),
 });
 
 export default function EventTables({
@@ -68,8 +78,6 @@ export default function EventTables({
     mode: "onBlur",
     defaultValues: {
       tables: eventForm.tables,
-      table_public: eventForm.table_public,
-      vendor_app: eventForm.vendor_app,
     },
   });
 
@@ -79,32 +87,31 @@ export default function EventTables({
   });
   const [numTables, setNumTables] = useState(1);
 
-  const {
-    fields: fieldVendorApp,
-    append: appendVendorApp,
-    remove: removeVendorApp,
-  } = useFieldArray({
-    control: form.control,
-    name: "vendor_app",
-  });
-
-  const checkClicked = () => {
-    form.getValues().table_public === 0
-      ? form.setValue("table_public", 1)
-      : form.setValue("table_public", 0);
-
-    form.getValues().vendor_app?.length === 1
-      ? removeVendorApp(0)
-      : appendVendorApp({ TaC: "", comment: "" });
-  };
-
   const handleNext = () => {
     const newForm = {
       ...eventForm,
       ...form.getValues(),
     };
+    console.log(newForm);
     setEventForm(newForm);
     onNext();
+  };
+
+  const addTable = () => {
+    append({
+      section_name: "",
+      table_price: "",
+      table_quantity: "",
+      table_provided: false,
+      space_allocated: "",
+      number_vendors_allowed: "",
+    });
+    setNumTables(numTables + 1);
+  };
+
+  const removeTable = () => {
+    remove(numTables - 1);
+    setNumTables(numTables - 1);
   };
 
   return (
@@ -112,12 +119,34 @@ export default function EventTables({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleNext)}
-          className="flex flex-col justify-between h-full"
+          className="flex flex-col justify-between h-full gap-6"
         >
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
+            <div className="text-lg font-semibold text-primary">Tables</div>
+
             {fields.map((field, index) => {
               return (
-                <div key={field.id}>
+                <div className="flex flex-col gap-4" key={field.id}>
+                  <div className="text-base font-semibold text-primary">
+                    {"Table " + (index + 1)}
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.section_name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Section / Table Name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name={`tables.${index}.table_price`}
@@ -151,70 +180,90 @@ export default function EventTables({
                       </FormItem>
                     )}
                   />
+                  <div className="flex space-x-3">
+                    <FormField
+                      control={form.control}
+                      name={`tables.${index}.table_provided`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div>Tables will be provided</div>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.space_allocated`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Space allocated for each table (in ft)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.number_vendors_allowed`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Number of vendors allowed per table"
+                            {...field}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.additional_information`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Additional information (Optional)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               );
             })}
-            <div className="flex space-x-3">
-              <FormField
-                control={form.control}
-                name={`table_public`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value === 0 ? false : true}
-                        onCheckedChange={() => checkClicked()}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <div>Check if this is a private event</div>
-            </div>
-            <div className="space-y-6">
-              {fieldVendorApp.map((field, index) => {
-                return (
-                  <div key={field.id}>
-                    <FormField
-                      control={form.control}
-                      name={`vendor_app.${index}.TaC`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              rows={5}
-                              placeholder="Terms and Conditions"
-                              {...field}
-                            />
-                          </FormControl>
-                          <div className="h-1">
-                            <FormMessage />
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`vendor_app.${index}.comment`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              rows={5}
-                              placeholder="Any other comments?"
-                              {...field}
-                              className="mt-6"
-                            />
-                          </FormControl>
-                          <div className="h-1">
-                            <FormMessage />
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                );
-              })}
+            <div className="flex gap-4">
+              <Button onClick={addTable} type="button" variant={"secondary"}>
+                Add Table
+              </Button>{" "}
+              {numTables > 1 && (
+                <Button
+                  type="button"
+                  onClick={removeTable}
+                  variant={"secondary"}
+                >
+                  Remove Table
+                </Button>
+              )}
             </div>
           </div>
           <div className="flex space-x-2">
