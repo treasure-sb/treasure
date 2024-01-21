@@ -3,7 +3,6 @@ import { Tables } from "@/types/supabase";
 import {
   getPublicPosterUrl,
   getPublicVenueMapUrl,
-  formatStartTime,
   formatDate,
 } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
@@ -13,10 +12,9 @@ import { getProfile } from "@/lib/helpers/profiles";
 import EventPoster from "./EventPoster";
 import AssignEvent from "./AssignEvent";
 import Link from "next/link";
-import Tickets from "./Tickets";
+import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
-import VendorTables from "./VendorTables";
-import Vendors from "./Vendors";
+import VendorTables from "./tables/VendorTables";
 import HostedBy from "./HostedBy";
 import ColorThief from "./ColorThief";
 import createSupabaseServerClient from "@/utils/supabase/server";
@@ -24,6 +22,7 @@ import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import LikeButton from "@/components/events/shared/LikeButton";
 import AttendingEvent from "./AttendingEvent";
+import { convertToStandardTime } from "@/lib/utils";
 
 export default async function EventsPage({
   event,
@@ -41,7 +40,7 @@ export default async function EventsPage({
   ]);
 
   const formattedDate = formatDate(event.date);
-  const formattedStartTime = formatStartTime(event.start_time);
+  const formattedStartTime = convertToStandardTime(event.start_time);
   const organizer = event.organizer_id === user?.id ? true : false;
   const capitalize = (address: string) => {
     const words = address.split(" ");

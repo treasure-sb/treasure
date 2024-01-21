@@ -17,7 +17,7 @@ export default function QRCode({ username }: { username: string }) {
       <DialogTrigger className="absolute bottom-1 right-1 h-[40px] w-[40px] flex items-center justify-center rounded-full bg-secondary hover:cursor-pointer hover:scale-110 transition duration-300 focus:outline-none">
         <QrCodeIcon />
       </DialogTrigger>
-      <DialogContent className="flex items-center justify-center w-fit focus:outline-none">
+      <DialogContent className="flex items-center justify-center w-fit focus:outline-none p-10">
         <QrCode value={qrValue} />
       </DialogContent>
     </Dialog>

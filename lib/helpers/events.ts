@@ -65,30 +65,6 @@ const getPublicVenueMapUrl = async (event: Tables<"events">) => {
 };
 
 /**
- * Formats the start time of an event into a user-friendly string.
- *
- * @param {string} startTime - The start time of the event in HH:MM format.
- * @returns {string} - Formatted start time in a 12-hour format with AM/PM.
- */
-const formatStartTime = (startTime: string) => {
-  const parsedStartTime = startTime.split(":");
-  const formattedStartTime = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(
-    new Date(
-      0,
-      0,
-      0,
-      parseInt(parsedStartTime[0]),
-      parseInt(parsedStartTime[1])
-    )
-  );
-  return formattedStartTime;
-};
-
-/**
  * Converts a date string into a more readable format.
  *
  * @param {string} date - The date string to format.
@@ -313,7 +289,6 @@ export {
   getPublicPosterUrl,
   getPublicVenueMapUrl,
   eventDisplayData,
-  formatStartTime,
   getEventFromCleanedName,
   formatDate,
   getEventsDisplayData,
