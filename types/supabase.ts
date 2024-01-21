@@ -61,19 +61,19 @@ export interface Database {
       }
       application_terms_and_conditions: {
         Row: {
-          event_id: string | null
+          event_id: string
           id: string
-          term: string | null
+          term: string
         }
         Insert: {
-          event_id?: string | null
+          event_id: string
           id?: string
-          term?: string | null
+          term: string
         }
         Update: {
-          event_id?: string | null
+          event_id?: string
           id?: string
-          term?: string | null
+          term?: string
         }
         Relationships: [
           {
@@ -91,7 +91,7 @@ export interface Database {
           check_in_location: string
           check_in_time: string
           event_id: string
-          id: number
+          id: string
           wifi_availability: boolean
         }
         Insert: {
@@ -99,7 +99,7 @@ export interface Database {
           check_in_location: string
           check_in_time: string
           event_id: string
-          id?: number
+          id?: string
           wifi_availability: boolean
         }
         Update: {
@@ -107,14 +107,14 @@ export interface Database {
           check_in_location?: string
           check_in_time?: string
           event_id?: string
-          id?: number
+          id?: string
           wifi_availability?: boolean
         }
         Relationships: [
           {
             foreignKeyName: "application_vendor_information_event_id_fkey"
             columns: ["event_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "events"
             referencedColumns: ["id"]
           }
@@ -272,21 +272,36 @@ export interface Database {
       event_vendors: {
         Row: {
           application_status: Database["public"]["Enums"]["Application Status"]
+          comments: string | null
           event_id: string
+          inventory: string
           payment_status: Database["public"]["Enums"]["Payment Status"]
+          table_id: string
+          table_quantity: number
           vendor_id: string
+          vendors_at_table: number
         }
         Insert: {
           application_status?: Database["public"]["Enums"]["Application Status"]
+          comments?: string | null
           event_id: string
+          inventory: string
           payment_status?: Database["public"]["Enums"]["Payment Status"]
+          table_id: string
+          table_quantity: number
           vendor_id: string
+          vendors_at_table: number
         }
         Update: {
           application_status?: Database["public"]["Enums"]["Application Status"]
+          comments?: string | null
           event_id?: string
+          inventory?: string
           payment_status?: Database["public"]["Enums"]["Payment Status"]
+          table_id?: string
+          table_quantity?: number
           vendor_id?: string
+          vendors_at_table?: number
         }
         Relationships: [
           {
@@ -294,6 +309,13 @@ export interface Database {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_vendors_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "tables"
             referencedColumns: ["id"]
           },
           {
