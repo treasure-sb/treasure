@@ -38,13 +38,14 @@ const profileSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
+  business_name: z.string().optional(),
   bio: z.string().optional(),
   social_links: z.array(LinkSchema).optional(),
   payment_links: z.array(LinkSchema).optional(),
 });
 
 interface EventFormProps {
-  profile: any;
+  profile: Tables<"profiles">;
   avatarUrl: string;
   userLinks: Partial<Tables<"links">>[] | undefined;
 }
@@ -61,6 +62,7 @@ export default function EditProfileForm({
     defaultValues: {
       first_name: profile.first_name || "",
       last_name: profile.last_name || "",
+      business_name: profile.business_name || "",
       bio: profile.bio || "",
     },
   });
@@ -117,7 +119,7 @@ export default function EditProfileForm({
     }
 
     const editPromise = [
-      await editProfile(newForm),
+      await editProfile(newForm, profile.id),
       await createLinks(addedLinks, profile.id),
       await updateLinks(updatedLinks, profile.id),
       removedLinks ? await deleteLinks(removedLinks, profile.id) : null,
@@ -159,6 +161,20 @@ export default function EditProfileForm({
                   <FormItem>
                     <FormControl>
                       <Input placeholder="Last Name" {...field} />
+                    </FormControl>
+                    <div className="h-1">
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="business_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Business Name" {...field} />
                     </FormControl>
                     <div className="h-1">
                       <FormMessage />

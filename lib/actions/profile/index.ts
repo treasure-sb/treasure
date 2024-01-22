@@ -7,6 +7,7 @@ import { profileForm } from "@/types/profile";
 interface createProfileData {
   first_name: string;
   last_name: string;
+  business_name?: string;
   username: string;
   discriminator: number;
   email: string;
@@ -15,18 +16,13 @@ interface createProfileData {
 
 const createProfile = async (createProfileData: createProfileData) => {
   const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, username, discriminator, email, id } =
-    createProfileData;
+  const { business_name } = createProfileData;
   const { data, error } = await supabase
     .from("profiles")
     .insert([
       {
-        first_name,
-        last_name,
-        username,
-        discriminator,
-        email,
-        id,
+        ...createProfileData,
+        business_name: business_name || null,
       },
     ])
     .select();
@@ -35,17 +31,14 @@ const createProfile = async (createProfileData: createProfileData) => {
   return { profileData, error };
 };
 
-const editProfile = async (values: any) => {
+const editProfile = async (values: any, profileId: string) => {
   const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, bio, avatar_url } = values;
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { first_name, last_name, business_name, bio, avatar_url } = values;
 
   const { data, error } = await supabase
     .from("profiles")
-    .update({ first_name, last_name, bio, avatar_url })
-    .eq("id", user?.id)
+    .update({ first_name, last_name, business_name, bio, avatar_url })
+    .eq("id", profileId)
     .select();
 
   if (!error && data) {
