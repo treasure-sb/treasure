@@ -45,6 +45,12 @@ export default function VendorInformation() {
               <CardContent className="space-y-3">
                 <p>
                   <span className="text-primary font-semibold">
+                    Business Name:
+                  </span>{" "}
+                  {profile?.business_name || "N/A"}
+                </p>
+                <p>
+                  <span className="text-primary font-semibold">
                     First Name:
                   </span>{" "}
                   {profile?.first_name}
@@ -56,12 +62,6 @@ export default function VendorInformation() {
                 <p>
                   <span className="text-primary font-semibold">Email:</span>{" "}
                   {profile?.email}
-                </p>
-                <p>
-                  <span className="text-primary font-semibold">
-                    Business Name:
-                  </span>{" "}
-                  {profile?.business_name || "N/A"}
                 </p>
                 <p>
                   <InstagramIcon className="inline-block mr-2" />

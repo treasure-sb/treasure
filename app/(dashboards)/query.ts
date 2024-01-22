@@ -3,7 +3,6 @@ import { createClient } from "@/utils/supabase/client";
 import { getProfile } from "@/lib/helpers/profiles";
 import { validateUser } from "@/lib/actions/auth";
 import { User } from "@supabase/supabase-js";
-import { Tables } from "@/types/supabase";
 
 export const useProfile = () => {
   const user = useUser();

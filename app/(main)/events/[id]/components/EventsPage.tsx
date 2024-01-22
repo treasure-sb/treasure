@@ -165,7 +165,7 @@ export default async function EventsPage({
           ) : null}
         </div>
       </div>
-      <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end">
+      <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end z-20">
         {profile && profile.role === "admin" && (
           <>
             <AssignEvent event={event} />

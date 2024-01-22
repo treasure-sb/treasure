@@ -72,7 +72,7 @@ export default function AttendingEvent({
   return data ? (
     <Button
       onClick={handleAttending}
-      className="opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white"
+      className="z-[60] opacity-70 hover:opacity-50 bg-primary w-fit text-background text-md font-bold active:bg-white"
     >
       <h1>Attending</h1>
       <CalendarCheck2Icon className="ml-2" />
@@ -80,7 +80,7 @@ export default function AttendingEvent({
   ) : (
     <Button
       onClick={handleAttending}
-      className="hover:opacity-70 bg-tertiary hover:bg-tertiary h-full w-fit text-background text-md font-bold"
+      className="z-[60] hover:opacity-70 bg-tertiary hover:bg-tertiary h-full w-fit text-background text-md font-bold"
     >
       <h1>Not Attending</h1>
       <CalendarX2Icon className="ml-2" />
