@@ -18,6 +18,7 @@ interface SignUpForm {
   email: string;
   firstName: string;
   lastName: string;
+  businessName?: string;
   password: string;
 }
 
@@ -68,7 +69,7 @@ const signUpUser = async (email: string, password: string) => {
  */
 
 const signUp = async (form: SignUpForm, signup_invite_token?: string) => {
-  const { firstName, lastName, email, password } = form;
+  const { firstName, lastName, businessName, email, password } = form;
 
   const signUpResult = await signUpUser(email, password);
   if (!signUpResult.success) {
@@ -79,6 +80,7 @@ const signUp = async (form: SignUpForm, signup_invite_token?: string) => {
     signUpResult.user as User,
     firstName,
     lastName,
+    businessName,
     email
   );
 
@@ -151,6 +153,7 @@ const createUserProfile = async (
   user: User,
   first_name: string,
   last_name: string,
+  business_name: string | undefined,
   email: string
 ) => {
   const username = email.split("@")[0];
@@ -161,6 +164,7 @@ const createUserProfile = async (
   const profileData = {
     first_name: firstNameCapitalized,
     last_name: lastNameCapitalized,
+    business_name: business_name,
     username,
     discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
     email,

@@ -30,6 +30,7 @@ const formSchema = z.object({
   lastName: z.string().min(1, {
     message: "Please enter your last name",
   }),
+  businessName: z.string().optional(),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters long",
   }),
@@ -57,6 +58,7 @@ export default function Page({
     defaultValues: {
       firstName: "",
       lastName: "",
+      businessName: "",
       email: "",
       password: "",
     },
@@ -117,6 +119,20 @@ export default function Page({
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="businessName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Business Name (optional)" {...field} />
+                </FormControl>
+                <div className="h-1">
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
