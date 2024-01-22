@@ -109,7 +109,7 @@ export default async function EventsPage({
           <EventPoster posterUrl={publicPosterUrl} />
           <ColorThief public_url={publicPosterUrl} />
         </div>
-        <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8">
+        <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8 z-10">
           <h1 className="text-4xl font-semibold">{event.name}</h1>
           <div>
             <h1 className="font-semibold">{event.venue_name}</h1>
