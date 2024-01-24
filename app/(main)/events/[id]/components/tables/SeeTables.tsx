@@ -27,8 +27,18 @@ export default function SeeTables({
           layout
           className="flex flex-col items-center h-fit p-5 font-bold"
         >
-          <motion.h1 layout="position" className="text-lg">
+          <motion.h1
+            layout="position"
+            className="flex justify-between w-full items-center text-lg"
+          >
             Event Tables
+            <Button
+              onClick={() => setSeeTables(false)}
+              className="text-base"
+              variant={"ghost"}
+            >
+              <motion.p>Hide</motion.p>
+            </Button>
           </motion.h1>
           <motion.div layout className="w-full">
             {tables.map((table) => (
@@ -59,7 +69,7 @@ export default function SeeTables({
                       >
                         <Button
                           variant={"outline"}
-                          className="font-normal text-sm p-2"
+                          className="font-normal text-sm p-2 border-primary"
                         >
                           Buy Now
                         </Button>
@@ -70,13 +80,6 @@ export default function SeeTables({
               </div>
             ))}
           </motion.div>
-          <Button
-            onClick={() => setSeeTables(false)}
-            className="text-base mt-2"
-            variant={"ghost"}
-          >
-            <motion.p>Back</motion.p>
-          </Button>
         </motion.div>
       ) : (
         <motion.div
@@ -87,11 +90,13 @@ export default function SeeTables({
             Tables from ${minimumTablePrice}
           </motion.h1>
           <Button
-            onClick={() => setSeeTables(true)}
-            className="text-base"
-            variant={"ghost"}
+            asChild
+            className="text-base border-primary"
+            variant={"outline"}
           >
-            <motion.p layout="position">See Tables</motion.p>
+            <motion.button layout="position" onClick={() => setSeeTables(true)}>
+              <motion.p layout="position">See Tables</motion.p>
+            </motion.button>
           </Button>
         </motion.div>
       )}
