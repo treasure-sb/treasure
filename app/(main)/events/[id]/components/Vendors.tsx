@@ -8,7 +8,6 @@ export default async function Vendors({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
 
   const vendors = event.vendors;
-  console.log(event);
   const vendorsWithPublicUrls = await Promise.all(
     vendors.map(async (vendor: any) => {
       let {
@@ -42,7 +41,9 @@ export default async function Vendors({ event }: { event: any }) {
                 </Link>
                 <div className="items-center text-center">
                   <div className="font-semibold text-base">
-                    {vendor.first_name + " " + vendor.last_name}
+                    {vendor.business_name
+                      ? vendor.business_name
+                      : vendor.first_name + " " + vendor.last_name}
                   </div>
                   <div className="text-sm ">@{vendor.username}</div>
                 </div>
