@@ -44,21 +44,21 @@ export default function VendorAppReceived({
                 the vendor will not be able to purchase any tables until you
                 accept them.
               </Text>
-              <Img
-                className="m-auto rounded-md"
-                src={posterUrl}
-                alt="event-poster"
-                width="300"
-                height="auto"
-              />
             </Section>
-            <Section className="text-center my-6">
+            <Section className="text-center my-2 mb-6">
               <Button
                 className="bg-primary ml-auto p-4 rounded-full text-foreground"
                 href="https://ontreasure.xyz/host"
               >
                 View Application
               </Button>
+              <Img
+                className="m-auto rounded-md mt-6"
+                src={posterUrl}
+                alt="event-poster"
+                width="220"
+                height="auto"
+              />
             </Section>
           </Container>
         </Body>

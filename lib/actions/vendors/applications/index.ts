@@ -14,24 +14,13 @@ const submitVendorApplication = async (
   const { data: hostData } = await supabase
     .from("profiles")
     .select("email")
-    .eq("id", event?.organizer_id)
+    .eq("id", event.organizer_id)
     .single();
 
   const eventPosterUrl = await getPublicPosterUrl(event);
   await sendVendorAppReceivedEmail(hostData?.email, eventPosterUrl, event.name);
 
   return { error };
-};
-
-const composeVendorApplicationEmail = async (event: Tables<"events">) => {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("email")
-    .eq("id", event?.organizer_id)
-    .single();
-
-  return {};
 };
 
 export { submitVendorApplication };
