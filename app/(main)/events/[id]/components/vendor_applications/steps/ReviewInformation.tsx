@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { VendorApplication } from "@/types/applications";
 import { submitVendorApplication } from "@/lib/actions/vendors/applications";
 import { useState } from "react";
+import { Tables } from "@/types/supabase";
 
 export default function ReviewInformation() {
   const {
@@ -36,7 +37,10 @@ export default function ReviewInformation() {
       inventory,
       comments,
     };
-    const { error } = await submitVendorApplication(vendorApplication);
+    const { error } = await submitVendorApplication(
+      vendorApplication,
+      event as Tables<"events">
+    );
     if (error) {
       setSubmitting(false);
       setAlreadySubmitted(true);

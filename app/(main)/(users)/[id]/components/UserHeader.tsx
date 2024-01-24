@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getPaymentLinks, getSocialLinks } from "@/lib/actions/links";
 import { Settings } from "lucide-react";
 import QRCode from "./utilities/QRCode";
+import { is } from "date-fns/locale";
 
 export default async function UserHeader({
   user,
@@ -66,8 +67,14 @@ export default async function UserHeader({
           <h1 className="text-2xl font-bold">
             {isProfile ? (
               <>
-                {(user as Tables<"profiles">).first_name}{" "}
-                {(user as Tables<"profiles">).last_name}
+                {user.business_name ? (
+                  <>{(user as Tables<"profiles">).business_name}</>
+                ) : (
+                  <>
+                    {(user as Tables<"profiles">).first_name}{" "}
+                    {(user as Tables<"profiles">).last_name}
+                  </>
+                )}
               </>
             ) : (
               <>{(user as Tables<"temporary_profiles">).business_name}</>
@@ -127,8 +134,14 @@ export default async function UserHeader({
       <h1 className="text-2xl md:text-3xl font-bold">
         {isProfile ? (
           <>
-            {(user as Tables<"profiles">).first_name}{" "}
-            {(user as Tables<"profiles">).last_name}
+            {user.business_name ? (
+              <>{(user as Tables<"profiles">).business_name}</>
+            ) : (
+              <>
+                {(user as Tables<"profiles">).first_name}{" "}
+                {(user as Tables<"profiles">).last_name}
+              </>
+            )}
           </>
         ) : (
           <>{(user as Tables<"temporary_profiles">).business_name}</>

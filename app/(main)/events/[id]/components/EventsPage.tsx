@@ -23,12 +23,10 @@ import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import LikeButton from "@/components/events/shared/LikeButton";
 import AttendingEvent from "./AttendingEvent";
 import { convertToStandardTime } from "@/lib/utils";
+import Vendors from "./Vendors";
+import { AnyCnameRecord } from "dns";
 
-export default async function EventsPage({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
+export default async function EventsPage({ event }: { event: any }) {
   const {
     data: { user },
   } = await validateUser();
@@ -146,7 +144,7 @@ export default async function EventsPage({
             </Link>
           </div>
           <Separator />
-          {/* <Vendors event={event} /> */}
+          <Vendors event={event} />
           <HostedBy event={event} />
           <Separator />
           {event.venue_map_url ? (

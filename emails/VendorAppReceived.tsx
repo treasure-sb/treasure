@@ -6,12 +6,18 @@ import {
   Heading,
   Hr,
   Html,
-  Img,
   Section,
   Text,
+  Img,
 } from "@react-email/components";
 
-export default function Welcome({ firstName = "John" }: { firstName: string }) {
+export default function VendorAppReceived({
+  posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
+  eventName = "your Event",
+}: {
+  posterUrl: string;
+  eventName: string;
+}) {
   return (
     <Html>
       <TailwindConfig>
@@ -31,21 +37,28 @@ export default function Welcome({ firstName = "John" }: { firstName: string }) {
             <Hr />
             <Section>
               <Heading className="text-center font-normal">
-                Welcome, <strong>{firstName}</strong>!
+                Someone applied to <strong>{eventName}</strong>!
               </Heading>
               <Text className="text-center">
-                Treasure lets you explore card and collectible events near you!
-                You can now see all your favorite vendors and events in one
-                place.
+                To see the application please click the link below. Note that
+                the vendor will not be able to purchase any tables until you
+                accept them.
               </Text>
             </Section>
-            <Section className="text-center my-6">
+            <Section className="text-center my-2 mb-6">
               <Button
                 className="bg-primary ml-auto p-4 rounded-full text-foreground"
-                href="https://ontreasure.xyz/events"
+                href="https://ontreasure.xyz/host"
               >
-                Explore Events
+                View Application
               </Button>
+              <Img
+                className="m-auto rounded-md mt-6"
+                src={posterUrl}
+                alt="event-poster"
+                width="220"
+                height="auto"
+              />
             </Section>
           </Container>
         </Body>
