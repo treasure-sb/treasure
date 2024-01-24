@@ -53,7 +53,25 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
             <AvatarFallback />
           </Avatar>
         </Link>
-        <span className="font-semibold">{username}</span>
+        {event.organizer_type === "profile" ? (
+          <div className="items-center text-center">
+            <div className="font-semibold text-base">
+              {organizer.business_name
+                ? organizer.business_name
+                : (organizer as Tables<"profiles">).first_name +
+                  " " +
+                  (organizer as Tables<"profiles">).last_name}
+            </div>
+            <div className="text-sm ">@{username}</div>
+          </div>
+        ) : (
+          <div className="items-center text-center">
+            <div className="font-semibold text-base">
+              {organizer.business_name}
+            </div>
+            <div className="text-sm ">@{username}</div>
+          </div>
+        )}
       </div>
     </>
   );
