@@ -6,7 +6,7 @@ import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkel
 
 export default function AllEvents() {
   const { data, isLoading } = useHostedEvents();
-  const { setCurrentEvent } = useStore();
+  const { setEvent } = useStore();
   const user = useUser();
 
   const loadingSkeletons = Array.from({ length: 6 }).map((_, i) => (
@@ -18,7 +18,7 @@ export default function AllEvents() {
       {(isLoading || !user) && loadingSkeletons}
       {data?.map((event) => (
         <div
-          onClick={() => setCurrentEvent(event)}
+          onClick={() => setEvent(event)}
           className="hover:translate-y-[-.75rem] transition duration-500 pointer-events-auto cursor-pointer"
           key={event.id}
         >

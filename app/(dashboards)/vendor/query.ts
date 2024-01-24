@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import { eventDisplayData } from "@/lib/helpers/events";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useUser } from "../query";
 
 export const useTables = () => {

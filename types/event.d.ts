@@ -1,3 +1,5 @@
+import { Tables } from "./supabase";
+
 export interface EventFormTicket {
   ticket_price: string;
   ticket_quantity: string;

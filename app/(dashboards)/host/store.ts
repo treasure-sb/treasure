@@ -1,27 +1,26 @@
 import { create } from "zustand";
-import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
 
 type Store = {
   currentPage: string;
-  currentEvent: EventDisplayData | null;
+  event: EventDisplayData | null;
   setCurrentPage: (page: string) => void;
-  setCurrentEvent: (event: EventDisplayData) => void;
+  setEvent: (event: EventDisplayData | null) => void;
 };
 
 export const useStore = create<Store>((set) => ({
   currentPage: "dashboard",
-  currentEvent: null,
+  event: null,
   setCurrentPage: (page: string) => {
     set((state) => ({
       ...state,
       currentPage: page,
     }));
   },
-  setCurrentEvent: (event: EventDisplayData) => {
+  setEvent: (event: EventDisplayData | null) => {
     set((state) => ({
       ...state,
-      currentEvent: event,
+      event: event,
     }));
   },
 }));

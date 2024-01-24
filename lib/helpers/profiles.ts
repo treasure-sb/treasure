@@ -61,6 +61,14 @@ const getTempProfileFromID = async (id: string) => {
   return { tempProfile, error };
 };
 
+const getProfileAvatar = async (avatar_url: string) => {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("avatars").getPublicUrl(avatar_url);
+  return publicUrl;
+};
+
 /**
  * Fetches temporary profile data based on a search query. This function searches for profiles by matching the username and business name fields with the provided search string.
  *
@@ -101,6 +109,7 @@ export {
   getProfile,
   getProfileByUsername,
   getProfileLinks,
+  getProfileAvatar,
   getTempProfile,
   getTempProfileFromID,
   fetchTemporaryProfiles,

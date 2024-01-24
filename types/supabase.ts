@@ -526,7 +526,7 @@ export interface Database {
           business_name: string | null
           created_at: string
           discriminator: number | null
-          email: string | null
+          email: string
           first_name: string
           id: string
           last_name: string
@@ -539,7 +539,7 @@ export interface Database {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email?: string | null
+          email: string
           first_name: string
           id?: string
           last_name: string
@@ -552,7 +552,7 @@ export interface Database {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email?: string | null
+          email?: string
           first_name?: string
           id?: string
           last_name?: string
