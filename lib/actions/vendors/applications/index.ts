@@ -2,21 +2,36 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { VendorApplication } from "@/types/applications";
 import { sendVendorAppReceivedEmail } from "../../emails";
+import { Tables } from "@/types/supabase";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 
 const submitVendorApplication = async (
   application: VendorApplication,
-  organizer_id: string
+  event: Tables<"events">
 ) => {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("event_vendors").insert([application]);
   const { data: hostData } = await supabase
     .from("profiles")
     .select("email")
-    .eq("id", organizer_id)
+    .eq("id", event?.organizer_id)
     .single();
-  await sendVendorAppReceivedEmail(hostData?.email);
+
+  const eventPosterUrl = await getPublicPosterUrl(event);
+  await sendVendorAppReceivedEmail(hostData?.email, eventPosterUrl, event.name);
 
   return { error };
+};
+
+const composeVendorApplicationEmail = async (event: Tables<"events">) => {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("id", event?.organizer_id)
+    .single();
+
+  return {};
 };
 
 export { submitVendorApplication };

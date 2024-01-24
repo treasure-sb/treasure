@@ -10,17 +10,21 @@ const sendWelcomeEmail = async (email: string, firstName: string) => {
   await resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
-    subject: "Welcome to Treasure",
+    subject: "Welcome to Treasure!",
     react: Welcome({ firstName }),
   });
 };
 
-const sendVendorAppReceivedEmail = async (email: string) => {
+const sendVendorAppReceivedEmail = async (
+  email: string,
+  posterUrl: string,
+  eventName: string
+) => {
   await resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
     subject: "You Recieved a Vendor Application!",
-    react: VendorAppReceived(),
+    react: VendorAppReceived({ posterUrl, eventName }),
   });
 };
 
