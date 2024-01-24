@@ -4,20 +4,20 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
-export default async function Vendors({ event }: { event: Tables<"events"> }) {
+export default async function Vendors({ event }: { event: any }) {
   const supabase = await createSupabaseServerClient();
 
-  // @ts-ignore
-  const vendors: Tables<"profiles">[] = event.vendors;
+  const vendors = event.vendors;
+  console.log(event);
   const vendorsWithPublicUrls = await Promise.all(
     vendors.map(async (vendor: any) => {
       let {
         data: { publicUrl: vendorPublicUrl },
       } = await supabase.storage
         .from("avatars")
-        .getPublicUrl(vendor.avatar_url);
+        .getPublicUrl(vendor.profiles.avatar_url);
       return {
-        ...vendor,
+        ...vendor.profiles,
         vendorPublicUrl,
       };
     })
