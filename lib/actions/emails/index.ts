@@ -15,12 +15,12 @@ const sendWelcomeEmail = async (email: string, firstName: string) => {
   });
 };
 
-const sendVendorAppReceivedEmail = async (email: string, url: string) => {
+const sendVendorAppReceivedEmail = async (email: string) => {
   await resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
     subject: "You Recieved a Vendor Application!",
-    react: VendorAppReceived({ url }),
+    react: VendorAppReceived(),
   });
 };
 

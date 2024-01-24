@@ -8,13 +8,10 @@ const submitVendorApplication = async (application: VendorApplication) => {
   const { error } = await supabase.from("event_vendors").insert([application]);
   const { data: vendorData } = await supabase
     .from("profiles")
-    .select("username,email")
+    .select("email")
     .eq("id", application.vendor_id)
     .single();
-  await sendVendorAppReceivedEmail(
-    vendorData?.email,
-    "https://ontreasure.xyz/" + vendorData?.username
-  );
+  await sendVendorAppReceivedEmail(vendorData?.email);
 
   return { error };
 };
