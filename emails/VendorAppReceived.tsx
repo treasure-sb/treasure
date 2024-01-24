@@ -10,11 +10,7 @@ import {
   Text,
 } from "@react-email/components";
 
-export default function VendorAppReceived({
-  url = "https://ontreasure.xyz/",
-}: {
-  url: string;
-}) {
+export default function VendorAppReceived() {
   return (
     <Html>
       <TailwindConfig>
@@ -37,7 +33,7 @@ export default function VendorAppReceived({
             <Section className="text-center my-6">
               <Button
                 className="bg-primary ml-auto p-4 rounded-full text-foreground"
-                href={url}
+                href="https://ontreasure.xyz/host"
               >
                 View Application
               </Button>
