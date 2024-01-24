@@ -25,8 +25,18 @@ export default function SeeTickets({
           layout
           className="flex flex-col items-center h-fit p-5 font-bold"
         >
-          <motion.h1 layout="position" className="text-lg">
+          <motion.h1
+            layout="position"
+            className="flex justify-between w-full text-lg items-center"
+          >
             Event Tickets
+            <Button
+              onClick={() => setSeeTickets(false)}
+              className="text-base"
+              variant={"ghost"}
+            >
+              <motion.p>Hide</motion.p>
+            </Button>
           </motion.h1>
           <motion.div layout className="w-full">
             {tickets.map((ticket) => (
@@ -41,7 +51,7 @@ export default function SeeTickets({
                     <Link target="_blank" href={checkoutUrl}>
                       <Button
                         variant={"outline"}
-                        className="font-normal text-sm p-2"
+                        className="font-normal text-sm p-2 border-primary"
                       >
                         Buy Now
                       </Button>
@@ -51,13 +61,6 @@ export default function SeeTickets({
               </div>
             ))}
           </motion.div>
-          <Button
-            onClick={() => setSeeTickets(false)}
-            className="text-base mt-2"
-            variant={"ghost"}
-          >
-            <motion.p>Back</motion.p>
-          </Button>
         </motion.div>
       ) : (
         <motion.div
@@ -69,12 +72,18 @@ export default function SeeTickets({
               ? "Tickets are Free!"
               : `Tickets from $${minimumTicketPrice}`}
           </motion.h1>
+
           <Button
-            onClick={() => setSeeTickets(true)}
-            className="text-base"
-            variant={"ghost"}
+            asChild
+            className="text-base border-primary h-"
+            variant={"outline"}
           >
-            <motion.p layout="position">See Tickets</motion.p>
+            <motion.button
+              layout="position"
+              onClick={() => setSeeTickets(true)}
+            >
+              <motion.p layout="position">See Tickets</motion.p>
+            </motion.button>
           </Button>
         </motion.div>
       )}
