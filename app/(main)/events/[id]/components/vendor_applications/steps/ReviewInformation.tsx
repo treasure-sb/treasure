@@ -36,7 +36,10 @@ export default function ReviewInformation() {
       inventory,
       comments,
     };
-    const { error } = await submitVendorApplication(vendorApplication);
+    const { error } = await submitVendorApplication(
+      vendorApplication,
+      event?.organizer_id ? event.organizer_id : ""
+    );
     if (error) {
       setSubmitting(false);
       setAlreadySubmitted(true);
