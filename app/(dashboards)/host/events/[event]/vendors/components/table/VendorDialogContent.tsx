@@ -1,4 +1,4 @@
-import { EventVendorProfile } from "../page";
+import { EventVendorProfile } from "../../page";
 import { DialogContent } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

@@ -5,7 +5,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { EventVendorProfile } from "../page";
+import { EventVendorProfile } from "../../page";
 import { Check } from "lucide-react";
 import { X } from "lucide-react";
 

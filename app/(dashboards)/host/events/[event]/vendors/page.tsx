@@ -1,10 +1,10 @@
-import { columns } from "./table/VendorDataColumns";
+import { columns } from "./components/table/VendorDataColumns";
 import { validateUser } from "@/lib/actions/auth";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import DataTable from "./table/DataTable";
+import DataTable from "./components/table/DataTable";
 
 export type EventVendorProfile = Tables<"event_vendors"> & {
   vendor: Tables<"profiles">;
