@@ -1,10 +1,8 @@
 "use client";
 import Sales from "./components/Sales";
 import Tables from "./components/Tables";
-import UpcomingEvents from "./components/UpcomingEvents";
 import { useEffect } from "react";
 import { useStore } from "./store";
-import Profit from "./components/Profit";
 
 export default function Page() {
   const { setCurrentPage } = useStore();

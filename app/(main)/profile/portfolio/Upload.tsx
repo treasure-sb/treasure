@@ -21,10 +21,8 @@ export default function Upload({ user }: { user: User }) {
   const handleUpload = async (file: File) => {
     setIsDropdownOpen(false);
     const uploadedFile = `portfilio${Date.now()}`;
-    const { error: uploadError } = await supabase.storage
-      .from("portfolios")
-      .upload(uploadedFile, file);
-    const { error: insertError } = await supabase
+    await supabase.storage.from("portfolios").upload(uploadedFile, file);
+    await supabase
       .from("portfolio_pictures")
       .insert([{ user_id: user.id, picture_url: uploadedFile }]);
     refresh();

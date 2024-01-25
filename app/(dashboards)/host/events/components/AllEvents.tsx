@@ -1,13 +1,23 @@
-import { useUser } from "@/app/(dashboards)/query";
-import { useStore } from "../../store";
-import { useHostedEvents } from "../../query";
-import EventDisplay from "@/components/events/shared/EventDisplay";
+import { eventDisplayData } from "@/lib/helpers/events";
+import { validateUser } from "@/lib/actions/auth";
+import { Tables } from "@/types/supabase";
+import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkeleton";
+import EventDisplay from "@/components/events/shared/EventDisplay";
 
-export default function AllEvents() {
-  const { data, isLoading } = useHostedEvents();
-  const { setCurrentEvent } = useStore();
-  const user = useUser();
+export default async function AllEvents() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await validateUser();
+
+  const { data } = await supabase
+    .from("events")
+    .select("*")
+    .eq("organizer_id", user?.id as string);
+
+  const eventsHosting: Tables<"events">[] = data || [];
+  const eventData = await eventDisplayData(eventsHosting);
 
   const loadingSkeletons = Array.from({ length: 6 }).map((_, i) => (
     <EventDisplaySkeleton key={i} />
@@ -15,21 +25,15 @@ export default function AllEvents() {
 
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
-      {(isLoading || !user) && loadingSkeletons}
-      {data?.map((event) => (
-        <div
-          onClick={() => setCurrentEvent(event)}
-          className="hover:translate-y-[-.75rem] transition duration-500 pointer-events-auto cursor-pointer"
-          key={event.id}
-        >
-          <div className="pointer-events-none">
-            <EventDisplay
-              user={user}
-              showLikeButton={false}
-              redirect={`/profile/events/organizer/${event.cleaned_name}`}
-              event={event}
-            />
-          </div>
+      {!data && loadingSkeletons}
+      {eventData.map((event) => (
+        <div className="hover:translate-y-[-.5rem] transition duration-500">
+          <EventDisplay
+            user={user}
+            showLikeButton={false}
+            redirect={`/host/events/${event.cleaned_name}`}
+            event={event}
+          />
         </div>
       ))}
     </div>

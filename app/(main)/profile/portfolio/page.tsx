@@ -1,6 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
-import EmptyImage from "@/components/icons/EmptyImage";
 import { MoreHorizontal } from "lucide-react";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
@@ -9,7 +8,6 @@ import { revalidatePath } from "next/cache";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";

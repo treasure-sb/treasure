@@ -12,7 +12,7 @@ import { Tables } from "@/types/supabase";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { paymentLinkData } from "@/lib/helpers/links";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import CashIcon from "@/components/icons/CashIcon";
 import TransactionCard from "./components/TransactionCard";
@@ -95,11 +95,7 @@ export default function Page({
     refetch();
   };
 
-  const editTransaction = () => {
-    console.log("editing");
-    console.log(selectedTransaction);
-    console.log("edited");
-  };
+  const editTransaction = () => {};
 
   const loadingSkeletons = Array.from({ length: 5 }).map((_, i) => (
     <Skeleton key={i} className="w-full h-12" />
@@ -145,13 +141,12 @@ export default function Page({
           {data &&
             data.map((transaction, i) => {
               return (
-                <>
-                  <button
-                    className="text-left w-full"
+                <div key={transaction.id}>
+                  <div
+                    className="text-left w-full cursor-pointer"
                     onClick={() => showDesktopTransaction(transaction)}
                   >
                     <TransactionCard
-                      key={transaction.id}
                       transaction={transaction}
                       formattedDate={new Date(
                         transaction.created_at
@@ -161,13 +156,14 @@ export default function Page({
                         month: "short",
                       })}
                     />
-                  </button>
+                  </div>
                   {!(i === data.length - 1) && (
-                    <Separator className="bg-black" />
+                    <Separator className="bg-black my-4" />
                   )}
-                </>
+                </div>
               );
             })}
+
           {data && data.length === 0 && (
             <div className="text-center text-gray-400">
               No transactions found
@@ -251,12 +247,12 @@ export default function Page({
       <div className="sm:hidden flex flex-col gap-3 p-6 dashboard-section-theme rounded-3xl">
         {(isLoading || !user) && <>{loadingSkeletons}</>}
         {data &&
-          data?.map((transaction, i) => {
+          data.map((transaction, i) => {
             return (
-              <>
+              <div key={transaction.id}>
                 <Dialog>
                   <DialogTrigger className="hover:scale-105 transition duration-500 focus:outline-none w-full">
-                    <button
+                    <div
                       className="w-full text-left"
                       onClick={() => showMobileTransaction(transaction)}
                     >
@@ -271,7 +267,7 @@ export default function Page({
                           month: "short",
                         })}
                       />
-                    </button>
+                    </div>
                   </DialogTrigger>
                   <DialogContent className="flex items-center justify-center w-3/4 focus:outline-none">
                     {selectedTransaction && (
@@ -339,8 +335,10 @@ export default function Page({
                   </DialogContent>
                 </Dialog>
 
-                {!(i === data.length - 1) && <Separator className="bg-black" />}
-              </>
+                {!(i === data.length - 1) && (
+                  <Separator className="bg-black my-4" />
+                )}
+              </div>
             );
           })}
         {data && data.length === 0 && (
