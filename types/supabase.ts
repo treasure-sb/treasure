@@ -34,15 +34,7 @@ export interface Database {
           question_type?: Database["public"]["Enums"]["Question Type"]
           vendor_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "fk_eventvendors"
-            columns: ["vendor_id", "event_id"]
-            isOneToOne: false
-            referencedRelation: "event_vendors"
-            referencedColumns: ["vendor_id", "event_id"]
-          }
-        ]
+        Relationships: []
       }
       application_standard_questions: {
         Row: {
@@ -599,7 +591,7 @@ export interface Database {
           price: number
           quantity: number
           section_name: string
-          space_allocated: number
+          space_allocated: number | null
           stripe_price_id: string | null
           stripe_product_id: string | null
           table_provided: boolean
@@ -612,7 +604,7 @@ export interface Database {
           price: number
           quantity: number
           section_name: string
-          space_allocated?: number
+          space_allocated?: number | null
           stripe_price_id?: string | null
           stripe_product_id?: string | null
           table_provided?: boolean
@@ -625,7 +617,7 @@ export interface Database {
           price?: number
           quantity?: number
           section_name?: string
-          space_allocated?: number
+          space_allocated?: number | null
           stripe_price_id?: string | null
           stripe_product_id?: string | null
           table_provided?: boolean
@@ -835,7 +827,7 @@ export interface Database {
         | "TABLES_ONLY"
         | "ATTENDEES_ONLY"
         | "SELLING_ALL"
-      "Payment Status": "UNPAID" | "PAID"
+      "Payment Status": "UNPAID" | "PAID" | "PREBOOKED"
       "Question Type": "STANDARD" | "UNIQUE"
       "Vendor Exclusivity": "PUBLIC" | "APPLICATIONS"
     }

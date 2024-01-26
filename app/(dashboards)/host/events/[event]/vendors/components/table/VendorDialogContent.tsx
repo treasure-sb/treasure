@@ -3,19 +3,23 @@ import { DialogContent } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { sendVendorAppAcceptedEmail } from "@/lib/actions/emails";
+import { EventDisplayData } from "@/types/event";
 import Link from "next/link";
 
 export default function VendorDialogContent({
   vendor,
   avatarUrl,
+  eventData,
 }: {
   vendor: EventVendorProfile;
   avatarUrl: string;
+  eventData: EventDisplayData;
 }) {
   const profile = vendor.vendor;
+  const table = vendor.table;
   const {
     inventory,
     comments,
@@ -34,8 +38,19 @@ export default function VendorDialogContent({
       .from("event_vendors")
       .update({ application_status: "ACCEPTED" })
       .eq("vendor_id", vendorId)
-      .eq("event_id", eventId)
-      .single();
+      .eq("event_id", eventId);
+
+    await sendVendorAppAcceptedEmail(
+      profile.email,
+      eventData.name,
+      eventData.publicPosterUrl,
+      table.stripe_price_id as string,
+      vendorId,
+      eventId,
+      vendor.table_id,
+      tableQuantity.toString()
+    );
+
     refresh();
   };
 
@@ -80,11 +95,12 @@ export default function VendorDialogContent({
         </div>
         <div>
           <div className="flex justify-between">
-            <p>{vendorsAtTable} vendors at table</p>
+            <p>
+              {table.section_name}, {vendorsAtTable} vendors at table
+            </p>
             <p>Qty: {tableQuantity}</p>
           </div>
           <Separator className="my-2" />
-          <div className="flex justify-end">${tableQuantity}</div>
         </div>
       </div>
       {applicationStatus === "ACCEPTED" ? null : (
