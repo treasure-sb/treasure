@@ -13,8 +13,8 @@ import { EventDisplayData } from "@/types/event";
 import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import Link from "next/link";
 import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
+import Link from "next/link";
 
 export default function VendorDialogContent({
   vendor,
@@ -31,11 +31,11 @@ export default function VendorDialogContent({
   const {
     inventory,
     comments,
-    table_quantity: tableQuantity,
-    vendors_at_table: vendorsAtTable,
-    event_id: eventId,
-    vendor_id: vendorId,
-    application_status: applicationStatus,
+    table_quantity,
+    vendors_at_table,
+    event_id,
+    vendor_id,
+    application_status,
   } = vendor;
   const { name: eventName, publicPosterUrl: posterUrl } = eventData;
   const { refresh } = useRouter();
@@ -45,17 +45,17 @@ export default function VendorDialogContent({
     await supabase
       .from("event_vendors")
       .update({ application_status: "ACCEPTED" })
-      .eq("vendor_id", vendorId)
-      .eq("event_id", eventId);
+      .eq("vendor_id", vendor_id)
+      .eq("event_id", event_id);
 
     const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
       eventName,
       posterUrl,
-      vendorId,
-      eventId,
+      vendorId: vendor_id,
+      eventId: event_id,
       stripePriceId: table.stripe_price_id as string,
       tableId: vendor.table_id as string,
-      quantity: tableQuantity.toString(),
+      quantity: table_quantity.toString(),
       message,
     };
 
@@ -68,8 +68,8 @@ export default function VendorDialogContent({
     await supabase
       .from("event_vendors")
       .update({ application_status: "REJECTED" })
-      .eq("vendor_id", vendorId)
-      .eq("event_id", eventId);
+      .eq("vendor_id", vendor_id)
+      .eq("event_id", event_id);
 
     const vendorRejectedEmailProps: VendorAppRejectedEmailProps = {
       eventName,
@@ -123,14 +123,14 @@ export default function VendorDialogContent({
           </div>
           <div className="flex justify-between mt-6">
             <p>
-              {table.section_name}, {vendorsAtTable} vendors at table
+              {table.section_name}, {vendors_at_table} vendors at table
             </p>
-            <p>Qty: {tableQuantity}</p>
+            <p>Qty: {table_quantity}</p>
           </div>
           <Separator className="my-2" />
         </div>
 
-        {applicationStatus === "PENDING" ? (
+        {application_status === "PENDING" ? (
           <div>
             <Textarea
               onChange={(e) => setMessage(e.target.value)}
