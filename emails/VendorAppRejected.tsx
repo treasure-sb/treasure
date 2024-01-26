@@ -40,7 +40,7 @@ export default function VendorAppRejected({
             <Hr />
             <Section>
               <Heading className="text-center font-normal">
-                You've been not been selected to be a vendor at{" "}
+                You were not selected to be a vendor at{" "}
                 <strong>{eventName}</strong>
               </Heading>
             </Section>
