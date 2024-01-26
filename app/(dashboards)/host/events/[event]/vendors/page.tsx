@@ -42,7 +42,6 @@ export default async function Page({
   const eventVendors = eventVendorData as EventVendorProfile[];
   const tableDataPromise = eventVendors.map(async (eventVendor) => {
     const avatar = await getProfileAvatar(eventVendor.vendor.avatar_url);
-    console.log(eventVendor);
     return {
       avatar_url: avatar,
       name: `${eventVendor.vendor.first_name} ${eventVendor.vendor.last_name}`,

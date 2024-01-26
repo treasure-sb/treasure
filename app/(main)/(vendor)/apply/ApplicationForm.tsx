@@ -62,7 +62,6 @@ export default function ApplicationForm({
       event_id: event_id,
     };
     await submitVendorApp(newForm);
-    console.log("submitted");
     setSubmitting(false);
   };
 

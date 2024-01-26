@@ -92,7 +92,7 @@ export const columns: ColumnDef<Vendor>[] = [
   },
   {
     accessorKey: "vendor_status",
-    header: "Vendor Status",
+    header: "Application Status",
     cell: VendorStatusCell,
   },
   {
