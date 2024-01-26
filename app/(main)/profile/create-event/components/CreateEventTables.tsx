@@ -92,7 +92,6 @@ export default function EventTables({
       ...eventForm,
       ...form.getValues(),
     };
-    console.log(newForm);
     setEventForm(newForm);
     onNext();
   };

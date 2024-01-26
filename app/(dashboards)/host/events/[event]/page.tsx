@@ -10,7 +10,7 @@ export default function Page({
 }) {
   return (
     <motion.div
-      className="2xl:grid grid-cols-3 gap-6 min-h-[calc(100vh-24rem)] flex flex-col "
+      className="2xl:grid grid-cols-3 gap-6 min-h-[calc(100vh-24rem)] flex flex-col"
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.25, duration: 0.85, ease: "easeInOut" }}

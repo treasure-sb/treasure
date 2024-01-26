@@ -23,15 +23,18 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import VendorDialogContent from "./VendorDialogContent";
+import { EventDisplayData } from "@/types/event";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  eventData: EventDisplayData;
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
+  eventData,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -100,6 +103,7 @@ export default function DataTable<TData, TValue>({
                   <VendorDialogContent
                     vendor={row.getValue("vendor_info")}
                     avatarUrl={row.getValue("avatar_url")}
+                    eventData={eventData}
                   />
                 </Dialog>
               ))

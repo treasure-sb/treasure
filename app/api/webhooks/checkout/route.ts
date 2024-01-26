@@ -44,14 +44,12 @@ export async function POST(req: Request) {
       const { user_id, event_id, ticket_id, quantity } = JSON.parse(
         JSON.stringify(session.metadata)
       );
-      const order: Tables<"orders"> = await generateOrder(user_id);
-      const ticketsToInsert = Array.from({ length: quantity }, () => ({
-        attendee_id: user_id,
-        event_id,
-        ticket_id,
-        order_id: order.id,
-      }));
-      await supabase.from("event_tickets").insert(ticketsToInsert);
+
+      await supabase
+        .from("event_vendors")
+        .update({ payment_status: "PAID" })
+        .eq("event_id", event_id)
+        .eq("vendor_id", user_id);
     }
 
     return NextResponse.json({

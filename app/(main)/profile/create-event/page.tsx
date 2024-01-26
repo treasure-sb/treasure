@@ -63,7 +63,6 @@ export default function Page() {
   useMemo(() => {
     if (eventID) {
       eventData = JSON.parse(eventID);
-      console.log(eventData);
       setEventForm({
         ...eventForm,
         name: eventData.name,

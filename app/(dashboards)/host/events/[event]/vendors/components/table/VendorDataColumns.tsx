@@ -12,6 +12,7 @@ import { X } from "lucide-react";
 export type Vendor = {
   avatar_url: string | null;
   name: string;
+  section: string;
   payment_status: Tables<"event_vendors">["payment_status"];
   vendor_status: Tables<"event_vendors">["application_status"];
   vendor_info: EventVendorProfile;
@@ -81,13 +82,17 @@ export const columns: ColumnDef<Vendor>[] = [
     header: "Name",
   },
   {
+    accessorKey: "section",
+    header: "Section",
+  },
+  {
     accessorKey: "payment_status",
     header: PaidHeader,
     cell: PaymentStatusCell,
   },
   {
     accessorKey: "vendor_status",
-    header: "Vendor Status",
+    header: "Application Status",
     cell: VendorStatusCell,
   },
   {

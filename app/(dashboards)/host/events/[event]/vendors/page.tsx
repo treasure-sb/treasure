@@ -8,6 +8,8 @@ import DataTable from "./components/table/DataTable";
 
 export type EventVendorProfile = Tables<"event_vendors"> & {
   vendor: Tables<"profiles">;
+} & {
+  table: Partial<Tables<"tables">>;
 };
 
 export default async function Page({
@@ -32,7 +34,9 @@ export default async function Page({
 
   const { data: eventVendorData } = await supabase
     .from("event_vendors")
-    .select("*, vendor:profiles(*)")
+    .select(
+      "*, vendor:profiles(*), table:tables(stripe_product_id, stripe_price_id, section_name)"
+    )
     .eq("event_id", hostedEvent.id);
 
   const eventVendors = eventVendorData as EventVendorProfile[];
@@ -41,6 +45,7 @@ export default async function Page({
     return {
       avatar_url: avatar,
       name: `${eventVendor.vendor.first_name} ${eventVendor.vendor.last_name}`,
+      section: eventVendor.table.section_name as string,
       payment_status: eventVendor.payment_status,
       vendor_status: eventVendor.application_status,
       vendor_info: eventVendor,
@@ -51,7 +56,11 @@ export default async function Page({
   return (
     <div>
       <div className="max-w-7xl mx-auto py-10">
-        <DataTable columns={columns} data={vendorsTableData || []} />
+        <DataTable
+          columns={columns}
+          data={vendorsTableData || []}
+          eventData={hostedEvent}
+        />
       </div>
     </div>
   );

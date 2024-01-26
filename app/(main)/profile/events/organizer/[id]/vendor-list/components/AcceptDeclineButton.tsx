@@ -26,7 +26,6 @@ export default function AcceptDeclineButton({
             className="w-10 h-10 overflow-hidden rounded-full"
             variant={"outline"}
             onClick={async () => {
-              console.log("clicked");
               await handleClick(vendor_id, event_id);
             }}
           >
