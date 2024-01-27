@@ -14,7 +14,7 @@ export type Vendor = {
   name: string;
   section: string;
   payment_status: Tables<"event_vendors">["payment_status"];
-  vendor_status: Tables<"event_vendors">["application_status"];
+  application_status: Tables<"event_vendors">["application_status"];
   vendor_info: EventVendorProfile;
 };
 
@@ -46,7 +46,7 @@ const PaymentStatusCell = ({ cell }: CellContext<Vendor, any>) => {
   return value === "PAID" ? PaidCheck : UnpaidX;
 };
 
-const VendorStatusCell = ({ cell }: CellContext<Vendor, any>) => {
+const ApplicationStatusCell = ({ cell }: CellContext<Vendor, any>) => {
   const value = cell.getValue() as string;
   const color = VendorStatusColorMap[value];
   return (
@@ -89,11 +89,17 @@ export const columns: ColumnDef<Vendor>[] = [
     accessorKey: "payment_status",
     header: PaidHeader,
     cell: PaymentStatusCell,
+    filterFn: (row, id, value) => {
+      return row.getValue(id) === value;
+    },
   },
   {
-    accessorKey: "vendor_status",
+    accessorKey: "application_status",
     header: "Application Status",
-    cell: VendorStatusCell,
+    cell: ApplicationStatusCell,
+    filterFn: (row, id, value) => {
+      return row.getValue(id) === value;
+    },
   },
   {
     accessorKey: "vendor_info",
