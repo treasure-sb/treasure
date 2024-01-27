@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useStore } from "../store";
 import { parseLocalDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "../../query";
@@ -30,11 +29,6 @@ export default function Page({
   const { from, until } = searchParams;
   const [selectedTransaction, setSelectedTransaction] =
     useState<Tables<"vendor_transactions"> | null>(null);
-  const { setCurrentPage } = useStore();
-
-  useEffect(() => {
-    setCurrentPage("sales");
-  }, []);
 
   useEffect(() => {
     refetch();

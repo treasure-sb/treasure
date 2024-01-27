@@ -1,15 +1,19 @@
 "use client";
 
+import VendorDialogContent from "./VendorDialogContent";
 import { motion } from "framer-motion";
 import {
   ColumnDef,
   flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
+  ColumnFiltersState,
   SortingState,
-  getSortedRowModel,
   VisibilityState,
   useReactTable,
+  getSortedRowModel,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getFilteredRowModel,
+  Table as T,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -22,8 +26,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import VendorDialogContent from "./VendorDialogContent";
 import { EventDisplayData } from "@/types/event";
+import Filters from "./Filters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +42,7 @@ export default function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
@@ -46,12 +51,27 @@ export default function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
       columnVisibility,
+      columnFilters,
     },
   });
+
+  const applicationFilter = table
+    .getColumn("application_status")
+    ?.getFilterValue();
+  const paymentFilter = table.getColumn("payment_status")?.getFilterValue();
+
+  const updateApplicationFilter = (value: string | undefined) => {
+    table.getColumn("application_status")?.setFilterValue(value);
+  };
+  const updatePaymentFilter = (value: string | undefined) => {
+    table.getColumn("payment_status")?.setFilterValue(value);
+  };
 
   return (
     <motion.div
@@ -60,7 +80,13 @@ export default function DataTable<TData, TValue>({
       transition={{ delay: 0.15, duration: 0.85, ease: "easeInOut" }}
     >
       <h1 className="text-2xl mb-4 font-semibold">Event Vendors</h1>
-      <div className="rounded-md border">
+      <Filters
+        paymentFilter={paymentFilter}
+        applicationFilter={applicationFilter}
+        updateApplicationFilter={updateApplicationFilter}
+        updatePaymentFilter={updatePaymentFilter}
+      />
+      <div className="rounded-md border mt-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

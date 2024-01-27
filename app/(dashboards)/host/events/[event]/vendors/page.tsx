@@ -47,7 +47,7 @@ export default async function Page({
       name: `${eventVendor.vendor.first_name} ${eventVendor.vendor.last_name}`,
       section: eventVendor.table.section_name as string,
       payment_status: eventVendor.payment_status,
-      vendor_status: eventVendor.application_status,
+      application_status: eventVendor.application_status,
       vendor_info: eventVendor,
     };
   });

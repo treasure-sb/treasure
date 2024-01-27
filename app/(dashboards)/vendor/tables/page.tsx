@@ -1,20 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import { useStore } from "../store";
 import { useTables } from "../query";
 import { useUser } from "../../query";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
 export default function Page() {
-  const { setCurrentPage } = useStore();
   const user = useUser();
   const { data } = useTables();
   const { eventsData } = data ?? {};
-
-  useEffect(() => {
-    setCurrentPage("tables");
-  }, []);
 
   return (
     <>
