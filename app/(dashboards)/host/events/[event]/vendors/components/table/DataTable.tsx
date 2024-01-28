@@ -77,7 +77,7 @@ export default function DataTable<TData, TValue>({
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15, duration: 0.85, ease: "easeInOut" }}
+      transition={{ duration: 0.85, ease: "easeInOut" }}
     >
       <h1 className="text-2xl mb-4 font-semibold">Event Vendors</h1>
       <Filters

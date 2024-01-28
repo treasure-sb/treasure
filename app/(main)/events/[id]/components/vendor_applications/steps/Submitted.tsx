@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { useVendorApplicationStore, resetApplication } from "../store";
 
-export default function Submitted() {
-  const { setApplicationDialogOpen } = useVendorApplicationStore();
-
-  const handleReturnToEventPage = () => {
-    setApplicationDialogOpen(false);
-    resetApplication();
-  };
-
+export default function Submitted({
+  handleOpenChange,
+}: {
+  handleOpenChange: () => void;
+}) {
   return (
     <>
       <div className="space-y-4">
@@ -30,7 +26,7 @@ export default function Submitted() {
           </li>
         </ol>
       </div>
-      <Button onClick={handleReturnToEventPage}>Return to event page</Button>
+      <Button onClick={() => handleOpenChange()}>Return to event page</Button>
     </>
   );
 }

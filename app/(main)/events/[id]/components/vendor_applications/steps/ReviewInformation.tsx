@@ -10,11 +10,15 @@ import { submitVendorApplication } from "@/lib/actions/vendors/applications";
 import { useState } from "react";
 import { Tables } from "@/types/supabase";
 
-export default function ReviewInformation() {
+export default function ReviewInformation({
+  event,
+  table,
+}: {
+  event: Tables<"events">;
+  table: Tables<"tables">;
+}) {
   const {
-    event,
     currentStep,
-    table,
     tableQuantity,
     vendorsAtTable,
     inventory,

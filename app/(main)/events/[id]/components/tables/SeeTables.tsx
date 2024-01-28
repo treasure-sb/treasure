@@ -41,7 +41,7 @@ export default function SeeTables({
             </Button>
           </motion.h1>
           <motion.div layout className="w-full">
-            {tables.map((table) => (
+            {tables.map((table, i) => (
               <div
                 key={table.id}
                 className="font-normal w-full flex justify-between items-center my-6"
