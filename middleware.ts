@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import createSupabaseServerClient from "./utils/supabase/server";
 import { getProfile } from "./lib/helpers/profiles";
+import createSupabaseServerClient from "./utils/supabase/server";
 
 async function isUserOrganzierOrAdmin(
   userId: string | undefined,

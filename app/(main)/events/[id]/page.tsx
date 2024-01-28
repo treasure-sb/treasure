@@ -31,6 +31,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("cleaned_name", params.id)
     .single();
 
+  if (eventError) {
+    redirect("/events");
+  }
+
   const { data: vendors, error: vendorError } = await supabase
     .from("event_vendors")
     .select("profiles(*)")
@@ -38,10 +42,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     .eq("payment_status", "PAID");
 
   const event = { ...eventData, vendors };
-
-  if (eventError) {
-    redirect("/events");
-  }
 
   return <EventsPage key={event.id} event={event} />;
 }

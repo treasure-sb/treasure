@@ -2,9 +2,14 @@ import { Button } from "@/components/ui/button";
 import { useVendorApplicationStore } from "../store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTermsAndConditions } from "../query";
+import { Tables } from "@/types/supabase";
 
-export default function TermsAndConditions() {
-  const { currentStep, event, termsChecked, setTermsChecked, setCurrentStep } =
+export default function TermsAndConditions({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
+  const { currentStep, termsChecked, setTermsChecked, setCurrentStep } =
     useVendorApplicationStore();
   const terms = useTermsAndConditions(event);
 

@@ -13,7 +13,7 @@ export default function Page({
       className="lg:grid grid-cols-3 gap-6 min-h-[calc(100vh-24rem)] flex flex-col"
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.25, duration: 0.85, ease: "easeInOut" }}
+      transition={{ duration: 0.85, ease: "easeInOut" }}
     >
       <Link
         href={`/host/events/${event}/vendors`}

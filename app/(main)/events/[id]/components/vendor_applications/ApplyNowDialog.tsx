@@ -26,9 +26,9 @@ export default function ApplyNowDialog({
   user: User | null;
 }) {
   const { push } = useRouter();
-  const { currentStep, applicationDialogOpen, setApplicationDialogOpen } =
-    useVendorApplicationStore();
+  const { currentStep } = useVendorApplicationStore();
   const [exitDialog, setExitDialog] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenChange = () => {
     if (!user) {
@@ -38,15 +38,15 @@ export default function ApplyNowDialog({
 
     // If user is on submitted page, toggle the application dialog and reset the application
     if (currentStep === 6) {
-      setApplicationDialogOpen(!applicationDialogOpen);
+      setDialogOpen(!dialogOpen);
       resetApplication();
       return;
     }
 
-    if (applicationDialogOpen) {
+    if (dialogOpen) {
       setExitDialog(true);
     } else {
-      setApplicationDialogOpen(!applicationDialogOpen);
+      setDialogOpen(!dialogOpen);
     }
   };
 
@@ -56,13 +56,13 @@ export default function ApplyNowDialog({
 
   const handleExit = () => {
     setExitDialog(false);
-    setApplicationDialogOpen(false);
+    setDialogOpen(false);
     resetApplication();
   };
 
   return (
     <>
-      <Dialog open={applicationDialogOpen} onOpenChange={handleOpenChange}>
+      <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           <Button variant={"outline"} className="font-normal text-sm p-2">
             Apply Now
@@ -75,7 +75,11 @@ export default function ApplyNowDialog({
             </DialogTitle>
             <Separator />
           </DialogHeader>
-          <VendorApplication event={event} table={table} />
+          <VendorApplication
+            event={event}
+            table={table}
+            handleOpenChange={handleOpenChange}
+          />
         </DialogContent>
       </Dialog>
       {exitDialog && (
