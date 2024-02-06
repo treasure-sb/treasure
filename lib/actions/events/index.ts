@@ -221,40 +221,6 @@ const createTableTicket = async (
   await Promise.all(tablesPromise);
 };
 
-const createTablesOnStripe = async (tables: Tables<"tables">[]) => {
-  const supabase = await createSupabaseServerClient();
-  const stripeTables = tables.map(async (table) => {
-    // get event from table
-    const event_id = table.event_id;
-    const { event } = await getEventFromId(event_id);
-    if (
-      event.name !== "Stripe Test Mode" &&
-      table.stripe_price_id === null &&
-      table.stripe_product_id === null
-    ) {
-      const posterUrl = await getPublicPosterUrl(event);
-
-      // create table ticket on stripe
-      const tableTicketProduct = {
-        name: `${event.name} Table: ${table.section_name}`,
-        price: table.price.toString(),
-        poster_url: posterUrl,
-      };
-
-      const stripeTableProduct = await createStripeProduct(tableTicketProduct);
-      await supabase
-        .from("tables")
-        .update({
-          stripe_product_id: stripeTableProduct.id,
-          stripe_price_id: stripeTableProduct.default_price,
-        })
-        .eq("id", table.id);
-    }
-  });
-
-  return Promise.all(stripeTables);
-};
-
 const createApplicationInfo = async (
   application_vendors_information: EventVendorApplication,
   event_id: string
@@ -313,4 +279,4 @@ const unlikeEvent = async (event_id: string, user_id: string) => {
     .eq("user_id", user_id);
 };
 
-export { createEvent, likeEvent, unlikeEvent, createTablesOnStripe };
+export { createEvent, likeEvent, unlikeEvent };
