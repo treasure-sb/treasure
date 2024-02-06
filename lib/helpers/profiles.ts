@@ -71,12 +71,7 @@ const getProfileAvatar = async (avatar_url: string) => {
 
 /**
  * Fetches temporary profile data based on a search query. This function searches for profiles by matching the username and business name fields with the provided search string.
- *
  * Additionally, it retrieves and includes the public URL for each profile's avatar from Supabase storage.
- *
- * @param {string} search - The search string used to filter profiles based on their username or business name.
- * @returns {Promise<Object[]>} - A promise that resolves to an array of temporary profile objects with additional avatar URL data. Each object in the array represents a temporary profile.
- *
  * Note: The function limits the results to a maximum of 6 profiles.
  */
 const fetchTemporaryProfiles = async (search: string) => {

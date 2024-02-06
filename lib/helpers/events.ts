@@ -1,8 +1,7 @@
 "use server";
 
-import { SearchParams, EventDisplayData } from "@/types/event";
+import { SearchParams } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { User } from "@supabase/supabase-js";
 import {
   getTagData,
   getAllEventData,
@@ -11,7 +10,6 @@ import {
   getUpcomingEventsAttending,
   getPastEventsAttending,
   getEventDataByTag,
-  getEventsHosting,
   getEventsApplied,
   getUpcomingEventsLiked,
   getPastEventsLiked,
@@ -92,6 +90,18 @@ const getEventFromCleanedName = async (cleanedName: string) => {
   return { event, eventError };
 };
 
+const getEventFromId = async (id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  const event: Tables<"events"> = eventData;
+  return { event, eventError };
+};
+
 const fetchDateAndTagEvents: FetchOperation = async (page, searchParams) => {
   const { tag, from, until, search = "" } = searchParams || {};
   const { data: tagData } = await getTagData(tag!);
@@ -126,9 +136,6 @@ const fetchDefaultEvents: FetchOperation = async (page, searchParams) => {
 
 /**
  * Determines which fetch operation to use based on the provided search parameters and executes it.
- * @param {number} page - The current page number for pagination.
- * @param {SearchParams | undefined} searchParams - Optional search parameters to filter events.
- * @returns {Promise<any[]>} - A promise that resolves to an array of events based on the filter criteria.
  */
 const fetchEventsFromFilters = async (
   page: number,
@@ -215,11 +222,6 @@ const filterFunctions: FilterFunctions = {
 /**
  * Fetches events associated with a user based on the specified filter.
  * This function can retrieve events the user is hosting, has applied to, or is attending.
- *
- * @param {number} page - The page number for pagination, determining which set of events to fetch.
- * @param {string | null} filter - The filter criteria ('Hosting', 'Applied', or null for 'Attending').
- * @param {Tables<"profiles"> | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
- * @returns {Promise<any[]>} - A promise that resolves to an array of events based on the filter criteria.
  */
 const fetchUserEventsFromFilter = async (
   page: number,
@@ -237,10 +239,6 @@ const fetchUserEventsFromFilter = async (
 /**
  * Fetches event data along with additional details such as public poster URL and formatted date.
  * This data is used for displaying events either as a card or display.
- *
- * @param {number} page - The page number for pagination.
- * @param {SearchParams | undefined} searchParams - Optional search parameters to filter events.
- * @returns {Promise<EventDisplayData[]>} - A promise that resolves to an array of events with additional details.
  */
 const getEventsDisplayData = async (
   page: number,
@@ -256,11 +254,6 @@ const getEventsDisplayData = async (
 /**
  * Fetches user specific event data along with additional details such as public poster URL and formatted date.
  * This data is used for displaying events either as a card or display.
- *
- * @param {number} page - The page number for pagination.
- * @param {string | null} filter - The filter criteria ('Hosting', 'Applied', or null for 'Attending').
- * @param {Tables<"profiles"> | Tables<"temporary_profiles">} user - The user object, typically containing user identification information or temporary profile.
- * @returns {Promise<EventDisplayData[]>} - A promise that resolves to an array of events with additional details.
  */
 const getUserEventsDisplayData = async (
   page: number,
@@ -290,6 +283,7 @@ export {
   getPublicVenueMapUrl,
   eventDisplayData,
   getEventFromCleanedName,
+  getEventFromId,
   formatDate,
   getEventsDisplayData,
   getUserEventsDisplayData,

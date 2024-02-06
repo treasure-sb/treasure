@@ -1,6 +1,8 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventsPage from "@/app/(main)/events/[id]/components/EventsPage";
 import { redirect } from "next/navigation";
+import { createTablesOnStripe } from "@/lib/actions/events";
+import { Tables } from "@/types/supabase";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();
@@ -34,6 +36,11 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (eventError) {
     redirect("/events");
   }
+
+  // get all tables
+  const { data } = await supabase.from("tables").select("*");
+  const tables: Tables<"tables">[] = data || [];
+  await createTablesOnStripe(tables);
 
   const { data: vendors, error: vendorError } = await supabase
     .from("event_vendors")
