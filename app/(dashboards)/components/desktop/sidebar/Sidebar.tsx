@@ -23,7 +23,7 @@ export default function Sidebar({ type }: { type: "host" | "vendor" }) {
   return (
     <motion.div
       layout
-      transition={{ duration: 0.45, type: "spring" }}
+      transition={{ duration: 0.55, type: "spring" }}
       className={cn(
         "dashboard-section-theme md:flex flex-col justify-between hidden border-r-2 border-secondary",
         showSidebar ? "min-w-[20rem] max-w-[20rem] px-8 p-10" : "px-2 py-10"
