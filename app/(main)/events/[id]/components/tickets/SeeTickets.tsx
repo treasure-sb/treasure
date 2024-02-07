@@ -4,16 +4,17 @@ import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 
 export default function SeeTickets({
   tickets,
   event,
-  checkoutUrl,
+  user,
 }: {
   tickets: Tables<"tickets">[];
   event: Tables<"events">;
-  checkoutUrl: string;
+  user: User | null;
 }) {
   const [seeTickets, setSeeTickets] = useState(false);
   const minimumTicketPrice = tickets[0].price;
@@ -47,16 +48,28 @@ export default function SeeTickets({
                 <p>{ticket.name}</p>
                 <div className="flex items-center space-x-4">
                   <p>${ticket.price}</p>
-                  {event.sales_status === "SELLING_ALL" && (
-                    <Link target="_blank" href={checkoutUrl}>
-                      <Button
-                        variant={"outline"}
-                        className="font-normal text-sm p-2 border-primary"
+                  {ticket.stripe_price_id &&
+                    event.sales_status === "SELLING_ALL" && (
+                      <Link
+                        href={{
+                          pathname: "/checkout",
+                          query: {
+                            price_id: ticket.stripe_price_id,
+                            user_id: user?.id,
+                            event_id: event.id,
+                            ticket_id: ticket.id,
+                            quantity: 1,
+                          },
+                        }}
                       >
-                        Buy Now
-                      </Button>
-                    </Link>
-                  )}
+                        <Button
+                          variant={"outline"}
+                          className="font-normal text-sm p-2 border-primary"
+                        >
+                          Buy Now
+                        </Button>
+                      </Link>
+                    )}
                 </div>
               </div>
             ))}
