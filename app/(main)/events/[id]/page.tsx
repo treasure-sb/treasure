@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     redirect("/events");
   }
 
-  const { data: vendors, error: vendorError } = await supabase
+  const { data: vendors } = await supabase
     .from("event_vendors")
     .select("profiles(*)")
     .eq("event_id", eventData.id)

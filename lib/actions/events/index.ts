@@ -9,15 +9,10 @@ import {
   EventVendorApplication,
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import {
-  createTicketTailorEvent,
-  createTicketTailorTickets,
-  publishTicketTailorEvent,
-  createTicketTailorEventOccurence,
-} from "../ticket-tailor";
 import { createStripeProduct } from "../stripe";
 import { getEventFromId, getPublicPosterUrl } from "@/lib/helpers/events";
 import format from "date-fns/format";
+import { Table } from "@tanstack/react-table";
 
 // Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
 const cleanedEventUrlName = (event_name: string, event_date: Date) => {
@@ -70,31 +65,6 @@ const createEvent = async (values: EventForm) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // create event and tickets on ticket tailor and publish the event
-  const ticketTailorEvent = {
-    name,
-    description,
-    venue_name,
-  };
-  const ticketTailorEventData = await createTicketTailorEvent(
-    ticketTailorEvent
-  );
-
-  const ticketTailorEventOccurence = {
-    start_date: date?.toISOString().split("T")[0],
-    end_date: date?.toISOString().split("T")[0],
-    start_time: start_time + ":00",
-    end_time: end_time + ":00",
-  };
-
-  await createTicketTailorEventOccurence(
-    ticketTailorEventData.id,
-    ticketTailorEventOccurence
-  );
-  await createTicketTailorTickets(values.tickets, ticketTailorEventData.id);
-
-  await publishTicketTailorEvent(ticketTailorEventData.id);
-
   // check if there are previous events with the same name and same date
   const previousEvents = await checkPreviousEvents(name, date as Date);
 
@@ -126,20 +96,27 @@ const createEvent = async (values: EventForm) => {
         poster_url,
         venue_map_url,
         organizer_id: user?.id,
-        ticket_tailor_event_id: ticketTailorEventData.id,
       },
     ])
     .select();
   if (data) {
     const event: Tables<"events"> = data[0];
     const posterUrl = await getPublicPosterUrl(event);
-    await createTickets(values.tickets, event.id);
-    await createTableTicket(values.tables, event.id, event.name, posterUrl);
-    await createApplicationInfo(
-      values.application_vendor_information,
-      event.id
-    );
-    await createTags(values.tags, event.id);
+    const eventPromises = [
+      await createTickets(values.tickets, event.id, event.name, posterUrl),
+      await createTableTicket(values.tables, event.id, event.name, posterUrl),
+      await createApplicationInfo(
+        values.application_vendor_information,
+        event.id
+      ),
+      await createTags(values.tags, event.id),
+    ];
+    await Promise.allSettled(eventPromises);
+
+    // update tickets on stripe
+    const { data: ticketsData } = await supabase.from("tickets").select("*");
+    const tickets: Tables<"tickets">[] = ticketsData || [];
+    await updatesTicketsOnStripe(tickets);
   }
   if (!error) {
     redirect(`/events/${cleanedEventName}`);
@@ -149,7 +126,7 @@ const createEvent = async (values: EventForm) => {
 const createTags = async (tags: EventFormTag[], event_id: string) => {
   const supabase = await createSupabaseServerClient();
   tags.forEach(async (tag) => {
-    const { data: tagsData, error } = await supabase
+    await supabase
       .from("event_tags")
       .insert([
         {
@@ -161,19 +138,67 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
   });
 };
 
-const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
+const createTickets = async (
+  tickets: EventFormTicket[],
+  event_id: string,
+  event_name: string,
+  poster_url: string
+) => {
   const supabase = await createSupabaseServerClient();
-  tickets.forEach(async (ticket) => {
+  const ticketsPromise = tickets.map(async (ticket) => {
     const { ticket_price, ticket_quantity, ticket_name } = ticket;
+
+    // create ticket on stripe
+    const ticketProduct = {
+      name: `${event_name} Ticket: ${ticket_name}`,
+      price: ticket_price,
+      poster_url,
+    };
+
+    const stripeTicketProduct = await createStripeProduct(ticketProduct);
     await supabase.from("tickets").insert([
       {
         price: ticket_price,
         quantity: ticket_quantity,
         name: ticket_name,
         event_id,
+        stripe_product_id: stripeTicketProduct.id,
+        stripe_price_id: stripeTicketProduct.default_price,
       },
     ]);
   });
+
+  await Promise.allSettled(ticketsPromise);
+};
+
+const updatesTicketsOnStripe = async (tickets: Tables<"tickets">[]) => {
+  const supabase = await createSupabaseServerClient();
+  const stripeTables = tickets.map(async (ticket) => {
+    // get event from table
+    const event_id = ticket.event_id;
+    const { event } = await getEventFromId(event_id);
+    if (ticket.stripe_price_id === null && ticket.stripe_product_id === null) {
+      const posterUrl = await getPublicPosterUrl(event);
+
+      // create table ticket on stripe
+      const tableTicketProduct = {
+        name: `${event.name} Ticket: ${ticket.name}`,
+        price: ticket.price.toString(),
+        poster_url: posterUrl,
+      };
+
+      const stripeTableProduct = await createStripeProduct(tableTicketProduct);
+      await supabase
+        .from("tickets")
+        .update({
+          stripe_product_id: stripeTableProduct.id,
+          stripe_price_id: stripeTableProduct.default_price,
+        })
+        .eq("id", ticket.id);
+    }
+  });
+
+  return Promise.allSettled(stripeTables);
 };
 
 const createTableTicket = async (
@@ -218,7 +243,7 @@ const createTableTicket = async (
       },
     ]);
   });
-  await Promise.all(tablesPromise);
+  await Promise.allSettled(tablesPromise);
 };
 
 const createApplicationInfo = async (
@@ -233,7 +258,7 @@ const createApplicationInfo = async (
     additional_information,
     terms,
   } = application_vendors_information;
-  const { data: applicationInfo, error } = await supabase
+  await supabase
     .from("application_vendor_information")
     .insert([
       {
@@ -247,7 +272,7 @@ const createApplicationInfo = async (
     .select();
 
   const termsPromise = terms.map(async (singleTerm) => {
-    const { data: termsData, error: termsError } = await supabase
+    await supabase
       .from("application_terms_and_conditions")
       .insert([{ event_id, term: singleTerm.term }])
       .select();
