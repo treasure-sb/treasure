@@ -10,9 +10,8 @@ import {
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { createStripeProduct } from "../stripe";
-import { getEventFromId, getPublicPosterUrl } from "@/lib/helpers/events";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 import format from "date-fns/format";
-import { Table } from "@tanstack/react-table";
 
 // Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
 const cleanedEventUrlName = (event_name: string, event_date: Date) => {
@@ -112,11 +111,6 @@ const createEvent = async (values: EventForm) => {
       await createTags(values.tags, event.id),
     ];
     await Promise.allSettled(eventPromises);
-
-    // update tickets on stripe
-    const { data: ticketsData } = await supabase.from("tickets").select("*");
-    const tickets: Tables<"tickets">[] = ticketsData || [];
-    await updatesTicketsOnStripe(tickets);
   }
   if (!error) {
     redirect(`/events/${cleanedEventName}`);
@@ -169,36 +163,6 @@ const createTickets = async (
   });
 
   await Promise.allSettled(ticketsPromise);
-};
-
-const updatesTicketsOnStripe = async (tickets: Tables<"tickets">[]) => {
-  const supabase = await createSupabaseServerClient();
-  const stripeTables = tickets.map(async (ticket) => {
-    // get event from table
-    const event_id = ticket.event_id;
-    const { event } = await getEventFromId(event_id);
-    if (ticket.stripe_price_id === null && ticket.stripe_product_id === null) {
-      const posterUrl = await getPublicPosterUrl(event);
-
-      // create table ticket on stripe
-      const tableTicketProduct = {
-        name: `${event.name} Ticket: ${ticket.name}`,
-        price: ticket.price.toString(),
-        poster_url: posterUrl,
-      };
-
-      const stripeTableProduct = await createStripeProduct(tableTicketProduct);
-      await supabase
-        .from("tickets")
-        .update({
-          stripe_product_id: stripeTableProduct.id,
-          stripe_price_id: stripeTableProduct.default_price,
-        })
-        .eq("id", ticket.id);
-    }
-  });
-
-  return Promise.allSettled(stripeTables);
 };
 
 const createTableTicket = async (
