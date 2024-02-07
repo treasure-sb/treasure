@@ -7,6 +7,8 @@ import VendorAppAccepted, {
 import VendorAppRejected, {
   VendorAppRejectedEmailProps,
 } from "@/emails/VendorAppRejected";
+import QRCode from "qrcode";
+import TicketPurchased from "@/emails/TicketPurchased";
 import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
@@ -58,9 +60,31 @@ const sendVendorAppRejectedEmail = async (
   });
 };
 
+const sendTicketPurchasedEmail = async (
+  email: string,
+  eventName: string,
+  posterUrl: string
+) => {
+  const qrCodeUrl = await QRCode.toDataURL("Test QR Code");
+
+  await resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `You've purchased a ticket to ${eventName}!`,
+    attachments: [
+      {
+        filename: "qr-code.png",
+        content: qrCodeUrl.split(",")[1],
+      },
+    ],
+    react: TicketPurchased({ eventName, posterUrl }),
+  });
+};
+
 export {
   sendWelcomeEmail,
   sendVendorAppReceivedEmail,
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,
+  sendTicketPurchasedEmail,
 };
