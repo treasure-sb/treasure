@@ -7,6 +7,7 @@ import { getEventFromId } from "@/lib/helpers/events";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
+import { Tables } from "@/types/supabase";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -56,13 +57,20 @@ export async function POST(req: Request) {
         .eq("id", ticket_id)
         .single();
 
-      console.log(ticketData);
-
       if (ticketData) {
-        await supabase
+        const { data: purchasedTicketData } = await supabase
           .from("event_tickets")
-          .insert({ attendee_id: user_id, event_id, ticket_id });
+          .insert({ attendee_id: user_id, event_id, ticket_id })
+          .select();
 
+        if (!purchasedTicketData) {
+          return NextResponse.json({
+            message: "Error",
+            ok: false,
+          });
+        }
+
+        const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
         const { profile } = await getProfile(user_id as string);
         const { event: eventData } = await getEventFromId(event_id as string);
 
@@ -70,7 +78,9 @@ export async function POST(req: Request) {
         await sendTicketPurchasedEmail(
           profile.email,
           eventData.name,
-          posterUrl
+          posterUrl,
+          purchasedTicket.id,
+          event_id
         );
       } else {
         await supabase

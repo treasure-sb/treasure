@@ -63,9 +63,13 @@ const sendVendorAppRejectedEmail = async (
 const sendTicketPurchasedEmail = async (
   email: string,
   eventName: string,
-  posterUrl: string
+  posterUrl: string,
+  ticketId: string,
+  eventId: string
 ) => {
-  const qrCodeUrl = await QRCode.toDataURL("Test QR Code");
+  const qrCodeUrl = await QRCode.toDataURL(
+    `192.168.1.8:3001/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
+  );
 
   await resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
