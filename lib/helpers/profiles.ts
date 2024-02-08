@@ -76,7 +76,7 @@ const getProfileAvatar = async (avatar_url: string) => {
  */
 const fetchTemporaryProfiles = async (search: string) => {
   const supabase = await createSupabaseServerClient();
-  const { data: profilesData, error: profilesError } = await supabase
+  const { data: profilesData } = await supabase
     .from("temporary_profiles")
     .select("*")
     .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
