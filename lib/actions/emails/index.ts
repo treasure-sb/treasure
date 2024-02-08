@@ -68,7 +68,7 @@ const sendTicketPurchasedEmail = async (
   eventId: string
 ) => {
   const qrCodeUrl = await QRCode.toDataURL(
-    `192.168.1.8:3001/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
+    `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
   );
 
   await resend.emails.send({
