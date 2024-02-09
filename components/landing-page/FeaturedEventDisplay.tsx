@@ -21,8 +21,8 @@ export default async function FeaturedEventDisplay({
           className="object-cover w-full h-full rounded-md group-hover:bg-black group-hover:opacity-50 transition duration-300"
           alt="image"
           src={data.data.publicUrl}
-          width={100}
-          height={100}
+          width={400}
+          height={400}
         />
       </Link>
       <p className="absolute top-5 left-5 hidden group-hover:block md:text-xl text-xs">
