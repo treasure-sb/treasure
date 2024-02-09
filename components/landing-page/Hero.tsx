@@ -18,16 +18,11 @@ export default function Hero() {
   const headingText = "Get to More of the Shows & Conventions You Love";
   const heading = headingText.split(/(\s+)/).map((word, index) => {
     const isColoredGreen = word === "Shows" || word === "Conventions";
-    const isColoredYellow = word === "Love";
     const isSpace = word === " ";
     return (
       <motion.span key={index} className={isSpace ? "" : "inline-block"}>
         {isColoredGreen ? (
           <span className="bg-gradient-to-r from-primary to-green-200 text-transparent bg-clip-text">
-            {word}
-          </span>
-        ) : isColoredYellow ? (
-          <span className="bg-gradient-to-r from-tertiary to-yellow-200 text-transparent bg-clip-text">
             {word}
           </span>
         ) : (
