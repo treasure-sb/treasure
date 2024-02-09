@@ -20,10 +20,14 @@ export default function ApplyNowDialog({
   event,
   table,
   user,
+  tables,
+  prebooked,
 }: {
   event: Tables<"events">;
   table: Tables<"tables">;
   user: User | null;
+  tables: Tables<"tables">[];
+  prebooked: boolean;
 }) {
   const { push } = useRouter();
   const { currentStep } = useVendorApplicationStore();
@@ -65,13 +69,15 @@ export default function ApplyNowDialog({
       <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           <Button variant={"outline"} className="font-normal text-sm p-2">
-            Apply Now
+            {prebooked ? "Click Here" : "Apply Now"}
           </Button>
         </DialogTrigger>
         <DialogContent className="h-[90%] block">
           <DialogHeader className="my-4 space-y-4">
             <DialogTitle className="text-xl text-center">
-              {event.name} Vendor Application
+              <span className="font-bold text-primary">{event.name}</span>
+              {" - "}
+              {prebooked ? "Vendor Info" : "Vendor Application"}
             </DialogTitle>
             <Separator />
           </DialogHeader>
@@ -79,6 +85,8 @@ export default function ApplyNowDialog({
             event={event}
             table={table}
             handleOpenChange={handleOpenChange}
+            tables={tables}
+            prebooked={prebooked}
           />
         </DialogContent>
       </Dialog>

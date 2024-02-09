@@ -13,9 +13,13 @@ import { Tables } from "@/types/supabase";
 export default function ReviewInformation({
   event,
   table,
+  tables,
+  prebooked,
 }: {
   event: Tables<"events">;
   table: Tables<"tables">;
+  tables: Tables<"tables">[];
+  prebooked: boolean;
 }) {
   const {
     currentStep,
@@ -23,12 +27,15 @@ export default function ReviewInformation({
     vendorsAtTable,
     inventory,
     comments,
+    tableNumber,
     setCurrentStep,
   } = useVendorApplicationStore();
   const { profile, publicUrl } = useProfile();
   const [submitting, setSubmitting] = useState(false);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const instagramUsername = useInstagram(profile);
+
+  table = prebooked ? tables[tableNumber] : table;
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -103,14 +110,19 @@ export default function ReviewInformation({
           <div>
             <div className="flex justify-between">
               <p>
-                {table.section_name}, {vendorsAtTable} vendors at table
+                {prebooked
+                  ? tables[tableNumber].section_name
+                  : table.section_name}
+                , {vendorsAtTable} vendors at table
               </p>
               <p>Qty: {tableQuantity}</p>
             </div>
             <Separator className="my-2" />
-            <div className="flex justify-end">
-              ${table.price * tableQuantity}
-            </div>
+            {!prebooked && (
+              <div className="flex justify-end">
+                ${table.price * tableQuantity}
+              </div>
+            )}
           </div>
         )}
       </div>

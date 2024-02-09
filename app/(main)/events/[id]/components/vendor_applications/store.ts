@@ -7,6 +7,8 @@ type VendorApplicationStore = {
   inventory: string;
   comments: string;
   termsChecked: boolean;
+  tableNumber: number;
+  setTableNumber: (tableNumber: number) => void;
   setCurrentStep: (step: number) => void;
   setTableQuantity: (quantity: number) => void;
   setVendorsAtTable: (quantity: number) => void;
@@ -23,6 +25,13 @@ export const useVendorApplicationStore = create<VendorApplicationStore>(
     inventory: "",
     comments: "",
     termsChecked: false,
+    tableNumber: -1,
+    setTableNumber: (tableNumber: number) => {
+      set((state) => ({
+        ...state,
+        tableNumber,
+      }));
+    },
     setCurrentStep: (step: number) => {
       set((state) => ({
         ...state,
