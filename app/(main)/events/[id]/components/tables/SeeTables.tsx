@@ -50,7 +50,13 @@ export default function SeeTables({
                 <div className="flex items-center space-x-4">
                   <p>${table.price}</p>
                   {event.vendor_exclusivity === "APPLICATIONS" ? (
-                    <ApplyNowDialog event={event} table={table} user={user} />
+                    <ApplyNowDialog
+                      event={event}
+                      table={table}
+                      user={user}
+                      tables={tables}
+                      prebooked={false}
+                    />
                   ) : (
                     table.stripe_price_id &&
                     (event.sales_status === "TABLES_ONLY" ||
@@ -79,6 +85,18 @@ export default function SeeTables({
                 </div>
               </div>
             ))}
+            <div className="font-normal w-full flex justify-between items-center my-6">
+              <p className="text-sm text-tertiary">
+                Already Booked Your Table?
+              </p>
+              <ApplyNowDialog
+                event={event}
+                table={tables[0]}
+                user={user}
+                tables={tables}
+                prebooked={true}
+              />
+            </div>
           </motion.div>
         </motion.div>
       ) : (

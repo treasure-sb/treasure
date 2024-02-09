@@ -13,16 +13,22 @@ import { Tables } from "@/types/supabase";
 
 export default function TableInformation({
   table,
+  tables,
+  prebooked,
 }: {
   table: Tables<"tables">;
+  tables: Tables<"tables">[];
+  prebooked: boolean;
 }) {
   const {
     currentStep,
     tableQuantity,
     vendorsAtTable,
+    tableNumber,
     setCurrentStep,
     setTableQuantity,
     setVendorsAtTable,
+    setTableNumber,
   } = useVendorApplicationStore();
 
   const numberVendorsOptions = Array.from({
@@ -33,6 +39,12 @@ export default function TableInformation({
     </SelectItem>
   ));
 
+  const tablesOptions = tables.map((table, i) => (
+    <SelectItem key={i} value={`${i}`}>
+      {table.section_name}
+    </SelectItem>
+  ));
+
   return (
     <>
       <div className="flex flex-col justify-between h-[80%]">
@@ -40,7 +52,19 @@ export default function TableInformation({
           <h1 className="text-xl font-semibold">Table Information</h1>
           <div className="flex items-center justify-between">
             <p>Table Section</p>
-            <p>{table.section_name}</p>
+            {prebooked ? (
+              <Select
+                value={tableNumber > -1 ? tableNumber.toString() : undefined}
+                onValueChange={(value) => setTableNumber(parseInt(value))}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>{tablesOptions}</SelectContent>
+              </Select>
+            ) : (
+              <p>{table.section_name}</p>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <p>Table Quantity</p>
@@ -77,7 +101,7 @@ export default function TableInformation({
             Only {table.number_vendors_allowed} vendors allowed per table.
           </p>
         </div>
-        {vendorsAtTable > 0 && tableQuantity > 0 && (
+        {vendorsAtTable > 0 && tableQuantity > 0 && !prebooked && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{
