@@ -6,5 +6,9 @@ export default function FeaturedEventCarousel({
 }: {
   featuredEvents: JSX.Element[];
 }) {
-  return <InfiniteMovingCards events={featuredEvents} speed="slow" />;
+  return (
+    <div className="mx-[-16px]">
+      <InfiniteMovingCards events={featuredEvents} speed="slow" />
+    </div>
+  );
 }
