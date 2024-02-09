@@ -38,6 +38,7 @@
     --popover-foreground: 0 0% 95%;
     --primary: 137 50% 63%;
     --primary-foreground: 144.9 80.4% 10%;
+    --primary-hero: hsl(137 50% 63%);
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 15%;

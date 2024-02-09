@@ -2,12 +2,23 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export default function Hero() {
-  const heading = "Find Great Card & Collectible Events Near You";
-  const words = heading.split(/(\s+)/).map((word, index) => {
-    const isEvent = word === "Events";
+  const targetRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["end end", "end start"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.7]);
+
+  const headingText = "Get to More of the Shows & Conventions You Love";
+  const heading = headingText.split(/(\s+)/).map((word, index) => {
+    const isColoredGreen = word === "Shows" || word === "Conventions";
+    const isColoredYellow = word === "Love";
     const isSpace = word === " ";
     return (
       <motion.span
@@ -15,14 +26,18 @@ export default function Hero() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          delay: 0 + index * 0.03,
+          delay: index * 0.03,
           duration: 0.65,
           ease: "easeInOut",
         }}
         className={isSpace ? "" : "inline-block"}
       >
-        {isEvent ? (
+        {isColoredGreen ? (
           <span className="bg-gradient-to-r from-primary to-green-200 text-transparent bg-clip-text">
+            {word}
+          </span>
+        ) : isColoredYellow ? (
+          <span className="bg-gradient-to-r from-tertiary to-yellow-200 text-transparent bg-clip-text">
             {word}
           </span>
         ) : (
@@ -32,56 +47,65 @@ export default function Hero() {
     );
   });
 
+  const subheadingText =
+    "Discover events tailored to you and book tickets or tables in seconds.";
+
+  const subheading = subheadingText.split(/(\s+)/).map((word, index) => {
+    const isSpace = word === " ";
+    return (
+      <motion.span
+        key={index}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 2.25 + index * 0.03,
+          duration: 0.75,
+          ease: "easeInOut",
+        }}
+        className={isSpace ? "" : "inline-block"}
+      >
+        {word}
+      </motion.span>
+    );
+  });
+
   return (
-    <div className="min-h-[calc(75vh-80px)] md:min-h-[calc(85vh-80px)] pt-28 w-full">
-      <div className="relative">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, ease: "easeInOut" }}
-          className="z-10 relative max-w-6xl text-[2.8rem] font-bold text-center m-auto leading-[1.2] md:leading-[1.3] md:text-8xl md:max-w-4xl"
-        >
-          {words}
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 0.3, y: 0 }}
-          transition={{ delay: 2, duration: 0.75, ease: "easeInOut" }}
-          className="z-[-10] bg-green-200 w-60 h-60 md:w-[22rem] md:h-[22rem] top-[-60px] left-0 absolute rounded-full bg-opacity-40 blur-3xl"
-        />
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 0.3, y: 0 }}
-          transition={{ delay: 2, duration: 0.75, ease: "easeInOut" }}
-          className="z-[-10] bg-green-200 w-60 h-60 md:w-[22rem] md:h-[22rem] top-2 right-5 absolute rounded-full bg-opacity-40 blur-3xl"
-        />
-      </div>
-      <div className="z-10 w-full flex justify-center items-center space-x-4">
-        <Link className="mt-6" href="/events">
-          <Button className="rounded-full" asChild>
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.15, duration: 0.55, ease: "easeInOut" }}
-              className="text-black w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
-            >
-              Browse Events
-            </motion.button>
-          </Button>
-        </Link>
-        {/* <Link className="mt-6" href="/profile/create-event">
-          <Button variant={"ghost"} asChild>
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.15, duration: 0.55, ease: "easeInOut" }}
-              className="text-white w-40 md:w-52 md:py-8 md:rounded-full md:text-xl block font-semibold hover:bg-transparent"
-            >
-              Create Event
-            </motion.button>
-          </Button>
-        </Link> */}
-      </div>
-    </div>
+    <motion.section
+      style={{ opacity }}
+      ref={targetRef}
+      className="h-screen pt-10 md:pt-28 w-full before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_calc(100px)_calc(100px),_var(--primary-hero)_0%,_transparent_100%)] before:pointer-events-none before:inset-0 before:fixed before:opacity-20"
+    >
+      <motion.div style={{ scale }}>
+        <div className="relative z-10">
+          <motion.p
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease: "easeInOut" }}
+            className="z-10 relative max-w-6xl text-[2.4rem] font-bold text-center m-auto leading-[1.2] md:leading-[1.3] md:text-7xl md:max-w-4xl"
+          >
+            {heading}
+          </motion.p>
+          <p className="text-center text-md md:text-lg my-4">{subheading}</p>
+          <div className="w-full flex justify-center items-center">
+            <Link className="mt-2 md:mt-6" href="/events">
+              <Button className="rounded-full" asChild>
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 1.45,
+                    duration: 0.75,
+                    ease: "easeInOut",
+                  }}
+                  className="text-black w-40 md:w-52 md:py-8 md:text-xl block font-semibold rounded-full"
+                >
+                  Browse Events
+                </motion.button>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </motion.div>
+    </motion.section>
   );
 }

@@ -13,7 +13,9 @@ export default async function MainLayout({
 
   return (
     <div className="p-6 px-4">
-      {user ? <LoggedInHeader user={user} /> : <Header />}
+      <div className="relative z-10">
+        {user ? <LoggedInHeader user={user} /> : <Header />}
+      </div>
       {children}
     </div>
   );

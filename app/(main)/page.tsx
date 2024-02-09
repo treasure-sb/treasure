@@ -4,10 +4,14 @@ import Hero from "@/components/landing-page/Hero";
 
 export default function Page() {
   return (
-    <main className="max-w-xl md:max-w-6xl m-auto">
+    <main className="m-auto">
       <Hero />
-      <FeaturedEvents />
-      <Newsletter />
+      <div className="relative z-10">
+        <FeaturedEvents />
+        <div className="max-w-6xl xl:max-w-7xl m-auto">
+          <Newsletter />
+        </div>
+      </div>
     </main>
   );
 }
