@@ -39,9 +39,11 @@ export default function Newsletter() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full my-20 justify-between flex flex-col md:flex-row"
+        className="w-full mt-20 justify-between flex flex-col space-y-4 md:space-y-0 md:flex-row"
       >
-        <h1 className="text-3xl font-semibold">Get the latest from Treasure</h1>
+        <h1 className="text-xl md:text-3xl font-semibold">
+          Get the latest from Treasure
+        </h1>
         <div className="flex space-x-4 w-full md:max-w-md items-end">
           <FormField
             control={form.control}

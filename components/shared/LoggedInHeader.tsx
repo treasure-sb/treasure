@@ -13,7 +13,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
   return (
-    <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
+    <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center z-10">
       <div className="relative scale-90 -translate-x-4 sm:scale-100 sm:translate-x-0">
         <Link
           href="/"
@@ -28,7 +28,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           </p>
         )}
       </div>
-      <div className="flex align-middle ">
+      <div className="flex align-middle">
         <Link
           href="/events"
           className="my-auto font-semibold mr-6 text-lg relative group"

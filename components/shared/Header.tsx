@@ -11,7 +11,7 @@ export default function Header() {
   return (
     <>
       {pathname === "/login" || pathname === "/signup" ? (
-        <header>
+        <header className="z-50">
           <Link
             href="/"
             className="font-semibold text-3xl space-x-1 flex items-center justify-center mr-6"
@@ -21,7 +21,7 @@ export default function Header() {
           </Link>
         </header>
       ) : (
-        <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center">
+        <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center z-50">
           <Link
             href="/"
             className="font-semibold text-3xl flex items-center space-x-1 scale-90 -translate-x-4 sm:scale-100 sm:translate-x-0"
