@@ -30,19 +30,19 @@ export default function BookVendorTables() {
   const opacityOne = useTransform(
     scrollYProgress,
     [0, 0.2, 0.3, 0.5, 0.9],
-    [1, 1, 1, 0.6, 0.6]
+    [1, 1, 1, 0.4, 0.4]
   );
 
   const opacityTwo = useTransform(
     scrollYProgress,
     [0, 0.2, 0.4, 0.5, 0.6, 0.8],
-    [1, 0.6, 0.6, 1, 1, 0.6]
+    [1, 0.4, 0.4, 1, 1, 0.4]
   );
 
   const opacityThree = useTransform(
     scrollYProgress,
     [0, 0.2, 0.7, 0.8],
-    [1, 0.6, 0.6, 1]
+    [1, 0.4, 0.4, 1]
   );
 
   return (
