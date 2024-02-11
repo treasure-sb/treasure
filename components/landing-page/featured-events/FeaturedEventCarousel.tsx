@@ -1,5 +1,5 @@
 "use client";
-import { InfiniteMovingCards } from "../ui/infinite-moving-cards";
+import { InfiniteMovingCards } from "../../ui/infinite-moving-cards";
 
 export default function FeaturedEventCarousel({
   featuredEvents,

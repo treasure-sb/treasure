@@ -1,6 +1,6 @@
 import FeaturedEventDisplay from "./FeaturedEventDisplay";
 import Link from "next/link";
-import ArrowPointingRight from "../icons/ArrowPointingRight";
+import ArrowPointingRight from "../../icons/ArrowPointingRight";
 import FeaturedEventCarousel from "./FeaturedEventCarousel";
 import { Tables } from "@/types/supabase";
 import { getAllEventData } from "@/lib/helpers/eventsFiltering";
