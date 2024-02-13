@@ -186,7 +186,8 @@ export default async function EventsPage({ event }: { event: any }) {
             </div>
           </Link>
         )}
-        <AttendingEvent event={event} user={user} />
+        {/* Hiding the attending event button for now */}
+        {/* <AttendingEvent event={event} user={user} /> */}
       </div>
     </main>
   );
