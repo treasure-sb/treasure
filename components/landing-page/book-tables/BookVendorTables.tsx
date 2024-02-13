@@ -30,23 +30,23 @@ export default function BookVendorTables() {
   const opacityOne = useTransform(
     scrollYProgress,
     [0, 0.2, 0.3, 0.5, 0.9],
-    [1, 1, 1, 0.4, 0.4]
+    [1, 1, 1, 1, 1]
   );
 
   const opacityTwo = useTransform(
     scrollYProgress,
     [0, 0.2, 0.4, 0.5, 0.6, 0.8],
-    [1, 0.4, 0.4, 1, 1, 0.4]
+    [0, 0, 0, 1, 1, 1]
   );
 
   const opacityThree = useTransform(
     scrollYProgress,
     [0, 0.2, 0.7, 0.8],
-    [1, 0.4, 0.4, 1]
+    [0, 0, 0, 1]
   );
 
   return (
-    <section className="mt-[-40vh] h-[500vh] relative space-y-40">
+    <section className="mt-[-40vh] mx-[-10vh] h-[500vh] relative space-y-40">
       <div className="sticky top-[10vh]">
         <h1 className="text-center font-semibold text-3xl mb-12">
           Book Vendor Tables in Seconds

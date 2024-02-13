@@ -33,8 +33,17 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           href="/events"
           className="my-auto font-semibold mr-6 text-lg relative group"
         >
-          <span>Events</span>
-          <span className="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-hover:w-full"></span>
+          <span className="text-foreground/70 hover:text-foreground transition duration-300">
+            Events
+          </span>
+        </Link>
+        <Link
+          href="/faq"
+          className="my-auto font-semibold mr-6 text-lg relative group"
+        >
+          <span className="text-foreground/70 hover:text-foreground transition duration-300">
+            FAQ
+          </span>
         </Link>
         <Link href={`/${profile.username}`}>
           {profile.avatar_url ? (

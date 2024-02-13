@@ -35,7 +35,6 @@ export default function Header() {
               className="my-auto font-semibold mr-6 text-lg relative group"
             >
               <span>Events</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-hover:w-full"></span>
             </Link>
             <Link href="/login">
               <Button
