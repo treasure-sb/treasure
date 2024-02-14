@@ -23,15 +23,20 @@ export default async function Page() {
           Joined Treasure {formattedDate}
         </p>
         <Separator />
-        <Link href="/host/events">
-          <Button className="w-full">Host Dashboard</Button>
-        </Link>
-        <Link href="/vendor">
-          <Button className="w-full">Vendor Dashboard</Button>
-        </Link>
         <Link href="/profile/tickets">
           <Button className="w-full">My Tickets</Button>
         </Link>
+        <Link href="/host/events">
+          <Button className="w-full" variant={"tertiary"}>
+            Host Dashboard
+          </Button>
+        </Link>
+        <Link href="/vendor">
+          <Button className="w-full" variant={"tertiary"}>
+            Vendor Dashboard
+          </Button>
+        </Link>
+
         <Link href="/profile/edit-profile">
           <Button className="w-full" variant={"secondary"}>
             Edit Profile
