@@ -22,14 +22,14 @@ export default function TicketPurchased({
   return (
     <Html>
       <TailwindConfig>
-        <Body className="bg-secondary font-sans text-foreground p-10">
+        <Body className="bg-background font-sans text-foreground p-10">
           <Container className="bg-background border-2 max-w-lg px-10">
             <Section className="text-center">
               <Heading>
                 <Img
                   className="m-auto"
                   src="https://www.ontreasure.xyz/static/logo.png"
-                  alt="event-poster"
+                  alt="logo"
                   width="170"
                   height="auto"
                 />
