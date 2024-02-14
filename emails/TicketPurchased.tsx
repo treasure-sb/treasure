@@ -1,3 +1,5 @@
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
@@ -29,15 +31,7 @@ export default function TicketPurchased({
       <TailwindConfig>
         <Body className="bg-background font-sans text-foreground p-10">
           <Container className="bg-background border-2 max-w-lg px-10">
-            <Section className="text-center">
-              <Img
-                className="m-auto"
-                src="https://www.ontreasure.xyz/static/logo.png"
-                alt="logo"
-                width="170"
-                height="auto"
-              />
-            </Section>
+            <Header />
             <Section>
               <Heading className="font-normal">Great choice, John</Heading>
               <Text>
@@ -56,7 +50,7 @@ export default function TicketPurchased({
                 {eventName}
               </Heading>
               <Button
-                className="bg-tertiary text-background font-normal rounded-lg px-6 py-4"
+                className="bg-primary text-background font-normal rounded-lg px-6 py-4"
                 href="/profile/tickets"
               >
                 View Tickets
@@ -149,23 +143,7 @@ export default function TicketPurchased({
                 .
               </Text>
             </Section>
-            <Section>
-              <Row>
-                <Column className="text-left">
-                  <Img
-                    src="https://www.ontreasure.xyz/static/logo.png"
-                    alt="logo"
-                    width="120"
-                    height="auto"
-                  />
-                </Column>
-                <Column>
-                  <Heading className="font-normal text-right" as="h4">
-                    Brooklyn, NY &copy; 2024
-                  </Heading>
-                </Column>
-              </Row>
-            </Section>
+            <Footer />
           </Container>
         </Body>
       </TailwindConfig>
