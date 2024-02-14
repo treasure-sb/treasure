@@ -24,7 +24,7 @@ export default async function Page() {
         </p>
         <Separator />
         <Link href="/profile/tickets">
-          <Button className="w-full">My Tickets</Button>
+          <Button className="w-full font-bold">My Tickets</Button>
         </Link>
         <Link href="/host/events">
           <Button className="w-full" variant={"tertiary"}>
