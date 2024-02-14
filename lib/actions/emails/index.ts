@@ -8,7 +8,9 @@ import VendorAppRejected, {
   VendorAppRejectedEmailProps,
 } from "@/emails/VendorAppRejected";
 import QRCode from "qrcode";
-import TicketPurchased from "@/emails/TicketPurchased";
+import TicketPurchased, {
+  TicketPurchasedProps,
+} from "@/emails/TicketPurchased";
 import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
@@ -62,10 +64,9 @@ const sendVendorAppRejectedEmail = async (
 
 const sendTicketPurchasedEmail = async (
   email: string,
-  eventName: string,
-  posterUrl: string,
   ticketId: string,
-  eventId: string
+  eventId: string,
+  emailProps: TicketPurchasedProps
 ) => {
   const qrCodeUrl = await QRCode.toDataURL(
     `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
@@ -74,14 +75,14 @@ const sendTicketPurchasedEmail = async (
   await resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
-    subject: `You've purchased a ticket to ${eventName}!`,
+    subject: `You're going to ${emailProps.eventName}!`,
     attachments: [
       {
         filename: "qr-code.png",
         content: qrCodeUrl.split(",")[1],
       },
     ],
-    react: TicketPurchased({ eventName, posterUrl }),
+    react: TicketPurchased(emailProps),
   });
 };
 

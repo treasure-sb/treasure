@@ -4,10 +4,11 @@ import { sendTicketPurchasedEmail } from "@/lib/actions/emails";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
+import { Tables } from "@/types/supabase";
+import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { Tables } from "@/types/supabase";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -53,9 +54,10 @@ export async function POST(req: Request) {
       // ticket was purchased (actual solution: need to construct payload for checkout session)
       const { data: ticketData } = await supabase
         .from("tickets")
-        .select("price")
+        .select("*")
         .eq("id", ticket_id)
         .single();
+      const ticket: Tables<"tickets"> = ticketData;
 
       if (ticketData) {
         const { data: purchasedTicketData } = await supabase
@@ -72,15 +74,27 @@ export async function POST(req: Request) {
 
         const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
         const { profile } = await getProfile(user_id as string);
-        const { event: eventData } = await getEventFromId(event_id as string);
+        const { event } = await getEventFromId(event_id as string);
+        const posterUrl = await getPublicPosterUrl(event);
 
-        const posterUrl = await getPublicPosterUrl(eventData);
+        // generate emails props
+        const emailProps = {
+          eventName: event.name,
+          posterUrl,
+          ticketType: ticket.name,
+          quantity: 1,
+          location: event.address,
+          date: moment(event.date).format("dddd, MMM Do"),
+          guestName: `${profile.first_name} ${profile.last_name}`,
+          totalPrice: `$${ticketData.price}`,
+          eventInfo: event.description,
+        };
+
         await sendTicketPurchasedEmail(
           profile.email,
-          eventData.name,
-          posterUrl,
           purchasedTicket.id,
-          event_id
+          event_id,
+          emailProps
         );
       } else {
         await supabase
