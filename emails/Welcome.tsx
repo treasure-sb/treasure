@@ -1,10 +1,13 @@
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
   Button,
   Container,
   Heading,
-  Hr,
+  Row,
+  Column,
   Html,
   Img,
   Section,
@@ -15,23 +18,12 @@ export default function Welcome({ firstName = "John" }: { firstName: string }) {
   return (
     <Html>
       <TailwindConfig>
-        <Body className="bg-secondary font-sans text-foreground p-10">
+        <Body className="bg-background font-sans text-foreground p-10">
           <Container className="bg-background border-2 max-w-lg px-10">
-            <Section className="text-center">
-              <Heading>
-                <Img
-                  className="m-auto"
-                  src="https://www.ontreasure.xyz/static/logo.png"
-                  alt="event-poster"
-                  width="170"
-                  height="auto"
-                />
-              </Heading>
-            </Section>
-            <Hr />
+            <Header />
             <Section>
               <Heading className="text-center font-normal">
-                Welcome, <strong>{firstName}</strong>!
+                Welcome, {firstName}!
               </Heading>
               <Text className="text-center">
                 Treasure lets you explore card and collectible events near you!
@@ -41,12 +33,13 @@ export default function Welcome({ firstName = "John" }: { firstName: string }) {
             </Section>
             <Section className="text-center my-6">
               <Button
-                className="bg-primary ml-auto p-4 rounded-full text-foreground"
+                className="bg-primary ml-auto p-4 rounded-full text-background"
                 href="https://ontreasure.xyz/events"
               >
                 Explore Events
               </Button>
             </Section>
+            <Footer />
           </Container>
         </Body>
       </TailwindConfig>
