@@ -41,11 +41,11 @@ export default function EventToolsHeader({
           <p className="md:text-lg">All Events</p>
         </Link>
       )}
-      <div className="flex gap-4 justify-center items-center">
+      <div className="flex gap-4 items-start justify-between">
+        <h1 className="my-2 text-3xl font-semibold">{event.name}</h1>
         <div className="w-32">
           <EventPoster posterUrl={event.publicPosterUrl} />
         </div>
-        <h1 className="my-2 text-3xl font-semibold">{event.name}</h1>
       </div>
     </motion.div>
   );
