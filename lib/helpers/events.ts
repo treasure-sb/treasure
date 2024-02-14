@@ -1,6 +1,6 @@
 "use server";
 
-import { SearchParams } from "@/types/event";
+import { EventDisplayData, SearchParams } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   getTagData,
@@ -267,15 +267,21 @@ const getUserEventsDisplayData = async (
 
 const eventDisplayData = async (events: any[]) => {
   return Promise.all(
-    events.map(async (event: Tables<"events">) => {
-      const publicPosterUrl = await getPublicPosterUrl(event);
-      return {
-        ...event,
-        publicPosterUrl,
-        formattedDate: formatDate(event.date),
-      };
-    })
+    events.map(
+      async (event: Tables<"events">) => await getEventDisplayData(event)
+    )
   );
+};
+
+const getEventDisplayData = async (
+  event: Tables<"events">
+): Promise<EventDisplayData> => {
+  const publicPosterUrl = await getPublicPosterUrl(event);
+  return {
+    ...event,
+    publicPosterUrl,
+    formattedDate: formatDate(event.date),
+  };
 };
 
 export {
@@ -284,6 +290,7 @@ export {
   eventDisplayData,
   getEventFromCleanedName,
   getEventFromId,
+  getEventDisplayData,
   formatDate,
   getEventsDisplayData,
   getUserEventsDisplayData,
