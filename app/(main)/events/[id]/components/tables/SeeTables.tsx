@@ -85,18 +85,20 @@ export default function SeeTables({
                 </div>
               </div>
             ))}
-            <div className="font-normal w-full flex justify-between items-center my-6">
-              <p className="text-sm text-tertiary">
-                Already Booked Your Table?
-              </p>
-              <ApplyNowDialog
-                event={event}
-                table={tables[0]}
-                user={user}
-                tables={tables}
-                prebooked={true}
-              />
-            </div>
+            {event.sales_status !== "NO_SALE" && (
+              <div className="font-normal w-full flex justify-between items-center my-6">
+                <p className="text-sm text-tertiary">
+                  Already Booked Your Table?
+                </p>
+                <ApplyNowDialog
+                  event={event}
+                  table={tables[0]}
+                  user={user}
+                  tables={tables}
+                  prebooked={true}
+                />
+              </div>
+            )}
           </motion.div>
         </motion.div>
       ) : (

@@ -11,7 +11,7 @@ export default function EventPoster({ posterUrl }: { posterUrl: string }) {
   return (
     <div className="relative">
       <Image
-        className={`rounded-xl mb-6 lg:mb-0 m-auto ${imageVisibility}`}
+        className={`rounded-xl my-auto ${imageVisibility}`}
         alt="event poster image"
         src={posterUrl}
         width={500}

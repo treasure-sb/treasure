@@ -1,4 +1,3 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import format from "date-fns/format";
 import { getProfile } from "@/lib/helpers/profiles";
@@ -11,13 +10,7 @@ export default async function Page() {
   const { data: userData } = await validateUser();
   const user: User = userData.user as User;
 
-  const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(user.id);
-
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
-
   const formattedDate = format(new Date(user.created_at), "MMMM do, yyyy");
 
   return (
@@ -30,12 +23,20 @@ export default async function Page() {
           Joined Treasure {formattedDate}
         </p>
         <Separator />
-        <Link href="/host/events" className="">
-          <Button className="w-full">Host Dashboard</Button>
+        <Link href="/profile/tickets">
+          <Button className="w-full font-bold">My Tickets</Button>
         </Link>
-        <Link href="/vendor" className="">
-          <Button className="w-full">Vendor Dashboard</Button>
+        <Link href="/host/events">
+          <Button className="w-full" variant={"tertiary"}>
+            Host Dashboard
+          </Button>
         </Link>
+        <Link href="/vendor">
+          <Button className="w-full" variant={"tertiary"}>
+            Vendor Dashboard
+          </Button>
+        </Link>
+
         <Link href="/profile/edit-profile">
           <Button className="w-full" variant={"secondary"}>
             Edit Profile

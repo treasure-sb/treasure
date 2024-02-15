@@ -146,9 +146,11 @@ export default async function EventsPage({ event }: { event: any }) {
           <Separator />
           <Vendors event={event} />
           <HostedBy event={event} />
-          <Separator />
-          {event.venue_map_url ? (
+
+          {event.venue_map_url &&
+          event.venue_map_url != "venue_map_coming_soon" ? (
             <>
+              <Separator />
               <div className="font-semibold text-2xl my-4 w-full">
                 Venue Map
               </div>
@@ -186,7 +188,8 @@ export default async function EventsPage({ event }: { event: any }) {
             </div>
           </Link>
         )}
-        <AttendingEvent event={event} user={user} />
+        {/* Hiding the attending event button for now */}
+        {/* <AttendingEvent event={event} user={user} /> */}
       </div>
     </main>
   );

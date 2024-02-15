@@ -1,9 +1,12 @@
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
   Container,
   Heading,
-  Hr,
+  Row,
+  Column,
   Html,
   Section,
   Text,
@@ -24,27 +27,26 @@ export default function VendorAppRejected({
   return (
     <Html>
       <TailwindConfig>
-        <Body className="bg-secondary font-sans text-foreground p-10">
+        <Body className="bg-background font-sans text-foreground p-10">
           <Container className="bg-background border-2 max-w-lg px-10">
-            <Section className="text-center">
-              <Heading>
-                <Img
-                  className="m-auto"
-                  src="https://www.ontreasure.xyz/static/logo.png"
-                  alt="event-poster"
-                  width="170"
-                  height="auto"
-                />
-              </Heading>
-            </Section>
-            <Hr />
+            <Header />
             <Section>
               <Heading className="text-center font-normal">
                 You were not selected to be a vendor at{" "}
                 <strong>{eventName}</strong>
               </Heading>
             </Section>
-            <Section className="text-center mb-6 border-2">
+            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center">
+              <Img
+                className="m-auto rounded-[2.5rem]"
+                src={posterUrl}
+                alt="event-poster"
+                width="400"
+                height="auto"
+              />
+              <Heading className="font-normal mt-6 text-left">
+                {eventName}
+              </Heading>
               {message.length > 0 && (
                 <Section className="my-6">
                   <Heading className="font-bold text-sm text-left">
@@ -53,14 +55,8 @@ export default function VendorAppRejected({
                   <Text className="text-left">{message}</Text>
                 </Section>
               )}
-              <Img
-                className="m-auto rounded-md mt-6"
-                src={posterUrl}
-                alt="event-poster"
-                width="220"
-                height="auto"
-              />
             </Section>
+            <Footer />
           </Container>
         </Body>
       </TailwindConfig>

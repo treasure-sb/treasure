@@ -24,7 +24,6 @@ export default function EventToolsHeader({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.85, ease: "easeInOut" }}
     >
-      <h1 className="my-2 text-3xl font-semibold">{event.name}</h1>
       {isEventTool ? (
         <Link
           href={`/host/events/${event.cleaned_name}`}
@@ -42,8 +41,11 @@ export default function EventToolsHeader({
           <p className="md:text-lg">All Events</p>
         </Link>
       )}
-      <div className="w-24 md:w-32">
-        <EventPoster posterUrl={event.publicPosterUrl} />
+      <div className="flex gap-4 items-start justify-between">
+        <h1 className="my-2 text-3xl font-semibold">{event.name}</h1>
+        <div className="w-32">
+          <EventPoster posterUrl={event.publicPosterUrl} />
+        </div>
       </div>
     </motion.div>
   );
