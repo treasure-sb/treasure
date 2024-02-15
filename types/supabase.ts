@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       application_answers: {
@@ -112,6 +112,42 @@ export interface Database {
           }
         ]
       }
+      checkout_sessions: {
+        Row: {
+          event_id: string
+          id: string
+          quantity: number
+          ticket_id: string
+        }
+        Insert: {
+          event_id?: string
+          id?: string
+          quantity: number
+          ticket_id?: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          quantity?: number
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_checkout_sessions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_checkout_sessions_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_guests: {
         Row: {
           event_id: string
@@ -210,7 +246,6 @@ export interface Database {
           attendee_id: string
           event_id: string
           id: string
-          order_id: string
           ticket_id: string
           valid: boolean
         }
@@ -218,7 +253,6 @@ export interface Database {
           attendee_id: string
           event_id: string
           id?: string
-          order_id: string
           ticket_id: string
           valid?: boolean
         }
@@ -226,7 +260,6 @@ export interface Database {
           attendee_id?: string
           event_id?: string
           id?: string
-          order_id?: string
           ticket_id?: string
           valid?: boolean
         }
@@ -243,13 +276,6 @@ export interface Database {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_tickets_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
           {
@@ -682,8 +708,8 @@ export interface Database {
           name: string
           price: number
           quantity: number | null
-          stripe_price_id: string | null
-          stripe_product_id: string | null
+          stripe_price_id: string
+          stripe_product_id: string
         }
         Insert: {
           created_at?: string
@@ -692,8 +718,8 @@ export interface Database {
           name?: string
           price: number
           quantity?: number | null
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
+          stripe_price_id: string
+          stripe_product_id: string
         }
         Update: {
           created_at?: string
@@ -702,8 +728,8 @@ export interface Database {
           name?: string
           price?: number
           quantity?: number | null
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
+          stripe_price_id?: string
+          stripe_product_id?: string
         }
         Relationships: [
           {

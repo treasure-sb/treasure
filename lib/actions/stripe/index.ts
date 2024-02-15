@@ -3,6 +3,12 @@ import { Stripe } from "stripe";
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string);
 
+interface Ticket {
+  name: string;
+  price: string;
+  poster_url: string;
+}
+
 const createCheckoutSession = async (
   price_id: string | null,
   user_id: string | undefined,
@@ -32,15 +38,19 @@ const createCheckoutSession = async (
   return { clientSecret: session.client_secret };
 };
 
-interface Ticket {
-  name: string;
-  price: string;
-  poster_url: string;
-}
+const createPaymentIntent = async () => {
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 2000,
+    currency: "usd",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+  return { clientSecret: paymentIntent.client_secret };
+};
 
 const createStripeProduct = async (ticket: Ticket) => {
   const { name, price, poster_url } = ticket;
-
   const product = await stripe.products.create({
     name,
     default_price_data: {
@@ -52,4 +62,4 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-export { createCheckoutSession, createStripeProduct };
+export { createCheckoutSession, createPaymentIntent, createStripeProduct };
