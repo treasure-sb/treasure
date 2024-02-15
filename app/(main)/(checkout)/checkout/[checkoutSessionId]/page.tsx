@@ -41,6 +41,7 @@ export default async function Page({
     .eq("id", ticket_id)
     .single();
   const ticket: Tables<"tickets"> = ticketData;
+  const totalPrice = ticket.price * quantity;
 
   return (
     <main className="max-w-6xl m-auto">
@@ -59,11 +60,14 @@ export default async function Page({
                   {ticket.name} x {quantity}
                 </p>
               </div>
-              <p>$19.00</p>
+              <p>{`$${totalPrice.toFixed(2)}`}</p>
             </div>
           </div>
         </div>
-        <InitializeCheckout />
+        <InitializeCheckout
+          checkoutSession={checkoutSession}
+          totalPrice={totalPrice}
+        />
       </div>
     </main>
   );

@@ -6,51 +6,18 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Tables } from "@/types/supabase";
+import { toast } from "sonner";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({
+  checkoutSession,
+}: {
+  checkoutSession: Tables<"checkout_sessions">;
+}) {
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    );
-
-    if (!clientSecret) {
-      return;
-    }
-
-    const getPaymentIntent = async (clientSecret: string) => {
-      const { paymentIntent } = await stripe.retrievePaymentIntent(
-        clientSecret
-      );
-      if (!paymentIntent) {
-        return;
-      }
-      switch (paymentIntent.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!");
-          break;
-        case "processing":
-          setMessage("Your payment is processing.");
-          break;
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
-          break;
-        default:
-          setMessage("Something went wrong.");
-          break;
-      }
-    };
-    getPaymentIntent(clientSecret);
-  }, [stripe]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -65,14 +32,14 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
+        return_url: `${window.location.origin}/checkout/${checkoutSession.id}/success`,
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message || "An unexpected error occurred.");
-    } else {
-      setMessage("An unexpected error occurred.");
+    if (error.type === "card_error") {
+      toast.error(error.message || "An error occurred");
+    } else if (error.type !== "validation_error") {
+      toast.error("An error occurred");
     }
 
     setIsLoading(false);
@@ -87,20 +54,13 @@ export default function CheckoutForm() {
       <PaymentElement id="payment-element" />
       <div className="w-full flex items-center justify-center">
         <Button
-          className="rounded-sm"
+          className={`rounded-sm ${isLoading && "bg-primary/60"}`}
           disabled={isLoading || !stripe || !elements}
           id="submit"
         >
-          <span id="button-text">
-            {isLoading ? (
-              <div className="spinner" id="spinner"></div>
-            ) : (
-              "Purchase Tickets"
-            )}
-          </span>
+          Purchase Tickets
         </Button>
       </div>
-      {message && <div id="payment-message">{message}</div>}
     </form>
   );
 }

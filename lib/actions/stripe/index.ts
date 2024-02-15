@@ -38,9 +38,9 @@ const createCheckoutSession = async (
   return { clientSecret: session.client_secret };
 };
 
-const createPaymentIntent = async () => {
+const createPaymentIntent = async (totalPrice: number) => {
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 2000,
+    amount: totalPrice * 100,
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,

@@ -4,18 +4,25 @@ import { createPaymentIntent } from "@/lib/actions/stripe";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState, useEffect } from "react";
+import { Tables } from "@/types/supabase";
 import CheckoutForm from "./CheckoutForm";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export default function InitializeCheckout() {
+export default function InitializeCheckout({
+  checkoutSession,
+  totalPrice,
+}: {
+  checkoutSession: Tables<"checkout_sessions">;
+  totalPrice: number;
+}) {
   const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
     const fetchPaymentIntent = async () => {
-      const paymentIntent = await createPaymentIntent();
+      const paymentIntent = await createPaymentIntent(totalPrice);
       const secret = paymentIntent?.clientSecret || "";
       setClientSecret(secret);
     };
@@ -41,7 +48,7 @@ export default function InitializeCheckout() {
     <>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm />
+          <CheckoutForm checkoutSession={checkoutSession} />
         </Elements>
       )}
     </>
