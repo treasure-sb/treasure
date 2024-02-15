@@ -1,16 +1,16 @@
 "use server";
 
-import { Resend } from "resend";
 import VendorAppAccepted, {
   VendorAppAcceptedEmailProps,
 } from "@/emails/VendorAppAccepted";
 import VendorAppRejected, {
   VendorAppRejectedEmailProps,
 } from "@/emails/VendorAppRejected";
-import QRCode from "qrcode";
 import TicketPurchased, {
   TicketPurchasedProps,
 } from "@/emails/TicketPurchased";
+import { Resend } from "resend";
+import { generateTicketReceipt } from "@/pdfs/tickets";
 import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
@@ -68,22 +68,28 @@ const sendTicketPurchasedEmail = async (
   eventId: string,
   emailProps: TicketPurchasedProps
 ) => {
-  const qrCodeUrl = await QRCode.toDataURL(
-    `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
-  );
-
-  await resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
-    to: email,
-    subject: `You're going to ${emailProps.eventName}!`,
-    attachments: [
-      {
-        filename: "qr-code.png",
-        content: qrCodeUrl.split(",")[1],
-      },
-    ],
-    react: TicketPurchased(emailProps),
-  });
+  try {
+    const ticketReceipt = await generateTicketReceipt(
+      ticketId,
+      eventId,
+      emailProps
+    );
+    const ticketReceiptBuffer = Buffer.from(ticketReceipt);
+    await resend.emails.send({
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: `You're going to ${emailProps.eventName}!`,
+      attachments: [
+        {
+          filename: `${emailProps.eventName}_ticket_receipt.pdf`,
+          content: ticketReceiptBuffer,
+        },
+      ],
+      react: TicketPurchased(emailProps),
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export {
