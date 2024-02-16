@@ -1,9 +1,9 @@
 "use client";
+
 import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
