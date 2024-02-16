@@ -4,9 +4,25 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { TicketIcon } from "lucide-react";
 import { EventDisplayData } from "@/types/event";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Tables } from "@/types/supabase";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TicketsCarousel from "./components/TicketsCarousel";
+
+interface TicketScanningInfo {
+  ticketId: string;
+  valid: boolean;
+}
+
+export type TicketScanningMap = Map<string, TicketScanningInfo[]>;
+type EventTicketMap = Map<string, TicketScanningMap>;
+type EventDisplayMap = Map<string, EventDisplayData>;
+type EventTicket = Tables<"event_tickets"> & {
+  event: Tables<"events">;
+  ticket: {
+    name: string;
+  };
+};
 
 export default async function Page() {
   const supabase = await createSupabaseServerClient();
@@ -15,16 +31,18 @@ export default async function Page() {
 
   const { data: ticketData } = await supabase
     .from("event_tickets")
-    .select("*, event:events(*), ticket:tickets(*)")
+    .select("*, event:events(*), ticket:tickets(name)")
     .eq("attendee_id", user.id);
 
-  const eventTicketMap = new Map<string, Map<string, string[]>>();
-  const eventDisplayMap = new Map<string, EventDisplayData>();
+  const eventTickets: EventTicket[] = ticketData || [];
+  const eventTicketMap: EventTicketMap = new Map();
+  const eventDisplayMap: EventDisplayMap = new Map();
 
-  ticketData?.forEach(async (ticket) => {
+  eventTickets.forEach(async (ticket) => {
+    const ticketId = ticket.id;
+    const valid = ticket.valid;
     const eventId = ticket.event.id;
     const ticketName = ticket.ticket.name;
-    const ticketId = ticket.id;
 
     if (!eventTicketMap.has(eventId)) {
       eventTicketMap.set(eventId, new Map());
@@ -32,9 +50,9 @@ export default async function Page() {
 
     const ticketsMap = eventTicketMap.get(eventId)!;
     if (ticketsMap.has(ticketName)) {
-      ticketsMap.get(ticketName)!.push(ticketId);
+      ticketsMap.get(ticketName)!.push({ ticketId, valid });
     } else {
-      ticketsMap.set(ticketName, [ticketId]);
+      ticketsMap.set(ticketName, [{ ticketId, valid }]);
     }
   });
 
