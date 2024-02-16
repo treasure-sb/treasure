@@ -5,13 +5,16 @@ import { useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { TicketSuccessInformation } from "../page";
 import Link from "next/link";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
 export default function PaymentIntent({
   eventDisplay,
+  ticketInfo,
 }: {
   eventDisplay: EventDisplayData;
+  ticketInfo: TicketSuccessInformation;
 }) {
   const [message, setMessage] = useState<null | string>(null);
   const stripe = useStripe();
@@ -51,6 +54,8 @@ export default function PaymentIntent({
     getPaymentIntent(clientSecret);
   }, [stripe]);
 
+  const { quantity, ticketName, email } = ticketInfo;
+
   return (
     <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-10">
       <div className="border-[1px] border-foreground/20 rounded-lg space-y-6 p-6 w-full max-w-xl m-auto">
@@ -58,7 +63,7 @@ export default function PaymentIntent({
           Thanks for your order!
         </h1>
         <h2 className="text-tertiary text-center">
-          1x GA ticket sent to george@ontreasure.xyz
+          {quantity}x {ticketName} ticket sent to {email}
         </h2>
         <div className="w-[70%] m-auto">
           <EventDisplay event={eventDisplay} showLikeButton={false} />
