@@ -44,11 +44,28 @@ export async function POST(req: Request) {
       webhookSecret
     );
 
-    if (event.type === "checkout.session.completed") {
+    if (event.type === "payment_intent.succeeded") {
       const session = event.data.object;
-      const { user_id, event_id, ticket_id } = JSON.parse(
+      const { checkoutSessionId } = JSON.parse(
         JSON.stringify(session.metadata)
       );
+
+      const { data: checkoutSessionData, error: checkoutSessionError } =
+        await supabase
+          .from("checkout_sessions")
+          .select("*")
+          .eq("id", checkoutSessionId)
+          .single();
+
+      if (checkoutSessionError) {
+        return NextResponse.json({
+          message: "Invalid checkout session",
+          ok: false,
+        });
+      }
+
+      const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
+      const { event_id, ticket_id, user_id, quantity } = checkoutSession;
 
       // not a good way to do this, but it's a quick solution to know what kind of
       // ticket was purchased (actual solution: need to construct payload for checkout session)
@@ -59,13 +76,14 @@ export async function POST(req: Request) {
         .single();
       const ticket: Tables<"tickets"> = ticketData;
 
-      if (ticketData) {
-        const { data: purchasedTicketData } = await supabase
-          .from("event_tickets")
-          .insert({ attendee_id: user_id, event_id, ticket_id })
-          .select();
+      if (ticket.id) {
+        const { data: purchasedTicketData, error: purchasedTicketError } =
+          await supabase
+            .from("event_tickets")
+            .insert({ attendee_id: user_id, event_id, ticket_id })
+            .select();
 
-        if (!purchasedTicketData) {
+        if (!purchasedTicketData || purchasedTicketError) {
           return NextResponse.json({
             message: "Error",
             ok: false,
@@ -73,8 +91,8 @@ export async function POST(req: Request) {
         }
 
         const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
-        const { profile } = await getProfile(user_id as string);
-        const { event } = await getEventFromId(event_id as string);
+        const { profile } = await getProfile(user_id);
+        const { event } = await getEventFromId(event_id);
         const posterUrl = await getPublicPosterUrl(event);
 
         // generate emails props
@@ -82,7 +100,7 @@ export async function POST(req: Request) {
           eventName: event.name,
           posterUrl,
           ticketType: ticket.name,
-          quantity: 1,
+          quantity: quantity,
           location: event.address,
           date: moment(event.date).format("dddd, MMM Do"),
           guestName: `${profile.first_name} ${profile.last_name}`,

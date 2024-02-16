@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { User } from "@supabase/supabase-js";
-import Link from "next/link";
+import { createCheckoutSession } from "@/lib/actions/checkout";
+import { useRouter } from "next/navigation";
 
 export default function SeeTickets({
   tickets,
@@ -18,6 +19,26 @@ export default function SeeTickets({
 }) {
   const [seeTickets, setSeeTickets] = useState(false);
   const minimumTicketPrice = tickets[0].price;
+  const { push } = useRouter();
+
+  const handleBuyNow = async (ticketId: string) => {
+    if (!user) {
+      push("/login");
+      return;
+    }
+
+    const { data } = await createCheckoutSession({
+      event_id: event.id,
+      ticket_id: ticketId,
+      user_id: user.id,
+      quantity: 1,
+    });
+
+    if (data) {
+      const checkoutSession: Tables<"checkout_sessions"> = data[0];
+      push(`/checkout/${checkoutSession.id}`);
+    }
+  };
 
   return (
     <motion.div layout className="bg-background border-[1px] w-full rounded-md">
@@ -50,25 +71,13 @@ export default function SeeTickets({
                   <p>${ticket.price}</p>
                   {ticket.stripe_price_id &&
                     event.sales_status === "SELLING_ALL" && (
-                      <Link
-                        href={{
-                          pathname: "/checkout",
-                          query: {
-                            price_id: ticket.stripe_price_id,
-                            user_id: user?.id,
-                            event_id: event.id,
-                            ticket_id: ticket.id,
-                            quantity: 1,
-                          },
-                        }}
+                      <Button
+                        onClick={async () => await handleBuyNow(ticket.id)}
+                        variant={"outline"}
+                        className="font-normal text-sm p-2 border-primary"
                       >
-                        <Button
-                          variant={"outline"}
-                          className="font-normal text-sm p-2 border-primary"
-                        >
-                          Buy Now
-                        </Button>
-                      </Link>
+                        Buy Now
+                      </Button>
                     )}
                 </div>
               </div>
