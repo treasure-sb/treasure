@@ -9,41 +9,18 @@ interface Ticket {
   poster_url: string;
 }
 
-const createCheckoutSession = async (
-  price_id: string | null,
-  user_id: string | undefined,
-  event_id: string,
-  ticket_id: string,
-  redirect_domain: string,
-  quantity: number
+const createPaymentIntent = async (
+  totalPrice: number,
+  checkoutSessionId: string
 ) => {
-  if (!price_id || !user_id) return;
-  const session = await stripe.checkout.sessions.create({
-    ui_mode: "embedded",
-    line_items: [
-      {
-        price: price_id,
-        quantity,
-      },
-    ],
-    metadata: {
-      user_id,
-      event_id,
-      ticket_id,
-      quantity,
-    },
-    mode: "payment",
-    return_url: `${redirect_domain}/return?session_id={CHECKOUT_SESSION_ID}`,
-  });
-  return { clientSecret: session.client_secret };
-};
-
-const createPaymentIntent = async (totalPrice: number) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: totalPrice * 100,
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
+    },
+    metadata: {
+      checkoutSessionId,
     },
   });
   return { clientSecret: paymentIntent.client_secret };
@@ -62,4 +39,4 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-export { createCheckoutSession, createPaymentIntent, createStripeProduct };
+export { createPaymentIntent, createStripeProduct };

@@ -4,19 +4,22 @@ import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
 
 export default function EventCard({
-  redirectTo,
   event,
+  redirectTo,
   user,
+  clickable = true,
   showLikeButton = true,
 }: {
+  event: EventDisplayData;
   redirectTo?: string;
   user?: User | null;
-  event: EventDisplayData;
+  clickable?: boolean;
   showLikeButton?: boolean;
 }) {
   const { publicPosterUrl, formattedDate } = event;
@@ -25,7 +28,12 @@ export default function EventCard({
   const skeletonDisplay = loading ? "inline-block" : "hidden";
 
   return (
-    <div className="w-full h-25 flex items-center justify-betwee">
+    <div
+      className={cn(
+        `w-full h-25 flex items-center justify-between`,
+        !clickable && "pointer-events-none"
+      )}
+    >
       <Link
         className="max-w-[90%] min-w-[90%]"
         href={redirectTo || `/events/${event.cleaned_name}`}

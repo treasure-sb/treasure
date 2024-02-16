@@ -48,7 +48,11 @@ export default async function Page({
       <div className="flex flex-col space-y-20 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
         <div className="space-y-4 w-full md:w-96">
           <div className="w-full">
-            <EventCard showLikeButton={false} event={eventDisplay} />
+            <EventCard
+              clickable={false}
+              showLikeButton={false}
+              event={eventDisplay}
+            />
           </div>
           <div>
             <p className="text-lg">Order summary</p>

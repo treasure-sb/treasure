@@ -27,19 +27,21 @@ export default function CheckoutForm({
     }
 
     setIsLoading(true);
+    toast.loading("Processing payment...");
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: `${window.location.origin}/checkout/${checkoutSession.id}/success`,
       },
     });
 
-    if (error.type === "card_error") {
-      toast.error(error.message || "An error occurred");
-    } else if (error.type !== "validation_error") {
-      toast.error("An error occurred");
+    if (error.type === "card_error" || error.type === "validation_error") {
+      toast.dismiss();
+      toast.error(error.message);
+    } else {
+      toast.dismiss();
+      toast.error("An error occurred. Please try again.");
     }
 
     setIsLoading(false);

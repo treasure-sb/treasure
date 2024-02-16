@@ -22,7 +22,10 @@ export default function InitializeCheckout({
 
   useEffect(() => {
     const fetchPaymentIntent = async () => {
-      const paymentIntent = await createPaymentIntent(totalPrice);
+      const paymentIntent = await createPaymentIntent(
+        totalPrice,
+        checkoutSession.id
+      );
       const secret = paymentIntent?.clientSecret || "";
       setClientSecret(secret);
     };

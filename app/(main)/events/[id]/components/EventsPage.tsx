@@ -104,7 +104,9 @@ export default async function EventsPage({ event }: { event: any }) {
           <div className="absolute right-2 top-2 lg:top-10 p-2 z-10 bg-black rounded-full hover:bg-black">
             <LikeButton event={event} user={user} />
           </div>
-          <EventPoster posterUrl={publicPosterUrl} />
+          <div className="mb-6">
+            <EventPoster posterUrl={publicPosterUrl} />
+          </div>
           <ColorThief public_url={publicPosterUrl} />
         </div>
         <div className="flex flex-col text-left max-w-lg lg:max-w-xl mx-auto space-y-8 z-10">

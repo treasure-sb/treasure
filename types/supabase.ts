@@ -118,18 +118,21 @@ export type Database = {
           id: string
           quantity: number
           ticket_id: string
+          user_id: string
         }
         Insert: {
           event_id?: string
           id?: string
           quantity: number
           ticket_id?: string
+          user_id: string
         }
         Update: {
           event_id?: string
           id?: string
           quantity?: number
           ticket_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -144,6 +147,13 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_checkout_sessions_user_Id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
