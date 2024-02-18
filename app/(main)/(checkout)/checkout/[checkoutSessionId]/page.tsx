@@ -1,11 +1,11 @@
 import InitializeCheckout from "./components/InitializeCheckout";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import EventCard from "@/components/events/shared/EventCard";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { Separator } from "@/components/ui/separator";
 import { TicketIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import EventCard from "@/components/events/shared/EventCard";
 
 export default async function Page({
   params,

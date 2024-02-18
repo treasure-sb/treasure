@@ -42,7 +42,7 @@ export default function Hero() {
     <motion.section
       style={{ opacity }}
       ref={targetRef}
-      className="h-screen pt-10 md:pt-28 w-full before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_calc(100px)_calc(100px),_var(--primary-hero)_0%,_transparent_100%)] before:pointer-events-none before:inset-0 before:fixed before:opacity-20"
+      className="h-screen pt-10 md:pt-28 w-full before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_calc(100px)_calc(100px),_var(--primary-hero)_0%,_transparent_100%)] before:pointer-events-none before:inset-0 before:fixed before:opacity-0"
     >
       <motion.div style={{ scale }}>
         <div className="relative z-10">

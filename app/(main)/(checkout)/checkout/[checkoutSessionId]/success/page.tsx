@@ -4,6 +4,12 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 
+export interface TicketSuccessInformation {
+  ticketName: string;
+  quantity: number;
+  email: string;
+}
+
 export default async function Page({
   params,
 }: {
@@ -16,7 +22,9 @@ export default async function Page({
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
-      .select("*")
+      .select(
+        "*, event:events(*), ticket:tickets(name), profile:profiles(email)"
+      )
       .eq("id", checkoutSessionId)
       .single();
 
@@ -24,19 +32,25 @@ export default async function Page({
     redirect("/events");
   }
 
-  const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const { event_id } = checkoutSession;
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", event_id)
-    .single();
-  const event: Tables<"events"> = eventData;
+  const event: Tables<"events"> = checkoutSessionData.event;
   const eventDisplay = await getEventDisplayData(event);
+
+  const ticketName = checkoutSessionData.ticket.name;
+  const quantity = checkoutSessionData.quantity;
+  const email = checkoutSessionData.profile.email;
+
+  const ticketInfo: TicketSuccessInformation = {
+    ticketName,
+    quantity,
+    email,
+  };
 
   return (
     <main className="max-w-6xl m-auto">
-      <InitializePaymentIntent eventDisplay={eventDisplay} />
+      <InitializePaymentIntent
+        eventDisplay={eventDisplay}
+        ticketInfo={ticketInfo}
+      />
     </main>
   );
 }
