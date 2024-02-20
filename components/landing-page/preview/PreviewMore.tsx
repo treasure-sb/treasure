@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import PreviewMoreCard from "./PreviewMoreCard";
+import Image from "next/image";
 
 export enum AnimateFrom {
   LEFT = "left",
@@ -33,17 +34,12 @@ export default function PreviewMore() {
   const [activePreview, setActivePreview] = useState(0);
 
   return (
-    <section className="my-32 w-full">
+    <section className="my-60 w-full">
       <h1 className="text-3xl font-semibold text-center mb-14">
         Preview Celebrities, Vendors, Giveaways, and More
       </h1>
-      <div className="flex flex-col sm:hidden space-y-12">
-        {previews.map((preview, index) => (
-          <PreviewMoreCard key={index} {...preview} />
-        ))}
-      </div>
-      <div className="sm:flex justify-between hidden space-x-6">
-        <div className="flex flex-col justify-between aspect-h-1 md:my-2 lg:my-20">
+      <div className="md:flex md:justify-between p-10 md:p-0 md:space-x-10">
+        <div className="hidden md:flex flex-col justify-between aspect-h-1 md:my-2 lg:my-20 max-w-xl">
           {previews.map((preview, index) => {
             return (
               <motion.div
@@ -63,7 +59,16 @@ export default function PreviewMore() {
             );
           })}
         </div>
-        <div className="w-[50%] bg-tertiary aspect-w-2 aspect-h-1 rounded-sm flex-shrink-0" />
+        <div className="relative">
+          <Image
+            className="w-full rounded-sm m-auto"
+            alt="preview celebrites, vendors, guests, and more"
+            src={"/static/preview.png"}
+            width={1400}
+            height={1400}
+            quality={100}
+          />
+        </div>
       </div>
     </section>
   );

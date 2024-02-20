@@ -13,11 +13,11 @@ export default function Page() {
         <FeaturedEvents />
         <div className="max-w-6xl xl:max-w-7xl m-auto">
           <PreviewMore />
-          <Newsletter />
         </div>
         <Quote />
         <div className="max-w-6xl xl:max-w-7xl m-auto">
           <BookVendorTables />
+          <Newsletter />
         </div>
       </div>
     </main>

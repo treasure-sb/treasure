@@ -49,7 +49,7 @@ export default function Quote() {
   ));
 
   return (
-    <motion.section ref={ref} className="h-[75vh] my-40 mx-2 md:mx-10">
+    <motion.section ref={ref} className="h-[75vh] my-60 mx-2 md:mx-10">
       <motion.div
         style={{ opacity }}
         className="h-[2px] w-full mb-6 md:mb-20 bg-primary"
