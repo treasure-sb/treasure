@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { type CarouselApi } from "@/components/ui/carousel";
+import { type TicketScanningMap } from "../page";
 import QrCode from "react-qr-code";
 
 export default function TicketsCarousel({
@@ -23,7 +24,7 @@ export default function TicketsCarousel({
   tickets,
 }: {
   eventId: string;
-  tickets: Map<string, string[]>;
+  tickets: TicketScanningMap;
 }) {
   const [currentTicket, setCurrentTicket] = useState(
     tickets.keys().next().value
@@ -77,13 +78,20 @@ export default function TicketsCarousel({
         className="w-48 md:w-96 m-auto"
       >
         <CarouselContent>
-          {tickets.get(currentTicket)?.map((ticketId) => {
+          {tickets.get(currentTicket)?.map((ticket) => {
             return (
-              <CarouselItem key={ticketId}>
-                <QrCode
-                  className="w-48 h-48 md:w-80 md:h-80 m-auto"
-                  value={`https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`}
-                />
+              <CarouselItem key={ticket.ticketId}>
+                <div className="relative w-48 h-48 md:w-80 md:h-80 m-auto">
+                  <QrCode
+                    className="w-full h-full"
+                    value={`https://ontreasure.xyz/verify-tickets/?ticket_id=${ticket.ticketId}&event_id=${eventId}`}
+                  />
+                  {!ticket.valid && (
+                    <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center">
+                      <p className="font-semibold">Ticket Used</p>
+                    </div>
+                  )}
+                </div>
               </CarouselItem>
             );
           })}

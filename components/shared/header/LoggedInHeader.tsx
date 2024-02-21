@@ -1,7 +1,8 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import TreasureEmerald from "../icons/TreasureEmerald";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import TreasureEmerald from "../../icons/TreasureEmerald";
+import HamburgerMenu from "./HamburgerMenu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getProfile } from "@/lib/helpers/profiles";
 import { User } from "@supabase/supabase-js";
 
@@ -13,8 +14,8 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
   return (
-    <header className="flex justify-between md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 items-center z-10">
-      <div className="relative scale-90 -translate-x-4 sm:scale-100 sm:translate-x-0">
+    <header className="flex justify-between items-center md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 z-10">
+      <div>
         <Link
           href="/"
           className="font-semibold text-3xl flex items-center space-x-1"
@@ -28,26 +29,22 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           </p>
         )}
       </div>
-      <div className="flex align-middle">
+      <HamburgerMenu profile={profile} profilePublicUrl={publicUrl} />
+      <div className="hidden md:flex items-center space-x-6">
         <Link
           href="/events"
-          className="my-auto font-semibold mr-6 text-lg relative group"
+          className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
         >
-          <span>Events</span>
-          <span className="absolute -bottom-1 left-0 w-0 h-1 bg-white transition-all group-hover:w-full"></span>
+          Events
         </Link>
-        <Link href={`/${profile.username}`}>
-          {profile.avatar_url ? (
-            <Avatar className="h-14 w-14">
-              <AvatarImage src={publicUrl} />
-              <AvatarFallback>
-                {profile.first_name[0]}
-                {profile.last_name[0]}
-              </AvatarFallback>
-            </Avatar>
-          ) : (
-            <h1>My Profile</h1>
-          )}
+        <Link href={`/${profile.username}`} className="rounded-full">
+          <Avatar className="h-16 w-16 border-primary border-2">
+            <AvatarImage src={publicUrl} />
+            <AvatarFallback>
+              {profile.first_name[0]}
+              {profile.last_name[0]}
+            </AvatarFallback>
+          </Avatar>
         </Link>
       </div>
     </header>

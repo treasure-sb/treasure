@@ -1,5 +1,5 @@
-import Header from "@/components/shared/Header";
-import LoggedInHeader from "@/components/shared/LoggedInHeader";
+import Header from "@/components/shared/header/Header";
+import LoggedInHeader from "@/components/shared/header/LoggedInHeader";
 import { validateUser } from "@/lib/actions/auth";
 
 export default async function MainLayout({

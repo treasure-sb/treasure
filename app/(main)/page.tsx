@@ -4,7 +4,7 @@ import Hero from "@/components/landing-page/Hero";
 
 export default function Page() {
   return (
-    <main className="m-auto">
+    <main className="m-auto z-0">
       <Hero />
       <div className="relative z-10">
         <FeaturedEvents />
