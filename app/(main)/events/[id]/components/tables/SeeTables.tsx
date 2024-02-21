@@ -99,6 +99,22 @@ export default function SeeTables({
                 />
               </div>
             )}
+            {(() => {
+              switch (event.sales_status) {
+                case "NO_SALE":
+                  return (
+                    <div className="text-sm font-normal italic text-tertiary">
+                      * Currently not selling tables online
+                    </div>
+                  );
+                case "ATTENDEES_ONLY":
+                  return (
+                    <div className="text-sm font-normal italic text-tertiary">
+                      * Currently only selling general tickets online
+                    </div>
+                  );
+              }
+            })()}
           </motion.div>
         </motion.div>
       ) : (
