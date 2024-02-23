@@ -19,11 +19,11 @@ export default function PreviewMore() {
       className="my-40 md:my-60 w-full flex flex-col-reverse md:flex-row md:justify-between md:items-center"
     >
       <div className="space-y-8">
-        <div className="space-y-2">
+        <div className="space-y-2 max-w-xl">
           <h1 className="text-3xl md:text-3xl text-left md:max-w-lg font-semibold">
             Preview Celebrities, Vendors, Giveaways, and More
           </h1>
-          <p className="text-xl">
+          <p className="text-xl max-w-2xl">
             Discover which celebrites and icons will be in attendance. Enter
             giveaways and contests before the event starts.
           </p>
