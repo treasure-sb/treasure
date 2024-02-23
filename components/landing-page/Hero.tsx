@@ -6,28 +6,13 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 export default function Hero() {
-  const targetRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["end end", "end start"],
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.7]);
-
   const headingText = "Get to More of the Shows & Conventions You Love";
   const heading = headingText.split(/(\s+)/).map((word, index) => {
     const isColoredGreen = word === "Shows" || word === "Conventions";
     const isSpace = word === " ";
     return (
       <motion.span key={index} className={isSpace ? "" : "inline-block"}>
-        {isColoredGreen ? (
-          <span className="bg-gradient-to-r from-primary to-green-200 text-transparent bg-clip-text">
-            {word}
-          </span>
-        ) : (
-          word
-        )}
+        {isColoredGreen ? <span className="text-primary">{word}</span> : word}
       </motion.span>
     );
   });
@@ -45,12 +30,8 @@ export default function Hero() {
   });
 
   return (
-    <motion.section
-      style={{ opacity }}
-      ref={targetRef}
-      className="h-screen pt-10 md:pt-28 w-full before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_calc(100px)_calc(100px),_var(--primary-hero)_0%,_transparent_100%)] before:pointer-events-none before:inset-0 before:fixed before:opacity-0"
-    >
-      <motion.div style={{ scale }}>
+    <section className="h-screen pt-10 md:pt-28 w-full before:z-0 before:bg-[radial-gradient(circle_farthest-side_at_calc(100px)_calc(100px),_var(--primary-hero)_0%,_transparent_100%)] before:pointer-events-none before:inset-0 before:fixed before:opacity-0">
+      <div>
         <div className="relative z-10">
           <motion.p className="z-10 relative max-w-6xl text-[2.4rem] font-bold text-center m-auto leading-[1.2] md:leading-[1.3] md:text-7xl md:max-w-4xl">
             {heading}
@@ -66,7 +47,7 @@ export default function Hero() {
             </Link>
           </div>
         </div>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }
