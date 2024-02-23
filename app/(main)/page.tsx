@@ -1,9 +1,13 @@
+import CreateEvents from "@/components/landing-page/CreateEvents";
 import FeaturedEvents from "@/components/landing-page/featured-events/FeaturedEvents";
-import Newsletter from "@/components/landing-page/Newsletter";
 import Hero from "@/components/landing-page/Hero";
-import PreviewMore from "@/components/landing-page/preview/PreviewMore";
+import PreviewMore from "@/components/landing-page/PreviewMore";
 import Quote from "@/components/landing-page/Quote";
-import BookVendorTables from "@/components/landing-page/book-tables/BookVendorTables";
+import BookVendorTables from "@/components/landing-page/BookVendorTables";
+import Questions from "@/components/landing-page/Questions";
+import Reminders from "@/components/landing-page/Reminders";
+import Order from "@/components/landing-page/Order";
+import Footer from "@/components/shared/Footer";
 
 export default function Page() {
   return (
@@ -13,11 +17,13 @@ export default function Page() {
         <FeaturedEvents />
         <div className="max-w-6xl xl:max-w-7xl m-auto">
           <PreviewMore />
-        </div>
-        <Quote />
-        <div className="max-w-6xl xl:max-w-7xl m-auto">
+          <CreateEvents />
+          <Quote />
           <BookVendorTables />
-          <Newsletter />
+          <Order />
+          <Reminders />
+          <Questions />
+          <Footer />
         </div>
       </div>
     </main>

@@ -28,11 +28,15 @@ export default function Quote() {
             ease: "easeInOut",
           }}
         >
-          {word}{" "}
+          <i>{word}</i>{" "}
         </motion.span>
       );
     } else {
-      return <span key={index}>{word} </span>;
+      return (
+        <span key={index}>
+          <i>{word}</i>{" "}
+        </span>
+      );
     }
   });
 
@@ -49,20 +53,12 @@ export default function Quote() {
   ));
 
   return (
-    <motion.section ref={ref} className="h-[75vh] my-60 mx-2 md:mx-10">
-      <motion.div
-        style={{ opacity }}
-        className="h-[2px] w-full mb-6 md:mb-20 bg-primary"
-      />
+    <motion.section ref={ref} className="h-[75vh] my-40 md:my-60 mx-2 md:mx-10">
       <h1 className="max-w-6xl m-auto text-center font-bold text-3xl md:text-5xl leading-relaxed text-foreground">
         {staticWords.slice(0, 2)}
         {motionWords}
         {staticWords.slice(2)}
       </h1>
-      <motion.div
-        style={{ opacity }}
-        className="h-[2px] w-full mt-6 md:mt-20 bg-primary"
-      />
     </motion.section>
   );
 }
