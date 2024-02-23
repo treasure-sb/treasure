@@ -128,7 +128,7 @@ export default function BookVendorTables() {
         <div className="space-y-8">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-3xl text-left md:text-right md:max-w-2xl font-semibold">
-              Book Vendor Tables <i>Hassel-Free</i>
+              Book Vendor Tables <i>Hassle-Free</i>
             </h1>
             <p className="text-xl md:text-right text-left md:max-w-xl">
               Our easy to use application process makes booking vendors tables a
