@@ -31,7 +31,7 @@ export default function Order() {
           quality={100}
         />
         <motion.div
-          className="absolute bottom-40"
+          className="absolute bottom-3/4"
           onViewportEnter={() => setIsChildInView(true)}
         />
         <div className="hidden md:block md:absolute inset-0 z-[-10] w-full h-full blur-3xl opacity-20 bg-primary" />
@@ -44,7 +44,7 @@ export default function Order() {
             </h1>
             <p className="text-xl md:max-w-xl">
               Secure your event's success and streamline your revenue with our
-              easy to use event tools
+              easy to use event tools.
             </p>
           </div>
         </div>

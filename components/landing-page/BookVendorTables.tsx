@@ -70,8 +70,8 @@ export default function BookVendorTables() {
   });
 
   return (
-    <section className="mt-[-50vh] md:mt-[-70vh] h-[400vh] relative space-y-40">
-      <div className="sticky top-2 sm:top-[10vh] flex flex-col md:flex-row space-y-6 md:justify-between md:items-center">
+    <section className="mt-[-50vh] md:mt-[-70vh] h-[400vh] md:h-[260vh] relative space-y-40">
+      <div className="sticky top-2 sm:top-[10vh] flex flex-col md:flex-row space-y-6 md:justify-between md:items-center max-w-6xl xl:max-w-7xl m-auto">
         <div className="flex flex-col space-y-6 md:space-y-12 mb-8 md:mb-0 m-auto md:mx-0">
           <motion.div
             style={{ opacity: opacityOne }}
@@ -141,8 +141,35 @@ export default function BookVendorTables() {
             </Link>
           </div>
         </div>
+        <motion.div
+          animate={{ scale: [1, 0.75, 1, 1.25, 1] }}
+          transition={{
+            ease: "easeInOut",
+            repeat: Infinity,
+            duration: 8,
+            delay: 2,
+          }}
+          className="w-80 h-80 md:w-[42rem] md:h-[42rem] rounded-full blur-3xl absolute top-0 right-0 bg-primary opacity-10 z-[-10]"
+        />
+        <motion.div
+          initial={{ scale: 0.75 }}
+          animate={{ scale: [0.75, 1.25, 0.75] }}
+          transition={{ ease: "easeInOut", repeat: Infinity, duration: 8 }}
+          className="w-80 h-80 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-0 left-0 md:left-40 bg-tertiary opacity-10 z-[-10]"
+        />
+        <motion.div
+          initial={{ scale: 0.75 }}
+          animate={{ scale: [0.75, 1, 0.75] }}
+          transition={{
+            ease: "easeInOut",
+            repeat: Infinity,
+            duration: 8,
+            delay: 4,
+          }}
+          className="w-80 h-80 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-1/4 md:bottom-10 left-20 md:left-3/4 bg-secondary opacity-20 z-[-10]"
+        />
       </div>
-      <div ref={ref} className="h-[200vh]" />
+      <div ref={ref} className="h-[120vh]" />
     </section>
   );
 }

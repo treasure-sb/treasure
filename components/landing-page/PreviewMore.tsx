@@ -49,7 +49,7 @@ export default function PreviewMore() {
         />
         <div className="hidden md:block md:absolute inset-0 z-[-10] w-full h-full blur-3xl opacity-20 bg-primary" />
         <motion.div
-          className="absolute bottom-10"
+          className="absolute bottom-3/4"
           onViewportEnter={() => setIsChildInView(true)}
         />
       </motion.div>

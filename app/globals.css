@@ -94,7 +94,7 @@
 
 @layer utilities {
   .landing-footer-link {
-    @apply text-xs underline md:text-sm;
+    @apply text-xs font-semibold underline md:text-sm;
   }
 
   .dashboard-spacing {
