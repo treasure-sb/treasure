@@ -54,7 +54,7 @@ export default function Quote() {
 
   return (
     <motion.section ref={ref} className="h-[75vh] my-40 md:my-60 mx-2 md:mx-10">
-      <h1 className="max-w-6xl m-auto text-center font-bold text-3xl md:text-5xl leading-relaxed text-foreground">
+      <h1 className="max-w-6xl m-auto text-center text-3xl md:text-6xl leading-relaxed text-foreground font-bold">
         {staticWords.slice(0, 2)}
         {motionWords}
         {staticWords.slice(2)}

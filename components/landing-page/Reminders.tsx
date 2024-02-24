@@ -16,7 +16,7 @@ export default function Reminders() {
         y: isChildInView ? 0 : 10,
       }}
       transition={{ duration: 0.85, ease: "easeInOut" }}
-      className="my-40 md:my-60 w-full flex flex-col md:flex-row md:space-x-12 md:items-center md:justify-between"
+      className="mt-40 md:mt-60 w-full flex flex-col md:flex-row md:space-x-12 md:items-center md:justify-between"
     >
       <motion.div
         animate={{ y: [0, 10, 0] }}
@@ -32,7 +32,7 @@ export default function Reminders() {
           quality={100}
         />
         <motion.div
-          className="absolute bottom-40"
+          className="absolute bottom-3/4"
           onViewportEnter={() => setIsChildInView(true)}
         />
         <div className="hidden md:block md:absolute inset-0 z-[-10] w-full h-full blur-3xl opacity-20 bg-foreground" />

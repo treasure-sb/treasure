@@ -32,7 +32,7 @@ export default function CreateEvents() {
           quality={100}
         />
         <motion.div
-          className="absolute bottom-40"
+          className="absolute bottom-3/4"
           onViewportEnter={() => setIsChildInView(true)}
         />
         <div className="hidden md:block md:absolute inset-0 z-[-10] w-full h-full blur-3xl opacity-20 bg-tertiary" />
@@ -43,7 +43,7 @@ export default function CreateEvents() {
             Create Beautiful Events in <i>Seconds</i>
           </h1>
           <p className="text-left md:text-right text-xl">
-            Spotlight your brand with pages custom to you
+            Spotlight your brand with pages custom to you.
           </p>
         </div>
         <div className="w-full flex justify-end">
