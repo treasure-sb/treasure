@@ -108,7 +108,8 @@ export default async function Page({
               <div className="flex items-center space-x-4">
                 <TicketIcon className="text-tertiary stroke-1" size={24} />
                 <p>
-                  {ticket.name} x {quantity}
+                  {ticket.name} {ticket_type === "TABLE" && <span>Table</span>}{" "}
+                  x {quantity}
                 </p>
               </div>
               <p>{`$${totalPrice.toFixed(2)}`}</p>

@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { Tables } from "@/types/supabase";
 import {
   getPublicPosterUrl,
   getPublicVenueMapUrl,
   formatDate,
 } from "@/lib/helpers/events";
+import { convertToStandardTime } from "@/lib/utils";
 import { validateUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -21,10 +21,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import EditEvent from "@/components/icons/EditEvent";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import LikeButton from "@/components/events/shared/LikeButton";
-import AttendingEvent from "./AttendingEvent";
-import { convertToStandardTime } from "@/lib/utils";
 import Vendors from "./Vendors";
-import { AnyCnameRecord } from "dns";
 
 export default async function EventsPage({ event }: { event: any }) {
   const {
