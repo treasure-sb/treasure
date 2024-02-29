@@ -12,7 +12,7 @@ interface CheckoutTicketInfo {
   price: number;
 }
 
-export const getTicketInfo = async (ticketId: string) => {
+const getTicketInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: ticketData, error: ticketError } = await supabase
     .from("tickets")
@@ -30,7 +30,7 @@ export const getTicketInfo = async (ticketId: string) => {
   };
 };
 
-export const getTableInfo = async (ticketId: string) => {
+const getTableInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: tableData, error: tableError } = await supabase
     .from("tables")

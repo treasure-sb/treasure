@@ -1,6 +1,5 @@
 import InitializePaymentIntent from "./components/InitializePaymentIntent";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { getTicketInfo, getTableInfo } from "../page";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
@@ -10,6 +9,35 @@ export interface TicketSuccessInformation {
   quantity: number;
   email: string;
 }
+
+const getTicketName = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: ticketData, error: ticketError } = await supabase
+    .from("tickets")
+    .select("name")
+    .eq("id", ticketId)
+    .single();
+
+  if (ticketError) {
+    throw new Error("Error fetching ticket name");
+  }
+
+  return ticketData.name;
+};
+
+const getTableName = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: tableData, error: tableError } = await supabase
+    .from("tables")
+    .select("section_name")
+    .eq("id", ticketId)
+    .single();
+
+  if (tableError) {
+    throw new Error("Error fetching table name");
+  }
+  return tableData.section_name;
+};
 
 export default async function Page({
   params,
@@ -37,12 +65,10 @@ export default async function Page({
   let ticketName: string;
   switch (checkoutSessionData.ticket_type) {
     case "TICKET":
-      const ticketInfo = await getTicketInfo(checkoutSessionData.ticket_id);
-      ticketName = ticketInfo.name;
+      ticketName = await getTicketName(checkoutSessionData.ticket_id);
       break;
     case "TABLE":
-      const tableInfo = await getTableInfo(checkoutSessionData.ticket_id);
-      ticketName = tableInfo.name;
+      ticketName = await getTableName(checkoutSessionData.ticket_id);
       break;
     default:
       throw new Error("Invalid Ticket Type");
