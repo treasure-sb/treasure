@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { createCheckoutSession } from "@/lib/actions/checkout";
 import Link from "next/link";
 import ApplyNowDialog from "../vendor_applications/ApplyNowDialog";
 
@@ -19,6 +21,27 @@ export default function SeeTables({
 }) {
   const [seeTables, setSeeTables] = useState(false);
   const minimumTablePrice = tables[0].price;
+  const { push } = useRouter();
+
+  const handleBuyNow = async (ticketId: string) => {
+    if (!user) {
+      push("/login");
+      return;
+    }
+
+    const { data } = await createCheckoutSession({
+      event_id: event.id,
+      ticket_id: ticketId,
+      ticket_type: "TABLE",
+      user_id: user.id,
+      quantity: 1,
+    });
+
+    if (data) {
+      const checkoutSession: Tables<"checkout_sessions"> = data[0];
+      push(`/checkout/${checkoutSession.id}`);
+    }
+  };
 
   return (
     <motion.div layout className="bg-background border-[1px] w-full rounded-md">
@@ -74,6 +97,7 @@ export default function SeeTables({
                         }}
                       >
                         <Button
+                          onClick={async () => await handleBuyNow(table.id)}
                           variant={"outline"}
                           className="font-normal text-sm p-2 border-primary"
                         >

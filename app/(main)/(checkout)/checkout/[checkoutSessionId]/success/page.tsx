@@ -10,6 +10,35 @@ export interface TicketSuccessInformation {
   email: string;
 }
 
+const getTicketName = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: ticketData, error: ticketError } = await supabase
+    .from("tickets")
+    .select("name")
+    .eq("id", ticketId)
+    .single();
+
+  if (ticketError) {
+    throw new Error("Error fetching ticket name");
+  }
+
+  return ticketData.name;
+};
+
+const getTableName = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: tableData, error: tableError } = await supabase
+    .from("tables")
+    .select("section_name")
+    .eq("id", ticketId)
+    .single();
+
+  if (tableError) {
+    throw new Error("Error fetching table name");
+  }
+  return tableData.section_name;
+};
+
 export default async function Page({
   params,
 }: {
@@ -22,9 +51,7 @@ export default async function Page({
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
-      .select(
-        "*, event:events(*), ticket:tickets(name), profile:profiles(email)"
-      )
+      .select("*, event:events(*), ticket_id, profile:profiles(email)")
       .eq("id", checkoutSessionId)
       .single();
 
@@ -35,7 +62,18 @@ export default async function Page({
   const event: Tables<"events"> = checkoutSessionData.event;
   const eventDisplay = await getEventDisplayData(event);
 
-  const ticketName = checkoutSessionData.ticket.name;
+  let ticketName: string;
+  switch (checkoutSessionData.ticket_type) {
+    case "TICKET":
+      ticketName = await getTicketName(checkoutSessionData.ticket_id);
+      break;
+    case "TABLE":
+      ticketName = await getTableName(checkoutSessionData.ticket_id);
+      break;
+    default:
+      throw new Error("Invalid Ticket Type");
+  }
+
   const quantity = checkoutSessionData.quantity;
   const email = checkoutSessionData.profile.email;
 

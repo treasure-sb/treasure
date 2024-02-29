@@ -30,6 +30,7 @@ export default function SeeTickets({
     const { data } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticketId,
+      ticket_type: "TICKET",
       user_id: user.id,
       quantity: 1,
     });
