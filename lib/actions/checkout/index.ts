@@ -4,6 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 interface CheckoutSession {
   event_id: string;
   ticket_id: string;
+  ticket_type: string;
   user_id: string;
   quantity: number;
 }

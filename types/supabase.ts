@@ -118,6 +118,7 @@ export type Database = {
           id: string
           quantity: number
           ticket_id: string
+          ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id: string
         }
         Insert: {
@@ -125,6 +126,7 @@ export type Database = {
           id?: string
           quantity: number
           ticket_id?: string
+          ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id: string
         }
         Update: {
@@ -132,6 +134,7 @@ export type Database = {
           id?: string
           quantity?: number
           ticket_id?: string
+          ticket_type?: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id?: string
         }
         Relationships: [
@@ -333,13 +336,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "event_vendors_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "event_vendors_table_id_fkey"
             columns: ["table_id"]
             isOneToOne: false
@@ -351,6 +347,13 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_event_vendors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           }
         ]
@@ -858,6 +861,7 @@ export type Database = {
     }
     Enums: {
       "Application Status": "REJECTED" | "DRAFT" | "PENDING" | "ACCEPTED"
+      "Checkout Ticket Types": "TICKET" | "TABLE"
       "Event Ticket Status":
         | "NO_SALE"
         | "TABLES_ONLY"
