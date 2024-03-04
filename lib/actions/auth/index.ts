@@ -13,13 +13,13 @@ import {
   getPreviousDiscriminators,
 } from "@/lib/helpers/auth";
 import { sendWelcomeEmail } from "../emails";
+import { v4 as uuidv4 } from "uuid";
 
-interface SignUpForm {
-  email: string;
+interface UserProfile {
+  phone: string;
   firstName: string;
   lastName: string;
-  businessName?: string;
-  password: string;
+  id: string;
 }
 
 interface LoginForm {
@@ -39,64 +39,110 @@ const logoutUser = async () => {
 };
 
 /**
- * Attempts to sign up a new user with the provided email and password using the Supabase authentication service.
- *
- * @param {string} email - The email address of the user attempting to sign up.
- * @param {string} password - The password for the new user account.
- * @returns {Promise<{success: boolean, user?: any, error?: {type: string, message: string}}>} - A promise that resolves to an object. If successful, the object contains a 'success' flag set to true and the user's data. If unsuccessful, it includes an 'error' object with details about the failure.
+ * Handles the sign-up process for new users, optionally transferring a temporary profile if an invite token is provided.
  */
-const signUpUser = async (email: string, password: string) => {
+const signUpUser = async (phone: string, signupInviteToken?: string) => {
   const supabase = await createSupabaseServerClient();
-  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-    email,
-    password,
+  const { data, error } = await supabase.auth.signInWithOtp({
+    phone,
   });
-  if (signUpError) {
+
+  if (error) {
     return {
       success: false,
-      error: { type: "email_taken", message: "Email already taken" },
+      error: {
+        type: "create_user_error",
+        message: "There's was an error creating the user",
+      },
     };
   }
-  return { success: true, user: signUpData.user };
+  return { success: true, user: data.user };
 };
 
 /**
- * Handles the sign-up process for new users, optionally transferring a temporary profile if an invite token is provided.
- *
- * @param {SignUpForm} form - The sign-up form data including first name, last name, email, and password.
- * @param {string} [signup_invite_token] - Optional token for signing up with a temporary profile.
- * @returns {Promise<{profileData?: any, error?: any}>} - A promise that resolves to an object containing either the user's profile data upon successful sign-up or an error if the process fails.
+ * Verifies a user's OTP and either reports existing profile or creates a new one.
  */
-
-const signUp = async (form: SignUpForm, signup_invite_token?: string) => {
-  const { firstName, lastName, businessName, email, password } = form;
-
-  const signUpResult = await signUpUser(email, password);
-  if (!signUpResult.success) {
-    return { error: signUpResult.error };
-  }
-
-  const { profileData } = await createUserProfile(
-    signUpResult.user as User,
-    firstName,
-    lastName,
-    businessName,
-    email
+const verifyUser = async (phone: string, code: string) => {
+  const { data: verificationData, error: verificationError } = await verifyOtp(
+    phone,
+    code
   );
-
-  if (signup_invite_token) {
-    const transferResult = await transferTemporaryProfile(
-      signup_invite_token,
-      signUpResult.user?.id as string
-    );
-    if (!transferResult.success) {
-      return { error: transferResult.error };
-    }
+  if (verificationError) {
+    return { error: verificationError };
+  }
+  if (!verificationData.user) {
+    return { error: "User not found" };
   }
 
-  await sendWelcomeEmail(email, firstName);
+  const { data: profileExistsData, error: profileExistsError } =
+    await profileExists(verificationData.user.id);
+  if (profileExistsData) {
+    return { error: null, profileExists: true, success: true };
+  }
 
-  return { profileData };
+  const listOfNames = [
+    "Kangaroo",
+    "Turtle",
+    "Lion",
+    "Zebra",
+    "Elephant",
+    "Giraffe",
+    "Hippo",
+    "Rhino",
+    "Panda",
+    "Penguin",
+    "Bear",
+  ];
+  const { profileData, error } = await createUserProfile({
+    id: verificationData.user.id,
+    phone,
+    firstName: "Anonymous",
+    lastName: listOfNames[Math.floor(Math.random() * listOfNames.length)],
+  });
+
+  return error
+    ? { error: "Error creating profile" }
+    : { data: profileData, success: true, profileExists: false };
+};
+
+const verifyOtp = async (phone: string, code: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone: `${phone}`,
+    token: `${code}`,
+    type: "sms",
+  });
+  return { data, error: error?.message };
+};
+
+/**
+ * Creates a user profile in the database with the provided user information.
+ */
+const createUserProfile = async (userFields: UserProfile) => {
+  const { phone, firstName, lastName, id } = userFields;
+  const uuidSegment = uuidv4().split("-")[0];
+  const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${uuidSegment}`;
+  const previousDiscriminators = await getPreviousDiscriminators(username);
+
+  const profileData = {
+    firstName: capitalize(firstName),
+    lastName: capitalize(lastName),
+    username,
+    discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
+    phone,
+    id,
+  };
+  return await createProfile(profileData);
+};
+
+const profileExists = async (id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("phone")
+    .eq("id", id)
+    .single();
+  return { data, error };
 };
 
 /**
@@ -138,42 +184,6 @@ const transferTemporaryProfile = async (token: string, user_id: string) => {
   return { success: true };
 };
 
-/**
- * Creates a user profile in the database with the provided user information.
- * It generates a unique username based on the email address and a discriminator
- * to ensure uniqueness in case of username collisions.
- *
- * @param {User} user - The user object, typically containing user identification information.
- * @param {string} first_name - The first name of the user.
- * @param {string} last_name - The last name of the user.
- * @param {string} email - The email address of the user.
- * @returns {Promise<any>} - A promise that resolves to the created profile data. The promise may resolve to 'null' or an error object if the profile creation fails.
- */
-const createUserProfile = async (
-  user: User,
-  first_name: string,
-  last_name: string,
-  business_name: string | undefined,
-  email: string
-) => {
-  const username = email.split("@")[0];
-  const firstNameCapitalized = capitalize(first_name);
-  const lastNameCapitalized = capitalize(last_name);
-
-  const previousDiscriminators = await getPreviousDiscriminators(username);
-  const profileData = {
-    first_name: firstNameCapitalized,
-    last_name: lastNameCapitalized,
-    business_name: business_name,
-    username,
-    discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
-    email,
-    id: user.id,
-  };
-
-  return await createProfile(profileData);
-};
-
 const login = async (form: LoginForm) => {
   const { email, password } = form;
   const supabase = await createSupabaseServerClient();
@@ -194,4 +204,4 @@ const login = async (form: LoginForm) => {
   return { data, error };
 };
 
-export { validateUser, logoutUser, signUp, login };
+export { validateUser, logoutUser, signUpUser, verifyUser, login };

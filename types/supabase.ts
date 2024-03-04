@@ -118,6 +118,7 @@ export type Database = {
           id: string
           quantity: number
           ticket_id: string
+          ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id: string
         }
         Insert: {
@@ -125,6 +126,7 @@ export type Database = {
           id?: string
           quantity: number
           ticket_id?: string
+          ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id: string
         }
         Update: {
@@ -132,6 +134,7 @@ export type Database = {
           id?: string
           quantity?: number
           ticket_id?: string
+          ticket_type?: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id?: string
         }
         Relationships: [
@@ -140,13 +143,6 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_checkout_sessions_ticket_id_fkey"
-            columns: ["ticket_id"]
-            isOneToOne: false
-            referencedRelation: "tickets"
             referencedColumns: ["id"]
           },
           {
@@ -180,7 +176,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_guests_guest_id_fkey"
+            foreignKeyName: "public_event_guests_guest_id_fkey"
             columns: ["guest_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -333,13 +329,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "event_vendors_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "event_vendors_table_id_fkey"
             columns: ["table_id"]
             isOneToOne: false
@@ -351,6 +340,13 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_event_vendors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           }
         ]
@@ -554,10 +550,11 @@ export type Database = {
           business_name: string | null
           created_at: string
           discriminator: number | null
-          email: string
+          email: string | null
           first_name: string
           id: string
           last_name: string
+          phone: string | null
           role: string
           username: string
         }
@@ -567,10 +564,11 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email: string
+          email?: string | null
           first_name: string
           id?: string
           last_name: string
+          phone?: string | null
           role?: string
           username: string
         }
@@ -580,10 +578,11 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email?: string
+          email?: string | null
           first_name?: string
           id?: string
           last_name?: string
+          phone?: string | null
           role?: string
           username?: string
         }
@@ -841,7 +840,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "vendor_transactions_vendor_id_fkey"
+            foreignKeyName: "public_vendor_transactions_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -858,6 +857,7 @@ export type Database = {
     }
     Enums: {
       "Application Status": "REJECTED" | "DRAFT" | "PENDING" | "ACCEPTED"
+      "Checkout Ticket Types": "TICKET" | "TABLE"
       "Event Ticket Status":
         | "NO_SALE"
         | "TABLES_ONLY"

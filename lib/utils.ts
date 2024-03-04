@@ -18,3 +18,7 @@ export function parseLocalDate(dateString: string) {
 export function convertToStandardTime(time: string) {
   return moment(time, "HH:mm").format("h:mm A");
 }
+
+export function filterPhoneNumber(phoneNumber: string) {
+  return phoneNumber.replace(/\D/g, "");
+}
