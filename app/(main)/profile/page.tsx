@@ -5,6 +5,7 @@ import { validateUser, logoutUser } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
 import { Separator } from "@/components/ui/separator";
+import LogoutButton from "./components/LogoutButton";
 
 export default async function Page() {
   const { data: userData } = await validateUser();
@@ -66,11 +67,7 @@ export default async function Page() {
             </Link>
           </>
         )}
-        <form action={logoutUser}>
-          <Button className="w-full" variant={"destructive"}>
-            Logout
-          </Button>
-        </form>
+        <LogoutButton />
       </div>
     </main>
   );

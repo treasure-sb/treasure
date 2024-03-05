@@ -15,10 +15,20 @@ import {
 } from "@/components/ui/select";
 import { filterPhoneNumber, validateEmail } from "@/lib/utils";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
-import { SubmitMethod } from "./VerifyCode";
 import VerifyCode from "./VerifyCode";
 
-export default function LoginFlow() {
+export enum SubmitMethod {
+  PHONE = "phone",
+  EMAIL = "email",
+}
+
+export default function LoginFlow({
+  isDialog,
+  closeDialog,
+}: {
+  isDialog: boolean;
+  closeDialog?: () => void;
+}) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [usePhone, setUsePhone] = useState(true);
@@ -108,6 +118,8 @@ export default function LoginFlow() {
           email={email}
           method={method}
           goBack={goBack}
+          isDialog={isDialog}
+          closeDialog={closeDialog}
         />
       ) : (
         <motion.div

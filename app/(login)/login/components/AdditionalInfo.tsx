@@ -56,6 +56,7 @@ export default function AdditionalInfo() {
 
   return (
     <motion.div
+      key="additional-info"
       initial={{ opacity: 0, y: 5 }}
       animate={{
         opacity: 1,
