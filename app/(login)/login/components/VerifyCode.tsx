@@ -38,7 +38,6 @@ export default function VerifyCode({
     const verifyCode = async () => {
       if (isCodeComplete()) {
         setVerifying(true);
-        console.log(phoneNumber, email, code);
         if (method === SubmitMethod.PHONE && phoneNumber) {
           await handlePhoneSubmit(phoneNumber);
         } else if (method === SubmitMethod.EMAIL && email) {
