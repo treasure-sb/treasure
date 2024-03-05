@@ -15,9 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { filterPhoneNumber, validateEmail } from "@/lib/utils";
-import VerifyCode from "./components/VerifyCode";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { SubmitMethod } from "./components/VerifyCode";
+import VerifyCode from "./components/VerifyCode";
 
 export default function Page({
   searchParams,
@@ -29,7 +29,6 @@ export default function Page({
     event: string;
   };
 }) {
-  const { replace } = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [usePhone, setUsePhone] = useState(true);
@@ -200,7 +199,7 @@ export default function Page({
         )}
       </AnimatePresence>
       <div className="fixed md:absolute top-0 md:top-[-100px] left-[-100px] h-80 w-80 bg-primary rounded-full z-[-10] blur-2xl md:blur-3xl opacity-[0.05]" />
-      <div className="fixed md:absolute bottom-[200px] md:bottom-[-200px] left-0 md:left-[100px] h-80 w-80 bg-primary rounded-full z-[-10] blur-2xl md:blur-3xl opacity-[0.05]" />
+      <div className="fixed md:absolute bottom-[350px] md:bottom-[-200px] left-0 md:left-[100px] h-80 w-80 bg-primary rounded-full z-[-10] blur-2xl md:blur-3xl opacity-[0.05]" />
     </main>
   );
 }

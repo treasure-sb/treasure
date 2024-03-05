@@ -59,7 +59,9 @@ export default function VendorDialogContent({
       message,
     };
 
-    await sendVendorAppAcceptedEmail(profile.email, vendorAcceptedEmailProps);
+    if (profile.email) {
+      await sendVendorAppAcceptedEmail(profile.email, vendorAcceptedEmailProps);
+    }
     refresh();
   };
 
@@ -77,7 +79,9 @@ export default function VendorDialogContent({
       message,
     };
 
-    await sendVendorAppRejectedEmail(profile.email, vendorRejectedEmailProps);
+    if (profile.email) {
+      await sendVendorAppRejectedEmail(profile.email, vendorRejectedEmailProps);
+    }
     refresh();
   };
 

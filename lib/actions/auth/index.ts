@@ -23,11 +23,6 @@ interface UserProfile {
   id: string;
 }
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
 interface SignUpProps {
   phone?: string;
   email?: string;
@@ -39,6 +34,23 @@ interface VerificationProps {
   email?: string;
   code: string;
 }
+
+const listOfNames = [
+  "Kangaroo",
+  "Turtle",
+  "Lion",
+  "Zebra",
+  "Elephant",
+  "Giraffe",
+  "Hippo",
+  "Rhino",
+  "Panda",
+  "Penguin",
+  "Bear",
+  "Koala",
+  "Dolphin",
+  "Skunk",
+];
 
 const validateUser = async () => {
   const supabase = await createSupabaseServerClient();
@@ -123,23 +135,6 @@ const verifyUser = async ({ phone, email, code }: VerificationProps) => {
   if (profileExistsData) {
     return { error: null, profileExists: true, success: true };
   }
-
-  const listOfNames = [
-    "Kangaroo",
-    "Turtle",
-    "Lion",
-    "Zebra",
-    "Elephant",
-    "Giraffe",
-    "Hippo",
-    "Rhino",
-    "Panda",
-    "Penguin",
-    "Bear",
-    "Koala",
-    "Dolphin",
-    "Skunk",
-  ];
 
   const { profileData, error } = await createUserProfile({
     id: verificationData.user.id,
@@ -237,24 +232,4 @@ const transferTemporaryProfile = async (token: string, user_id: string) => {
   return { success: true };
 };
 
-const login = async (form: LoginForm) => {
-  const { email, password } = form;
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    return {
-      error: {
-        type: "invalid_credentials",
-        message: "Invalid Login Credentials",
-      },
-    };
-  }
-
-  return { data, error };
-};
-
-export { validateUser, logoutUser, signUpUser, verifyUser, login };
+export { validateUser, logoutUser, signUpUser, verifyUser };

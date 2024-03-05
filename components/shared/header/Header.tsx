@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import TreasureEmerald from "../../icons/TreasureEmerald";
 
 export default function Header() {
@@ -18,20 +17,18 @@ export default function Header() {
           <TreasureEmerald width={34} height={34} />
           <h1>Treasure</h1>
         </Link>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 md:space-x-8">
           <Link
             href="/events"
             className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
           >
             Events
           </Link>
-          <Link href="/login">
-            <Button
-              variant={"outline"}
-              className="w-20 lg:w-28 border-primary rounded-3xl"
-            >
-              Log in
-            </Button>
+          <Link
+            href="/login"
+            className="text-primary hover:text-primary/80 transition duration-300 text-lg font-semibold"
+          >
+            Login
           </Link>
         </div>
       </header>
