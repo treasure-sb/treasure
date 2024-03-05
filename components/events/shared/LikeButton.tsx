@@ -83,7 +83,7 @@ export default function LikeButton({
           <HeartIcon />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-80 md:w-96 h-[21rem] pt-10 flex items-center">
+      <DialogContent className="w-80 md:w-96 h-[22rem] pt-10 flex items-center">
         <LoginFlow />
       </DialogContent>
     </Dialog>

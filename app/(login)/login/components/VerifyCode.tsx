@@ -90,7 +90,7 @@ export default function VerifyCode({
         <AdditionalInfo />
       ) : (
         <motion.div
-          className="mt-[-2rem] flex-shrink-0"
+          className="mt-[-2rem]"
           key="verifyCode"
           initial={{ opacity: 0, y: 5 }}
           animate={{
