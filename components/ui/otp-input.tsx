@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { Input } from "./input";
+import { useRef, useEffect } from "react";
 
 export const RE_DIGIT = new RegExp(/^\d+$/);
 
@@ -15,6 +16,7 @@ export default function OTPInput({
   valueLength: number;
   onChange: (value: string) => void;
 }) {
+  const firstInputRef = useRef<HTMLInputElement>(null);
   const valueItems = useMemo(() => {
     const valueArray = value.split("");
     const items: Array<string> = [];
@@ -31,6 +33,10 @@ export default function OTPInput({
 
     return items;
   }, [value, valueLength]);
+
+  useEffect(() => {
+    firstInputRef.current?.focus();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -128,6 +134,7 @@ export default function OTPInput({
       {valueItems.map((digit, idx) => {
         return (
           <Input
+            ref={idx === 0 ? firstInputRef : undefined}
             disabled={verifying}
             key={idx}
             type="text"

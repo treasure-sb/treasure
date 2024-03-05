@@ -7,12 +7,19 @@ import { filterPhoneNumber } from "@/lib/utils";
 import { MoveLeftIcon } from "lucide-react";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
+import { SubmitMethod } from "./LoginFlow";
 import OTPInput from "@/components/ui/otp-input";
 import AdditionalInfo from "./AdditionalInfo";
+import Welcome from "./Welcome";
 
-export enum SubmitMethod {
-  PHONE = "phone",
-  EMAIL = "email",
+interface VerifyCodeProps {
+  phoneNumber?: string;
+  email?: string;
+  countryCode?: string;
+  method: SubmitMethod;
+  isDialog: boolean;
+  goBack: () => void;
+  closeDialog?: () => void;
 }
 
 export default function VerifyCode({
@@ -20,17 +27,14 @@ export default function VerifyCode({
   email,
   countryCode,
   method,
+  isDialog,
   goBack,
-}: {
-  phoneNumber?: string;
-  email?: string;
-  countryCode?: string;
-  method: SubmitMethod;
-  goBack: () => void;
-}) {
+  closeDialog,
+}: VerifyCodeProps) {
   const { replace } = useRouter();
   const [code, setCode] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const handleChange = (value: string) => setCode(value);
 
@@ -56,7 +60,9 @@ export default function VerifyCode({
   const verificationCheck = async (verfication: any) => {
     if (verfication.success) {
       toast.success("Code verified");
-      verfication.profileExists ? replace("/") : setAdditionalInfo(true);
+      if (!isDialog) {
+        verfication.profileExists ? replace("/") : setAdditionalInfo(true);
+      }
     } else {
       toast.error("Verification Error");
     }
@@ -88,8 +94,11 @@ export default function VerifyCode({
     <AnimatePresence>
       {additionalInfo ? (
         <AdditionalInfo />
+      ) : showWelcome ? (
+        <Welcome closeDialog={close} />
       ) : (
         <motion.div
+          className="mt-[-2rem]"
           key="verifyCode"
           initial={{ opacity: 0, y: 5 }}
           animate={{
