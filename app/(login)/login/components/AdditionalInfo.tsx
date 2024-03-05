@@ -15,8 +15,8 @@ import { addAdditionalInfo } from "@/lib/actions/profile";
 import { validateUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const formSchema = z.object({
   firstName: z.string().min(1, {

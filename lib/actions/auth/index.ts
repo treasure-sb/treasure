@@ -6,7 +6,7 @@ import { getSignupInviteData } from "@/lib/helpers/auth";
 import { getTempProfileFromID } from "@/lib/helpers/profiles";
 import { updateProfileAvatar, createProfile } from "../profile";
 import { createLink } from "../links";
-import { User, VerifyOtpParams } from "@supabase/supabase-js";
+import { VerifyOtpParams } from "@supabase/supabase-js";
 import { capitalize } from "@/lib/utils";
 import {
   generateUniqueLocalDiscriminator,
