@@ -147,24 +147,11 @@ export default function LoginFlow({
             {usePhone ? (
               <div className="space-y-2">
                 <div className="relative">
-                  <Select
-                    value={countryCode}
-                    onValueChange={(value) => setCountryCode(value)}
-                  >
-                    <SelectTrigger className="w-20 absolute">
-                      <SelectValue placeholder="+1" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="+1">+1</SelectItem>
-                      <SelectItem value="+52">+52</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Input
-                    className="pl-24"
-                    placeholder="Phone Number"
-                    type="tel"
-                    onChange={(e) => handlePhoneInputChange(e)}
+                  <FloatingLabelInput
+                    id="phone"
+                    label="Phone Number"
                     value={phoneNumber}
+                    onChange={(e) => handlePhoneInputChange(e)}
                   />
                 </div>
                 <p
