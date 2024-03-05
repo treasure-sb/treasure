@@ -9,7 +9,8 @@ interface CreateProfileData {
   lastName: string;
   username: string;
   discriminator: number;
-  phone: string;
+  phone?: string;
+  email?: string;
   id: string;
 }
 

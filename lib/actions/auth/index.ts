@@ -6,7 +6,7 @@ import { getSignupInviteData } from "@/lib/helpers/auth";
 import { getTempProfileFromID } from "@/lib/helpers/profiles";
 import { updateProfileAvatar, createProfile } from "../profile";
 import { createLink } from "../links";
-import { User } from "@supabase/supabase-js";
+import { User, VerifyOtpParams } from "@supabase/supabase-js";
 import { capitalize } from "@/lib/utils";
 import {
   generateUniqueLocalDiscriminator,
@@ -16,7 +16,8 @@ import { sendWelcomeEmail } from "../emails";
 import { v4 as uuidv4 } from "uuid";
 
 interface UserProfile {
-  phone: string;
+  phone?: string;
+  email?: string;
   firstName: string;
   lastName: string;
   id: string;
@@ -25,6 +26,18 @@ interface UserProfile {
 interface LoginForm {
   email: string;
   password: string;
+}
+
+interface SignUpProps {
+  phone?: string;
+  email?: string;
+  signupInviteToken?: string;
+}
+
+interface VerificationProps {
+  phone?: string;
+  email?: string;
+  code: string;
 }
 
 const validateUser = async () => {
@@ -41,41 +54,72 @@ const logoutUser = async () => {
 /**
  * Handles the sign-up process for new users, optionally transferring a temporary profile if an invite token is provided.
  */
-const signUpUser = async (phone: string, signupInviteToken?: string) => {
+const signUpUser = async ({ phone, email, signupInviteToken }: SignUpProps) => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.signInWithOtp({
-    phone,
-  });
 
+  if (!phone && !email) {
+    return {
+      success: false,
+      error: {
+        type: "input_validation_error",
+        message: "Either phone or email must be provided.",
+      },
+    };
+  }
+
+  const signInPayload = phone ? { phone } : email ? { email } : null;
+  if (!signInPayload) {
+    return {
+      success: false,
+      error: {
+        type: "input_validation_error",
+        message: "Either phone or email must be provided.",
+      },
+    };
+  }
+
+  const { error } = await supabase.auth.signInWithOtp(signInPayload);
   if (error) {
     return {
       success: false,
       error: {
         type: "create_user_error",
-        message: "There's was an error creating the user",
+        message: "There was an error creating the user",
       },
     };
   }
-  return { success: true, user: data.user };
+
+  return { success: true };
 };
 
 /**
- * Verifies a user's OTP and either reports existing profile or creates a new one.
+ * Verifies a user's OTP using either phone or email and either reports existing profile or creates a new one.
  */
-const verifyUser = async (phone: string, code: string) => {
-  const { data: verificationData, error: verificationError } = await verifyOtp(
-    phone,
-    code
-  );
-  if (verificationError) {
-    return { error: verificationError };
-  }
-  if (!verificationData.user) {
-    return { error: "User not found" };
+const verifyUser = async ({ phone, email, code }: VerificationProps) => {
+  if (!phone && !email) {
+    return { error: "Either phone or email must be provided" };
   }
 
-  const { data: profileExistsData, error: profileExistsError } =
-    await profileExists(verificationData.user.id);
+  const verificationPayload = phone
+    ? { phone, code }
+    : email
+    ? { email, code }
+    : null;
+  if (!verificationPayload) {
+    return { error: "Either phone or email must be provided" };
+  }
+
+  const { data: verificationData, error: verificationError } = await verifyOtp(
+    verificationPayload
+  );
+  if (verificationError || !verificationData?.user) {
+    return { error: verificationError || "User not found" };
+  }
+
+  const { data: profileExistsData } = await profileExists(
+    verificationData.user.id
+  );
+
   if (profileExistsData) {
     return { error: null, profileExists: true, success: true };
   }
@@ -92,7 +136,11 @@ const verifyUser = async (phone: string, code: string) => {
     "Panda",
     "Penguin",
     "Bear",
+    "Koala",
+    "Dolphin",
+    "Skunk",
   ];
+
   const { profileData, error } = await createUserProfile({
     id: verificationData.user.id,
     phone,
@@ -105,13 +153,22 @@ const verifyUser = async (phone: string, code: string) => {
     : { data: profileData, success: true, profileExists: false };
 };
 
-const verifyOtp = async (phone: string, code: string) => {
+const verifyOtp = async ({ phone, email, code }: VerificationProps) => {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.auth.verifyOtp({
-    phone: `${phone}`,
-    token: `${code}`,
-    type: "sms",
-  });
+  if (!phone && !email) {
+    return { error: "Either phone or email must be provided" };
+  }
+
+  const verificationPayload: VerifyOtpParams | null = phone
+    ? { phone, token: code, type: "sms" }
+    : email
+    ? { email, token: code, type: "email" }
+    : null;
+  if (!verificationPayload) {
+    return { error: "Either phone or email must be provided" };
+  }
+
+  const { data, error } = await supabase.auth.verifyOtp(verificationPayload);
   return { data, error: error?.message };
 };
 
@@ -148,10 +205,6 @@ const profileExists = async (id: string) => {
 /**
  * Transfers data from a temporary profile to a newly created user profile, based on a given invite token.
  * It involves updating profile transfers, potentially creating a new link (e.g., for Instagram), and updating the profile avatar.
- *
- * @param {string} token - The invite token that corresponds to a temporary profile.
- * @param {string} user_id - The ID of the newly created user to whom the temporary profile's data will be transferred.
- * @returns {Promise<{success: boolean, error?: {type: string, message: string}}>} - A promise that resolves to an object indicating the success or failure of the transfer. If unsuccessful, the object includes an 'error' object with details about the failure.
  */
 const transferTemporaryProfile = async (token: string, user_id: string) => {
   const supabase = await createSupabaseServerClient();

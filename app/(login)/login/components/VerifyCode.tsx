@@ -10,13 +10,22 @@ import { useRouter } from "next/navigation";
 import OTPInput from "@/components/ui/otp-input";
 import AdditionalInfo from "./AdditionalInfo";
 
+export enum SubmitMethod {
+  PHONE = "phone",
+  EMAIL = "email",
+}
+
 export default function VerifyCode({
   phoneNumber,
+  email,
   countryCode,
+  method,
   goBack,
 }: {
-  phoneNumber: string;
-  countryCode: string;
+  phoneNumber?: string;
+  email?: string;
+  countryCode?: string;
+  method: SubmitMethod;
   goBack: () => void;
 }) {
   const { replace } = useRouter();
@@ -25,36 +34,56 @@ export default function VerifyCode({
   const [verifying, setVerifying] = useState(false);
   const handleChange = (value: string) => setCode(value);
 
-  const isCodeComplete = () => {
-    return code.replace(" ", "").length === 6;
-  };
-
   useEffect(() => {
     const verifyCode = async () => {
       if (isCodeComplete()) {
         setVerifying(true);
-        const filteredPhoneNumber = filterPhoneNumber(phoneNumber);
-        const formattedPhoneNumber = `${countryCode}${filteredPhoneNumber}`;
-
-        toast.loading("Verifying code...");
-        const verification = await verifyUser(formattedPhoneNumber, code);
-        console.log(verification);
-        toast.dismiss();
-        if (verification.success) {
-          toast.success("Code verified");
-          if (!verification.profileExists) {
-            setAdditionalInfo(true);
-          } else {
-            replace("/");
-          }
-        } else {
-          toast.error("Verification Error");
+        console.log(phoneNumber, email, code);
+        if (method === SubmitMethod.PHONE && phoneNumber) {
+          await handlePhoneSubmit(phoneNumber);
+        } else if (method === SubmitMethod.EMAIL && email) {
+          await handleEmailSubmit(email);
         }
+        setVerifying(false);
       }
-      setVerifying(false);
     };
     verifyCode();
   }, [code]);
+
+  const isCodeComplete = () => {
+    return code.replace(" ", "").length === 6;
+  };
+
+  const verificationCheck = async (verfication: any) => {
+    if (verfication.success) {
+      toast.success("Code verified");
+      verfication.profileExists ? replace("/") : setAdditionalInfo(true);
+    } else {
+      toast.error("Verification Error");
+    }
+  };
+
+  const handlePhoneSubmit = async (phoneNumber: string) => {
+    const filteredPhoneNumber = filterPhoneNumber(phoneNumber);
+    const formattedPhoneNumber = `${countryCode}${filteredPhoneNumber}`;
+    toast.loading("Verifying code...");
+    const verification = await verifyUser({
+      phone: formattedPhoneNumber,
+      code,
+    });
+    toast.dismiss();
+    verificationCheck(verification);
+  };
+
+  const handleEmailSubmit = async (email: string) => {
+    toast.loading("Verifying code...");
+    const verification = await verifyUser({
+      email,
+      code,
+    });
+    toast.dismiss();
+    verificationCheck(verification);
+  };
 
   return (
     <AnimatePresence>
@@ -88,7 +117,9 @@ export default function VerifyCode({
             <h1 className="text-2xl text-left font-semibold">Enter code</h1>
             <p className="text-sm text-gray-400">
               Enter the code we sent to{" "}
-              <span className="font-semibold">{phoneNumber}</span>
+              <span className="font-semibold">
+                {method === SubmitMethod.PHONE ? phoneNumber : email}
+              </span>
             </p>
           </div>
           <OTPInput

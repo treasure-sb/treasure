@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signUpUser } from "@/lib/actions/auth";
-import { sendOTP } from "@/lib/actions/twilio";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { filterPhoneNumber } from "@/lib/utils";
+import { filterPhoneNumber, validateEmail } from "@/lib/utils";
 import VerifyCode from "./components/VerifyCode";
+import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import { SubmitMethod } from "./components/VerifyCode";
 
 export default function Page({
   searchParams,
@@ -30,6 +31,9 @@ export default function Page({
 }) {
   const { replace } = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [usePhone, setUsePhone] = useState(true);
+  const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [countryCode, setCountryCode] = useState("+1");
   const [showVerifyCode, setShowVerifyCode] = useState(false);
   const signupInviteToken = searchParams.signup_invite_token;
@@ -37,8 +41,16 @@ export default function Page({
   const event = searchParams.event || null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const filteredPhoneNumber = filterPhoneNumber(phoneNumber);
     e.preventDefault();
+    if (usePhone) {
+      handlePhoneSubmit();
+    } else {
+      handleEmailSubmit();
+    }
+  };
+
+  const handlePhoneSubmit = async () => {
+    const filteredPhoneNumber = filterPhoneNumber(phoneNumber);
     if (!filteredPhoneNumber || filteredPhoneNumber.length < 10) {
       toast.error("Please enter a valid phone number");
       return;
@@ -46,13 +58,29 @@ export default function Page({
 
     toast.loading("Sending...");
     const formattedPhoneNumber = `${countryCode}${filteredPhoneNumber}`;
-    const signUpUserResult = await signUpUser(
-      formattedPhoneNumber,
-      signupInviteToken
-    );
-    if (signUpUserResult.success) {
+    const signUpUserResult = await signUpUser({
+      phone: formattedPhoneNumber,
+      signupInviteToken,
+    });
+    signupCheck(signUpUserResult, SubmitMethod.PHONE);
+  };
+
+  const handleEmailSubmit = async () => {
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    toast.loading("Sending...");
+    const signUpUserResult = await signUpUser({ email, signupInviteToken });
+    signupCheck(signUpUserResult, SubmitMethod.EMAIL);
+  };
+
+  const signupCheck = (signupResult: any, method: SubmitMethod) => {
+    if (signupResult.success) {
       toast.dismiss();
       toast.success("Code sent");
+      setMethod(method);
       setShowVerifyCode(true);
     } else {
       toast.dismiss();
@@ -60,7 +88,7 @@ export default function Page({
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let filteredValue = filterPhoneNumber(e.target.value);
     if (filteredValue.length > 10) {
       filteredValue = filteredValue.substring(0, 10);
@@ -91,6 +119,8 @@ export default function Page({
           <VerifyCode
             phoneNumber={phoneNumber}
             countryCode={countryCode}
+            email={email}
+            method={method}
             goBack={goBack}
           />
         ) : (
@@ -116,31 +146,53 @@ export default function Page({
               onSubmit={handleSubmit}
               className="space-y-8"
             >
-              <div className="space-y-2">
-                <div className="relative">
-                  <Select
-                    value={countryCode}
-                    onValueChange={(value) => setCountryCode(value)}
-                  >
-                    <SelectTrigger className="w-20 absolute">
-                      <SelectValue placeholder="+1" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="+1">+1</SelectItem>
-                      <SelectItem value="+52">+52</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Input
-                    className="pl-24"
-                    placeholder="Phone Number"
-                    type="tel"
-                    onChange={(e) => handleChange(e)}
-                    value={phoneNumber}
-                  />
-                </div>
+              {usePhone ? (
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Select
+                      value={countryCode}
+                      onValueChange={(value) => setCountryCode(value)}
+                    >
+                      <SelectTrigger className="w-20 absolute">
+                        <SelectValue placeholder="+1" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="+1">+1</SelectItem>
+                        <SelectItem value="+52">+52</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      className="pl-24"
+                      placeholder="Phone Number"
+                      type="tel"
+                      onChange={(e) => handlePhoneInputChange(e)}
+                      value={phoneNumber}
+                    />
+                  </div>
 
-                <p className="text-gray-400 text-sm">Use email instead</p>
-              </div>
+                  <p
+                    onClick={() => setUsePhone(false)}
+                    className="text-gray-400 text-sm hover:cursor-pointer hover:text-gray-300 transition duration-300 w-fit"
+                  >
+                    Use email instead
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <FloatingLabelInput
+                    id="email"
+                    label="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                  />
+                  <p
+                    onClick={() => setUsePhone(true)}
+                    className="text-gray-400 text-sm hover:cursor-pointer hover:text-gray-300 transition duration-300 w-fit"
+                  >
+                    Use phone instead
+                  </p>
+                </div>
+              )}
               <Button className="w-full rounded-md" type="submit">
                 Continue
               </Button>

@@ -22,3 +22,8 @@ export function convertToStandardTime(time: string) {
 export function filterPhoneNumber(phoneNumber: string) {
   return phoneNumber.replace(/\D/g, "");
 }
+
+export function validateEmail(email: string) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
