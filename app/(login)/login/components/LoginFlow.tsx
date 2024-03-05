@@ -1,18 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signUpUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { filterPhoneNumber, validateEmail } from "@/lib/utils";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import VerifyCode from "./VerifyCode";
