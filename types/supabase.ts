@@ -146,13 +146,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "public_checkout_sessions_ticket_id_fkey"
-            columns: ["ticket_id"]
-            isOneToOne: false
-            referencedRelation: "tickets"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "public_checkout_sessions_user_Id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -183,7 +176,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_guests_guest_id_fkey"
+            foreignKeyName: "public_event_guests_guest_id_fkey"
             columns: ["guest_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -557,10 +550,11 @@ export type Database = {
           business_name: string | null
           created_at: string
           discriminator: number | null
-          email: string
+          email: string | null
           first_name: string
           id: string
           last_name: string
+          phone: string | null
           role: string
           username: string
         }
@@ -570,10 +564,11 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email: string
+          email?: string | null
           first_name: string
           id?: string
           last_name: string
+          phone?: string | null
           role?: string
           username: string
         }
@@ -583,10 +578,11 @@ export type Database = {
           business_name?: string | null
           created_at?: string
           discriminator?: number | null
-          email?: string
+          email?: string | null
           first_name?: string
           id?: string
           last_name?: string
+          phone?: string | null
           role?: string
           username?: string
         }
@@ -844,7 +840,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "vendor_transactions_vendor_id_fkey"
+            foreignKeyName: "public_vendor_transactions_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"

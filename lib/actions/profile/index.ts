@@ -4,25 +4,31 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { profileForm } from "@/types/profile";
 
-interface createProfileData {
-  first_name: string;
-  last_name: string;
-  business_name?: string;
+interface CreateProfileData {
+  firstName: string;
+  lastName: string;
   username: string;
   discriminator: number;
-  email: string;
+  phone?: string;
+  email?: string;
   id: string;
 }
 
-const createProfile = async (createProfileData: createProfileData) => {
+interface AdditionalInfo {
+  firstName: string;
+  lastName: string;
+}
+
+const createProfile = async (createProfileData: CreateProfileData) => {
   const supabase = await createSupabaseServerClient();
-  const { business_name } = createProfileData;
+  const { firstName, lastName, ...rest } = createProfileData;
   const { data, error } = await supabase
     .from("profiles")
     .insert([
       {
-        ...createProfileData,
-        business_name: business_name || null,
+        first_name: firstName,
+        last_name: lastName,
+        ...rest,
       },
     ])
     .select();
@@ -45,6 +51,24 @@ const editProfile = async (values: any, profileId: string) => {
     const profile: Tables<"profiles"> = data[0];
     redirect(`/${profile.username}`);
   }
+};
+
+const addAdditionalInfo = async (
+  additionalInfo: AdditionalInfo,
+  profileId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { firstName, lastName } = additionalInfo;
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      first_name: firstName,
+      last_name: lastName,
+    })
+    .eq("id", profileId)
+    .select();
+
+  return { data, error };
 };
 
 const updateProfileAvatar = async (avatar_url: string, user_id: string) => {
@@ -74,5 +98,6 @@ export {
   editProfile,
   updateProfileAvatar,
   createTemporaryProfile,
+  addAdditionalInfo,
   createProfile,
 };

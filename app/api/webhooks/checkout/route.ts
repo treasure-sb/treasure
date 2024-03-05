@@ -84,12 +84,14 @@ const handleTicketPurchase = async (
     eventInfo: event.description,
   };
 
-  await sendTicketPurchasedEmail(
-    profile.email,
-    purchasedTicket.id,
-    event_id,
-    emailProps
-  );
+  if (profile.email) {
+    await sendTicketPurchasedEmail(
+      profile.email,
+      purchasedTicket.id,
+      event_id,
+      emailProps
+    );
+  }
 };
 
 const handleTablePurchase = async (
