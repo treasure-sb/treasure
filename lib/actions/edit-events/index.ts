@@ -2,10 +2,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EditEventForm, EventFormTag } from "@/types/event";
-import {
-  editTicketTailorEvent,
-  editTicketTailorEventOccurence,
-} from "../ticket-tailor";
 
 const editEvent = async (
   values: EditEventForm,
@@ -49,11 +45,6 @@ const editEvent = async (
   };
 
   const event_id = ticketTailorID?.pop()?.ticket_tailor_event_id;
-
-  // FIXME: this is not working to change date of event on ticket tailor
-  await editTicketTailorEventOccurence(event_id, updatedTicketTailorDate);
-
-  await editTicketTailorEvent(event_id, updatedTicketTailorEvent);
 
   // Update the event on supabase
   const { data, error } = await supabase
