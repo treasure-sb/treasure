@@ -6,8 +6,6 @@ import {
   Button,
   Container,
   Heading,
-  Row,
-  Column,
   Html,
   Section,
   Text,
@@ -17,23 +15,15 @@ import {
 export interface VendorAppAcceptedEmailProps {
   eventName: string;
   posterUrl: string;
-  stripePriceId: string;
-  vendorId: string;
-  eventId: string;
-  tableId: string;
-  quantity: string;
   message: string;
+  checkoutSessionId: string;
 }
 
 export default function VendorAppAccepted({
   eventName = "Garden State Card Show",
   posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
   message = "Hey, thanks for applying as a vendor! We're excited to have you at the event.",
-  stripePriceId,
-  vendorId,
-  eventId,
-  tableId,
-  quantity,
+  checkoutSessionId,
 }: VendorAppAcceptedEmailProps) {
   return (
     <Html>
@@ -63,7 +53,7 @@ export default function VendorAppAccepted({
                 {eventName}
               </Heading>
               <Button
-                href={`https://www.ontreasure.xyz/checkout?price_id=${stripePriceId}&user_id=${vendorId}&event_id=${eventId}&ticket_id=${tableId}&quantity=${quantity}`}
+                href={`https://www.ontreasure.xyz/checkout/${checkoutSessionId}`}
                 className="bg-primary ml-auto p-4 rounded-lg text-background"
               >
                 Buy Table

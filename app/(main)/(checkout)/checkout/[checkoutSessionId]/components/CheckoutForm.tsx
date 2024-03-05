@@ -60,7 +60,8 @@ export default function CheckoutForm({
           disabled={isLoading || !stripe || !elements}
           id="submit"
         >
-          Purchase Tickets
+          Purchase{" "}
+          {checkoutSession.ticket_type === "TABLE" ? "Table" : "Ticket"}
         </Button>
       </div>
     </form>

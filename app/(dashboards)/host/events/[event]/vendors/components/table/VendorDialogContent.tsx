@@ -14,6 +14,8 @@ import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
+import { createCheckoutSession } from "@/lib/actions/checkout";
+import { Tables } from "@/types/supabase";
 import Link from "next/link";
 
 export default function VendorDialogContent({
@@ -48,15 +50,21 @@ export default function VendorDialogContent({
       .eq("vendor_id", vendor_id)
       .eq("event_id", event_id);
 
+    const { data } = await createCheckoutSession({
+      event_id,
+      ticket_id: table.id,
+      ticket_type: "TABLE",
+      user_id: profile.id,
+      quantity: table_quantity,
+    });
+
+    const checkoutSession: Tables<"checkout_sessions"> = data?.[0] || {};
+
     const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
       eventName,
       posterUrl,
-      vendorId: vendor_id,
-      eventId: event_id,
-      stripePriceId: table.stripe_price_id as string,
-      tableId: vendor.table_id as string,
-      quantity: table_quantity.toString(),
       message,
+      checkoutSessionId: checkoutSession.id,
     };
 
     if (profile.email) {

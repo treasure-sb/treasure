@@ -147,7 +147,7 @@ export default function BookVendorTables() {
             ease: "easeInOut",
             repeat: Infinity,
             duration: 8,
-            delay: 2,
+            delay: 4,
           }}
           className="w-60 h-60 md:w-[42rem] md:h-[42rem] rounded-full blur-3xl absolute top-0 right-0 bg-primary opacity-10 z-[-10]"
         />
@@ -155,7 +155,7 @@ export default function BookVendorTables() {
           initial={{ scale: 0.75 }}
           animate={{ scale: [0.75, 1.25, 0.75] }}
           transition={{ ease: "easeInOut", repeat: Infinity, duration: 8 }}
-          className="w-60 h-60 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-0 left-0 md:left-40 bg-tertiary opacity-10 z-[-10]"
+          className="w-80 h-80 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-0 left-0 md:left-40 bg-tertiary opacity-10 z-[-10]"
         />
         <motion.div
           initial={{ scale: 0.75 }}
@@ -164,9 +164,9 @@ export default function BookVendorTables() {
             ease: "easeInOut",
             repeat: Infinity,
             duration: 8,
-            delay: 4,
+            delay: 3,
           }}
-          className="w-60 h-60 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-1/4 md:bottom-10 left-20 md:left-3/4 bg-secondary opacity-20 z-[-10]"
+          className="w-80 h-80 md:w-[32rem] md:h-[32rem] rounded-full blur-3xl absolute bottom-1/4 md:bottom-10 left-20 md:left-3/4 bg-secondary opacity-20 z-[-10]"
         />
       </div>
       <div ref={ref} className="h-[120vh]" />

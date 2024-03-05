@@ -6,10 +6,15 @@ import { getProfileAvatar } from "@/lib/helpers/profiles";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DataTable from "./components/table/DataTable";
 
+type EventVendorTableInfo = {
+  section_name: string;
+  id: string;
+};
+
 export type EventVendorProfile = Tables<"event_vendors"> & {
   vendor: Tables<"profiles">;
 } & {
-  table: Partial<Tables<"tables">>;
+  table: EventVendorTableInfo;
 };
 
 export default async function Page({
@@ -34,9 +39,7 @@ export default async function Page({
 
   const { data: eventVendorData } = await supabase
     .from("event_vendors")
-    .select(
-      "*, vendor:profiles(*), table:tables(stripe_product_id, stripe_price_id, section_name)"
-    )
+    .select("*, vendor:profiles(*), table:tables(section_name, id)")
     .eq("event_id", hostedEvent.id);
 
   const eventVendors = eventVendorData as EventVendorProfile[];

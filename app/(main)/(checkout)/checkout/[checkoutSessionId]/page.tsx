@@ -7,6 +7,46 @@ import { Separator } from "@/components/ui/separator";
 import { TicketIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
+interface CheckoutTicketInfo {
+  name: string;
+  price: number;
+}
+
+const getTicketInfo = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: ticketData, error: ticketError } = await supabase
+    .from("tickets")
+    .select("name, price")
+    .eq("id", ticketId)
+    .single();
+
+  if (ticketError) {
+    throw new Error("Error fetching ticket data");
+  }
+
+  return {
+    name: ticketData.name,
+    price: ticketData.price,
+  };
+};
+
+const getTableInfo = async (ticketId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: tableData, error: tableError } = await supabase
+    .from("tables")
+    .select("section_name, price")
+    .eq("id", ticketId)
+    .single();
+
+  if (tableError) {
+    throw new Error("Error fetching table data");
+  }
+  return {
+    name: tableData.section_name,
+    price: tableData.price,
+  };
+};
+
 export default async function Page({
   params,
 }: {
@@ -26,7 +66,7 @@ export default async function Page({
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const { event_id, ticket_id, quantity } = checkoutSession;
+  const { event_id, ticket_id, ticket_type, quantity } = checkoutSession;
   const { data: eventData } = await supabase
     .from("events")
     .select("*")
@@ -35,13 +75,20 @@ export default async function Page({
   const event: Tables<"events"> = eventData;
   const eventDisplay = await getEventDisplayData(event);
 
-  const { data: ticketData } = await supabase
-    .from("tickets")
-    .select("*")
-    .eq("id", ticket_id)
-    .single();
-  const ticket: Tables<"tickets"> = ticketData;
-  const totalPrice = ticket.price * quantity;
+  let totalPrice = 0;
+  let ticket: CheckoutTicketInfo;
+  switch (ticket_type) {
+    case "TICKET":
+      ticket = await getTicketInfo(ticket_id);
+      break;
+    case "TABLE":
+      ticket = await getTableInfo(ticket_id);
+      break;
+    default:
+      throw new Error("Invalid Ticket Type");
+  }
+
+  totalPrice = ticket.price * quantity;
 
   return (
     <main className="max-w-6xl m-auto">
@@ -61,7 +108,8 @@ export default async function Page({
               <div className="flex items-center space-x-4">
                 <TicketIcon className="text-tertiary stroke-1" size={24} />
                 <p>
-                  {ticket.name} x {quantity}
+                  {ticket.name} {ticket_type === "TABLE" && <span>Table</span>}{" "}
+                  x {quantity}
                 </p>
               </div>
               <p>{`$${totalPrice.toFixed(2)}`}</p>
