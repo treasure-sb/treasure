@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { signUpUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,13 +21,14 @@ export default function LoginFlow({
   isDialog: boolean;
   closeDialog?: () => void;
 }) {
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [usePhone, setUsePhone] = useState(true);
-  const [method, setMethod] = useState(SubmitMethod.PHONE);
-  const [countryCode, setCountryCode] = useState("+1");
   const [showVerifyCode, setShowVerifyCode] = useState(false);
+  const [usePhone, setUsePhone] = useState(true);
   const signupInviteToken = "signup_invite_token";
+  const countryCode = "+1";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -140,7 +141,9 @@ export default function LoginFlow({
               <div className="space-y-2">
                 <div className="relative">
                   <FloatingLabelInput
+                    ref={phoneInputRef}
                     id="phone"
+                    type="tel"
                     label="Phone Number"
                     value={phoneNumber}
                     onChange={(e) => handlePhoneInputChange(e)}

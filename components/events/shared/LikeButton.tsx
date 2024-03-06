@@ -13,10 +13,6 @@ import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
 import HeartIcon from "@/components/icons/HeartIcon";
 import LoginFlow from "@/app/(login)/login/components/LoginFlow";
 
-/**
- * The LikeButton component allows a user to like or unlike an event.
- * It shows a filled heart icon if the event is liked, and an empty heart icon otherwise.
- */
 export default function LikeButton({
   event,
   user,
@@ -42,13 +38,17 @@ export default function LikeButton({
     enabled: !!user,
   });
 
+  const handleOptimisticUpdate = (liked: boolean) => {
+    queryClient.setQueryData(["event_liked", event.id], liked);
+  };
+
   const handleLike = async () => {
     if (!user) {
       push(`/login?event=${event.cleaned_name}`);
       return;
     }
-    // Optimistically update the UI
-    queryClient.setQueryData(["event_liked", event.id], true);
+
+    handleOptimisticUpdate(true);
     await likeEvent(event.id, user.id);
     queryClient.invalidateQueries({ queryKey: ["event_liked", event.id] });
   };
@@ -58,8 +58,8 @@ export default function LikeButton({
       push(`/login?event=${event.cleaned_name}`);
       return;
     }
-    // Optimistically update the UI
-    queryClient.setQueryData(["event_liked", event.id], false);
+
+    handleOptimisticUpdate(false);
     await unlikeEvent(event.id, user.id);
     queryClient.invalidateQueries({ queryKey: ["event_liked", event.id] });
   };
@@ -89,7 +89,12 @@ export default function LikeButton({
           <HeartIcon />
         </div>
       </DialogTrigger>
-      <DialogContent className="w-80 md:w-96 h-[22rem] pt-10 flex items-center">
+      <DialogContent
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        className="w-80 md:w-96 h-[22rem] pt-10 flex items-center"
+      >
         <LoginFlow isDialog={true} closeDialog={closeDialog} />
       </DialogContent>
     </Dialog>
