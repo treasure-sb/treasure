@@ -4,7 +4,7 @@ import { EventDisplayData } from "@/types/event";
 import { motion } from "framer-motion";
 import { MoveLeftIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import EventPoster from "@/app/(main)/events/[id]/components/EventPoster";
+import EventPoster from "@/components/events/shared/EventPoster";
 import Link from "next/link";
 
 export default function EventToolsHeader({

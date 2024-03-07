@@ -8,9 +8,10 @@ import { MoveLeftIcon } from "lucide-react";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { SubmitMethod } from "./LoginFlow";
-import OTPInput from "@/components/ui/otp-input";
+import OTPInput from "@/components/ui/custom/otp-input";
 import AdditionalInfo from "./AdditionalInfo";
 import Welcome from "./Welcome";
+import BackButton from "@/components/ui/custom/back-button";
 
 interface VerifyCodeProps {
   phoneNumber?: string;
@@ -114,13 +115,7 @@ export default function VerifyCode({
             },
           }}
         >
-          <div
-            onClick={goBack}
-            className="flex space-x-2 mb-4 hover:cursor-pointer w-fit"
-          >
-            <MoveLeftIcon className="stroke-1" />
-            <span>Back</span>
-          </div>
+          <BackButton onClose={goBack} />
           <div className="space-y-2">
             <h1 className="text-2xl text-left font-semibold">Enter code</h1>
             <p className="text-sm text-gray-400">

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { Input } from "./input";
+import { Input } from "../input";
 import { useRef, useEffect } from "react";
 
 export const RE_DIGIT = new RegExp(/^\d+$/);

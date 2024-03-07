@@ -7,11 +7,9 @@ import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import { likeEvent, unlikeEvent } from "@/lib/actions/events";
 import { Tables } from "@/types/supabase";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
 import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
 import HeartIcon from "@/components/icons/HeartIcon";
-import LoginFlow from "@/app/(login)/login/components/LoginFlow";
+import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 
 export default function LikeButton({
   event,
@@ -20,7 +18,6 @@ export default function LikeButton({
   event: EventDisplayData | Tables<"events">;
   user?: User | null;
 }) {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const { push } = useRouter();
   const { data } = useQuery({
@@ -64,9 +61,11 @@ export default function LikeButton({
     queryClient.invalidateQueries({ queryKey: ["event_liked", event.id] });
   };
 
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
+  const loginDialogTrigger = (
+    <div className="hover:cursor-pointer">
+      <HeartIcon />
+    </div>
+  );
 
   return data ? (
     <div
@@ -83,20 +82,6 @@ export default function LikeButton({
       <HeartIcon />
     </div>
   ) : (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger asChild>
-        <div className="hover:cursor-pointer">
-          <HeartIcon />
-        </div>
-      </DialogTrigger>
-      <DialogContent
-        onOpenAutoFocus={(e) => {
-          e.preventDefault();
-        }}
-        className="w-80 md:w-96 h-[22rem] pt-10 flex items-center"
-      >
-        <LoginFlow isDialog={true} closeDialog={closeDialog} />
-      </DialogContent>
-    </Dialog>
+    <LoginFlowDialog trigger={loginDialogTrigger} />
   );
 }

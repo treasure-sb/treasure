@@ -8,16 +8,6 @@ import { Button } from "@/components/ui/button";
 import { CalendarCheck2Icon, CalendarX2Icon } from "lucide-react";
 import { User } from "@supabase/supabase-js";
 
-/**
- * AttendingEvent is a React component that allows a user to mark themselves as attending.
- *
- * It fetches the current attendance status of the user for a specific event and
- * provides a button to toggle this status. If the user is not logged in, clicking
- * the button will redirect them to the login page.
- *
- * @param {Tables<"events">} event - The event object.
- * @param {User|null} user - The user object, or null if no user is logged in.
- */
 export default function AttendingEvent({
   event,
   user,
