@@ -1,4 +1,4 @@
-export default function EditEvent() {
+export default function EditEventIcon() {
   return (
     <svg
       width="70"

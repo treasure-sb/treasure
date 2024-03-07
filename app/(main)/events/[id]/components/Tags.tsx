@@ -11,7 +11,7 @@ export default async function Tags({ event }: { event: Tables<"events"> }) {
 
   return (
     <>
-      {tagsData ? (
+      {tagsData && (
         <div className="flex gap-2 w-full flex-wrap">
           {tagsData.map((tag: any) => (
             <Badge
@@ -22,7 +22,7 @@ export default async function Tags({ event }: { event: Tables<"events"> }) {
             </Badge>
           ))}
         </div>
-      ) : null}
+      )}
     </>
   );
 }

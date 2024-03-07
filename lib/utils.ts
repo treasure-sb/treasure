@@ -10,6 +10,13 @@ export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function capitalizeSentence(string: string) {
+  return string
+    .split(" ")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
+
 export function parseLocalDate(dateString: string) {
   const [year, month, day] = dateString.split("-").map(Number);
   return new Date(year, month - 1, day);
