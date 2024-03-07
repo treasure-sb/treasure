@@ -1,8 +1,8 @@
 "use client";
 import { usePalette } from "color-thief-react";
 
-export default function ColorThief({ public_url }: { public_url: string }) {
-  const { data } = usePalette(public_url, 2, "hex", {
+export default function ColorThief({ publicUrl }: { publicUrl: string }) {
+  const { data } = usePalette(publicUrl, 2, "hex", {
     crossOrigin: "anonymous",
   });
 

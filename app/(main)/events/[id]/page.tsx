@@ -1,5 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventsPage from "@/app/(main)/events/[id]/components/EventsPage";
+import EventPage from "@/app/(main)/events/[id]/components/EventPage";
 import { redirect } from "next/navigation";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -43,5 +43,5 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const event = { ...eventData, vendors };
 
-  return <EventsPage key={event.id} event={event} />;
+  return <EventPage key={event.id} event={event} />;
 }
