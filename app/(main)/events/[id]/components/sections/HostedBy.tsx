@@ -1,7 +1,7 @@
 import { Tables } from "@/types/supabase";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type OrganizerType = Tables<"profiles"> | Tables<"temporary_profiles">;
 
@@ -42,8 +42,8 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   } = await supabase.storage.from("avatars").getPublicUrl(avatar_url);
 
   return (
-    <>
-      <h1 className="font-semibold text-2xl">Hosted By</h1>
+    <section>
+      <h2 className="font-semibold text-2xl">Hosted By</h2>
       <div className="flex flex-col space-y-1 items-center">
         <Link
           href={type === "profile" ? `/${username}` : `/${username}?type=t`}
@@ -73,6 +73,6 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
           </div>
         )}
       </div>
-    </>
+    </section>
   );
 }

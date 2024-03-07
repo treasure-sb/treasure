@@ -19,10 +19,11 @@ export default async function Tickets({
     .select("*")
     .eq("event_id", event.id)
     .order("price", { ascending: true });
+  const hasTickets = tickets && tickets.length > 0;
 
   return (
     <>
-      {tickets && tickets.length > 0 && (
+      {hasTickets && (
         <SeeTickets
           tickets={tickets}
           user={user}
