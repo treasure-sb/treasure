@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 import { filterPhoneNumber } from "@/lib/utils";
-import { MoveLeftIcon } from "lucide-react";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { SubmitMethod } from "./LoginFlow";
@@ -115,7 +114,7 @@ export default function VerifyCode({
             },
           }}
         >
-          <BackButton onClose={goBack} />
+          <BackButton onClick={goBack} />
           <div className="space-y-2">
             <h1 className="text-2xl text-left font-semibold">Enter code</h1>
             <p className="text-sm text-gray-400">
