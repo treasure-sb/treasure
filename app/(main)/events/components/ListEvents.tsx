@@ -13,13 +13,6 @@ import EventDisplay from "@/components/events/shared/EventDisplay";
 /**
  * List events with infinite scrolling functionality on mobile and standard pagination on desktop.
  * It fetches event data based on the provided search parameters.
- * The component handles both the initial data load and subsequent data fetching when the user scrolls down.
- *
- * @param {Object} props - The component props.
- * @param {EventDisplayData[]} props.events - Initial event data loaded on the server side.
- * @param {User | null} [props.user] - Optional user information for user-specific data handling.
- * @param {SearchParams} [props.searchParams] - Optional search parameters for filtering events.
- * @returns {React.Component} - A component that displays a list of events and handles infinite scrolling.
  */
 export default function ListEvents({
   events,

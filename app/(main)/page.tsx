@@ -8,6 +8,7 @@ import FAQ from "@/components/landing-page/FAQ";
 import Reminders from "@/components/landing-page/Reminders";
 import Order from "@/components/landing-page/Order";
 import Footer from "@/components/shared/Footer";
+import Features from "@/components/landing-page/features/Features";
 
 export default function Page() {
   return (
@@ -15,12 +16,13 @@ export default function Page() {
       <Hero />
       <FeaturedEvents />
       <div className="max-w-6xl xl:max-w-7xl m-auto">
-        <PreviewMore />
+        {/* <PreviewMore />
         <CreateEvents />
         <Quote />
         <BookVendorTables />
         <Order />
-        <Reminders />
+        <Reminders /> */}
+        <Features />
       </div>
       <FAQ />
       <Footer />

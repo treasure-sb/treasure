@@ -21,15 +21,6 @@ import Cancel from "@/components/icons/Cancel";
  * The selected date range is displayed on the button and can be cleared using a cancel icon.
  *
  * TODO: Refactor to make more DRY
- *
- * State:
- * - date: The currently selected date.
- * - isCalenderOpen: Boolean indicating if the calendar dropdown is open.
- *
- * Behavior:
- * - Updates the URL query parameters based on the selected date range.
- * - Provides buttons for quick date selection and a calendar for custom date selection.
- * - Clears the selected date range when the cancel icon is clicked.
  */
 export default function DateFiltering() {
   const [date, setDate] = useState<Date | undefined>(new Date());
