@@ -85,7 +85,7 @@ export default function TicketsOverlay({
         exit={{ opacity: 0, y: 5, transition: { duration: 0.2 } }}
         className="max-w-lg m-auto mt-20 md:mt-40"
       >
-        <BackButton onClose={goBack} />
+        <BackButton onClick={goBack} />
         <EventCard
           event={eventDisplayData}
           clickable={false}
