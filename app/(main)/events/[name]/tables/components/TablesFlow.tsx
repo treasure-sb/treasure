@@ -27,8 +27,12 @@ export default function TablesFlow({
   const { currentView } = useVendorFlowStore();
 
   useEffect(() => {
-    useVendorApplicationStore.setState({ event: eventDisplay, profile, terms });
-    useVendorFlowStore.setState({ vendorInfo: vendorInfo });
+    useVendorFlowStore.setState({
+      vendorInfo: vendorInfo,
+      event: eventDisplay,
+      terms,
+      profile,
+    });
   }, []);
 
   return (

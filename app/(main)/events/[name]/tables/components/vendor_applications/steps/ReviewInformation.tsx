@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useVendorApplicationStore } from "../store";
+import { useVendorFlowStore } from "../../../store";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
@@ -22,13 +23,13 @@ export default function ReviewInformation() {
   const {
     table,
     tableQuantity,
-    profile,
     inventory,
     comments,
     currentStep,
     vendorsAtTable,
     setCurrentStep,
   } = useVendorApplicationStore();
+  const { profile } = useVendorFlowStore();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {};

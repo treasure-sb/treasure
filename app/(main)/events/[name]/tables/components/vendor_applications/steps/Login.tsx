@@ -1,13 +1,13 @@
 "use client";
 import LoginFlow from "@/app/(login)/login/components/LoginFlow";
-import { useVendorApplicationStore } from "../store";
+import { useVendorFlowStore } from "../../../store";
 import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 
 export default function Login() {
-  const { setProfile } = useVendorApplicationStore();
+  const { setProfile } = useVendorFlowStore();
 
   const onLoginComplete = async () => {
     const supabase = createClient();
