@@ -19,7 +19,7 @@ interface VerifyCodeProps {
   method: SubmitMethod;
   isDialog: boolean;
   goBack: () => void;
-  closeDialog?: () => void;
+  action?: () => void;
 }
 
 export default function VerifyCode({
@@ -29,7 +29,7 @@ export default function VerifyCode({
   method,
   isDialog,
   goBack,
-  closeDialog,
+  action,
 }: VerifyCodeProps) {
   const { replace } = useRouter();
   const [code, setCode] = useState("");
@@ -60,7 +60,9 @@ export default function VerifyCode({
   const verificationCheck = async (verfication: any) => {
     if (verfication.success) {
       toast.success("Code verified");
-      if (!isDialog) {
+      if (isDialog) {
+        action && (await action());
+      } else {
         verfication.profileExists ? replace("/") : setAdditionalInfo(true);
       }
     } else {

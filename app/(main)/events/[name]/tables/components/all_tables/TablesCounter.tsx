@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
-import { useVendorFlowStore } from "../store";
-import { TableView } from "../store";
-import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
+import CheckoutButton from "./CheckoutButton";
 
 export default function TablesCounter({
   event,
@@ -18,9 +16,7 @@ export default function TablesCounter({
   table: Tables<"tables">;
   user: User | null;
 }) {
-  const { setCurrentView } = useVendorFlowStore();
   const [tableCount, setTableCount] = useState(1);
-  const [creatingCheckout, setCreatingCheckout] = useState(false);
   const minTables = 1;
   const maxTables = 6;
 
@@ -35,22 +31,6 @@ export default function TablesCounter({
       setTableCount(tableCount - 1);
     }
   };
-
-  const handleCheckout = async () => {
-    if (event.vendor_exclusivity === "APPLICATIONS") {
-      setCurrentView(TableView.APPLICATION);
-    }
-  };
-
-  const checkoutButton = (
-    <Button
-      disabled={creatingCheckout}
-      onClick={async () => await handleCheckout()}
-      className="w-full rounded-md"
-    >
-      Continue to Application
-    </Button>
-  );
 
   return (
     <div className="space-y-4 text-background">
@@ -73,7 +53,12 @@ export default function TablesCounter({
           +
         </Button>
       </div>
-      {user ? checkoutButton : <LoginFlowDialog trigger={checkoutButton} />}
+      <CheckoutButton
+        event={event}
+        table={table}
+        user={user}
+        tableCount={tableCount}
+      />
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function HamburgerMenu({
         </SheetTrigger>
         <SheetContent className="pt-16">
           <SheetHeader>
-            <SheetTitle className="flex justify-between items-center">
+            <SheetTitle className="flex justify-between items-center space-x-4">
               <motion.p
                 variants={animationVariants}
                 initial="initial"

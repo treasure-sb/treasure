@@ -1,22 +1,35 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useVendorFlowStore } from "../store";
+import { useVendorApplicationStore } from "./vendor_applications/store";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { User } from "@supabase/supabase-js";
+import { useEffect } from "react";
 import VendorApplication from "./vendor_applications/VendorApplication";
-import AllTables from "./AllTables";
+import AllTables from "./all_tables/AllTables";
 
 export default function TablesFlow({
   eventDisplay,
-  tables,
   user,
+  tables,
+  vendorInfo,
+  terms,
+  profile,
 }: {
   eventDisplay: EventDisplayData;
-  tables: Tables<"tables">[];
   user: User | null;
+  tables: Tables<"tables">[];
+  vendorInfo: Tables<"application_vendor_information">;
+  terms: Tables<"application_terms_and_conditions">[];
+  profile: Tables<"profiles"> | null;
 }) {
-  const currentView = useVendorFlowStore((state) => state.currentView);
+  const { currentView } = useVendorFlowStore();
+
+  useEffect(() => {
+    useVendorApplicationStore.setState({ event: eventDisplay, profile, terms });
+    useVendorFlowStore.setState({ vendorInfo: vendorInfo });
+  }, []);
 
   return (
     <main className="max-w-lg m-auto">
@@ -24,7 +37,7 @@ export default function TablesFlow({
         {currentView === "ALL_TABLES" && (
           <motion.div
             key="all-tables"
-            exit={{ opacity: 0, y: 5, transition: { duration: 0.6 } }}
+            exit={{ opacity: 0, y: 3, transition: { duration: 0.5 } }}
           >
             <AllTables
               eventDisplay={eventDisplay}
@@ -36,14 +49,14 @@ export default function TablesFlow({
         {currentView === "APPLICATION" && (
           <motion.div
             key="vendor-application"
-            initial={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: 3 }}
             animate={{
               opacity: 1,
               y: 0,
-              transition: { duration: 0.6 },
+              transition: { duration: 0.5 },
             }}
           >
-            <VendorApplication event={eventDisplay} />
+            <VendorApplication />
           </motion.div>
         )}
       </AnimatePresence>
