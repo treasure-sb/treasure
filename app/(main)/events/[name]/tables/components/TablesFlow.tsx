@@ -20,12 +20,11 @@ export default function TablesFlow({
 
   return (
     <main className="max-w-lg m-auto">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {currentView === "ALL_TABLES" && (
           <motion.div
             key="all-tables"
-            exit={{ opacity: 0, y: 5 }}
-            transition={{ duration: 0.6 }}
+            exit={{ opacity: 0, y: 5, transition: { duration: 0.6 } }}
           >
             <AllTables
               eventDisplay={eventDisplay}
@@ -38,8 +37,11 @@ export default function TablesFlow({
           <motion.div
             key="vendor-application"
             initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.6 },
+            }}
           >
             <VendorApplication event={eventDisplay} />
           </motion.div>

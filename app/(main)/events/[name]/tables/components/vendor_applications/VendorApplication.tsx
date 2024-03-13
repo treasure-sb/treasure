@@ -15,7 +15,7 @@ export default function VendorApplication({
   const { setCurrentView } = useVendorFlowStore();
 
   return (
-    <>
+    <div>
       <BackButton
         onClick={() => {
           setCurrentView(TableView.ALL_TABLES);
@@ -23,6 +23,6 @@ export default function VendorApplication({
       />
       <h2 className="text-2xl font-semibold mb-4">Vendor Application</h2>
       {currentStep === 1 && <EventInformation event={event} />}
-    </>
+    </div>
   );
 }
