@@ -1,19 +1,19 @@
 "use client";
 import { motion } from "framer-motion";
-import { StepValue, useVendorFlowStore } from "../store";
+import { TableView, useVendorFlowStore } from "../store";
 import { ArrowRight } from "lucide-react";
 
-const Step = ({ step }: { step: StepValue }) => {
-  const { currentStep } = useVendorFlowStore();
+const Step = ({ step }: { step: TableView }) => {
+  const { currentView } = useVendorFlowStore();
   let status =
-    currentStep === step
+    currentView === step
       ? "active"
-      : currentStep < step
+      : currentView < step
       ? "inactive"
       : "complete";
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 items-center">
       <motion.div
         initial={false}
         animate={status}
@@ -22,11 +22,11 @@ const Step = ({ step }: { step: StepValue }) => {
           inactive: { borderColor: "#fff" },
           complete: { borderColor: "#71d08c", backgroundColor: "#71d08c" },
         }}
-        className="rounded-full w-5 h-5 border-[1px] flex items-center justify-center"
+        className="rounded-full w-4 h-4 border-[1px] flex items-center justify-center"
       >
         {status === "complete" && <CheckMark />}
       </motion.div>
-      <p>{StepValue[step]}</p>
+      <p>{TableView[step]}</p>
     </div>
   );
 };
@@ -51,30 +51,48 @@ const CheckMark = () => {
         }}
         d="M3.95121 8.71896L5.18273 9.9538C5.58553 10.3577 6.24404 10.3434 6.62889 9.92233L11.3934 4.7099"
         stroke="#0D0F0E"
-        stroke-width="2"
-        stroke-linecap="round"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
     </svg>
   );
 };
 
 export default function TableFlowProgress() {
-  const { currentStep } = useVendorFlowStore();
+  const { currentView } = useVendorFlowStore();
+
+  const AnimateOpacity = ({ children }: { children: React.ReactNode }) => (
+    <motion.div
+      initial={false}
+      animate={{
+        opacity: currentView === TableView.Application ? 0.1 : 1,
+      }}
+      transition={{ duration: 0.5, type: "tween", ease: "easeInOut" }}
+    >
+      {children}
+    </motion.div>
+  );
 
   return (
     <motion.div
-      animate={{
-        y: currentStep === StepValue.Application ? -6 : 0,
-        opacity: currentStep === StepValue.Application ? 0.1 : 1,
-      }}
+      initial={false}
+      animate={{ y: currentView === TableView.Application ? -8 : 0 }}
       transition={{ duration: 0.5, type: "tween", ease: "easeInOut" }}
       className="flex justify-between m-auto"
     >
-      <Step step={StepValue.Table} />
-      <ArrowRight className="stroke-1" />
-      <Step step={StepValue.Application} />
-      <ArrowRight className="stroke-1" />
-      <Step step={StepValue.Complete} />
+      <AnimateOpacity>
+        <Step step={TableView.Table} />
+      </AnimateOpacity>
+      <AnimateOpacity>
+        <ArrowRight className="stroke-1" />
+      </AnimateOpacity>
+      <Step step={TableView.Application} />
+      <AnimateOpacity>
+        <ArrowRight className="stroke-1" />
+      </AnimateOpacity>
+      <AnimateOpacity>
+        <Step step={TableView.Complete} />
+      </AnimateOpacity>
     </motion.div>
   );
 }

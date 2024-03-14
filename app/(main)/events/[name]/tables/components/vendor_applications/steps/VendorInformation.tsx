@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export default function VendorInformation() {
   const {
@@ -19,40 +20,79 @@ export default function VendorInformation() {
     inventory,
     comments,
     vendorsAtTable,
+    tableQuantity,
     setVendorsAtTable,
     setComments,
     setInventory,
     setCurrentStep,
   } = useVendorApplicationStore();
   const { profile } = useVendorFlowStore();
+  const { vendorInfo, setVendorInfo } = useVendorApplicationStore();
 
   const vendorsOptions = Array.from({
-    length: table.number_vendors_allowed,
+    length: table.number_vendors_allowed * tableQuantity,
   }).map((_, i) => (
     <SelectItem key={i} value={`${i + 1}`}>
       {i + 1}
     </SelectItem>
   ));
 
+  const canContinue =
+    inventory.length > 0 &&
+    vendorsAtTable > 0 &&
+    vendorInfo.email &&
+    vendorInfo.firstName &&
+    vendorInfo.lastName &&
+    vendorInfo.phone;
+
   return (
     <div className="h-full flex flex-col justify-between space-y-10">
       <div className="space-y-6 h-full">
         <h2 className="text-xl">Vendor Information</h2>
-        <FloatingLabelInput label="Phone" />
-        <FloatingLabelInput label="Email" />
+        {profile?.phone ? (
+          <FloatingLabelInput readOnly label="Phone" value={profile?.phone} />
+        ) : (
+          <FloatingLabelInput
+            label="Phone"
+            value={vendorInfo.phone || ""}
+            onChange={(e) =>
+              setVendorInfo({ ...vendorInfo, phone: e.target.value })
+            }
+          />
+        )}
+        {profile?.email ? (
+          <FloatingLabelInput readOnly label="Email" value={profile?.email} />
+        ) : (
+          <FloatingLabelInput
+            label="Email"
+            value={vendorInfo.email || ""}
+            onChange={(e) =>
+              setVendorInfo({ ...vendorInfo, email: e.target.value })
+            }
+          />
+        )}
         <div className="flex space-x-4">
           <FloatingLabelInput
-            defaultValue={profile?.first_name}
+            value={vendorInfo.firstName || ""}
+            onChange={(e) => {
+              setVendorInfo({ ...vendorInfo, firstName: e.target.value });
+            }}
             label="First Name"
           />
           <FloatingLabelInput
-            defaultValue={profile?.last_name}
+            value={vendorInfo.lastName || ""}
+            onChange={(e) => {
+              setVendorInfo({ ...vendorInfo, lastName: e.target.value });
+            }}
             label="Last Name"
           />
         </div>
         <FloatingLabelInput
-          defaultValue={profile?.business_name || ""}
-          label="Business Name"
+          value={vendorInfo.businessName || ""}
+          onChange={(e) =>
+            setVendorInfo({ ...vendorInfo, businessName: e.target.value })
+          }
+          label="Business Name (Optional)"
         />
         <div className="flex items-center justify-between">
           <p>Vendors at Table</p>
@@ -79,11 +119,12 @@ export default function VendorInformation() {
         <div className="flex space-x-2">
           <Button
             onClick={() => setCurrentStep(currentStep + 1)}
-            className={`${
-              inventory.length > 0
+            className={cn(
+              "w-full",
+              canContinue
                 ? "bg-primary cursor-pointer"
                 : "bg-primary/40 pointer-events-none"
-            } w-full`}
+            )}
           >
             Continue
           </Button>

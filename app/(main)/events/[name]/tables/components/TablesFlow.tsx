@@ -1,30 +1,30 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { useVendorFlowStore } from "../store";
+import { TableView, useVendorFlowStore } from "../store";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { User } from "@supabase/supabase-js";
 import { useEffect } from "react";
 import VendorApplication from "./vendor_applications/VendorApplication";
 import AllTables from "./all_tables/AllTables";
 import TableFlowProgress from "./TableFlowProgress";
+import { useVendorApplicationStore } from "./vendor_applications/store";
+import Complete from "./vendor_applications/steps/Complete";
 
 export default function TablesFlow({
   eventDisplay,
-  user,
   tables,
   vendorInfo,
   terms,
   profile,
 }: {
   eventDisplay: EventDisplayData;
-  user: User | null;
   tables: Tables<"tables">[];
   vendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   profile: Tables<"profiles"> | null;
 }) {
   const { currentView } = useVendorFlowStore();
+  const { setVendorInfo } = useVendorApplicationStore();
 
   useEffect(() => {
     useVendorFlowStore.setState({
@@ -33,25 +33,31 @@ export default function TablesFlow({
       terms,
       profile,
     });
+
+    if (profile) {
+      setVendorInfo({
+        phone: profile?.phone,
+        email: profile?.email,
+        firstName: profile?.first_name,
+        lastName: profile?.last_name,
+        businessName: profile?.business_name,
+      });
+    }
   }, []);
 
   return (
     <main className="max-w-lg m-auto">
       <TableFlowProgress />
       <AnimatePresence mode="wait">
-        {currentView === "ALL_TABLES" && (
+        {currentView === TableView.Table && (
           <motion.div
             key="all-tables"
             exit={{ opacity: 0, y: 3, transition: { duration: 0.5 } }}
           >
-            <AllTables
-              eventDisplay={eventDisplay}
-              tables={tables}
-              user={user}
-            />
+            <AllTables tables={tables} />
           </motion.div>
         )}
-        {currentView === "APPLICATION" && (
+        {currentView === TableView.Application && (
           <motion.div
             key="vendor-application"
             initial={{ opacity: 0, y: 3 }}
@@ -64,6 +70,7 @@ export default function TablesFlow({
             <VendorApplication />
           </motion.div>
         )}
+        {currentView === TableView.Complete && <Complete />}
       </AnimatePresence>
     </main>
   );

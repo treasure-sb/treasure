@@ -60,7 +60,6 @@ export default async function Page({
     <TablesFlow
       eventDisplay={eventDisplayData}
       tables={tables}
-      user={user}
       vendorInfo={vendorInfo}
       terms={terms}
       profile={profile}

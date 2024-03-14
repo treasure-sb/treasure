@@ -154,6 +154,47 @@ export type Database = {
           }
         ]
       }
+      event_codes: {
+        Row: {
+          code: string
+          discount: number
+          event_id: string
+          id: string
+          num_used: number
+          status: Database["public"]["Enums"]["Promo Code Status"]
+          type: Database["public"]["Enums"]["Promo Code Type"]
+          usage_limit: number | null
+        }
+        Insert: {
+          code?: string
+          discount?: number
+          event_id?: string
+          id?: string
+          num_used?: number
+          status?: Database["public"]["Enums"]["Promo Code Status"]
+          type?: Database["public"]["Enums"]["Promo Code Type"]
+          usage_limit?: number | null
+        }
+        Update: {
+          code?: string
+          discount?: number
+          event_id?: string
+          id?: string
+          num_used?: number
+          status?: Database["public"]["Enums"]["Promo Code Status"]
+          type?: Database["public"]["Enums"]["Promo Code Type"]
+          usage_limit?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_event_codes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_guests: {
         Row: {
           event_id: string
@@ -295,6 +336,8 @@ export type Database = {
       }
       event_vendors: {
         Row: {
+          application_email: string | null
+          application_phone: string | null
           application_status: Database["public"]["Enums"]["Application Status"]
           comments: string | null
           event_id: string
@@ -306,6 +349,8 @@ export type Database = {
           vendors_at_table: number
         }
         Insert: {
+          application_email?: string | null
+          application_phone?: string | null
           application_status?: Database["public"]["Enums"]["Application Status"]
           comments?: string | null
           event_id: string
@@ -317,6 +362,8 @@ export type Database = {
           vendors_at_table: number
         }
         Update: {
+          application_email?: string | null
+          application_phone?: string | null
           application_status?: Database["public"]["Enums"]["Application Status"]
           comments?: string | null
           event_id?: string
@@ -864,6 +911,8 @@ export type Database = {
         | "ATTENDEES_ONLY"
         | "SELLING_ALL"
       "Payment Status": "UNPAID" | "PAID" | "PREBOOKED"
+      "Promo Code Status": "INACTIVE" | "ACTIVE"
+      "Promo Code Type": "DOLLAR" | "PERCENT"
       "Question Type": "STANDARD" | "UNIQUE"
       "Vendor Exclusivity": "PUBLIC" | "APPLICATIONS"
     }

@@ -3,11 +3,6 @@ import { Tables } from "@/types/supabase";
 import { create } from "zustand";
 
 export enum TableView {
-  ALL_TABLES = "ALL_TABLES",
-  APPLICATION = "APPLICATION",
-}
-
-export enum StepValue {
   Table = 1,
   Application = 2,
   Complete = 3,
@@ -15,7 +10,6 @@ export enum StepValue {
 
 type VendorFlowStore = {
   currentView: TableView;
-  currentStep: StepValue;
   event: EventDisplayData;
   vendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
@@ -28,8 +22,7 @@ type VendorFlowStore = {
 };
 
 export const useVendorFlowStore = create<VendorFlowStore>((set) => ({
-  currentView: TableView.ALL_TABLES,
-  currentStep: StepValue.Table,
+  currentView: TableView.Table,
   event: {} as EventDisplayData,
   vendorInfo: {} as Tables<"application_vendor_information">,
   profile: null,

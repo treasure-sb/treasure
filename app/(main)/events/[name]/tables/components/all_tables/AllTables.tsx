@@ -9,7 +9,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { TicketIcon } from "lucide-react";
-import { User } from "@supabase/supabase-js";
 import { useVendorFlowStore } from "../../store";
 import TablesCounter from "./TablesCounter";
 import EventCard from "@/components/events/shared/EventCard";
@@ -42,15 +41,8 @@ const TableInfo = ({ type, price }: TicketInfoProps) => (
   </div>
 );
 
-export default function AllTables({
-  tables,
-  eventDisplay,
-  user,
-}: {
-  tables: Tables<"tables">[];
-  eventDisplay: EventDisplayData;
-  user: User | null;
-}) {
+export default function AllTables({ tables }: { tables: Tables<"tables">[] }) {
+  const { event } = useVendorFlowStore();
   const { vendorInfo } = useVendorFlowStore();
   const tableOptions = tables.map((table, index) => (
     <AccordionItem className="p-4" key={index} value={`item-${index}`}>
@@ -58,18 +50,14 @@ export default function AllTables({
         <TableInfo type={table.section_name} price={table.price} />
       </AccordionTrigger>
       <AccordionContent className="px-6 py-2">
-        <TablesCounter event={eventDisplay} table={table} user={user} />
+        <TablesCounter table={table} />
       </AccordionContent>
     </AccordionItem>
   ));
 
   return (
     <div className="mt-10">
-      <EventCard
-        event={eventDisplay}
-        clickable={false}
-        showLikeButton={false}
-      />
+      <EventCard event={event} clickable={false} showLikeButton={false} />
       <Accordion
         className="mt-10 mb-4 bg-foreground rounded-md"
         type="single"

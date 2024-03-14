@@ -3,19 +3,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
-import { User } from "@supabase/supabase-js";
-import { EventDisplayData } from "@/types/event";
 import CheckoutButton from "./CheckoutButton";
 
-export default function TablesCounter({
-  event,
-  table,
-  user,
-}: {
-  event: EventDisplayData;
-  table: Tables<"tables">;
-  user: User | null;
-}) {
+export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
   const [tableCount, setTableCount] = useState(1);
   const minTables = 1;
   const maxTables = 6;
@@ -53,12 +43,7 @@ export default function TablesCounter({
           +
         </Button>
       </div>
-      <CheckoutButton
-        event={event}
-        table={table}
-        user={user}
-        tableCount={tableCount}
-      />
+      <CheckoutButton table={table} tableCount={tableCount} />
     </div>
   );
 }

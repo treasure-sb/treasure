@@ -5,9 +5,11 @@ import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
+import { useVendorApplicationStore } from "../store";
 
 export default function Login() {
   const { setProfile } = useVendorFlowStore();
+  const { setVendorInfo } = useVendorApplicationStore();
 
   const onLoginComplete = async () => {
     const supabase = createClient();
@@ -28,6 +30,13 @@ export default function Login() {
 
     const profile: Tables<"profiles"> = profileData;
     setProfile(profile);
+    setVendorInfo({
+      phone: profile?.phone,
+      email: profile?.email,
+      firstName: profile?.first_name,
+      lastName: profile?.last_name,
+      businessName: profile?.business_name,
+    });
   };
 
   return (

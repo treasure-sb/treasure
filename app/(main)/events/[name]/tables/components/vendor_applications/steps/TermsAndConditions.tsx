@@ -10,12 +10,12 @@ export default function TermsAndConditions() {
   const { terms } = useVendorFlowStore();
 
   return (
-    <div className="h-full flex flex-col justify-between space-y-10">
-      <div className="space-y-4">
-        <h1 className="text-xl">Terms and Conditions</h1>
+    <div className="h-full space-y-10">
+      <div className="space-y-6">
+        <h2 className="text-xl">Terms and Conditions</h2>
         <ul className="list-disc list-outside ml-5 flex flex-col gap-3">
           {terms.map((term) => (
-            <li key={term.term} className="text-sm sm:text-base">
+            <li key={term.term} className="text-md sm:text-base">
               {term.term}
             </li>
           ))}
@@ -34,6 +34,7 @@ export default function TermsAndConditions() {
           </label>
         </div>
       </div>
+
       <div className="flex space-x-2">
         <Button
           onClick={() => setCurrentStep(currentStep - 1)}

@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { StepValue, TableView } from "../../store";
+import { TableView } from "../../store";
 import { useVendorFlowStore } from "../../store";
 import { useVendorApplicationStore } from "./store";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,7 @@ export default function BackToAllTables() {
   const handleLeaveApplication = () => {
     setOpenDialog(false);
     useVendorFlowStore.setState({
-      currentStep: StepValue.Table,
-      currentView: TableView.ALL_TABLES,
+      currentView: TableView.Table,
     });
     useVendorApplicationStore.getState().resetApplication();
   };
