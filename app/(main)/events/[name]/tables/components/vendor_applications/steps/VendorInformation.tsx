@@ -54,6 +54,7 @@ export default function VendorInformation() {
         ) : (
           <FloatingLabelInput
             label="Phone"
+            type="tel"
             value={vendorInfo.phone || ""}
             onChange={(e) =>
               setVendorInfo({ ...vendorInfo, phone: e.target.value })
@@ -65,6 +66,7 @@ export default function VendorInformation() {
         ) : (
           <FloatingLabelInput
             label="Email"
+            type="email"
             value={vendorInfo.email || ""}
             onChange={(e) =>
               setVendorInfo({ ...vendorInfo, email: e.target.value })
