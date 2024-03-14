@@ -45,7 +45,7 @@ export default function TablesFlow({
         businessName: profile?.business_name,
       });
     }
-  }, []);
+  }, [eventDisplay]);
 
   return (
     <main className="max-w-lg m-auto">
