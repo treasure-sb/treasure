@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
-import CheckoutButton from "./CheckoutButton";
+import ContinueButton from "./ContinueButton";
 
 export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
   const [tableCount, setTableCount] = useState(1);
@@ -43,7 +43,7 @@ export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
           +
         </Button>
       </div>
-      <CheckoutButton table={table} tableCount={tableCount} />
+      <ContinueButton table={table} tableCount={tableCount} />
     </div>
   );
 }
