@@ -126,6 +126,7 @@ export default function ReviewInformation() {
         <Button
           onClick={() => setCurrentStep(currentStep - 1)}
           className="w-full"
+          disabled={submitting}
           variant={"secondary"}
         >
           Back
@@ -133,10 +134,8 @@ export default function ReviewInformation() {
         <Button
           onClick={handleSubmit}
           variant={"tertiary"}
-          className={cn(
-            "w-full",
-            submitting && "bg-tertiary/40 pointer-events-none"
-          )}
+          className="w-full"
+          disabled={submitting}
         >
           {submitting ? "Submitting..." : "Submit"}
         </Button>

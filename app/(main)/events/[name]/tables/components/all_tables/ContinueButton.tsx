@@ -39,11 +39,15 @@ export default function ContinueButton({
 
   return (
     <Button
-      disabled={creatingCheckout}
+      disabled={creatingCheckout || event.vendor_exclusivity !== "APPLICATIONS"}
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6"
     >
-      Continue to Application
+      {event.vendor_exclusivity === "APPLICATIONS" ? (
+        <p>Continue to Application</p>
+      ) : (
+        <p>Not Accepting Applications</p>
+      )}
     </Button>
   );
 }

@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Raleway } from "next/font/google";
+import { Raleway, Work_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
@@ -9,6 +9,12 @@ import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["400", "600", "700", "900"],
+  style: "normal",
+});
+
+const worksans = Work_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
   style: "normal",
 });
 

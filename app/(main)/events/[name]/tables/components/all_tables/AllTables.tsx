@@ -41,8 +41,13 @@ const TableInfo = ({ type, price }: TicketInfoProps) => (
   </div>
 );
 
-export default function AllTables({ tables }: { tables: Tables<"tables">[] }) {
-  const { event } = useVendorFlowStore();
+export default function AllTables({
+  tables,
+  event,
+}: {
+  tables: Tables<"tables">[];
+  event: EventDisplayData;
+}) {
   const { vendorInfo } = useVendorFlowStore();
   const tableOptions = tables.map((table, index) => (
     <AccordionItem className="p-4" key={index} value={`item-${index}`}>

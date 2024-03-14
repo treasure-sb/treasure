@@ -9,7 +9,7 @@ export default function Location({ event }: { event: Tables<"events"> }) {
   )}`;
   return (
     <section>
-      <p className="font-semibold text-2xl">Location</p>
+      <p className="font-semibold text-xl mb-4">Location</p>
       <p>{capitalizeSentence(event.address)}</p>
       <Link target="_blank" href={googleMapsUrl}>
         <Button
