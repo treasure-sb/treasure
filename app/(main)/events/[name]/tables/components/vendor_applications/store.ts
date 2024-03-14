@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 
 type VendorApplicationStore = {

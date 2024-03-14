@@ -36,8 +36,8 @@ export default function VendorInformation() {
 
   return (
     <div className="h-full flex flex-col justify-between space-y-10">
-      <h2 className="text-xl">Vendor Information</h2>
-      <div className="space-y-8 h-full mt-8">
+      <div className="space-y-6 h-full">
+        <h2 className="text-xl">Vendor Information</h2>
         <FloatingLabelInput label="Phone" />
         <FloatingLabelInput label="Email" />
         <div className="flex space-x-4">

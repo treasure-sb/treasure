@@ -64,7 +64,7 @@ export default function AllTables({
   ));
 
   return (
-    <div className="mt-20">
+    <div className="mt-10">
       <EventCard
         event={eventDisplay}
         clickable={false}

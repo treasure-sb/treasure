@@ -1,13 +1,13 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useVendorFlowStore } from "../store";
-import { useVendorApplicationStore } from "./vendor_applications/store";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { User } from "@supabase/supabase-js";
 import { useEffect } from "react";
 import VendorApplication from "./vendor_applications/VendorApplication";
 import AllTables from "./all_tables/AllTables";
+import TableFlowProgress from "./TableFlowProgress";
 
 export default function TablesFlow({
   eventDisplay,
@@ -37,6 +37,7 @@ export default function TablesFlow({
 
   return (
     <main className="max-w-lg m-auto">
+      <TableFlowProgress />
       <AnimatePresence mode="wait">
         {currentView === "ALL_TABLES" && (
           <motion.div
