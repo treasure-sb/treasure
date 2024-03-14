@@ -65,7 +65,7 @@ export default function TableFlowProgress() {
     <motion.div
       initial={false}
       animate={{
-        opacity: currentView === TableView.Application ? 0.1 : 1,
+        opacity: currentView === TableView.Application ? 0.25 : 1,
       }}
       transition={{ duration: 0.5, type: "tween", ease: "easeInOut" }}
     >

@@ -33,7 +33,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={worksans.className}>
+    <html lang="en" className={raleway.className}>
       <body className="bg-background text-foreground overflow-x-hidden w-screen">
         <ReactQueryProvider>
           <ThemeProvider
