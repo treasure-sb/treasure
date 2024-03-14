@@ -28,11 +28,13 @@ export default function TablesFlow({
 
   useEffect(() => {
     useVendorFlowStore.setState({
+      currentView: TableView.Table,
       vendorInfo: vendorInfo,
       event: eventDisplay,
       terms,
       profile,
     });
+    useVendorApplicationStore.getState().resetApplication();
 
     if (profile) {
       setVendorInfo({
