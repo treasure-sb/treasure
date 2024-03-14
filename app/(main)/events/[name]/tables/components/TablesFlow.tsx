@@ -54,7 +54,7 @@ export default function TablesFlow({
             key="all-tables"
             exit={{ opacity: 0, y: 3, transition: { duration: 0.5 } }}
           >
-            <AllTables tables={tables} />
+            <AllTables tables={tables} event={eventDisplay} />
           </motion.div>
         )}
         {currentView === TableView.Application && (

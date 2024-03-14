@@ -3,8 +3,8 @@ import { Tables } from "@/types/supabase";
 export default function About({ event }: { event: Tables<"events"> }) {
   return (
     <section>
-      <p className="font-semibold text-2xl">About</p>
-      <p className="leading-8">{event.description}</p>
+      <p className="font-semibold text-xl mb-4">About</p>
+      <p className="leading-7">{event.description}</p>
     </section>
   );
 }
