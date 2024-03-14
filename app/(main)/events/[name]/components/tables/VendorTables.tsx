@@ -9,10 +9,6 @@ export default async function VendorTables({
   event: Tables<"events">;
 }) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await validateUser();
-
   const { data: tablesData } = await supabase
     .from("tables")
     .select("*")
@@ -22,7 +18,7 @@ export default async function VendorTables({
   return (
     <>
       {tablesData && tablesData.length > 0 && (
-        <SeeTables tables={tablesData} event={event} user={user} />
+        <SeeTables tables={tablesData} event={event} />
       )}
     </>
   );

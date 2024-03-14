@@ -1,34 +1,30 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import { useVendorApplicationStore } from "../store";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useTermsAndConditions } from "../query";
-import { Tables } from "@/types/supabase";
+import { useVendorFlowStore } from "../../../store";
 
-export default function TermsAndConditions({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
-  const { currentStep, termsChecked, setTermsChecked, setCurrentStep } =
+export default function TermsAndConditions() {
+  const { currentStep, termsAccepted, setTermsAccepted, setCurrentStep } =
     useVendorApplicationStore();
-  const terms = useTermsAndConditions(event);
+  const { terms } = useVendorFlowStore();
 
   return (
-    <>
-      <div className="space-y-4">
-        <h1 className="text-xl font-semibold">Terms and Conditions</h1>
+    <div className="h-full space-y-10">
+      <div className="space-y-6">
+        <h2 className="text-xl">Terms and Conditions</h2>
         <ul className="list-disc list-outside ml-5 flex flex-col gap-3">
-          {terms?.map((term) => (
-            <li key={term} className="text-sm sm:text-base">
-              {term}
+          {terms.map((term) => (
+            <li key={term.term} className="text-md sm:text-base">
+              {term.term}
             </li>
           ))}
         </ul>
         <div className="flex items-center space-x-2">
           <Checkbox
-            checked={termsChecked}
+            checked={termsAccepted}
             id="terms"
-            onClick={() => setTermsChecked(!termsChecked)}
+            onClick={() => setTermsAccepted(!termsAccepted)}
           />
           <label
             htmlFor="terms"
@@ -38,6 +34,7 @@ export default function TermsAndConditions({
           </label>
         </div>
       </div>
+
       <div className="flex space-x-2">
         <Button
           onClick={() => setCurrentStep(currentStep - 1)}
@@ -49,7 +46,7 @@ export default function TermsAndConditions({
         <Button
           onClick={() => setCurrentStep(currentStep + 1)}
           className={`${
-            termsChecked
+            termsAccepted
               ? "bg-primary cursor-pointer"
               : "bg-primary/40 pointer-events-none"
           } w-full`}
@@ -57,6 +54,6 @@ export default function TermsAndConditions({
           Continue
         </Button>
       </div>
-    </>
+    </div>
   );
 }

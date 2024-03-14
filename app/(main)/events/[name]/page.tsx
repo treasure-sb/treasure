@@ -1,14 +1,18 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventPage from "@/app/(main)/events/[id]/components/EventPage";
+import EventPage from "@/app/(main)/events/[name]/components/EventPage";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { name: string };
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("name, description")
-    .eq("cleaned_name", params.id)
+    .eq("cleaned_name", params.name)
     .single();
 
   if (eventError) {
@@ -24,12 +28,12 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { name: string } }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", params.id)
+    .eq("cleaned_name", params.name)
     .single();
 
   if (eventError) {

@@ -19,6 +19,16 @@ interface AdditionalInfo {
   lastName: string;
 }
 
+interface UpdateProfile {
+  first_name?: string | null;
+  last_name?: string | null;
+  business_name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  bio?: string | null;
+  avatar_url?: string | null;
+}
+
 const createProfile = async (createProfileData: CreateProfileData) => {
   const supabase = await createSupabaseServerClient();
   const { firstName, lastName, ...rest } = createProfileData;
@@ -37,6 +47,32 @@ const createProfile = async (createProfileData: CreateProfileData) => {
   return { profileData, error };
 };
 
+const updateProfile = async (
+  updateProfileData: UpdateProfile,
+  profileId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const definedUpdates = Object.entries(updateProfileData).reduce(
+    (acc: UpdateProfile, [key, value]) => {
+      if (value !== undefined) {
+        const keyType = key as keyof UpdateProfile;
+        acc[keyType] = value;
+      }
+      return acc;
+    },
+    {} as UpdateProfile
+  );
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .update(definedUpdates)
+    .eq("id", profileId)
+    .select();
+
+  return { data, error };
+};
+
+/* TODO: Fix to only use 1 function */
 const editProfile = async (values: any, profileId: string) => {
   const supabase = await createSupabaseServerClient();
   const { first_name, last_name, business_name, bio, avatar_url } = values;
@@ -53,6 +89,7 @@ const editProfile = async (values: any, profileId: string) => {
   }
 };
 
+/* TODO: Fix to only use 1 function */
 const addAdditionalInfo = async (
   additionalInfo: AdditionalInfo,
   profileId: string
@@ -71,6 +108,7 @@ const addAdditionalInfo = async (
   return { data, error };
 };
 
+/* TODO: Fix to only use 1 function */
 const updateProfileAvatar = async (avatar_url: string, user_id: string) => {
   const supabase = await createSupabaseServerClient();
   await supabase.from("profiles").update({ avatar_url }).eq("id", user_id);
@@ -96,6 +134,7 @@ const createTemporaryProfile = async (
 
 export {
   editProfile,
+  updateProfile,
   updateProfileAvatar,
   createTemporaryProfile,
   addAdditionalInfo,
