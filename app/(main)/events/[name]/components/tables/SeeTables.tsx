@@ -15,10 +15,10 @@ export default function SeeTables({
 
   return (
     <div className="bg-background border-[1px] w-full rounded-md h-20 items-center flex justify-between px-5 font-bold">
-      <p className="text-lg">Tickets from ${minimumTablePrice}</p>
+      <p className="text-lg">Tables from ${minimumTablePrice}</p>
       <Link href={`/events/${event.cleaned_name}/tables`}>
         <Button className="text-base border-primary" variant={"outline"}>
-          See Tickets
+          See Tables
         </Button>
       </Link>
     </div>

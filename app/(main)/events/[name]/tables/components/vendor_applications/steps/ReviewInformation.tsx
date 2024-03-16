@@ -1,13 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useVendorApplicationStore } from "../store";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { TableView, useVendorFlowStore } from "../../../store";
+import { useVendorFlow, TableView } from "../../../context/VendorFlowContext";
 import { submitVendorApplication } from "@/lib/actions/vendors/applications";
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
+import { useVendorApplication } from "../../../context/VendorApplicationContext";
 
 export interface VendorApplication {
   event_id: string;
@@ -44,9 +43,9 @@ export default function ReviewInformation() {
     currentStep,
     vendorsAtTable,
     vendorInfo,
-    setCurrentStep,
-  } = useVendorApplicationStore();
-  const { event, profile, setCurrentView } = useVendorFlowStore();
+    applicationDispatch,
+  } = useVendorApplication();
+  const { event, profile, flowDispatch } = useVendorFlow();
   const [submitting, setSubmitting] = useState(false);
 
   const submitApplication = async () => {
@@ -68,6 +67,10 @@ export default function ReviewInformation() {
       return false;
     }
     return true;
+  };
+
+  const handleContinue = () => {
+    applicationDispatch({ type: "setCurrentStep", payload: currentStep + 1 });
   };
 
   const updateUserProfile = async () => {
@@ -92,7 +95,7 @@ export default function ReviewInformation() {
     const applicationSuccess = await submitApplication();
     const profileSuccess = await updateUserProfile();
     if (applicationSuccess && profileSuccess) {
-      setCurrentView(TableView.Complete);
+      flowDispatch({ type: "setCurrentView", payload: TableView.Complete });
     }
   };
 
@@ -124,7 +127,7 @@ export default function ReviewInformation() {
       </div>
       <div className="flex space-x-2">
         <Button
-          onClick={() => setCurrentStep(currentStep - 1)}
+          onClick={handleContinue}
           className="w-full"
           disabled={submitting}
           variant={"secondary"}
