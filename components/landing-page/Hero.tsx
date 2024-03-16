@@ -43,6 +43,7 @@ export default function Hero() {
         alt="hero-image"
         src={"/static/hero/sports_best.jpg"}
       />
+      <div className="bg-[url('/static/hero/wave.svg')] w-full aspect-w-[960] md:aspect-h-[350] aspect-h-[540] bg-no-repeat bg-center bg-cover absolute bottom-0" />
     </section>
   );
 }
