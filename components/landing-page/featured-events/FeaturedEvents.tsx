@@ -13,7 +13,7 @@ export default async function FeaturedEvents() {
   ));
 
   return (
-    <section className="mt-[-30vh] mb-40">
+    <section className="my-20">
       <div className="flex space-x-4 items-center mb-6 max-w-6xl xl:w-[80rem] m-auto">
         <h1 className="font-semibold text-2xl">Trending</h1>
       </div>

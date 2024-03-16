@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Raleway, Work_Sans, Archivo } from "next/font/google";
+import { Raleway, Work_Sans, Archivo, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
@@ -18,7 +18,7 @@ const worksans = Work_Sans({
   style: "normal",
 });
 
-const archivo = Archivo({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
   style: "normal",
@@ -39,7 +39,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={worksans.className}>
+    <html lang="en" className={inter.className}>
       <body className="bg-background text-foreground overflow-x-hidden w-screen">
         <ReactQueryProvider>
           <ThemeProvider

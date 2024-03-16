@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -20,17 +21,28 @@ export default function Hero() {
   });
 
   return (
-    <section className="h-screen pt-10 md:pt-28 pb-[40vh] max-w-6xl m-auto flex items-end">
-      <div className="flex flex-col space-y-10">
+    <section className="h-screen relative mx-[-16px] flex items-end mt-[-100px] px-10">
+      <div className="flex flex-col space-y-4 md:space-y-12 max-w-2xl sm:max-w-6xl m-auto mb-[20vh] tracking-tight">
         <motion.p className="text-[2.4rem] font-extrabold text-left leading-[1.2] md:leading-[0.8] md:text-8xl md:max-w-6xl">
           {heading}
         </motion.p>
-        {/* <Link href="/events" className="mt-10 w-fit">
-          <MotionButton className="p-8 text-2xl font-semibold relative overflow-hidden hover:translate-x-4 hover:-translate-y-4 before:absolute before:inset-0 before:bg-white before:z-[-20] before:content-['']">
+        <Link href="/events" className="w-fit">
+          <Button className="w-40 md:w-60 md:h-16 md:text-xl">
             Browse Events
-          </MotionButton>
-        </Link> */}
+          </Button>
+        </Link>
       </div>
+      <Image
+        className="-z-50 absolute inset-0 opacity-30"
+        width={0}
+        height={0}
+        layout="fill"
+        objectFit="cover"
+        objectPosition="center"
+        quality={100}
+        alt="hero-image"
+        src={"/static/hero/newspaper.jpg"}
+      />
     </section>
   );
 }
