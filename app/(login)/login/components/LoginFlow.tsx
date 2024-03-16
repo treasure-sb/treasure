@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { signUpUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,13 +14,19 @@ export enum SubmitMethod {
   EMAIL = "email",
 }
 
+interface LoginFlowProps {
+  isDialog: boolean;
+  heading?: string;
+  subheading?: string;
+  action?: () => void;
+}
+
 export default function LoginFlow({
   isDialog,
-  closeDialog,
-}: {
-  isDialog: boolean;
-  closeDialog?: () => void;
-}) {
+  heading,
+  subheading,
+  action,
+}: LoginFlowProps) {
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -112,14 +118,14 @@ export default function LoginFlow({
           method={method}
           goBack={goBack}
           isDialog={isDialog}
-          closeDialog={closeDialog}
+          action={action}
         />
       ) : (
         <motion.div
           key="signupForm"
           exit={{ opacity: 0, y: 5 }}
           transition={{ duration: 0.5 }}
-          className="space-y-8 mt-10 w-full h-full flex-shrink-0"
+          className="space-y-8 mt-10 w-full flex-shrink-0"
         >
           <motion.div
             initial={{ opacity: 0, y: 5 }}
@@ -127,8 +133,10 @@ export default function LoginFlow({
             transition={{ duration: 0.6 }}
             className="space-y-2"
           >
-            <h1 className="text-xl font-semibold">Welcome to Treasure</h1>
-            <p className="text-lg">Sign up or login</p>
+            <h1 className="text-xl font-semibold">
+              {heading || "Welcome to Treasure"}
+            </h1>
+            {subheading && <p className="text-lg">{subheading}</p>}
           </motion.div>
           <motion.form
             initial={{ opacity: 0, y: 5 }}

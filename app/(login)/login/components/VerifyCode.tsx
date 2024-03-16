@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 import { filterPhoneNumber } from "@/lib/utils";
-import { MoveLeftIcon } from "lucide-react";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { SubmitMethod } from "./LoginFlow";
@@ -20,7 +19,7 @@ interface VerifyCodeProps {
   method: SubmitMethod;
   isDialog: boolean;
   goBack: () => void;
-  closeDialog?: () => void;
+  action?: () => void;
 }
 
 export default function VerifyCode({
@@ -30,7 +29,7 @@ export default function VerifyCode({
   method,
   isDialog,
   goBack,
-  closeDialog,
+  action,
 }: VerifyCodeProps) {
   const { replace } = useRouter();
   const [code, setCode] = useState("");
@@ -61,7 +60,9 @@ export default function VerifyCode({
   const verificationCheck = async (verfication: any) => {
     if (verfication.success) {
       toast.success("Code verified");
-      if (!isDialog) {
+      if (isDialog) {
+        action && (await action());
+      } else {
         verfication.profileExists ? replace("/") : setAdditionalInfo(true);
       }
     } else {
@@ -115,7 +116,7 @@ export default function VerifyCode({
             },
           }}
         >
-          <BackButton onClose={goBack} />
+          <BackButton onClick={goBack} />
           <div className="space-y-2">
             <h1 className="text-2xl text-left font-semibold">Enter code</h1>
             <p className="text-sm text-gray-400">

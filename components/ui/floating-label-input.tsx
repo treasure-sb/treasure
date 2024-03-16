@@ -45,7 +45,7 @@ const FloatingLabelInput = React.forwardRef<
   React.PropsWithoutRef<FloatingLabelInputProps>
 >(({ id, label, ...props }, ref) => {
   return (
-    <div className="relative hover:cursor-text">
+    <div className="relative hover:cursor-text w-full">
       <FloatingInput ref={ref} id={id} {...props} />
       <FloatingLabel htmlFor={id}>{label}</FloatingLabel>
     </div>
