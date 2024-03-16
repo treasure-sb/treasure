@@ -21,9 +21,9 @@ export default function Hero() {
   });
 
   return (
-    <section className="h-screen relative mx-[-16px] flex items-end mt-[-100px] px-4">
-      <div className="flex flex-col space-y-4 md:space-y-12 md:max-w-6xl xl:max-w-7xl m-auto mb-[20vh] tracking-tight">
-        <motion.p className="text-[2.4rem] font-extrabold text-left leading-[1.2] md:leading-[0.8] md:text-8xl md:max-w-6xl">
+    <section className="h-[100svh] relative mx-[-16px] flex items-center justify-center mt-[-100px] px-4">
+      <div className="flex flex-col items-center space-y-4 md:space-y-12 md:max-w-6xl xl:max-w-7xl m-auto tracking-tight">
+        <motion.p className="text-[2.4rem] font-extrabold text-center leading-[1.2] md:text-8xl md:max-w-6xl">
           {heading}
         </motion.p>
         <Link href="/events" className="w-fit">
