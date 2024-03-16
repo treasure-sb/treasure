@@ -1,14 +1,25 @@
 "use client";
-import { useVendorApplicationStore } from "../store";
+import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useVendorFlow } from "../../../context/VendorFlowContext";
 
 export default function TermsAndConditions() {
-  const { currentStep, termsAccepted, setTermsAccepted, setCurrentStep } =
-    useVendorApplicationStore();
-  const { state } = useVendorFlow();
-  const { terms } = state;
+  const { terms } = useVendorFlow();
+  const { currentStep, termsAccepted, applicationDispatch } =
+    useVendorApplication();
+
+  const handleTermsAccepted = () => {
+    applicationDispatch({ type: "setTermsAccepted", payload: !termsAccepted });
+  };
+
+  const handleContinue = () => {
+    applicationDispatch({ type: "setCurrentStep", payload: currentStep + 1 });
+  };
+
+  const handleBack = () => {
+    applicationDispatch({ type: "setCurrentStep", payload: currentStep - 1 });
+  };
 
   return (
     <div className="h-full space-y-10">
@@ -25,7 +36,7 @@ export default function TermsAndConditions() {
           <Checkbox
             checked={termsAccepted}
             id="terms"
-            onClick={() => setTermsAccepted(!termsAccepted)}
+            onClick={handleTermsAccepted}
           />
           <label
             htmlFor="terms"
@@ -37,15 +48,11 @@ export default function TermsAndConditions() {
       </div>
 
       <div className="flex space-x-2">
-        <Button
-          onClick={() => setCurrentStep(currentStep - 1)}
-          className="w-full"
-          variant={"secondary"}
-        >
+        <Button onClick={handleBack} className="w-full" variant={"secondary"}>
           Back
         </Button>
         <Button
-          onClick={() => setCurrentStep(currentStep + 1)}
+          onClick={handleContinue}
           className={`${
             termsAccepted
               ? "bg-primary cursor-pointer"

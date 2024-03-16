@@ -5,11 +5,11 @@ import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
-import { useVendorApplicationStore } from "../store";
+import { useVendorApplication } from "../../../context/VendorApplicationContext";
 
 export default function Login() {
-  const { dispatch } = useVendorFlow();
-  const { setVendorInfo } = useVendorApplicationStore();
+  const { flowDispatch } = useVendorFlow();
+  const { applicationDispatch } = useVendorApplication();
 
   const onLoginComplete = async () => {
     const supabase = createClient();
@@ -29,14 +29,15 @@ export default function Login() {
     }
 
     const profile: Tables<"profiles"> = profileData;
-    dispatch({ type: "setProfile", payload: profile });
-    setVendorInfo({
+    flowDispatch({ type: "setProfile", payload: profile });
+    const vendorInfo = {
       phone: profile?.phone,
       email: profile?.email,
       firstName: profile?.first_name,
       lastName: profile?.last_name,
       businessName: profile?.business_name,
-    });
+    };
+    applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
   };
 
   return (

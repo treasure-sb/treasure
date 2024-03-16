@@ -4,7 +4,7 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
 import { getProfile } from "@/lib/helpers/profiles";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import TablesFlow from "./components/TablesFlow";
+import TableFlowConsumer from "./components/TableFlowConsumer";
 
 export default async function Page({
   params,
@@ -57,7 +57,7 @@ export default async function Page({
   const terms: Tables<"application_terms_and_conditions">[] = termsData || [];
 
   return (
-    <TablesFlow
+    <TableFlowConsumer
       eventDisplay={eventDisplayData}
       tables={tables}
       vendorInfo={vendorInfo}

@@ -69,13 +69,13 @@ const reducer = (
 };
 
 type VendorApplicationContextType = {
-  state: VendorApplicationState;
-  dispatch: React.Dispatch<VendorApplicationActions>;
+  applicationState: VendorApplicationState;
+  applicationDispatch: React.Dispatch<VendorApplicationActions>;
 };
 
 const VendorApplicationContext = createContext<VendorApplicationContextType>({
-  state: initialState,
-  dispatch: () => null,
+  applicationState: initialState,
+  applicationDispatch: () => null,
 });
 
 export const VendorApplicationProvider = ({
@@ -85,15 +85,23 @@ export const VendorApplicationProvider = ({
   children: React.ReactNode;
   initialState: VendorApplicationState;
 }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [applicationState, applicationDispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   return (
-    <VendorApplicationContext.Provider value={{ state, dispatch }}>
+    <VendorApplicationContext.Provider
+      value={{ applicationState, applicationDispatch }}
+    >
       {children}
     </VendorApplicationContext.Provider>
   );
 };
 
 export const useVendorApplication = () => {
-  return useContext(VendorApplicationContext);
+  const { applicationState, applicationDispatch } = useContext(
+    VendorApplicationContext
+  );
+  return { ...applicationState, applicationDispatch };
 };

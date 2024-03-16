@@ -1,5 +1,4 @@
 "use client";
-import { useVendorApplicationStore } from "../store";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
@@ -12,8 +11,13 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useVendorFlow } from "../../../context/VendorFlowContext";
+import {
+  VendorInfo,
+  useVendorApplication,
+} from "../../../context/VendorApplicationContext";
 
 export default function VendorInformation() {
+  const { profile } = useVendorFlow();
   const {
     table,
     currentStep,
@@ -21,14 +25,35 @@ export default function VendorInformation() {
     comments,
     vendorsAtTable,
     tableQuantity,
-    setVendorsAtTable,
-    setComments,
-    setInventory,
-    setCurrentStep,
-  } = useVendorApplicationStore();
-  const { state } = useVendorFlow();
-  const { profile } = state;
-  const { vendorInfo, setVendorInfo } = useVendorApplicationStore();
+    vendorInfo,
+    applicationDispatch,
+  } = useVendorApplication();
+
+  const handleSetVendorsAtTable = (value: string) => {
+    applicationDispatch({
+      type: "setVendorsAtTable",
+      payload: parseInt(value),
+    });
+  };
+
+  const handleSetComments = (value: string) => {
+    applicationDispatch({ type: "setComments", payload: value });
+  };
+
+  const handleSetInventory = (value: string) => {
+    applicationDispatch({ type: "setInventory", payload: value });
+  };
+
+  const handleSetVendorInfo = (value: string, key: keyof VendorInfo) => {
+    applicationDispatch({
+      type: "setVendorInfo",
+      payload: { ...vendorInfo, [key]: value },
+    });
+  };
+
+  const handleContinue = () => {
+    applicationDispatch({ type: "setCurrentStep", payload: currentStep + 1 });
+  };
 
   const vendorsOptions = Array.from({
     length: table.number_vendors_allowed * tableQuantity,
@@ -57,9 +82,7 @@ export default function VendorInformation() {
             label="Phone"
             type="tel"
             value={vendorInfo.phone || ""}
-            onChange={(e) =>
-              setVendorInfo({ ...vendorInfo, phone: e.target.value })
-            }
+            onChange={(e) => handleSetVendorInfo(e.target.value, "phone")}
           />
         )}
         {profile?.email ? (
@@ -69,39 +92,31 @@ export default function VendorInformation() {
             label="Email"
             type="email"
             value={vendorInfo.email || ""}
-            onChange={(e) =>
-              setVendorInfo({ ...vendorInfo, email: e.target.value })
-            }
+            onChange={(e) => handleSetVendorInfo(e.target.value, "email")}
           />
         )}
         <div className="flex space-x-4">
           <FloatingLabelInput
             value={vendorInfo.firstName || ""}
-            onChange={(e) => {
-              setVendorInfo({ ...vendorInfo, firstName: e.target.value });
-            }}
+            onChange={(e) => handleSetVendorInfo(e.target.value, "firstName")}
             label="First Name"
           />
           <FloatingLabelInput
             value={vendorInfo.lastName || ""}
-            onChange={(e) => {
-              setVendorInfo({ ...vendorInfo, lastName: e.target.value });
-            }}
+            onChange={(e) => handleSetVendorInfo(e.target.value, "lastName")}
             label="Last Name"
           />
         </div>
         <FloatingLabelInput
           value={vendorInfo.businessName || ""}
-          onChange={(e) =>
-            setVendorInfo({ ...vendorInfo, businessName: e.target.value })
-          }
+          onChange={(e) => handleSetVendorInfo(e.target.value, "businessName")}
           label="Business Name (Optional)"
         />
         <div className="flex items-center justify-between">
           <p>Vendors at Table</p>
           <Select
             value={vendorsAtTable > 0 ? vendorsAtTable.toString() : undefined}
-            onValueChange={(value) => setVendorsAtTable(parseInt(value))}
+            onValueChange={(value) => handleSetVendorsAtTable(value)}
           >
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Select" />
@@ -111,17 +126,17 @@ export default function VendorInformation() {
         </div>
         <Textarea
           value={inventory}
-          onChange={(e) => setInventory(e.target.value)}
+          onChange={(e) => handleSetInventory(e.target.value)}
           placeholder="Tell us a little bit more about your inventory. (Required)"
         />
         <Textarea
           value={comments}
-          onChange={(e) => setComments(e.target.value)}
+          onChange={(e) => handleSetComments(e.target.value)}
           placeholder="Do you have any additional comments?"
         />
         <div className="flex space-x-2">
           <Button
-            onClick={() => setCurrentStep(currentStep + 1)}
+            onClick={handleContinue}
             className={cn(
               "w-full",
               canContinue

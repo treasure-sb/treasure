@@ -14,6 +14,7 @@ export type VendorFlowState = {
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   profile: Tables<"profiles"> | null;
+  tables: Tables<"tables">[];
 };
 
 const initialState: VendorFlowState = {
@@ -22,6 +23,7 @@ const initialState: VendorFlowState = {
   generalVendorInfo: {} as Tables<"application_vendor_information">,
   profile: null,
   terms: [],
+  tables: [],
 };
 
 type VendorFlowActions =
@@ -52,13 +54,13 @@ const reducer = (state: VendorFlowState, action: VendorFlowActions) => {
 };
 
 type VendorFlowContextType = {
-  state: VendorFlowState;
-  dispatch: React.Dispatch<VendorFlowActions>;
+  flowState: VendorFlowState;
+  flowDispatch: React.Dispatch<VendorFlowActions>;
 };
 
 const VendorFlowContext = createContext<VendorFlowContextType>({
-  state: initialState,
-  dispatch: () => null,
+  flowState: initialState,
+  flowDispatch: () => null,
 });
 
 export const VendorFlowProvider = ({
@@ -68,15 +70,16 @@ export const VendorFlowProvider = ({
   children: React.ReactNode;
   initialState: VendorFlowState;
 }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [flowState, flowDispatch] = useReducer(reducer, initialState);
 
   return (
-    <VendorFlowContext.Provider value={{ state, dispatch }}>
+    <VendorFlowContext.Provider value={{ flowState, flowDispatch }}>
       {children}
     </VendorFlowContext.Provider>
   );
 };
 
 export const useVendorFlow = () => {
-  return useContext(VendorFlowContext);
+  const { flowState, flowDispatch } = useContext(VendorFlowContext);
+  return { ...flowState, flowDispatch };
 };

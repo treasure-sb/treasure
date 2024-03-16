@@ -3,8 +3,7 @@ import { useVendorFlow } from "../../../context/VendorFlowContext";
 import Link from "next/link";
 
 export default function Complete() {
-  const { state } = useVendorFlow();
-  const { event } = state;
+  const { event } = useVendorFlow();
 
   return (
     <div className="h-full mt-10 space-y-10">

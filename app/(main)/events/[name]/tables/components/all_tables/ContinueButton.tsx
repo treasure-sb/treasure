@@ -12,10 +12,9 @@ export default function ContinueButton({
   table: Tables<"tables">;
   tableCount: number;
 }) {
-  const { state, dispatch } = useVendorFlow();
-  const { profile, event } = state;
+  const { profile, event, flowDispatch } = useVendorFlow();
+  const { applicationDispatch } = useVendorApplication();
 
-  const { dispatch: applicationDispatch } = useVendorApplication();
   const [creatingCheckout, setCreatingCheckout] = useState(false);
 
   const autofillVendorInfo = () => {
@@ -34,7 +33,7 @@ export default function ContinueButton({
       applicationDispatch({ type: "setTable", payload: table });
       applicationDispatch({ type: "setTableQuantity", payload: tableCount });
       autofillVendorInfo();
-      dispatch({ type: "setCurrentView", payload: TableView.Application });
+      flowDispatch({ type: "setCurrentView", payload: TableView.Application });
     }
   };
 

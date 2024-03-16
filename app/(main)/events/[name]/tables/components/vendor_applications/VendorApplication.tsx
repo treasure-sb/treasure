@@ -1,5 +1,4 @@
 "use client";
-import { useVendorApplicationStore } from "./store";
 import { useVendorFlow } from "../../context/VendorFlowContext";
 import Login from "./steps/Login";
 import VendorInformation from "./steps/VendorInformation";
@@ -10,11 +9,8 @@ import VendorAppProgress from "./VendorAppProgress";
 import { useVendorApplication } from "../../context/VendorApplicationContext";
 
 export default function VendorApplication() {
-  const { state: flowState } = useVendorFlow();
-  const { profile } = flowState;
-
-  const { state: applicationState } = useVendorApplication();
-  const { currentStep } = applicationState;
+  const { profile } = useVendorFlow();
+  const { currentStep } = useVendorApplication();
 
   return (
     <div className="h-[calc(100vh-300px)]">
