@@ -33,7 +33,7 @@ export default function Hero() {
         </Link>
       </div>
       <Image
-        className="-z-50 absolute inset-0 opacity-60"
+        className="-z-50 absolute inset-0 opacity-100"
         width={0}
         height={0}
         layout="fill"
@@ -41,7 +41,7 @@ export default function Hero() {
         objectPosition="center"
         quality={100}
         alt="hero-image"
-        src={"/static/hero/anime.jpg"}
+        src={"/static/hero/sports_best.jpg"}
       />
     </section>
   );
