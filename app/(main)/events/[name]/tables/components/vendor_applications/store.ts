@@ -43,19 +43,16 @@ const initialState = {
 export const useVendorApplicationStore = create<VendorApplicationStore>(
   (set) => ({
     ...initialState,
-    setTable: (table) => set((state) => ({ ...state, table })),
-    setTableQuantity: (tableQuantity) =>
-      set((state) => ({ ...state, tableQuantity })),
-    setVendorsAtTable: (vendorsAtTable) =>
-      set((state) => ({ ...state, vendorsAtTable })),
-    setCurrentStep: (step) => set((state) => ({ ...state, currentStep: step })),
-    setInventory: (inventory) => set((state) => ({ ...state, inventory })),
-    setComments: (comments) => set((state) => ({ ...state, comments })),
-    setTermsAccepted: (termsAccepted) =>
-      set((state) => ({ ...state, termsAccepted })),
+    setTable: (table) => set(() => ({ table })),
+    setTableQuantity: (tableQuantity) => set(() => ({ tableQuantity })),
+    setVendorsAtTable: (vendorsAtTable) => set(() => ({ vendorsAtTable })),
+    setCurrentStep: (step) => set(() => ({ currentStep: step })),
+    setInventory: (inventory) => set(() => ({ inventory })),
+    setComments: (comments) => set(() => ({ comments })),
+    setTermsAccepted: (termsAccepted) => set(() => ({ termsAccepted })),
     resetApplication: () => {
       set(() => ({ ...initialState }));
     },
-    setVendorInfo: (vendorInfo) => set((state) => ({ ...state, vendorInfo })),
+    setVendorInfo: (vendorInfo) => set(() => ({ vendorInfo })),
   })
 );

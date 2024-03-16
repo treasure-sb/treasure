@@ -1,14 +1,22 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { TableView, useVendorFlowStore } from "../store";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { useEffect } from "react";
+import {
+  TableView,
+  VendorFlowProvider,
+  VendorFlowState,
+  useVendorFlow,
+} from "../context/VendorFlowContext";
+import {
+  VendorApplicationProvider,
+  VendorApplicationState,
+  type VendorInfo,
+} from "../context/VendorApplicationContext";
+import TableFlowProgress from "./TableFlowProgress";
+import Complete from "./vendor_applications/steps/Complete";
 import VendorApplication from "./vendor_applications/VendorApplication";
 import AllTables from "./all_tables/AllTables";
-import TableFlowProgress from "./TableFlowProgress";
-import { useVendorApplicationStore } from "./vendor_applications/store";
-import Complete from "./vendor_applications/steps/Complete";
 
 export default function TablesFlow({
   eventDisplay,
@@ -23,57 +31,72 @@ export default function TablesFlow({
   terms: Tables<"application_terms_and_conditions">[];
   profile: Tables<"profiles"> | null;
 }) {
-  const { currentView } = useVendorFlowStore();
-  const { setVendorInfo } = useVendorApplicationStore();
+  const { state: flowState } = useVendorFlow();
+  const { currentView } = flowState;
 
-  useEffect(() => {
-    useVendorFlowStore.setState({
-      currentView: TableView.Table,
-      vendorInfo: vendorInfo,
-      event: eventDisplay,
-      terms,
-      profile,
-    });
-    useVendorApplicationStore.getState().resetApplication();
+  const initialVendorFlowState: VendorFlowState = {
+    currentView: TableView.Table,
+    event: eventDisplay,
+    generalVendorInfo: vendorInfo,
+    terms,
+    profile,
+  };
 
-    if (profile) {
-      setVendorInfo({
-        phone: profile?.phone,
-        email: profile?.email,
-        firstName: profile?.first_name,
-        lastName: profile?.last_name,
-        businessName: profile?.business_name,
-      });
-    }
-  }, [eventDisplay]);
+  let initVendorInfo;
+  if (profile) {
+    initVendorInfo = {
+      phone: profile?.phone,
+      email: profile?.email,
+      firstName: profile?.first_name,
+      lastName: profile?.last_name,
+      businessName: profile?.business_name,
+    };
+  } else {
+    initVendorInfo = {} as VendorInfo;
+  }
+
+  const initalVendorApplicationState: VendorApplicationState = {
+    currentStep: 1,
+    vendorInfo: initVendorInfo,
+    table: {} as Tables<"tables">,
+    inventory: "",
+    comments: "",
+    tableQuantity: 0,
+    vendorsAtTable: 0,
+    termsAccepted: false,
+  };
 
   return (
     <main className="max-w-lg m-auto">
-      <TableFlowProgress />
-      <AnimatePresence mode="wait">
-        {currentView === TableView.Table && (
-          <motion.div
-            key="all-tables"
-            exit={{ opacity: 0, y: 3, transition: { duration: 0.5 } }}
-          >
-            <AllTables tables={tables} event={eventDisplay} />
-          </motion.div>
-        )}
-        {currentView === TableView.Application && (
-          <motion.div
-            key="vendor-application"
-            initial={{ opacity: 0, y: 3 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.5 },
-            }}
-          >
-            <VendorApplication />
-          </motion.div>
-        )}
-        {currentView === TableView.Complete && <Complete />}
-      </AnimatePresence>
+      <VendorFlowProvider initialState={initialVendorFlowState}>
+        <VendorApplicationProvider initialState={initalVendorApplicationState}>
+          <TableFlowProgress />
+          <AnimatePresence mode="wait" key={currentView}>
+            {currentView === TableView.Table && (
+              <motion.div
+                key="all-tables"
+                exit={{ opacity: 0, y: 3, transition: { duration: 0.5 } }}
+              >
+                <AllTables tables={tables} event={eventDisplay} />
+              </motion.div>
+            )}
+            {currentView === TableView.Application && (
+              <motion.div
+                key="vendor-application"
+                initial={{ opacity: 0, y: 3 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.5 },
+                }}
+              >
+                <VendorApplication />
+              </motion.div>
+            )}
+            {currentView === TableView.Complete && <Complete />}
+          </AnimatePresence>
+        </VendorApplicationProvider>
+      </VendorFlowProvider>
     </main>
   );
 }

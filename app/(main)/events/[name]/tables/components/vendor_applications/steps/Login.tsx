@@ -1,6 +1,6 @@
 "use client";
 import LoginFlow from "@/app/(login)/login/components/LoginFlow";
-import { useVendorFlowStore } from "../../../store";
+import { useVendorFlow } from "../../../context/VendorFlowContext";
 import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { validateUser } from "@/lib/actions/auth";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useVendorApplicationStore } from "../store";
 
 export default function Login() {
-  const { setProfile } = useVendorFlowStore();
+  const { dispatch } = useVendorFlow();
   const { setVendorInfo } = useVendorApplicationStore();
 
   const onLoginComplete = async () => {
@@ -29,7 +29,7 @@ export default function Login() {
     }
 
     const profile: Tables<"profiles"> = profileData;
-    setProfile(profile);
+    dispatch({ type: "setProfile", payload: profile });
     setVendorInfo({
       phone: profile?.phone,
       email: profile?.email,

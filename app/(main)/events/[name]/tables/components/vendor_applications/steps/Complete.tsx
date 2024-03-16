@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { useVendorFlowStore } from "../../../store";
+import { useVendorFlow } from "../../../context/VendorFlowContext";
 import Link from "next/link";
 
 export default function Complete() {
-  const { event } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { event } = state;
 
   return (
     <div className="h-full mt-10 space-y-10">

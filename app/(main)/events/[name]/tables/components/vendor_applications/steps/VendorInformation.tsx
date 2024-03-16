@@ -1,6 +1,5 @@
 "use client";
 import { useVendorApplicationStore } from "../store";
-import { useVendorFlowStore } from "../../../store";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
@@ -12,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useVendorFlow } from "../../../context/VendorFlowContext";
 
 export default function VendorInformation() {
   const {
@@ -26,7 +26,8 @@ export default function VendorInformation() {
     setInventory,
     setCurrentStep,
   } = useVendorApplicationStore();
-  const { profile } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { profile } = state;
   const { vendorInfo, setVendorInfo } = useVendorApplicationStore();
 
   const vendorsOptions = Array.from({

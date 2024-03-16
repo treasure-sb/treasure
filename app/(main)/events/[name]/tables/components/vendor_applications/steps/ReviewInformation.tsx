@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useVendorApplicationStore } from "../store";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { TableView, useVendorFlowStore } from "../../../store";
+import { TableView } from "../../../store";
+import { useVendorFlow } from "../../../context/VendorFlowContext";
 import { submitVendorApplication } from "@/lib/actions/vendors/applications";
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
@@ -46,7 +46,8 @@ export default function ReviewInformation() {
     vendorInfo,
     setCurrentStep,
   } = useVendorApplicationStore();
-  const { event, profile, setCurrentView } = useVendorFlowStore();
+  const { state, dispatch } = useVendorFlow();
+  const { event, profile } = state;
   const [submitting, setSubmitting] = useState(false);
 
   const submitApplication = async () => {
@@ -92,7 +93,7 @@ export default function ReviewInformation() {
     const applicationSuccess = await submitApplication();
     const profileSuccess = await updateUserProfile();
     if (applicationSuccess && profileSuccess) {
-      setCurrentView(TableView.Complete);
+      dispatch({ type: "setCurrentView", payload: TableView.Complete });
     }
   };
 

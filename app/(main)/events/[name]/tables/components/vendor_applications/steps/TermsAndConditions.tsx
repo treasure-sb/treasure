@@ -2,12 +2,13 @@
 import { useVendorApplicationStore } from "../store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useVendorFlowStore } from "../../../store";
+import { useVendorFlow } from "../../../context/VendorFlowContext";
 
 export default function TermsAndConditions() {
   const { currentStep, termsAccepted, setTermsAccepted, setCurrentStep } =
     useVendorApplicationStore();
-  const { terms } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { terms } = state;
 
   return (
     <div className="h-full space-y-10">

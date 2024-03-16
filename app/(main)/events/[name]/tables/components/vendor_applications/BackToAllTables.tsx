@@ -8,19 +8,18 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { TableView } from "../../store";
-import { useVendorFlowStore } from "../../store";
+import { useVendorFlow } from "../../context/VendorFlowContext";
 import { useVendorApplicationStore } from "./store";
 import { Button } from "@/components/ui/button";
 import BackButton from "@/components/ui/custom/back-button";
 
 export default function BackToAllTables() {
   const [openDialog, setOpenDialog] = useState(false);
+  const { dispatch } = useVendorFlow();
 
   const handleLeaveApplication = () => {
     setOpenDialog(false);
-    useVendorFlowStore.setState({
-      currentView: TableView.Table,
-    });
+    dispatch({ type: "setCurrentView", payload: TableView.Table });
     useVendorApplicationStore.getState().resetApplication();
   };
 

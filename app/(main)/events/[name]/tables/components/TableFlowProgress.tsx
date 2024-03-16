@@ -1,10 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
-import { TableView, useVendorFlowStore } from "../store";
+import { TableView } from "../store";
 import { ArrowRight } from "lucide-react";
+import { useVendorFlow } from "../context/VendorFlowContext";
 
 const Step = ({ step }: { step: TableView }) => {
-  const { currentView } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { currentView } = state;
+
   let status =
     currentView === step
       ? "active"
@@ -59,7 +62,8 @@ const CheckMark = () => {
 };
 
 export default function TableFlowProgress() {
-  const { currentView } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { currentView } = state;
 
   const AnimateOpacity = ({ children }: { children: React.ReactNode }) => (
     <motion.div

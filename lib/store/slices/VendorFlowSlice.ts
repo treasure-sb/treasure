@@ -1,6 +1,6 @@
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { create } from "zustand";
+import { StateCreator } from "zustand";
 
 export enum TableView {
   Table = 1,
@@ -8,23 +8,35 @@ export enum TableView {
   Complete = 3,
 }
 
-type VendorFlowStore = {
+type VendorFlowState = {
   currentView: TableView;
   event: EventDisplayData;
-  vendorInfo: Tables<"application_vendor_information">;
+  generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   profile: Tables<"profiles"> | null;
+};
+
+type VendorFlowActions = {
   setCurrentView: (view: TableView) => void;
-  setVendorInfo: (vendorInfo: Tables<"application_vendor_information">) => void;
+  setGeneralVendorInfo: (
+    generalVendorInfo: Tables<"application_vendor_information">
+  ) => void;
   setProfile: (profile: Tables<"profiles">) => void;
   setTerms: (terms: Tables<"application_terms_and_conditions">[]) => void;
   setEvent: (event: EventDisplayData) => void;
 };
 
-export const useVendorFlowStore = create<VendorFlowStore>((set) => ({
+export type VendorFlowSlice = VendorFlowState & VendorFlowActions;
+
+export const createVendorFlowSlice: StateCreator<
+  VendorFlowSlice,
+  [],
+  [],
+  VendorFlowSlice
+> = (set) => ({
   currentView: TableView.Table,
   event: {} as EventDisplayData,
-  vendorInfo: {} as Tables<"application_vendor_information">,
+  generalVendorInfo: {} as Tables<"application_vendor_information">,
   profile: null,
   terms: [],
   setCurrentView: (view: TableView) => {
@@ -32,9 +44,11 @@ export const useVendorFlowStore = create<VendorFlowStore>((set) => ({
       currentView: view,
     }));
   },
-  setVendorInfo: (vendorInfo: Tables<"application_vendor_information">) => {
+  setGeneralVendorInfo: (
+    generalVendorInfo: Tables<"application_vendor_information">
+  ) => {
     set(() => ({
-      vendorInfo,
+      generalVendorInfo,
     }));
   },
   setProfile: (profile: Tables<"profiles">) => {
@@ -52,4 +66,4 @@ export const useVendorFlowStore = create<VendorFlowStore>((set) => ({
       event,
     }));
   },
-}));
+});

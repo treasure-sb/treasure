@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { TicketIcon } from "lucide-react";
-import { useVendorFlowStore } from "../../store";
+import { useVendorFlow } from "../../context/VendorFlowContext";
 import TablesCounter from "./TablesCounter";
 import EventCard from "@/components/events/shared/EventCard";
 
@@ -48,7 +48,9 @@ export default function AllTables({
   tables: Tables<"tables">[];
   event: EventDisplayData;
 }) {
-  const { vendorInfo } = useVendorFlowStore();
+  const { state } = useVendorFlow();
+  const { generalVendorInfo } = state;
+
   const tableOptions = tables.map((table, index) => (
     <AccordionItem className="p-4" key={index} value={`item-${index}`}>
       <AccordionTrigger className="decoration-background text-background">
@@ -77,16 +79,16 @@ export default function AllTables({
         </h5>
         <div className="space-y-1">
           <LabeledText label="Location">
-            {vendorInfo?.check_in_location}
+            {generalVendorInfo?.check_in_location}
           </LabeledText>
           <LabeledText label="Check In Time">
-            {convertToStandardTime(vendorInfo?.check_in_time)}
+            {convertToStandardTime(generalVendorInfo?.check_in_time)}
           </LabeledText>
           <LabeledText label="Wifi Availability">
-            {vendorInfo?.wifi_availability ? "Yes" : "No"}
+            {generalVendorInfo?.wifi_availability ? "Yes" : "No"}
           </LabeledText>
           <LabeledText label="Additional Information">
-            {vendorInfo?.additional_information || "None"}
+            {generalVendorInfo?.additional_information || "None"}
           </LabeledText>
         </div>
       </div>
