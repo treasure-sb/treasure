@@ -15,15 +15,23 @@ export default function Page() {
     <main>
       <Hero />
       <FeaturedEvents />
-      <div className="max-w-6xl xl:max-w-7xl m-auto">
-        {/* <PreviewMore />
+      <div className="w-full py-6 lg:-mb-80">
+        <div className="max-w-6xl xl:max-w-7xl m-auto">
+          {/* <PreviewMore />
         <CreateEvents />
         <Quote />
         <BookVendorTables />
         <Order />
         <Reminders /> */}
-        <Features />
+          <h1 className="text-2xl md:text-4xl tracking-wide font-semibold mt-8 mb-12 text-center flex justify-center gap-2">
+            <p>
+              Making conventions <span className="text-primary">easy.</span>
+            </p>
+          </h1>
+          <Features />
+        </div>
       </div>
+
       <FAQ />
       <Footer />
     </main>

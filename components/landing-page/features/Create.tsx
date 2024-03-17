@@ -5,7 +5,7 @@ import CardFilp from "../../ui/custom/card-flip";
 
 export default function Create() {
   return (
-    <div className="w-full h-[600px]">
+    <div className="w-full h-[500px]">
       <CardFilp>
         <ColoredCard color="bg-red-500">
           <h2 className="text-3xl">Create Beautiful Events in Seconds</h2>

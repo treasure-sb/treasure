@@ -5,7 +5,7 @@ import CardFilp from "../../ui/custom/card-flip";
 
 export default function Create() {
   return (
-    <div className="lg:col-span-3 w-full h-[600px]">
+    <div className="lg:col-span-1 w-full h-[500px]">
       <CardFilp>
         <div className="lg:col-span-3 h-full">
           <ColoredCard color="bg-tertiary">

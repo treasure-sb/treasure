@@ -5,7 +5,7 @@ import CardFilp from "../../ui/custom/card-flip";
 
 export default function Preview() {
   return (
-    <div className="[perspective:800px] w-full h-[600px]">
+    <div className="[perspective:800px] w-full h-[500px]">
       <CardFilp>
         <ColoredCard color="bg-primary">
           <h2 className="text-3xl">
