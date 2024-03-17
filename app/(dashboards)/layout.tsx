@@ -1,7 +1,6 @@
 "use client";
 
 import MobileHeader from "./components/mobile/MobileHeader";
-import DesktopHeader from "./components/desktop/DesktopHeader";
 import Sidebar from "./components/desktop/sidebar/Sidebar";
 import { usePathname } from "next/navigation";
 
@@ -19,7 +18,6 @@ export default function VendorDashboardLayout({
       <div className="p-4 md:p-0 md:flex md:min-h-screen relative">
         <Sidebar type={isVendor ? "vendor" : "host"} />
         <main className="mt-6 md:mt-4 md:px-8 md:py-4 max-h-[calc(100vh-1rem)] md:overflow-scroll scrollbar-hidden flex-grow">
-          <DesktopHeader />
           {children}
         </main>
       </div>

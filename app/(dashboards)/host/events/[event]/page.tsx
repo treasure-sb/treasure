@@ -37,11 +37,11 @@ export default function Page({
         <h1 className="font-semibold text-3xl">Sales</h1>
       </Link>
       <Link
-        href={`/profile/events/organizer/${event}/edit-event`}
+        href={`/host/events/${event}/edit`}
         className="bg-secondary col-span-2 rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
-        <h1 className="font-semibold text-3xl">Edit Event</h1>
+        <h1 className="font-semibold text-3xl">Event Info</h1>
       </Link>
     </motion.div>
   );

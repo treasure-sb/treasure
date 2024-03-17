@@ -336,8 +336,6 @@ export type Database = {
       }
       event_vendors: {
         Row: {
-          application_email: string | null
-          application_phone: string | null
           application_status: Database["public"]["Enums"]["Application Status"]
           comments: string | null
           event_id: string
@@ -349,8 +347,6 @@ export type Database = {
           vendors_at_table: number
         }
         Insert: {
-          application_email?: string | null
-          application_phone?: string | null
           application_status?: Database["public"]["Enums"]["Application Status"]
           comments?: string | null
           event_id: string
@@ -362,8 +358,6 @@ export type Database = {
           vendors_at_table: number
         }
         Update: {
-          application_email?: string | null
-          application_phone?: string | null
           application_status?: Database["public"]["Enums"]["Application Status"]
           comments?: string | null
           event_id?: string
