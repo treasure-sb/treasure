@@ -13,9 +13,9 @@ export default function LoginFlowDialog({
         onOpenAutoFocus={(e) => {
           e.preventDefault();
         }}
-        className="w-80 md:w-96 h-[22rem] pt-10 flex items-center"
+        className="w-80 md:w-96 h-[22rem] flex items-center"
       >
-        <LoginFlow isDialog={true} />
+        <LoginFlow isDialog={true} subheading="Sig up or Login" />
       </DialogContent>
     </Dialog>
   );

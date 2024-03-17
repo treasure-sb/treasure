@@ -33,21 +33,19 @@ export default function SeeTickets({
           />
         )}
       </AnimatePresence>
-      <div className="bg-background border-[1px] w-full rounded-md">
-        <div className="h-20 items-center flex justify-between px-5 font-bold">
-          <p className="text-lg">
-            {isTicketFree
-              ? "Tickets are Free!"
-              : `Tickets from $${minimumTicketPrice}`}
-          </p>
-          <Button
-            onClick={() => setSeeTicketsOverlay(true)}
-            className="text-base border-primary"
-            variant={"outline"}
-          >
-            See Tickets
-          </Button>
-        </div>
+      <div className="bg-background border-[1px] w-full rounded-md h-20 items-center flex justify-between px-5 font-bold">
+        <p className="text-lg">
+          {isTicketFree
+            ? "Tickets are Free!"
+            : `Tickets from $${minimumTicketPrice}`}
+        </p>
+        <Button
+          onClick={() => setSeeTicketsOverlay(true)}
+          className="text-base border-primary"
+          variant={"outline"}
+        >
+          See Tickets
+        </Button>
       </div>
     </div>
   );
