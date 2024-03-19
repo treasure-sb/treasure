@@ -44,7 +44,7 @@ export default function SeeTickets({
           className="text-base border-primary"
           variant={"outline"}
         >
-          See Tickets
+          Buy Now
         </Button>
       </div>
     </div>

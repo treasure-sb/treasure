@@ -44,7 +44,7 @@ export default function ContinueButton({
       className="w-full rounded-full p-6"
     >
       {event.vendor_exclusivity === "APPLICATIONS" ? (
-        <p>Continue to Application</p>
+        <p>Continue to Registration</p>
       ) : (
         <p>Not Accepting Applications</p>
       )}

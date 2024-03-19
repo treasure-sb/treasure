@@ -18,7 +18,7 @@ export default function SeeTables({
       <p className="text-lg">Tables from ${minimumTablePrice}</p>
       <Link href={`/events/${event.cleaned_name}/tables`}>
         <Button className="text-base border-primary" variant={"outline"}>
-          See Tables
+          Register Now
         </Button>
       </Link>
     </div>
