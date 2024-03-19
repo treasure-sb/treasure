@@ -130,9 +130,9 @@ export default function EditProfileForm({
 
   return (
     <main className="m-auto max-w-lg">
-      {profile.avatar_url ? (
+      {profile.avatar_url && (
         <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
-      ) : null}
+      )}
       <div className="flex flex-col space-y-6 ">
         <Form {...form}>
           <form
