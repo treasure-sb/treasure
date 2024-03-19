@@ -8,7 +8,7 @@ export default function FeaturedEventCarousel({
 }) {
   return (
     <div className="mx-[-16px]">
-      <InfiniteMovingCards events={featuredEvents} speed="slow" />
+      <InfiniteMovingCards events={featuredEvents} speed="normal" />
     </div>
   );
 }
