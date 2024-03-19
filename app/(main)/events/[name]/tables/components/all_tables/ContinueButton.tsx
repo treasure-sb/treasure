@@ -1,9 +1,9 @@
 "use client";
 import { Tables } from "@/types/supabase";
-import { useVendorApplicationStore } from "../vendor_applications/store";
-import { useVendorFlowStore, TableView } from "../../store";
+import { useVendorApplication } from "../../context/VendorApplicationContext";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { TableView, useVendorFlow } from "../../context/VendorFlowContext";
 
 export default function ContinueButton({
   table,
@@ -12,28 +12,28 @@ export default function ContinueButton({
   table: Tables<"tables">;
   tableCount: number;
 }) {
-  const { event, profile, setCurrentView } = useVendorFlowStore();
-  const { setVendorInfo } = useVendorApplicationStore();
+  const { profile, event, flowDispatch } = useVendorFlow();
+  const { applicationDispatch } = useVendorApplication();
+
   const [creatingCheckout, setCreatingCheckout] = useState(false);
 
   const autofillVendorInfo = () => {
-    setVendorInfo({
+    const vendorInfo = {
       phone: profile?.phone || "",
       email: profile?.email || "",
       businessName: profile?.business_name || "",
       firstName: profile?.first_name || "",
       lastName: profile?.last_name || "",
-    });
+    };
+    applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
   };
 
   const handleCheckout = async () => {
     if (event.vendor_exclusivity === "APPLICATIONS") {
-      useVendorApplicationStore.setState({
-        tableQuantity: tableCount,
-        table,
-      });
+      applicationDispatch({ type: "setTable", payload: table });
+      applicationDispatch({ type: "setTableQuantity", payload: tableCount });
       autofillVendorInfo();
-      setCurrentView(TableView.Application);
+      flowDispatch({ type: "setCurrentView", payload: TableView.Application });
     }
   };
 

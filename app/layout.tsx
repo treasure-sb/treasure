@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Raleway, Work_Sans, Archivo, Inter } from "next/font/google";
+import { Raleway, Work_Sans, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";

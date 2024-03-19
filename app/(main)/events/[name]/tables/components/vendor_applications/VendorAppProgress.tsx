@@ -1,9 +1,9 @@
 "use client";
-import { useVendorApplicationStore } from "./store";
+import { useVendorApplication } from "../../context/VendorApplicationContext";
 import { cn } from "@/lib/utils";
 
 export default function VendorAppProgress() {
-  const { currentStep } = useVendorApplicationStore();
+  const { currentStep } = useVendorApplication();
 
   const steps = Array.from({ length: 3 }, (_, i) => {
     return (

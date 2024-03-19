@@ -6,6 +6,8 @@ import { MoveLeftIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import EventPoster from "@/components/events/shared/EventPoster";
 import Link from "next/link";
+import { formatDate } from "@/lib/helpers/events";
+import { useEffect, useState } from "react";
 
 export default function EventToolsHeader({
   event,
@@ -16,7 +18,14 @@ export default function EventToolsHeader({
   const isEventTool =
     pathname.includes("vendors") ||
     pathname.includes("message") ||
-    pathname.includes("sales");
+    pathname.includes("sales") ||
+    pathname.includes("edit");
+
+  const [formattedDate, setFormattedDate] = useState("");
+
+  useEffect(() => {
+    setFormattedDate(formatDate(event.date));
+  }, []);
 
   return (
     <motion.div
@@ -41,10 +50,13 @@ export default function EventToolsHeader({
           <p className="md:text-lg">All Events</p>
         </Link>
       )}
-      <div className="flex gap-4 items-start justify-between">
-        <h1 className="my-2 text-3xl font-semibold">{event.name}</h1>
+      <div className="flex gap-4 items-center">
         <div className="w-32">
           <EventPoster posterUrl={event.publicPosterUrl} />
+        </div>
+        <div>
+          <h1 className="text-3xl font-semibold">{event.name}</h1>
+          {formattedDate}
         </div>
       </div>
     </motion.div>
