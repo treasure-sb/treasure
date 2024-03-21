@@ -3,6 +3,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
+import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DataTable from "./components/table/DataTable";
 
@@ -11,7 +12,7 @@ type EventVendorTableInfo = {
   id: string;
 };
 
-export type EventVendorProfile = Tables<"event_vendors"> & {
+export type EventVendorData = Tables<"event_vendors"> & {
   vendor: Tables<"profiles">;
 } & {
   table: EventVendorTableInfo;
@@ -27,12 +28,16 @@ export default async function Page({
     data: { user },
   } = await validateUser();
 
-  const { data: eventData } = await supabase
+  const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
+
+  if (eventError) {
+    redirect("/");
+  }
 
   const displayData = await eventDisplayData([eventData]);
   const hostedEvent = displayData[0];
@@ -42,7 +47,7 @@ export default async function Page({
     .select("*, vendor:profiles(*), table:tables(section_name, id)")
     .eq("event_id", hostedEvent.id);
 
-  const eventVendors = eventVendorData as EventVendorProfile[];
+  const eventVendors = eventVendorData as EventVendorData[];
   const tableDataPromise = eventVendors.map(async (eventVendor) => {
     const avatar = await getProfileAvatar(eventVendor.vendor.avatar_url);
     return {
@@ -57,14 +62,12 @@ export default async function Page({
   const vendorsTableData = await Promise.all(tableDataPromise);
 
   return (
-    <div>
-      <div className="max-w-7xl mx-auto py-10">
-        <DataTable
-          columns={columns}
-          data={vendorsTableData || []}
-          eventData={hostedEvent}
-        />
-      </div>
+    <div className="max-w-7xl mx-auto py-10">
+      <DataTable
+        columns={columns}
+        data={vendorsTableData || []}
+        eventData={hostedEvent}
+      />
     </div>
   );
 }

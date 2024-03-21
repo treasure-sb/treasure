@@ -1,6 +1,6 @@
 "use client";
 
-import VendorDialogContent from "./VendorDialogContent";
+import VendorDialogContent from "../vendor_dialog/VendorDialogContent";
 import { motion } from "framer-motion";
 import {
   ColumnDef,
@@ -127,7 +127,7 @@ export default function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                   <VendorDialogContent
-                    vendor={row.getValue("vendor_info")}
+                    vendorData={row.getValue("vendor_info")}
                     avatarUrl={row.getValue("avatar_url")}
                     eventData={eventData}
                   />

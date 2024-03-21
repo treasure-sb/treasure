@@ -5,7 +5,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { EventVendorProfile } from "../../page";
+import { EventVendorData } from "../../page";
 import { Check } from "lucide-react";
 import { X } from "lucide-react";
 
@@ -15,7 +15,7 @@ export type Vendor = {
   section: string;
   payment_status: Tables<"event_vendors">["payment_status"];
   application_status: Tables<"event_vendors">["application_status"];
-  vendor_info: EventVendorProfile;
+  vendor_info: EventVendorData;
 };
 
 type VendorStatusColorMap = {
