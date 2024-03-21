@@ -16,6 +16,7 @@ import { useState } from "react";
 import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
 import { createCheckoutSession } from "@/lib/actions/checkout";
 import { Tables } from "@/types/supabase";
+import { toast } from "sonner";
 import Link from "next/link";
 
 export default function VendorDialogContent({
@@ -28,6 +29,7 @@ export default function VendorDialogContent({
   eventData: EventDisplayData;
 }) {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const profile = vendor.vendor;
   const table = vendor.table;
   const {
@@ -41,25 +43,38 @@ export default function VendorDialogContent({
   } = vendor;
   const { name: eventName, publicPosterUrl: posterUrl } = eventData;
   const { refresh } = useRouter();
+  const supabase = createClient();
 
   const acceptVendor = async () => {
-    const supabase = await createClient();
-    await supabase
+    setLoading(true);
+    toast.loading("Accepting Vendor...");
+
+    const { error: vendorUpdateError } = await supabase
       .from("event_vendors")
       .update({ application_status: "ACCEPTED" })
       .eq("vendor_id", vendor_id)
       .eq("event_id", event_id);
 
-    const { data } = await createCheckoutSession({
-      event_id,
-      ticket_id: table.id,
-      ticket_type: "TABLE",
-      user_id: profile.id,
-      quantity: table_quantity,
-    });
+    if (vendorUpdateError) {
+      handleError("Failed to update vendor status. Please try again.");
+      return;
+    }
 
-    const checkoutSession: Tables<"checkout_sessions"> = data?.[0] || {};
+    const { data: checkoutSessionData, error: checkoutSessionError } =
+      await createCheckoutSession({
+        event_id,
+        ticket_id: table.id,
+        ticket_type: "TABLE",
+        user_id: profile.id,
+        quantity: table_quantity,
+      });
 
+    if (checkoutSessionError || !checkoutSessionData?.length) {
+      handleError("Failed to create checkout session. Please try again.");
+      return;
+    }
+
+    const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData[0];
     const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
       eventName,
       posterUrl,
@@ -68,18 +83,37 @@ export default function VendorDialogContent({
     };
 
     if (profile.email) {
-      await sendVendorAppAcceptedEmail(profile.email, vendorAcceptedEmailProps);
+      const { error: sendVendorEmailError } = await sendVendorAppAcceptedEmail(
+        profile.email,
+        vendorAcceptedEmailProps
+      );
+
+      if (sendVendorEmailError) {
+        handleError("Failed to send vendor email. Please try again.");
+        return;
+      }
     }
+
+    toast.dismiss();
+    toast.success("Vendor Accepted!");
+    setLoading(false);
     refresh();
   };
 
   const rejectVendor = async () => {
-    const supabase = await createClient();
-    await supabase
+    setLoading(true);
+    toast.loading("Rejecting Vendor...");
+
+    const { error: vendorUpdateError } = await supabase
       .from("event_vendors")
       .update({ application_status: "REJECTED" })
       .eq("vendor_id", vendor_id)
       .eq("event_id", event_id);
+
+    if (vendorUpdateError) {
+      handleError("Failed to update vendor status. Please try again.");
+      return;
+    }
 
     const vendorRejectedEmailProps: VendorAppRejectedEmailProps = {
       eventName,
@@ -88,9 +122,27 @@ export default function VendorDialogContent({
     };
 
     if (profile.email) {
-      await sendVendorAppRejectedEmail(profile.email, vendorRejectedEmailProps);
+      const { error: sendVendorEmailError } = await sendVendorAppRejectedEmail(
+        profile.email,
+        vendorRejectedEmailProps
+      );
+
+      if (sendVendorEmailError) {
+        handleError("Failed to send vendor email. Please try again.");
+        return;
+      }
     }
+
+    toast.dismiss();
+    toast.success("Vendor Rejected!");
+    setLoading(false);
     refresh();
+  };
+
+  const handleError = (message: string) => {
+    toast.dismiss();
+    toast.error(message);
+    setLoading(false);
   };
 
   return (
@@ -157,12 +209,14 @@ export default function VendorDialogContent({
             <div className="flex space-x-2">
               <Button
                 onClick={async () => await acceptVendor()}
+                disabled={loading}
                 className="w-full"
               >
                 Accept
               </Button>
               <Button
                 onClick={async () => await rejectVendor()}
+                disabled={loading}
                 className="w-full"
                 variant={"destructive"}
               >

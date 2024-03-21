@@ -35,7 +35,12 @@ export function validateEmail(email: string) {
   return regex.test(email);
 }
 
-export function to(promise: Promise<any>) {
+type PromiseResult<T> = {
+  data: T | null;
+  error: any | null;
+};
+
+export function to<T>(promise: Promise<T>): Promise<PromiseResult<T>> {
   return Promise.allSettled([promise]).then(function ([result]) {
     if (result.status === "fulfilled") {
       return { data: result.value, error: null };
