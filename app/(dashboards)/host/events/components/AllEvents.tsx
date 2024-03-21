@@ -14,7 +14,8 @@ export default async function AllEvents() {
   const { data } = await supabase
     .from("events")
     .select("*")
-    .eq("organizer_id", user?.id as string);
+    .eq("organizer_id", user?.id as string)
+    .order("date", { ascending: true });
 
   const eventsHosting: Tables<"events">[] = data || [];
   const eventData = await eventDisplayData(eventsHosting);
