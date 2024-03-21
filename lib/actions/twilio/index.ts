@@ -52,4 +52,32 @@ const verifyOTP = async (phoneNumber: string, otp: string) => {
     });
 };
 
-export { sendOTP, verifyOTP };
+const sendSMS = async (phoneNumber: string, message: string) => {
+  return client.messages
+    .create({
+      body: message,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phoneNumber,
+    })
+    .then((message) => {
+      if (message.errorCode) {
+        return {
+          success: false,
+          message: "Error sending SMS.",
+        };
+      } else {
+        return {
+          success: true,
+          message: "SMS sent successfully.",
+        };
+      }
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: "Error sending SMS.",
+      };
+    });
+};
+
+export { sendSMS };

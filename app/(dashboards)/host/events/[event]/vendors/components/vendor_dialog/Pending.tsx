@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { EventVendorData } from "../../page";
 import { EventDisplayData } from "@/types/event";
+import { sendSMS } from "@/lib/actions/twilio";
 
 export default function Pending({
   vendorData,
@@ -42,17 +43,6 @@ export default function Pending({
     setLoading(true);
     toast.loading("Accepting Vendor...");
 
-    const { error: vendorUpdateError } = await supabase
-      .from("event_vendors")
-      .update({ application_status: "ACCEPTED" })
-      .eq("vendor_id", vendor_id)
-      .eq("event_id", event_id);
-
-    if (vendorUpdateError) {
-      handleError("Failed to update vendor status. Please try again.");
-      return;
-    }
-
     const { data: checkoutSessionData, error: checkoutSessionError } =
       await createCheckoutSession({
         event_id,
@@ -68,29 +58,64 @@ export default function Pending({
     }
 
     const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData[0];
-    const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
-      eventName,
-      posterUrl,
-      message,
-      checkoutSessionId: checkoutSession.id,
-    };
+    const successfullySentEmail = await handleSendAcceptedEmail(
+      checkoutSession.id
+    );
 
-    if (profile.email) {
-      const { error: sendVendorEmailError } = await sendVendorAppAcceptedEmail(
-        profile.email,
-        vendorAcceptedEmailProps
-      );
+    if (!successfullySentEmail) {
+      handleError("Failed to send vendor email. Please try again.");
+      return;
+    }
 
-      if (sendVendorEmailError) {
-        handleError("Failed to send vendor email. Please try again.");
-        return;
-      }
+    const successfullySentSMS = await handleSendSMS(checkoutSession.id);
+    if (!successfullySentSMS) {
+      handleError("Failed to send SMS. Please try again.");
+    }
+
+    const { error: vendorUpdateError } = await supabase
+      .from("event_vendors")
+      .update({ application_status: "ACCEPTED" })
+      .eq("vendor_id", vendor_id)
+      .eq("event_id", event_id);
+
+    if (vendorUpdateError) {
+      handleError("Failed to update vendor status. Please try again.");
+      return;
     }
 
     toast.dismiss();
     toast.success("Vendor Accepted!");
     setLoading(false);
     refresh();
+  };
+
+  const handleSendSMS = async (checkoutSessionId: string) => {
+    const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
+    const smsMessage = message
+      ? `Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
+      : `Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
+    const { success: smsSuccess } = await sendSMS(
+      application_phone,
+      smsMessage
+    );
+
+    return smsSuccess;
+  };
+
+  const handleSendAcceptedEmail = async (checkoutSessionId: string) => {
+    const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
+      eventName,
+      posterUrl,
+      message,
+      checkoutSessionId: checkoutSessionId,
+    };
+
+    const { error: sendVendorEmailError } = await sendVendorAppAcceptedEmail(
+      application_email,
+      vendorAcceptedEmailProps
+    );
+
+    return !sendVendorEmailError;
   };
 
   const rejectVendor = async () => {
@@ -108,6 +133,19 @@ export default function Pending({
       return;
     }
 
+    const successfullySentEmail = await handleSendRejectedEmail();
+    if (!successfullySentEmail) {
+      handleError("Failed to send vendor email. Please try again.");
+      return;
+    }
+
+    toast.dismiss();
+    toast.success("Vendor Rejected!");
+    setLoading(false);
+    refresh();
+  };
+
+  const handleSendRejectedEmail = async () => {
     const vendorRejectedEmailProps: VendorAppRejectedEmailProps = {
       eventName,
       posterUrl,
@@ -119,15 +157,7 @@ export default function Pending({
       vendorRejectedEmailProps
     );
 
-    if (sendVendorEmailError) {
-      handleError("Failed to send vendor email. Please try again.");
-      return;
-    }
-
-    toast.dismiss();
-    toast.success("Vendor Rejected!");
-    setLoading(false);
-    refresh();
+    return !sendVendorEmailError;
   };
 
   const handleError = (message: string) => {
