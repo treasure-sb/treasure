@@ -15,7 +15,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
 
   return (
     <header className="flex justify-between items-center md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 z-10">
-      <div>
+      <div className="relative">
         <Link
           href="/"
           className="font-semibold text-3xl flex items-center space-x-1"
@@ -24,7 +24,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           <h1>Treasure</h1>
         </Link>
         {profile.role === "admin" && (
-          <p className="text-primary font-bold absolute bottom-[-14px] right-[-26px]">
+          <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px]">
             admin
           </p>
         )}
