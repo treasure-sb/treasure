@@ -139,6 +139,7 @@ const verifyUser = async ({ phone, email, code }: VerificationProps) => {
   const { profileData, error } = await createUserProfile({
     id: verificationData.user.id,
     phone,
+    email,
     firstName: "Anonymous",
     lastName: listOfNames[Math.floor(Math.random() * listOfNames.length)],
   });
@@ -171,7 +172,7 @@ const verifyOtp = async ({ phone, email, code }: VerificationProps) => {
  * Creates a user profile in the database with the provided user information.
  */
 const createUserProfile = async (userFields: UserProfile) => {
-  const { phone, firstName, lastName, id } = userFields;
+  const { phone, email, firstName, lastName, id } = userFields;
   const uuidSegment = uuidv4().split("-")[0];
   const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${uuidSegment}`;
   const previousDiscriminators = await getPreviousDiscriminators(username);
@@ -182,6 +183,7 @@ const createUserProfile = async (userFields: UserProfile) => {
     username,
     discriminator: generateUniqueLocalDiscriminator(previousDiscriminators),
     phone,
+    email,
     id,
   };
   return await createProfile(profileData);
