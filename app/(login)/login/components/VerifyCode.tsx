@@ -53,23 +53,6 @@ export default function VerifyCode({
     verifyCode();
   }, [code]);
 
-  const isCodeComplete = () => {
-    return code.replace(" ", "").length === 6;
-  };
-
-  const verificationCheck = async (verfication: any) => {
-    if (verfication.success) {
-      toast.success("Code verified");
-      if (isDialog) {
-        action && (await action());
-      } else {
-        verfication.profileExists ? replace("/") : setAdditionalInfo(true);
-      }
-    } else {
-      toast.error("Verification Error");
-    }
-  };
-
   const handlePhoneSubmit = async (phoneNumber: string) => {
     const filteredPhoneNumber = filterPhoneNumber(phoneNumber);
     const formattedPhoneNumber = `${countryCode}${filteredPhoneNumber}`;
@@ -90,6 +73,23 @@ export default function VerifyCode({
     });
     toast.dismiss();
     verificationCheck(verification);
+  };
+
+  const verificationCheck = async (verfication: any) => {
+    if (verfication.success) {
+      toast.success("Code verified");
+      if (isDialog) {
+        action && (await action());
+      } else {
+        verfication.profileExists ? replace("/") : setAdditionalInfo(true);
+      }
+    } else {
+      toast.error("Verification Error");
+    }
+  };
+
+  const isCodeComplete = () => {
+    return code.replace(" ", "").length === 6;
   };
 
   return (

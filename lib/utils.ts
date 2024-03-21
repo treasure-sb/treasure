@@ -34,3 +34,13 @@ export function validateEmail(email: string) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }
+
+export function to(promise: Promise<any>) {
+  return Promise.allSettled([promise]).then(function ([result]) {
+    if (result.status === "fulfilled") {
+      return { data: result.value, error: null };
+    } else {
+      return { data: null, error: result.reason };
+    }
+  });
+}

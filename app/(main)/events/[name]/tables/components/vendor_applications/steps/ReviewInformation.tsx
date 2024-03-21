@@ -48,11 +48,31 @@ export default function ReviewInformation() {
   const { event, profile, flowDispatch } = useVendorFlow();
   const [submitting, setSubmitting] = useState(false);
 
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    toast.loading("Submitting application...");
+
+    const successfulApplication = await submitApplication();
+    const successfulProfileUpdate = await updateUserProfile();
+
+    toast.dismiss();
+    if (successfulApplication && successfulProfileUpdate) {
+      toast.success("Application submitted successfully");
+      flowDispatch({ type: "setCurrentView", payload: TableView.Complete });
+    } else if (!successfulApplication) {
+      toast.error("Error submitting application");
+    } else if (!successfulProfileUpdate) {
+      toast.error("Error updating profile");
+    }
+
+    setSubmitting(false);
+  };
+
   const submitApplication = async () => {
     const vendorApplication: VendorApplication = {
       event_id: event.id,
       vendor_id: profile?.id as string,
-      application_phone: vendorInfo.phone as string,
+      application_phone: `+1${vendorInfo.phone as string}`,
       application_email: vendorInfo.email as string,
       table_id: table.id,
       table_quantity: tableQuantity,
@@ -61,16 +81,7 @@ export default function ReviewInformation() {
       comments,
     };
     const { error } = await submitVendorApplication(vendorApplication, event);
-    if (error) {
-      setSubmitting(false);
-      toast.error("Error submitting application");
-      return false;
-    }
-    return true;
-  };
-
-  const handleContinue = () => {
-    applicationDispatch({ type: "setCurrentStep", payload: currentStep + 1 });
+    return !error;
   };
 
   const updateUserProfile = async () => {
@@ -90,13 +101,8 @@ export default function ReviewInformation() {
     return true;
   };
 
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    const applicationSuccess = await submitApplication();
-    const profileSuccess = await updateUserProfile();
-    if (applicationSuccess && profileSuccess) {
-      flowDispatch({ type: "setCurrentView", payload: TableView.Complete });
-    }
+  const handleBack = () => {
+    applicationDispatch({ type: "setCurrentStep", payload: currentStep - 1 });
   };
 
   return (
@@ -127,7 +133,7 @@ export default function ReviewInformation() {
       </div>
       <div className="flex space-x-2">
         <Button
-          onClick={handleContinue}
+          onClick={handleBack}
           className="w-full"
           disabled={submitting}
           variant={"secondary"}
@@ -140,7 +146,7 @@ export default function ReviewInformation() {
           className="w-full"
           disabled={submitting}
         >
-          {submitting ? "Submitting..." : "Submit"}
+          Submit
         </Button>
       </div>
     </div>
