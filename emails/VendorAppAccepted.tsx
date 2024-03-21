@@ -56,7 +56,7 @@ export default function VendorAppAccepted({
                 href={`https://www.ontreasure.xyz/checkout/${checkoutSessionId}`}
                 className="bg-primary ml-auto p-4 rounded-lg text-background"
               >
-                Buy Table
+                Pay Now for Table
               </Button>
               {message.length > 0 && (
                 <Section className="mt-6">
