@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import EditPencilIcon from "@/components/icons/EditPencilIcon";
+import { EditIcon } from "lucide-react";
 
 export default function AvatarEdit({
   avatarUrl,
@@ -27,12 +27,13 @@ export default function AvatarEdit({
         ) : (
           <div className="h-32 w-32 m-auto rounded-full bg-gray-200" />
         )}
-        <EditPencilIcon className="absolute bottom-[-10px] right-[-10px]" />
+        <EditIcon className="absolute bottom-[-10px] right-[-10px]" />
       </label>
       <input
         name="avatar"
         id="avatar"
         type="file"
+        className="w-24 hidden"
         onChange={(e) => {
           const file = e.target.files ? e.target.files[0] : null;
           if (file) {
@@ -40,7 +41,6 @@ export default function AvatarEdit({
             setAvatarFile(file);
           }
         }}
-        className="w-24 hidden"
       ></input>
     </form>
   );

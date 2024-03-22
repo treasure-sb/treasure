@@ -14,19 +14,20 @@ interface CreateProfileData {
   id: string;
 }
 
-interface AdditionalInfo {
-  firstName: string;
-  lastName: string;
-}
-
 interface UpdateProfile {
   first_name?: string | null;
   last_name?: string | null;
+  username?: string | null;
   business_name?: string | null;
   phone?: string | null;
   email?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
+}
+
+interface AdditionalInfo {
+  firstName: string;
+  lastName: string;
 }
 
 const createProfile = async (createProfileData: CreateProfileData) => {
@@ -73,23 +74,6 @@ const updateProfile = async (
 };
 
 /* TODO: Fix to only use 1 function */
-const editProfile = async (values: any, profileId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, business_name, bio, avatar_url } = values;
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ first_name, last_name, business_name, bio, avatar_url })
-    .eq("id", profileId)
-    .select();
-
-  if (!error && data) {
-    const profile: Tables<"profiles"> = data[0];
-    redirect(`/${profile.username}`);
-  }
-};
-
-/* TODO: Fix to only use 1 function */
 const addAdditionalInfo = async (
   additionalInfo: AdditionalInfo,
   profileId: string
@@ -133,7 +117,6 @@ const createTemporaryProfile = async (
 };
 
 export {
-  editProfile,
   updateProfile,
   updateProfileAvatar,
   createTemporaryProfile,
