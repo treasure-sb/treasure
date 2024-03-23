@@ -10,13 +10,17 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
-import { useState, useEffect } from "react";
-import { editProfile } from "@/lib/actions/profile";
+import { useState } from "react";
+import { updateProfile } from "@/lib/actions/profile";
 import { createLinks, updateLinks, deleteLinks } from "@/lib/actions/links";
 import { createClient } from "@/utils/supabase/client";
+import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { PostgrestError } from "@supabase/supabase-js";
 import PaymentLinks from "./PaymentLinks";
 import AvatarEdit from "./AvatarEdit";
 import SocialLinks from "./SocialLinks";
@@ -38,6 +42,9 @@ const profileSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
+  username: z.string().min(1, {
+    message: "Username is required",
+  }),
   business_name: z.string().optional(),
   bio: z.string().optional(),
   social_links: z.array(LinkSchema).optional(),
@@ -57,33 +64,69 @@ export default function EditProfileForm({
 }: EventFormProps) {
   const [saving, setSaving] = useState(false);
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
+  const { refresh } = useRouter();
+  const supabase = createClient();
+
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       first_name: profile.first_name || "",
       last_name: profile.last_name || "",
+      username: profile.username || "",
       business_name: profile.business_name || "",
       bio: profile.bio || "",
+      social_links: userLinks?.filter((link) => link.type === "social") || [],
+      payment_links: userLinks?.filter((link) => link.type === "payment") || [],
     },
   });
 
-  useEffect(() => {
-    if (userLinks) {
-      form.reset({
-        ...form.getValues(),
-        social_links: userLinks.filter((link) => link.type === "social"),
-        payment_links: userLinks.filter((link) => link.type === "payment"),
-      });
-    }
-  }, [userLinks, form]);
-
   const onSubmit = async () => {
     setSaving(true);
-    const newForm = {
+    toast.loading("Updating...");
+
+    const { social_links, payment_links, ...rest } = form.getValues();
+
+    const profileUpdateForm = {
       ...profile,
-      ...form.getValues(),
+      ...rest,
     };
 
+    if (newAvatarFile) {
+      const newAvatarSupabaseUrl = `avatar${Date.now()}`;
+
+      const { error: uploadAvatarError } = await supabase.storage
+        .from("avatars")
+        .upload(newAvatarSupabaseUrl, newAvatarFile);
+
+      if (uploadAvatarError) {
+        toast.dismiss();
+        toast.error("Failed to upload avatar");
+      } else {
+        profileUpdateForm.avatar_url = newAvatarSupabaseUrl;
+
+        if (profile.avatar_url !== "default_avatar") {
+          await supabase.storage.from("avatars").remove([profile.avatar_url]);
+        }
+      }
+    }
+
+    await handleUpdateLinks();
+
+    const { error } = await updateProfile(profileUpdateForm, profile.id);
+    if (error) {
+      toast.dismiss();
+      handleErrorMessage(error);
+      setSaving(false);
+      return;
+    }
+
+    toast.dismiss();
+    toast.success("Profile updated");
+    setSaving(false);
+    refresh();
+  };
+
+  const getUserLinks = () => {
     const userFormLinks = [
       ...(form.getValues().social_links ?? []),
       ...(form.getValues().payment_links ?? []),
@@ -105,116 +148,130 @@ export default function EditProfileForm({
         }
       })
     );
+    return { addedLinks, updatedLinks, removedLinks };
+  };
 
-    if (newAvatarFile) {
-      const newAvatarSupabaseUrl = `avatar${Date.now()}`;
-      newForm.avatar_url = newAvatarSupabaseUrl;
-      const supabase = createClient();
-      if (profile.avatar_url !== "default_avatar") {
-        await supabase.storage.from("avatars").remove([profile.avatar_url]);
-      }
-      await supabase.storage
-        .from("avatars")
-        .upload(newAvatarSupabaseUrl, newAvatarFile);
-    }
-
-    const editPromise = [
-      await editProfile(newForm, profile.id),
+  const handleUpdateLinks = async () => {
+    const { addedLinks, updatedLinks, removedLinks } = getUserLinks();
+    const updateLinksPromise = [
       await createLinks(addedLinks, profile.id),
       await updateLinks(updatedLinks, profile.id),
-      removedLinks ? await deleteLinks(removedLinks, profile.id) : null,
+      removedLinks && (await deleteLinks(removedLinks, profile.id)),
     ];
-    await Promise.all(editPromise);
-    setSaving(false);
+    await Promise.allSettled(updateLinksPromise);
+  };
+
+  const handleErrorMessage = (error: PostgrestError) => {
+    if (error.message.includes("username")) {
+      toast.error("Username already exists");
+    } else {
+      toast.error("Failed to update profile information");
+    }
   };
 
   return (
-    <main className="m-auto max-w-lg">
-      {profile.avatar_url && (
-        <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
-      )}
-      <div className="flex flex-col space-y-6 ">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col justify-between h-full"
-          >
-            <div className="space-y-6 my-10 flex flex-col">
-              <FormField
-                control={form.control}
-                name="first_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="First Name" {...field} />
-                    </FormControl>
-                    <div className="h-1">
+    <div>
+      <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
+      <div className="space-y-4 flex flex-col md:flex-row-reverse">
+        {profile.avatar_url && (
+          <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
+        )}
+        <div className="flex flex-col space-y-6 flex-grow md:max-w-lg">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col justify-between h-full"
+            >
+              <div className="space-y-6 flex flex-col mb-6">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="First Name" {...field} />
+                      </FormControl>
                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="last_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Last Name" {...field} />
-                    </FormControl>
-                    <div className="h-1">
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Last Name" {...field} />
+                      </FormControl>
                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="business_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Business Name" {...field} />
-                    </FormControl>
-                    <div className="h-1">
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Username" {...field} />
+                      </FormControl>
                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Bio" {...field} />
-                    </FormControl>
-                    <div className="h-1">
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Business Name" {...field} />
+                      </FormControl>
                       <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <SocialLinks
-                form={form}
-                userSocialLinks={userLinks?.filter(
-                  (link) => link.type === "social"
-                )}
-              />
-              <PaymentLinks
-                form={form}
-                userPaymentLinks={userLinks?.filter(
-                  (link) => link.type === "payment"
-                )}
-              />
-            </div>
-            <Button type="submit" disabled={saving} className="w-full py-6">
-              {saving ? "Saving..." : "Save"}
-            </Button>
-          </form>
-        </Form>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          id="bio"
+                          rows={4}
+                          placeholder="Share a little about yourself"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SocialLinks
+                  form={form}
+                  userSocialLinks={userLinks?.filter(
+                    (link) => link.type === "social"
+                  )}
+                />
+                <PaymentLinks
+                  form={form}
+                  userPaymentLinks={userLinks?.filter(
+                    (link) => link.type === "payment"
+                  )}
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={saving}
+                className="py-6 rounded-md w-60"
+              >
+                Update Profile
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

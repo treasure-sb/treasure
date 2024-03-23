@@ -14,19 +14,20 @@ interface CreateProfileData {
   id: string;
 }
 
-interface AdditionalInfo {
-  firstName: string;
-  lastName: string;
-}
-
 interface UpdateProfile {
   first_name?: string | null;
   last_name?: string | null;
+  username?: string | null;
   business_name?: string | null;
   phone?: string | null;
   email?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
+}
+
+interface AdditionalInfo {
+  firstName: string;
+  lastName: string;
 }
 
 const createProfile = async (createProfileData: CreateProfileData) => {
@@ -72,21 +73,37 @@ const updateProfile = async (
   return { data, error };
 };
 
-/* TODO: Fix to only use 1 function */
-const editProfile = async (values: any, profileId: string) => {
+const profileExists = async (id: string) => {
   const supabase = await createSupabaseServerClient();
-  const { first_name, last_name, business_name, bio, avatar_url } = values;
-
   const { data, error } = await supabase
     .from("profiles")
-    .update({ first_name, last_name, business_name, bio, avatar_url })
-    .eq("id", profileId)
-    .select();
+    .select("phone")
+    .eq("id", id)
+    .single();
+  return { data, error };
+};
 
-  if (!error && data) {
-    const profile: Tables<"profiles"> = data[0];
-    redirect(`/${profile.username}`);
+// TODO: Fix to use transaction
+const updatePhone = async (phone: string, profileId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { error: authUpdateError } = await supabase.auth.updateUser({
+    phone,
+  });
+
+  if (authUpdateError) {
+    return { success: false, error: authUpdateError };
   }
+
+  const { error: profileUpdateError } = await supabase
+    .from("profiles")
+    .update({ phone })
+    .eq("id", profileId);
+
+  if (profileUpdateError) {
+    return { success: false, error: profileUpdateError };
+  }
+
+  return { success: true };
 };
 
 /* TODO: Fix to only use 1 function */
@@ -133,10 +150,11 @@ const createTemporaryProfile = async (
 };
 
 export {
-  editProfile,
   updateProfile,
+  updatePhone,
   updateProfileAvatar,
   createTemporaryProfile,
   addAdditionalInfo,
   createProfile,
+  profileExists,
 };

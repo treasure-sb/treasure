@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import EditPencilIcon from "@/components/icons/EditPencilIcon";
+import { Edit2Icon } from "lucide-react";
 
 export default function AvatarEdit({
   avatarUrl,
@@ -14,25 +14,28 @@ export default function AvatarEdit({
   const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null);
 
   return (
-    <form className="relative flex justify-center">
+    <form className="relative flex justify-center md:justify-end flex-grow">
       <label
-        className="relative hover:cursor-pointer w-28 h-28 rounded-full"
+        className="relative w-fit h-fit hover:cursor-pointer rounded-full group"
         htmlFor="avatar"
       >
         {avatarUrl || avatarFileUrl ? (
-          <Avatar className="h-32 w-32 m-auto">
+          <Avatar className="h-40 w-40 md:w-60 md:h-60 m-auto">
             <AvatarImage src={avatarFileUrl || avatarUrl} />
             <AvatarFallback></AvatarFallback>
           </Avatar>
         ) : (
           <div className="h-32 w-32 m-auto rounded-full bg-gray-200" />
         )}
-        <EditPencilIcon className="absolute bottom-[-10px] right-[-10px]" />
+        <div className="absolute bottom-0 right-0 border-2 border-background rounded-full bg-foreground p-2 md:p-4 group-hover:bg-tertiary transition duration-500">
+          <Edit2Icon className="text-background" />
+        </div>
       </label>
       <input
         name="avatar"
         id="avatar"
         type="file"
+        className="w-24 hidden"
         onChange={(e) => {
           const file = e.target.files ? e.target.files[0] : null;
           if (file) {
@@ -40,7 +43,6 @@ export default function AvatarEdit({
             setAvatarFile(file);
           }
         }}
-        className="w-24 hidden"
       ></input>
     </form>
   );

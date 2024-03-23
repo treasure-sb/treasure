@@ -5,9 +5,11 @@ import { useState, useRef } from "react";
 import { signUpUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { filterPhoneNumber, validateEmail } from "@/lib/utils";
+import { validateEmail } from "@/lib/utils";
+import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import VerifyCode from "./VerifyCode";
+import PhoneInput from "@/components/ui/custom/phone-input";
 
 export enum SubmitMethod {
   PHONE = "phone",
@@ -27,7 +29,6 @@ export default function LoginFlow({
   subheading,
   action,
 }: LoginFlowProps) {
-  const phoneInputRef = useRef<HTMLInputElement>(null);
   const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -84,28 +85,12 @@ export default function LoginFlow({
     }
   };
 
-  const handlePhoneInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let filteredValue = filterPhoneNumber(e.target.value);
-    if (filteredValue.length > 10) {
-      filteredValue = filteredValue.substring(0, 10);
-    }
-
-    if (filteredValue.length > 6) {
-      filteredValue = `(${filteredValue.substring(
-        0,
-        3
-      )}) ${filteredValue.substring(3, 6)}-${filteredValue.substring(6)}`;
-    } else if (filteredValue.length > 3) {
-      filteredValue = `(${filteredValue.substring(
-        0,
-        3
-      )}) ${filteredValue.substring(3)}`;
-    }
-    setPhoneNumber(filteredValue);
-  };
-
   const goBack = () => {
     setShowVerifyCode(false);
+  };
+
+  const handleUpdatePhoneNumber = (phoneNumber: string) => {
+    setPhoneNumber(phoneNumber);
   };
 
   return (
@@ -147,16 +132,10 @@ export default function LoginFlow({
           >
             {usePhone ? (
               <div className="space-y-2">
-                <div className="relative">
-                  <FloatingLabelInput
-                    ref={phoneInputRef}
-                    id="phone"
-                    type="tel"
-                    label="Phone Number"
-                    value={phoneNumber}
-                    onChange={(e) => handlePhoneInputChange(e)}
-                  />
-                </div>
+                <PhoneInput
+                  phoneNumber={phoneNumber}
+                  updatePhoneNumber={handleUpdatePhoneNumber}
+                />
                 <p
                   onClick={() => setUsePhone(false)}
                   className="text-gray-400 text-sm hover:cursor-pointer hover:text-gray-300 transition duration-300 w-fit"

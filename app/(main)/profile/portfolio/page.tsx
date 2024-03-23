@@ -54,7 +54,7 @@ export default async function Page() {
   const emptyImages = Array.from({ length: 6 - portfolioPictures.length });
   return (
     <main className="w-full max-w-6xl m-auto">
-      <h1 className="font-bold text-2xl w-full mb-10">My Photos</h1>
+      <h1 className="font-semibold text-2xl w-full mb-10">My Photos</h1>
       <div className="grid grid-cols-3 gap-2 m-auto">
         {portfolioPictures.map((picture, index) => (
           <div className="relative group h-full w-full" key={index}>

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
-import { filterPhoneNumber } from "@/lib/utils";
+import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { SubmitMethod } from "./LoginFlow";

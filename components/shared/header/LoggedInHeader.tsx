@@ -29,7 +29,6 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           </p>
         )}
       </div>
-      <HamburgerMenu profile={profile} profilePublicUrl={publicUrl} />
       <div className="hidden md:flex items-center space-x-6">
         <Link
           href="/events"
@@ -38,7 +37,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           Events
         </Link>
         <Link href={`/${profile.username}`} className="rounded-full">
-          <Avatar className="h-16 w-16 border-primary border-2">
+          <Avatar className="h-16 w-16 border-primary">
             <AvatarImage src={publicUrl} />
             <AvatarFallback>
               {profile.first_name[0]}
@@ -47,6 +46,7 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
           </Avatar>
         </Link>
       </div>
+      <HamburgerMenu profile={profile} profilePublicUrl={publicUrl} />
     </header>
   );
 }

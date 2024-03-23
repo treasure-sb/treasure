@@ -30,6 +30,7 @@ export interface vendorTransactionForm {
 type EditProfileFormData = {
   first_name: string;
   last_name: string;
+  username: string;
   bio?: string;
   social_links?: {
     username: string;
