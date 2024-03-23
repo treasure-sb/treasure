@@ -14,6 +14,7 @@ import {
 } from "@/lib/helpers/auth";
 import { sendWelcomeEmail } from "../emails";
 import { v4 as uuidv4 } from "uuid";
+import { profileExists } from "../profile";
 
 interface UserProfile {
   phone?: string;
@@ -63,9 +64,6 @@ const logoutUser = async () => {
   redirect("/login");
 };
 
-/**
- * Handles the sign-up process for new users, optionally transferring a temporary profile if an invite token is provided.
- */
 const signUpUser = async ({ phone, email, signupInviteToken }: SignUpProps) => {
   const supabase = await createSupabaseServerClient();
 
@@ -104,9 +102,6 @@ const signUpUser = async ({ phone, email, signupInviteToken }: SignUpProps) => {
   return { success: true };
 };
 
-/**
- * Verifies a user's OTP using either phone or email and either reports existing profile or creates a new one.
- */
 const verifyUser = async ({ phone, email, code }: VerificationProps) => {
   if (!phone && !email) {
     return { error: "Either phone or email must be provided" };
@@ -121,9 +116,8 @@ const verifyUser = async ({ phone, email, code }: VerificationProps) => {
     return { error: "Either phone or email must be provided" };
   }
 
-  const { data: verificationData, error: verificationError } = await verifyOtp(
-    verificationPayload
-  );
+  const { data: verificationData, error: verificationError } =
+    await verifyLoginOtp(verificationPayload);
   if (verificationError || !verificationData?.user) {
     return { error: verificationError || "User not found" };
   }
@@ -149,7 +143,7 @@ const verifyUser = async ({ phone, email, code }: VerificationProps) => {
     : { data: profileData, success: true, profileExists: false };
 };
 
-const verifyOtp = async ({ phone, email, code }: VerificationProps) => {
+const verifyLoginOtp = async ({ phone, email, code }: VerificationProps) => {
   const supabase = await createSupabaseServerClient();
   if (!phone && !email) {
     return { error: "Either phone or email must be provided" };
@@ -168,9 +162,27 @@ const verifyOtp = async ({ phone, email, code }: VerificationProps) => {
   return { data, error: error?.message };
 };
 
-/**
- * Creates a user profile in the database with the provided user information.
- */
+const verifyPhoneChangeOTP = async (phone: string, code: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.verifyOtp({
+    phone,
+    token: code,
+    type: "phone_change",
+  });
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+};
+
+const updateUserPhone = async (phone: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.updateUser({ phone });
+  return { data, error };
+};
+
 const createUserProfile = async (userFields: UserProfile) => {
   const { phone, email, firstName, lastName, id } = userFields;
   const uuidSegment = uuidv4().split("-")[0];
@@ -189,20 +201,6 @@ const createUserProfile = async (userFields: UserProfile) => {
   return await createProfile(profileData);
 };
 
-const profileExists = async (id: string) => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("phone")
-    .eq("id", id)
-    .single();
-  return { data, error };
-};
-
-/**
- * Transfers data from a temporary profile to a newly created user profile, based on a given invite token.
- * It involves updating profile transfers, potentially creating a new link (e.g., for Instagram), and updating the profile avatar.
- */
 const transferTemporaryProfile = async (token: string, user_id: string) => {
   const supabase = await createSupabaseServerClient();
   const signupInviteData = await getSignupInviteData(token);
@@ -234,4 +232,11 @@ const transferTemporaryProfile = async (token: string, user_id: string) => {
   return { success: true };
 };
 
-export { validateUser, logoutUser, signUpUser, verifyUser };
+export {
+  validateUser,
+  logoutUser,
+  signUpUser,
+  verifyUser,
+  verifyPhoneChangeOTP,
+  updateUserPhone,
+};

@@ -170,7 +170,8 @@ export default function EditProfileForm({
   };
 
   return (
-    <main className="m-auto max-w-lg">
+    <main className="space-y-4">
+      <h2 className="font-semibold text-xl">Your Profile</h2>
       {profile.avatar_url && (
         <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
       )}
@@ -238,7 +239,7 @@ export default function EditProfileForm({
                       <Textarea
                         id="bio"
                         rows={4}
-                        placeholder="Share a little about your yourself"
+                        placeholder="Share a little about yourself"
                         {...field}
                       />
                     </FormControl>

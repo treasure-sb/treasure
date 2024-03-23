@@ -80,4 +80,4 @@ const sendSMS = async (phoneNumber: string, message: string) => {
     });
 };
 
-export { sendSMS };
+export { sendSMS, sendOTP, verifyOTP };

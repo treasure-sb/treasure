@@ -73,6 +73,39 @@ const updateProfile = async (
   return { data, error };
 };
 
+const profileExists = async (id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("phone")
+    .eq("id", id)
+    .single();
+  return { data, error };
+};
+
+// TODO: Fix to use transaction
+const updatePhone = async (phone: string, profileId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { error: authUpdateError } = await supabase.auth.updateUser({
+    phone,
+  });
+
+  if (authUpdateError) {
+    return { success: false, error: authUpdateError };
+  }
+
+  const { error: profileUpdateError } = await supabase
+    .from("profiles")
+    .update({ phone })
+    .eq("id", profileId);
+
+  if (profileUpdateError) {
+    return { success: false, error: profileUpdateError };
+  }
+
+  return { success: true };
+};
+
 /* TODO: Fix to only use 1 function */
 const addAdditionalInfo = async (
   additionalInfo: AdditionalInfo,
@@ -118,8 +151,10 @@ const createTemporaryProfile = async (
 
 export {
   updateProfile,
+  updatePhone,
   updateProfileAvatar,
   createTemporaryProfile,
   addAdditionalInfo,
   createProfile,
+  profileExists,
 };
