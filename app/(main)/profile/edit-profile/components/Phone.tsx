@@ -1,7 +1,6 @@
 "use client";
 
 import { Tables } from "@/types/supabase";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Button } from "@/components/ui/button";
 import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,25 +11,39 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { updatePhone, updateProfile } from "@/lib/actions/profile";
+import { updateProfile } from "@/lib/actions/profile";
 import { updateUserPhone, verifyPhoneChangeOTP } from "@/lib/actions/auth";
 import OTPInput from "@/components/ui/custom/otp-input";
+import PhoneInput, {
+  filterPhoneNumber,
+  formatPhoneNumber,
+} from "@/components/ui/custom/phone-input";
 
 export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
-  const [phone, setPhone] = useState(profile.phone || "");
+  const phoneLength = profile.phone?.length || 0;
+  const phoneNoCountryCode = profile.phone?.substring(phoneLength - 10);
+
+  const [phoneNumber, setPhoneNumber] = useState(
+    profile.phone ? formatPhoneNumber(phoneNoCountryCode as string) : ""
+  );
+
   const [otp, setOTP] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const countryCode = "+1";
 
   useEffect(() => {
     const handleVerifyOTP = async () => {
       if (isOTPComplete()) {
         setVerifying(true);
         toast.loading("Verifying OTP...");
+        const phoneWithCountryCode = `${countryCode}${filterPhoneNumber(
+          phoneNumber
+        )}`;
 
         const { error: verificationError } = await verifyPhoneChangeOTP(
-          phone,
+          phoneWithCountryCode,
           otp
         );
 
@@ -42,7 +55,7 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
         }
 
         const { error: userProfileUpdateError } = await updateProfile(
-          { phone },
+          { phone: phoneWithCountryCode },
           profile.id
         );
 
@@ -63,10 +76,17 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
 
   const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
-    toast.loading("Sending OTP...");
     setLoading(true);
+    toast.loading("Sending OTP...");
 
-    const { error: updatePhoneError } = await updateUserPhone(phone);
+    const phoneWithCountryCode = `${countryCode}${filterPhoneNumber(
+      phoneNumber
+    )}`;
+
+    const { error: updatePhoneError } = await updateUserPhone(
+      phoneWithCountryCode
+    );
+
     if (updatePhoneError) {
       toast.dismiss();
       toast.error(updatePhoneError.message);
@@ -80,15 +100,20 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
     setShowVerification(true);
   };
 
-  const handleUpdateOTP = (value: string) => {
-    setOTP(value);
-  };
-
   const isOTPComplete = () => {
     return otp.replace(" ", "").length === 6;
   };
 
-  const updateButtonDisabled = loading || phone === profile.phone;
+  const handleUpdatePhone = (phoneNumber: string) => {
+    setPhoneNumber(phoneNumber);
+  };
+
+  const handleUpdateOTP = (value: string) => {
+    setOTP(value);
+  };
+
+  const updateButtonDisabled =
+    loading || filterPhoneNumber(phoneNumber) === phoneNoCountryCode;
 
   return (
     <div className="space-y-4">
@@ -98,11 +123,9 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
         updates.
       </p>
       <form className="flex" onSubmit={(e) => handleUpdate(e)}>
-        <FloatingLabelInput
-          label="Phone Number"
-          type="tel"
-          defaultValue={profile.phone || ""}
-          onChange={(e) => setPhone(e.target.value)}
+        <PhoneInput
+          phoneNumber={phoneNumber}
+          updatePhoneNumber={handleUpdatePhone}
         />
         <Button className="rounded-md" disabled={updateButtonDisabled}>
           Update
