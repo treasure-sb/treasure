@@ -69,7 +69,7 @@ export default async function Page() {
 
   return (
     <main className="w-full max-w-6xl m-auto">
-      <h1 className="text-center font-semibold text-2xl mb-6">My Tickets</h1>
+      <h2 className="text-center font-semibold text-2xl mb-6">My Tickets</h2>
       {!ticketData?.length ? (
         <p className="text-center">You don't have any tickets yet.</p>
       ) : (

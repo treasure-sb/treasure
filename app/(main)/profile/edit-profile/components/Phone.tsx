@@ -69,6 +69,7 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
         toast.dismiss();
         toast.success("Phone number verified successfully.");
         setVerifying(false);
+        setShowVerification(false);
       }
     };
     handleVerifyOTP();
@@ -113,16 +114,18 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
   };
 
   const updateButtonDisabled =
-    loading || filterPhoneNumber(phoneNumber) === phoneNoCountryCode;
+    loading ||
+    filterPhoneNumber(phoneNumber) === phoneNoCountryCode ||
+    !phoneNumber;
 
   return (
-    <div className="space-y-4">
-      <h2 className="font-semibold text-xl mt-10">Phone Number</h2>
+    <div className="max-w-xl md:max-w-6xl space-y-4">
+      <h3 className="font-semibold text-xl mb-4">Phone Number</h3>
       <p>
         Manage the phone number you use to login to Treasure and receive SMS
         updates.
       </p>
-      <form className="flex" onSubmit={(e) => handleUpdate(e)}>
+      <form className="flex max-w-md" onSubmit={(e) => handleUpdate(e)}>
         <PhoneInput
           phoneNumber={phoneNumber}
           updatePhoneNumber={handleUpdatePhone}
@@ -131,7 +134,7 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
           Update
         </Button>
       </form>
-      <p className="text-xs">
+      <p className="text-xs text-gray-400">
         We'll need to send you a code to verify your phone number.
       </p>
       <Dialog open={showVerification} onOpenChange={setShowVerification}>
@@ -143,7 +146,8 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
           <DialogHeader>
             <DialogTitle>Verify Phone Number</DialogTitle>
             <DialogDescription>
-              Please enter the code we sent to your phone number.
+              Please enter the code we sent to{" "}
+              <span className="font-semibold">{phoneNumber}</span>.
             </DialogDescription>
           </DialogHeader>
           <OTPInput

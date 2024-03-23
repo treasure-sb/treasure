@@ -30,9 +30,11 @@ export const formatPhoneNumber = (phoneNumber: string) => {
 };
 
 export default function PhoneInput({
+  className,
   phoneNumber,
   updatePhoneNumber,
 }: {
+  className?: string;
   phoneNumber: string;
   updatePhoneNumber: (phoneNumber: string) => void;
 }) {
@@ -43,6 +45,7 @@ export default function PhoneInput({
 
   return (
     <FloatingLabelInput
+      className={className}
       id="phone"
       type="tel"
       label="Phone Number"

@@ -170,106 +170,108 @@ export default function EditProfileForm({
   };
 
   return (
-    <main className="space-y-4">
-      <h2 className="font-semibold text-xl">Your Profile</h2>
-      {profile.avatar_url && (
-        <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
-      )}
-      <div className="flex flex-col space-y-6 ">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col justify-between h-full"
-          >
-            <div className="space-y-6 my-10 flex flex-col">
-              <FormField
-                control={form.control}
-                name="first_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <FloatingLabelInput label="First Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="last_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <FloatingLabelInput label="Last Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <FloatingLabelInput label="Username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="business_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <FloatingLabelInput label="Business Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Textarea
-                        id="bio"
-                        rows={4}
-                        placeholder="Share a little about yourself"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SocialLinks
-                form={form}
-                userSocialLinks={userLinks?.filter(
-                  (link) => link.type === "social"
-                )}
-              />
-              <PaymentLinks
-                form={form}
-                userPaymentLinks={userLinks?.filter(
-                  (link) => link.type === "payment"
-                )}
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={saving}
-              className="w-full py-6 rounded-md"
+    <div>
+      <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
+      <div className="space-y-4 flex flex-col md:flex-row-reverse">
+        {profile.avatar_url && (
+          <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
+        )}
+        <div className="flex flex-col space-y-6 flex-grow md:max-w-lg">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col justify-between h-full"
             >
-              Update
-            </Button>
-          </form>
-        </Form>
+              <div className="space-y-6 flex flex-col mb-6">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="First Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Last Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Username" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FloatingLabelInput label="Business Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          id="bio"
+                          rows={4}
+                          placeholder="Share a little about yourself"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SocialLinks
+                  form={form}
+                  userSocialLinks={userLinks?.filter(
+                    (link) => link.type === "social"
+                  )}
+                />
+                <PaymentLinks
+                  form={form}
+                  userPaymentLinks={userLinks?.filter(
+                    (link) => link.type === "payment"
+                  )}
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={saving}
+                className="py-6 rounded-md w-60"
+              >
+                Update Profile
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

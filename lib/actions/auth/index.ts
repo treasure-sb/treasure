@@ -177,9 +177,30 @@ const verifyPhoneChangeOTP = async (phone: string, code: string) => {
   return { success: true };
 };
 
+const verifyEmailChangeOTP = async (email: string, code: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token: code,
+    type: "email_change",
+  });
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+};
+
 const updateUserPhone = async (phone: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.updateUser({ phone });
+  return { data, error };
+};
+
+const updateUserEmail = async (email: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.updateUser({ email });
   return { data, error };
 };
 
@@ -238,5 +259,7 @@ export {
   signUpUser,
   verifyUser,
   verifyPhoneChangeOTP,
+  verifyEmailChangeOTP,
   updateUserPhone,
+  updateUserEmail,
 };

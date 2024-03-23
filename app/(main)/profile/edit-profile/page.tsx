@@ -1,6 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EditProfileForm from "./components/EditProfileForm";
 import Phone from "./components/Phone";
+import Email from "./components/Email";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 import { User } from "@supabase/supabase-js";
@@ -24,13 +25,14 @@ export default async function Page() {
   const linksData: Partial<Tables<"links">>[] = data || [];
 
   return (
-    <main className="m-auto max-w-lg space-y-12">
+    <main className="max-w-lg md:max-w-6xl m-auto space-y-12">
       <EditProfileForm
         profile={profile}
         avatarUrl={publicUrl}
         userLinks={linksData}
       />
       <Phone profile={profile} />
+      <Email profile={profile} />
     </main>
   );
 }
