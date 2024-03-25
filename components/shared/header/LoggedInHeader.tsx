@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import * as React from "react";
 import TreasureEmerald from "../../icons/TreasureEmerald";
@@ -10,14 +8,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { User } from "@supabase/supabase-js";
+import { getProfile } from "@/lib/helpers/profiles";
+import createSupabaseServerClient from "@/utils/supabase/server";
 
-export default function LoggedInHeader({
-  profile,
-  publicUrl,
-}: {
-  profile: any;
-  publicUrl: any;
-}) {
+export default async function LoggedInHeader({ user }: { user: User | null }) {
+  const supabase = await createSupabaseServerClient();
+  const { profile } = await getProfile(user?.id);
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+
   return (
     <header className="flex justify-between items-center md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 z-10">
       <div className="relative">
