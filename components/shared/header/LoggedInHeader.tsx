@@ -60,7 +60,7 @@ export default function LoggedInHeader({
               className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
               href="/profile/tickets"
             >
-              My Tickets
+              Tickets
             </Link>
             <Link
               className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
@@ -73,12 +73,6 @@ export default function LoggedInHeader({
               href="/profile"
             >
               Manage Profile
-            </Link>
-            <Link
-              className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
-              href="/vendor"
-            >
-              Vendor Dashboard
             </Link>
             <Link
               className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
