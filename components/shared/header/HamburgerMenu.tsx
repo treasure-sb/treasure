@@ -105,10 +105,59 @@ export default function HamburgerMenu({
               className="group"
             >
               <Link
+                href="/profile/tickets"
+                className="text-xl flex justify-between items-center"
+              >
+                <p>Tickets</p>
+                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
+              </Link>
+            </motion.div>
+            <motion.div
+              variants={animationVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.4, duration: 0.4 }}
+              onClick={() => setOpen(false)}
+              className="group"
+            >
+              <Link
+                href={`/${profile.username}`}
+                className="text-xl flex justify-between items-center"
+              >
+                <p>View Profile</p>
+                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
+              </Link>
+            </motion.div>
+            <motion.div
+              variants={animationVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.4, duration: 0.4 }}
+              onClick={() => setOpen(false)}
+              className="group"
+            >
+              <Link
                 href="/profile"
                 className="text-xl flex justify-between items-center"
               >
-                <p>Profile Settings</p>
+                <p>Manage Profile</p>
+                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              variants={animationVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.4, duration: 0.4 }}
+              onClick={() => setOpen(false)}
+              className="group"
+            >
+              <Link
+                href="/host/events"
+                className="text-xl flex justify-between items-center"
+              >
+                <p>Host Dashboard</p>
                 <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
