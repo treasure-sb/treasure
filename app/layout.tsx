@@ -1,7 +1,7 @@
 import "./globals.css";
-import { Raleway, Work_Sans, Inter } from "next/font/google";
+import { Raleway, Inter, Lato } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
@@ -12,15 +12,15 @@ const raleway = Raleway({
   style: "normal",
 });
 
-const worksans = Work_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "600", "700", "800", "900"],
   style: "normal",
 });
 
-const inter = Inter({
+const lato = Lato({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "700"],
   style: "normal",
 });
 
@@ -40,7 +40,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="bg-background text-foreground overflow-x-hidden w-screen">
+      <body className="overflow-x-hidden w-screen">
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"

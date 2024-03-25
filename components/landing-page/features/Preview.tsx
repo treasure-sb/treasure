@@ -1,22 +1,20 @@
 "use client";
-import { motion } from "framer-motion";
-import ColoredCard from "../../ui/custom/colored-card";
-import CardFilp from "../../ui/custom/card-flip";
-import CoinsIcon from "@/components/icons/CoinsIcon";
 import GroupPartyIcon from "@/components/icons/GroupPartyIcon";
+import CardFilp from "@/components/ui/custom/card-flip";
 
 export default function Preview() {
   return (
-    <div className="w-full h-[500px] flex flex-col justify-between border px-8 py-10 rounded-sm bg-black shadow-2xl shadow-primary">
-      <div>
-        <GroupPartyIcon />
-        <h2 className="text-3xl mt-10">Preview Event Highlights</h2>
+    <CardFilp>
+      <div className="h-[500px] flex flex-col justify-between border px-8 py-10 rounded-sm bg-[#71d08c] bg-opacity-10">
+        <div className="space-y-4">
+          <GroupPartyIcon />
+          <h4 className="text-3xl">Preview Event Highlights</h4>
+        </div>
+        <p>
+          Discover which celebrites and icons are attending. Enter giveaways and
+          contests before the event starts.
+        </p>
       </div>
-
-      <p>
-        Discover which celebrites and icons are attending. Enter giveaways and
-        contests before the event starts.
-      </p>
-    </div>
+    </CardFilp>
   );
 }

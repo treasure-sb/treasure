@@ -35,9 +35,9 @@ const faqItems = [
 
 export default function FAQ() {
   return (
-    <section className="mx-[-16px]">
-      <div className="bg-[url('/static/faq_layer_2.svg')] w-full aspect-w-[960] aspect-h-[540] bg-no-repeat bg-center bg-cover" />
-      <div className="bg-primary text-background px-4">
+    <section className="mx-[-16px] mt-24 md:mt-60">
+      <div className="bg-[url('/static/wave-haikei.svg')] w-full aspect-w-[960] aspect-h-[100] bg-no-repeat bg-center bg-cover" />
+      <div className="bg-primary text-background px-4 pt-32">
         <div className="max-w-6xl xl:max-w-7xl m-auto space-y-8">
           <h1 className="text-3xl md:text-5xl font-semibold">
             Frequently asked <i>questions</i>

@@ -27,11 +27,11 @@
     --radius: 1rem;
     --scroll-bar-color: #c5c5c5;
     --scroll-bar-bg-color: rgba(160, 160, 160, 0.2);
+    --container-width: 1600px;
   }
 
   .dark {
-    /* --background: 20 14.3% 4.1%; */
-    --background: 0, 0%, 0%;
+    --background: 0, 0%, 7%;
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
     --card-foreground: 0 0% 95%;
@@ -53,9 +53,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 142.4 71.8% 29.2%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }

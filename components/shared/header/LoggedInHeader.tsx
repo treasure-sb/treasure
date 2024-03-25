@@ -14,14 +14,14 @@ export default async function LoggedInHeader({ user }: { user: User | null }) {
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
   return (
-    <header className="flex justify-between items-center md:max-w-6xl xl:max-w-7xl m-auto w-full mb-10 z-10">
+    <header className="flex h-16 justify-between items-center max-w-[var(--container-width)] m-auto w-full mb-10">
       <div className="relative">
         <Link
           href="/"
-          className="font-semibold text-3xl flex items-center space-x-1"
+          className="font-bold text-4xl flex items-center space-x-1"
         >
           <TreasureEmerald width={34} height={34} />
-          <h1>Treasure</h1>
+          <p>Treasure</p>
         </Link>
         {profile.role === "admin" && (
           <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px]">

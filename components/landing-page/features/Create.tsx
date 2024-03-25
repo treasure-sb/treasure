@@ -1,18 +1,19 @@
 "use client";
+import CardFilp from "@/components/ui/custom/card-flip";
 import { motion } from "framer-motion";
-import ColoredCard from "../../ui/custom/colored-card";
-import CardFilp from "../../ui/custom/card-flip";
-import CreateEventIcon from "@/components/icons/CreateEventIcon";
+import { BadgeCheckIcon } from "lucide-react";
 
 export default function Create() {
   return (
-    <div className="w-full h-[500px] flex flex-col justify-between border px-8 py-10 rounded-sm bg-black shadow-2xl shadow-primary">
-      <div>
-        <CreateEventIcon />
-        <h2 className="text-3xl mt-10">Create Beautiful Events</h2>
-      </div>
+    <CardFilp>
+      <div className="h-[500px] flex flex-col justify-between px-8 py-10 rounded-sm bg-[#eac362] bg-opacity-10">
+        <div className="space-y-4">
+          <BadgeCheckIcon size={32} className="text-tertiary" />
+          <h2 className="text-3xl">Create Beautiful Events</h2>
+        </div>
 
-      <p>Spotlight your brand with pages custom to you.</p>
-    </div>
+        <p>Spotlight your brand with pages custom to you.</p>
+      </div>
+    </CardFilp>
   );
 }

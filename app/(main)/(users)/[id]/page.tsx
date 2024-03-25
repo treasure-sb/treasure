@@ -40,10 +40,8 @@ export default async function Page({
     user = tempProfile;
   }
 
-  // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
 
-  // determine if user is hosting any events
   const { data: hostingData } = await getEventsHosting(1, user.id);
   const isHosting = hostingData ? hostingData.length > 0 : false;
   const eventsFilter = filter
@@ -52,7 +50,6 @@ export default async function Page({
     ? "Hosting"
     : "Attending";
 
-  // determine if logged in user is viewing their own profile
   const {
     data: { user: loggedInUser },
   } = await validateUser();
