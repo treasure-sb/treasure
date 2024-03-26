@@ -9,10 +9,13 @@ import VendorAppRejected, {
 import TicketPurchased, {
   TicketPurchasedProps,
 } from "@/emails/TicketPurchased";
+import VendorAppSubmitted, {
+  VendorAppSubmittedEmailProps,
+} from "@/emails/VendorAppSubmitted";
+import VendorAppReceived from "@/emails/VendorAppReceived";
 import { Resend } from "resend";
 import { generateTicketReceipt } from "@/pdfs/tickets";
 import { to } from "@/lib/utils";
-import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
@@ -65,6 +68,19 @@ const sendVendorAppRejectedEmail = async (
   return await to(sendEmailPromise);
 };
 
+const sendVendorAppSubmittedEmail = async (
+  email: string,
+  emailProps: VendorAppSubmittedEmailProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: "Your Vendor Application has been submitted",
+    react: VendorAppSubmitted(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
 const sendTicketPurchasedEmail = async (
   email: string,
   ticketId: string,
@@ -101,4 +117,5 @@ export {
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,
   sendTicketPurchasedEmail,
+  sendVendorAppSubmittedEmail,
 };
