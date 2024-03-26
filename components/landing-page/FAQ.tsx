@@ -35,9 +35,9 @@ const faqItems = [
 
 export default function FAQ() {
   return (
-    <section className="mx-[-16px] mt-24 md:mt-60">
-      <div className="bg-[url('/static/wave-haikei.svg')] w-full aspect-w-[960] aspect-h-[100] bg-no-repeat bg-center bg-cover" />
-      <div className="bg-primary text-background px-4 pt-32">
+    <section className="mx-[-16px] 2xl:mt-[-35vh]">
+      <div className="bg-[url('/static/outline.svg')] w-full aspect-w-[960] aspect-h-[540] bg-no-repeat bg-center bg-cover" />
+      <div className="px-4 pt-12">
         <div className="max-w-6xl xl:max-w-7xl m-auto space-y-8">
           <h1 className="text-3xl md:text-5xl font-semibold">
             Frequently asked <i>questions</i>
@@ -45,7 +45,7 @@ export default function FAQ() {
           <Accordion type="single" collapsible>
             {faqItems.map(({ id, question, answer }) => (
               <AccordionItem key={id} value={id}>
-                <AccordionTrigger className="text-lg text-left md:text-2xl py-6 md:py-8 decoration-background">
+                <AccordionTrigger className="text-lg text-left md:text-2xl py-6 md:py-8 decoration-primary">
                   {question}
                 </AccordionTrigger>
                 <AccordionContent className="text-base md:text-xl">

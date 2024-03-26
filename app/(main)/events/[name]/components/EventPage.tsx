@@ -27,10 +27,10 @@ export default async function EventPage({
   const eventDisplayData = await getEventDisplayData(event);
 
   return (
-    <main className="w-full md:w-fit m-auto">
-      <div className="mt-10 flex flex-col lg:flex-row lg:space-x-10">
+    <main className="w-full md:max-w-[1400px] m-auto">
+      <div className="flex flex-col md:flex-row md:justify-between md:space-x-14 w-full">
         <Poster event={event} user={user} />
-        <div className="text-left max-w-lg lg:max-w-xl mx-auto space-y-8 z-10">
+        <div className="text-left max-w-lg md:w-full md:max-w-3xl mx-auto space-y-8">
           <EventHeading event={event} />
           <Tags event={event} />
           <div className="space-y-2">

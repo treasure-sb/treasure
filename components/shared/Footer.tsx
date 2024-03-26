@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="py-10 bg-primary mx-[-16px] mb-[-40px] text-background px-4">
-      <div className="max-w-6xl m-auto flex justify-between mt-40">
+    <footer className="py-10 px-4 mt-20">
+      <div className="max-w-6xl m-auto flex justify-between">
         <Link className="landing-footer-link" href="/events">
           Browse Events
         </Link>

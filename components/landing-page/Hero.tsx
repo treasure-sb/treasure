@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, cubicBezier } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   const easeInOut = cubicBezier(0.82, -0.005, 0.59, 0.99);
