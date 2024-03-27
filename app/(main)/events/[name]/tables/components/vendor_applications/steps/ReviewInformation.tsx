@@ -7,6 +7,8 @@ import { submitVendorApplication } from "@/lib/actions/vendors/applications";
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
+import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
+import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 
 export interface VendorApplication {
   event_id: string;
@@ -53,18 +55,16 @@ export default function ReviewInformation() {
     toast.loading("Submitting application...");
 
     const successfulApplication = await submitApplication();
-    const successfulProfileUpdate = await updateUserProfile();
+    await updateUserProfile();
 
     toast.dismiss();
-    if (successfulApplication && successfulProfileUpdate) {
+    if (successfulApplication) {
       toast.success("Application submitted successfully");
+      await handleSendSubmittedEmail();
       flowDispatch({ type: "setCurrentView", payload: TableView.Complete });
-    } else if (!successfulApplication) {
+    } else {
       toast.error("Error submitting application");
-    } else if (!successfulProfileUpdate) {
-      toast.error("Error updating profile");
     }
-
     setSubmitting(false);
   };
 
@@ -90,15 +90,40 @@ export default function ReviewInformation() {
       first_name: vendorInfo.firstName,
       last_name: vendorInfo.lastName,
     };
+
     if (profile?.id) {
       const { error } = await updateProfile(fieldsToUpdate, profile.id);
       if (error) {
-        setSubmitting(false);
         toast.error("Error updating profile");
         return false;
       }
     }
     return true;
+  };
+
+  const handleSendSubmittedEmail = async () => {
+    const vendorEmailPayload: VendorAppSubmittedEmailProps = {
+      eventName: event.name,
+      posterUrl: event.publicPosterUrl,
+      tableType: table.section_name,
+      quantity: tableQuantity,
+      location: event.address,
+      date: event.date,
+      guestName: `${vendorInfo.firstName} ${vendorInfo.lastName}`,
+      businessName: vendorInfo.businessName,
+      itemInventory: inventory,
+      totalPrice: "$" + table.price * tableQuantity,
+      numberOfVendors: vendorsAtTable,
+      eventInfo: event.description,
+    };
+    const { error } = await sendVendorAppSubmittedEmail(
+      vendorInfo.email as string,
+      vendorEmailPayload
+    );
+
+    if (error) {
+      console.log(error);
+    }
   };
 
   const handleBack = () => {
