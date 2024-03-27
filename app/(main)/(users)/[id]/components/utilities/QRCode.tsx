@@ -14,10 +14,15 @@ export default function QRCode({ username }: { username: string }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="absolute bottom-1 right-1 h-[40px] w-[40px] flex items-center justify-center rounded-full bg-secondary hover:cursor-pointer hover:scale-110 transition duration-300 focus:outline-none">
-        <QrCodeIcon />
+      <DialogTrigger className="absolute bottom-1 right-1 w-11 h-11 flex items-center justify-center rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500 focus:outline-none">
+        <QrCodeIcon className="text-background" />
       </DialogTrigger>
-      <DialogContent className="flex items-center justify-center w-fit focus:outline-none p-10">
+      <DialogContent
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        className="flex items-center justify-center w-fit focus:outline-none p-10"
+      >
         <QrCode value={qrValue} />
       </DialogContent>
     </Dialog>

@@ -1,21 +1,21 @@
 "use client";
-import { motion } from "framer-motion";
-import ColoredCard from "../../ui/custom/colored-card";
 import CardFilp from "../../ui/custom/card-flip";
-import CoinsIcon from "@/components/icons/CoinsIcon";
+import { CircleDollarSignIcon } from "lucide-react";
 
 export default function Create() {
   return (
-    <div className="w-full h-[500px] flex flex-col justify-between border px-8 py-10 rounded-sm bg-black shadow-2xl shadow-primary">
-      <div>
-        <CoinsIcon />
-        <h2 className="text-3xl mt-10">Get Paid in Advance</h2>
-      </div>
+    <CardFilp>
+      <div className="h-[500px] mx-4 sm:m-auto flex flex-col justify-between border px-8 py-10 rounded-sm bg-black bg-opacity-10">
+        <div className="space-y-4">
+          <CircleDollarSignIcon size={36} />
+          <h4 className="text-3xl">Get Paid in Advance</h4>
+        </div>
 
-      <p>
-        Keep track of your sales and get paid in advance with our easy to use
-        event tools.
-      </p>
-    </div>
+        <p className="text-lg">
+          Keep track of your sales and get paid in advance with our easy to use
+          event tools.
+        </p>
+      </div>
+    </CardFilp>
   );
 }

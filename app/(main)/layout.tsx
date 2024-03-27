@@ -1,4 +1,4 @@
-import Header from "@/components/shared/header/Header";
+import NonLoggedHeader from "@/components/shared/header/NonLoggedHeader";
 import LoggedInHeader from "@/components/shared/header/LoggedInHeader";
 import { validateUser } from "@/lib/actions/auth";
 
@@ -12,11 +12,11 @@ export default async function MainLayout({
   } = await validateUser();
 
   return (
-    <div className="p-6 px-4">
-      <div className="relative z-10">
-        {user ? <LoggedInHeader user={user} /> : <Header />}
+    <div className="pb-6 pt-0 px-4 sm:px-8">
+      <div className="relative z-50">
+        {user ? <LoggedInHeader user={user} /> : <NonLoggedHeader />}
       </div>
-      {children}
+      <div className="pt-20 md:pt-28">{children}</div>
     </div>
   );
 }

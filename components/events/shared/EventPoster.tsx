@@ -14,8 +14,8 @@ export default function EventPoster({ posterUrl }: { posterUrl: string }) {
         className={`rounded-xl my-auto ${imageVisibility}`}
         alt="event poster image"
         src={posterUrl}
-        width={500}
-        height={500}
+        width={1000}
+        height={1000}
         priority
         onLoad={() => setLoading(false)}
       />

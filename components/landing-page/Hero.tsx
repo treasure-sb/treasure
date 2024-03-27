@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   return (
-    <section className="h-[100svh] relative mx-[-16px] flex items-center justify-center -mt-32 px-4 ">
+    <section className="h-[100svh] relative mx-[-16px] sm:mx-[-32px] flex items-center justify-center -mt-32 px-4 sm:px-8">
       <div className="flex flex-col items-center space-y-4 md:space-y-12 md:max-w-6xl xl:max-w-7xl m-auto tracking-tight">
         <p className="text-[2.4rem] font-extrabold text-center leading-tight md:leading-tight md:text-6xl md:max-w-6xl ">
           Find the Best <span className="text-primary">Sports</span>,{" "}
@@ -30,8 +30,7 @@ export default function Hero() {
         alt="hero-image"
         src={"/static/hero/sports_best.jpg"}
       />
-      <div className="bg-gradient-to-b from-transparent to-black absolute inset-x-0 bottom-0 h-2/5 -z-40" />
-      {/* <div className="bg-[url('/static/hero/wave.svg')] w-full aspect-w-[960] md:aspect-h-[350] aspect-h-[540] bg-no-repeat bg-center bg-cover absolute bottom-0" /> */}
+      <div className="bg-gradient-to-b from-transparent to-[#131313] absolute inset-x-0 bottom-0 h-2/5 -z-40" />
     </section>
   );
 }

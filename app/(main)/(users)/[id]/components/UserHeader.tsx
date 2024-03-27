@@ -2,14 +2,13 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import ColorThief from "./ColorThief";
 import CopyProfileLink from "./utilities/CopyProfileLink";
+import QRCode from "./utilities/QRCode";
 import { socialLinkData } from "@/lib/helpers/links";
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getPaymentLinks, getSocialLinks } from "@/lib/actions/links";
 import { Settings } from "lucide-react";
-import QRCode from "./utilities/QRCode";
-import { is } from "date-fns/locale";
 
 export default async function UserHeader({
   user,
@@ -23,7 +22,6 @@ export default async function UserHeader({
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(user.avatar_url);
 
-  // determine if user is a profile or a temp profile
   const isProfile = "bio" in user;
 
   const fetchUserLinksData = async () => {
@@ -95,7 +93,7 @@ export default async function UserHeader({
           )}
         </div>
       </div>
-      {isProfile && (
+      {isProfile && paymentLinks.length > 0 && (
         <Link className="m-auto w-[50%]" href={`/pay?vendor=${user.username}`}>
           <Button className="w-full p-6 text-lg font-bold bg-primary">
             Pay Now

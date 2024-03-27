@@ -32,9 +32,9 @@ export default function HamburgerMenu({
   return (
     <div className="block md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger>
+        <SheetTrigger asChild>
           <MenuIcon
-            className="stroke-1"
+            className="stroke-1 hover:cursor-pointer"
             onClick={() => setOpen(true)}
             size={38}
           />
@@ -60,7 +60,7 @@ export default function HamburgerMenu({
                 onClick={() => setOpen(false)}
               >
                 <Link href={`/${profile.username}`} className="rounded-full">
-                  <Avatar className="h-20 w-20 border-primary border-2">
+                  <Avatar className="h-20 w-20">
                     <AvatarImage src={profilePublicUrl} />
                     <AvatarFallback>
                       {profile.first_name[0]}

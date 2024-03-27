@@ -15,11 +15,11 @@ export default async function Poster({
   const publicPosterUrl = await getPublicPosterUrl(event);
 
   return (
-    <div className="relative lg:sticky lg:top-0 h-fit max-w-lg mx-auto lg:pt-8">
-      <div className="absolute right-2 top-2 lg:top-10 p-2 z-10 bg-black rounded-full hover:bg-black">
+    <div className="relative md:sticky md:top-28 h-fit m-auto md:m-0">
+      <div className="absolute right-2 top-2 p-2 z-10 bg-black rounded-full hover:bg-black">
         <LikeButton event={event} user={user} />
       </div>
-      <div className="mb-6">
+      <div className="mb-6 w-full max-w-xl">
         <EventPoster posterUrl={publicPosterUrl} />
       </div>
       <ColorThief publicUrl={publicPosterUrl} />

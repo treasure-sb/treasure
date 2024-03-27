@@ -43,7 +43,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
 
   return (
     <section>
-      <h2 className="font-semibold text-xl mb-4">Hosted By</h2>
+      <h3 className="font-semibold text-xl mb-4">Hosted By</h3>
       <div className="flex flex-col space-y-1 items-center">
         <Link
           href={type === "profile" ? `/${username}` : `/${username}?type=t`}
