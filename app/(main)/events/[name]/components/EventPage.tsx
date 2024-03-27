@@ -7,7 +7,7 @@ import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
 import VendorTables from "./tables/VendorTables";
 import HostedBy from "./sections/HostedBy";
-import Vendors from "./Vendors";
+import Vendors from "./sections/Vendors";
 import EventOptions from "./options/EventOptions";
 import EventHeading from "./sections/EventHeading";
 import About from "./sections/About";
@@ -30,7 +30,7 @@ export default async function EventPage({
     <main className="w-full md:max-w-[1400px] m-auto">
       <div className="flex flex-col md:flex-row md:justify-between md:space-x-14 w-full">
         <Poster event={event} user={user} />
-        <div className="text-left max-w-lg md:w-full md:max-w-3xl mx-auto space-y-8">
+        <div className="text-left max-w-lg md:w-full md:max-w-2xl mx-auto space-y-8">
           <EventHeading event={event} />
           <Tags event={event} />
           <div className="space-y-2">

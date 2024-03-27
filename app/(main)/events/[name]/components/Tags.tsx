@@ -10,19 +10,17 @@ export default async function Tags({ event }: { event: Tables<"events"> }) {
     .eq("event_id", event.id);
 
   return (
-    <>
-      {tagsData && (
-        <div className="flex gap-2 w-full flex-wrap">
-          {tagsData.map((tag: any) => (
-            <Badge
-              className="bg-tertiary p-1 px-4 hover:bg-tertiary text-black"
-              key={tag.id}
-            >
-              {tag.tags.name}
-            </Badge>
-          ))}
-        </div>
-      )}
-    </>
+    tagsData && (
+      <div className="flex gap-2 w-full flex-wrap">
+        {tagsData.map((tag: any) => (
+          <Badge
+            className="bg-tertiary p-1 px-4 hover:bg-tertiary text-background"
+            key={tag.id}
+          >
+            {tag.tags.name}
+          </Badge>
+        ))}
+      </div>
+    )
   );
 }

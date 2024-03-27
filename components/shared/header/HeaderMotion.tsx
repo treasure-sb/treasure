@@ -1,4 +1,5 @@
 "use client";
+
 import {
   motion,
   useMotionTemplate,
@@ -21,9 +22,9 @@ export default function HeaderMotion({
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious();
     const diff = current - previous;
-    if (diff > 0 && current > 300) {
+    if (diff > 15 && current > 300) {
       animate(scope.current, { y: -120 }, { ease: "easeOut", duration: 0.25 });
-    } else if (diff < 0) {
+    } else if (diff < -15 || current < 100) {
       animate(scope.current, { y: 0 }, { ease: "easeOut", duration: 0.25 });
     }
   });

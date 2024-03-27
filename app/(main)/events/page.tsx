@@ -11,7 +11,7 @@ export default function Page({
   const tag = searchParams?.tag || null;
 
   return (
-    <main className="max-w-full md:max-w-6xl xl:max-w-7xl m-auto">
+    <main className="max-w-full md:max-w-7xl m-auto">
       <FilteringOptions />
       <TagFiltering />
       <div className="my-4">

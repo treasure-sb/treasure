@@ -17,15 +17,11 @@ export default async function Events({
 
   const events = await getEventsDisplayData(1, searchParams);
 
-  return (
-    <>
-      {events && events.length > 0 ? (
-        <ListEvents user={user} events={events} searchParams={searchParams} />
-      ) : (
-        <div>
-          <h1 className="text-center">No Events</h1>
-        </div>
-      )}
-    </>
+  return events && events.length > 0 ? (
+    <ListEvents user={user} events={events} searchParams={searchParams} />
+  ) : (
+    <div>
+      <h2 className="text-center">No Events</h2>
+    </div>
   );
 }
