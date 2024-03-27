@@ -6,8 +6,6 @@ import {
   Button,
   Container,
   Heading,
-  Row,
-  Column,
   Html,
   Section,
   Text,
