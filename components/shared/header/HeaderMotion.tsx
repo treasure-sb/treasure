@@ -36,7 +36,7 @@ export default function HeaderMotion({
         backgroundColor: useMotionTemplate`rgba(18, 18, 18, ${backgroundOpacity})`,
         borderColor: useMotionTemplate`rgba(255, 255, 255, ${borderOpacity})`,
       }}
-      className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-4 px-8"
+      className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-4 px-4 sm:px-8"
     >
       <div className="max-w-[var(--container-width)] flex justify-between items-center m-auto w-full">
         {children}
