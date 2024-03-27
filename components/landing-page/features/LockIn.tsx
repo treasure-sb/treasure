@@ -7,11 +7,11 @@ export default function Create() {
     <CardFilp>
       <div className="h-[500px] mx-4 sm:m-auto flex flex-col justify-between border px-8 py-10 rounded-sm bg-black bg-opacity-10">
         <div className="space-y-4">
-          <CircleDollarSignIcon size={32} />
+          <CircleDollarSignIcon size={36} />
           <h4 className="text-3xl">Get Paid in Advance</h4>
         </div>
 
-        <p>
+        <p className="text-lg">
           Keep track of your sales and get paid in advance with our easy to use
           event tools.
         </p>

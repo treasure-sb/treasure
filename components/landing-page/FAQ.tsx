@@ -35,7 +35,7 @@ const faqItems = [
 
 export default function FAQ() {
   return (
-    <section className="mx-[-16px] 2xl:mt-[-35vh]">
+    <section className="mx-[-32px] 2xl:mt-[-35vh]">
       <div className="bg-[url('/static/outline.svg')] w-full aspect-w-[960] aspect-h-[540] bg-no-repeat bg-center bg-cover" />
       <div className="px-4 pt-12">
         <div className="max-w-6xl xl:max-w-7xl m-auto space-y-8">

@@ -2,40 +2,36 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, cubicBezier } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export default function Hero() {
-  const easeInOut = cubicBezier(0.82, -0.005, 0.59, 0.99);
-
   return (
-    <section className="max-w-[var(--container-width)] m-auto h-[calc(100svh-128px)] flex flex-col space-y-14 space-x-0 sm:flex-row sm:space-y-0 sm:space-x-8 items-center justify-center sm:pb-10">
-      <div className="w-full sm:mt-auto tracking-tight">
-        <p className="text-4xl font-bold text-left leading-tight md:leading-tight md:text-6xl md:max-w-md 2xl:max-w-xl mb-4">
-          The Best Sports, Pokemon, and TCG Events Near You
+    <section className="h-[100svh] relative mx-[-32px] flex items-center justify-center -mt-32 px-4 ">
+      <div className="flex flex-col items-center space-y-4 md:space-y-12 md:max-w-6xl xl:max-w-7xl m-auto tracking-tight">
+        <p className="text-[2.4rem] font-extrabold text-center leading-tight md:leading-tight md:text-6xl md:max-w-6xl ">
+          Find the Best <span className="text-primary">Sports</span>,{" "}
+          <span className="text-primary">Pokemon</span>, and{" "}
+          <span className="text-primary">TCG</span> Events Near You
         </p>
-        <Link href="/events">
-          <p className="inline-block w-fit text-2xl md:text-4xl font-semibold text-primary underline-offset-8 underline">
+        <Link href="/events" className="w-fit">
+          <Button className="w-40 md:w-60 md:h-16 md:text-xl">
             Browse Events
-          </p>
+          </Button>
         </Link>
       </div>
-      <div className="w-full max-w-xl h-full relative">
-        <Image
-          loading="eager"
-          className="h-full w-full object-cover rounded-sm"
-          width={1000}
-          height={1000}
-          quality={100}
-          alt="hero-image"
-          src={"/static/hero/convention2.jpg"}
-        />
-        <motion.div
-          initial={{ height: "100%" }}
-          animate={{ height: 0 }}
-          transition={{ duration: 0.55, ease: easeInOut, delay: 0.1 }}
-          className="bg-background absolute inset-0"
-        />
-      </div>
+      <Image
+        className="-z-50 absolute inset-0 opacity-100"
+        width={0}
+        height={0}
+        layout="fill"
+        objectFit="cover"
+        objectPosition="center"
+        quality={100}
+        alt="hero-image"
+        src={"/static/hero/sports_best.jpg"}
+      />
+      <div className="bg-gradient-to-b from-transparent to-[#131313] absolute inset-x-0 bottom-0 h-2/5 -z-40" />
+      {/* <div className="bg-[url('/static/hero/wave.svg')] w-full aspect-w-[960] md:aspect-h-[350] aspect-h-[540] bg-no-repeat bg-center bg-cover absolute bottom-0" /> */}
     </section>
   );
 }

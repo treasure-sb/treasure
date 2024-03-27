@@ -10,7 +10,7 @@ export default function Preview() {
           <GroupPartyIcon />
           <h4 className="text-3xl">Preview Event Highlights</h4>
         </div>
-        <p>
+        <p className="text-lg">
           Discover which celebrites and icons are attending. Enter giveaways and
           contests before the event starts.
         </p>

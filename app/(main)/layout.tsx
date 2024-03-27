@@ -12,7 +12,7 @@ export default async function MainLayout({
   } = await validateUser();
 
   return (
-    <div className="pb-6 pt-0 px-4">
+    <div className="pb-6 pt-0 px-8">
       <div className="relative z-50">
         {user ? <LoggedInHeader user={user} /> : <NonLoggedHeader />}
       </div>
