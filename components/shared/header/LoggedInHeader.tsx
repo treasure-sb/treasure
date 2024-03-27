@@ -45,8 +45,8 @@ export default async function LoggedInHeader({ user }: { user: User }) {
         </Link>
 
         <Popover>
-          <PopoverTrigger>
-            <Avatar className="h-16 w-16 mr-[10px] border-primary">
+          <PopoverTrigger asChild>
+            <Avatar className="h-16 w-16 border-primary hover:cursor-pointer">
               <AvatarImage src={publicUrl} />
               <AvatarFallback>
                 {profile.first_name[0]}

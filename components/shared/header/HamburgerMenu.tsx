@@ -32,9 +32,9 @@ export default function HamburgerMenu({
   return (
     <div className="block md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger>
+        <SheetTrigger asChild>
           <MenuIcon
-            className="stroke-1"
+            className="stroke-1 hover:cursor-pointer"
             onClick={() => setOpen(true)}
             size={38}
           />

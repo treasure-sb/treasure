@@ -16,7 +16,7 @@ export default function HeaderMotion({
   const { scrollY } = useScroll();
   const [scope, animate] = useAnimate();
   const backgroundOpacity = useTransform(scrollY, [0, 20], [0, 0.98]);
-  const borderOpacity = useTransform(scrollY, [0, 20], [0, 0.2]);
+  const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.2]);
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious();
@@ -35,9 +35,9 @@ export default function HeaderMotion({
         backgroundColor: useMotionTemplate`rgba(18, 18, 18, ${backgroundOpacity})`,
         borderColor: useMotionTemplate`rgba(255, 255, 255, ${borderOpacity})`,
       }}
-      className="h-20 md:h-24 w-screen fixed inset-x-0 border-b-[1px]"
+      className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-4 px-4"
     >
-      <div className="max-w-[var(--container-width)] py-4 px-4 md:px-0 flex justify-between items-center m-auto">
+      <div className="max-w-[var(--container-width)] flex justify-between items-center m-auto w-full">
         {children}
       </div>
     </motion.header>

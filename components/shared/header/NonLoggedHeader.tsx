@@ -1,10 +1,10 @@
-"use client";
 import Link from "next/link";
 import TreasureEmerald from "../../icons/TreasureEmerald";
+import HeaderMotion from "./HeaderMotion";
 
-export default function Header() {
+export default function NonLoggedHeader() {
   return (
-    <header className="flex h-12 justify-between items-center max-w-[var(--container-width)] m-auto w-full mb-10 z-10">
+    <HeaderMotion>
       <Link href="/" className="font-bold text-2xl flex items-center space-x-1">
         <TreasureEmerald width={28} height={28} />
         <p>Treasure</p>
@@ -23,6 +23,6 @@ export default function Header() {
           Login
         </Link>
       </div>
-    </header>
+    </HeaderMotion>
   );
 }
