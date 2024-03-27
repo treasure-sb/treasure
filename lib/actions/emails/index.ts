@@ -12,10 +12,11 @@ import TicketPurchased, {
 import VendorAppSubmitted, {
   VendorAppSubmittedEmailProps,
 } from "@/emails/VendorAppSubmitted";
-import VendorAppReceived from "@/emails/VendorAppReceived";
+import TablePurchased, { TablePurchasedProps } from "@/emails/TablePurchased";
 import { Resend } from "resend";
 import { generateTicketReceipt } from "@/pdfs/tickets";
 import { to } from "@/lib/utils";
+import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
@@ -49,7 +50,7 @@ const sendVendorAppAcceptedEmail = async (
   const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
-    subject: `${emailProps.eventName} - You've Been Accepted`,
+    subject: `You've Been Accepted!: ${emailProps.eventName}`,
     react: VendorAppAccepted(emailProps),
   });
   return await to(sendEmailPromise);
@@ -75,8 +76,21 @@ const sendVendorAppSubmittedEmail = async (
   const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
-    subject: "Your Vendor Application has been submitted",
+    subject: `Registration received: ${emailProps.eventName}`,
     react: VendorAppSubmitted(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
+const sendTablePurchasedEmail = async (
+  email: string,
+  emailProps: TablePurchasedProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `Table confirmed: ${emailProps.eventName}`,
+    react: TablePurchased(emailProps),
   });
   return await to(sendEmailPromise);
 };
@@ -118,4 +132,5 @@ export {
   sendVendorAppRejectedEmail,
   sendTicketPurchasedEmail,
   sendVendorAppSubmittedEmail,
+  sendTablePurchasedEmail,
 };

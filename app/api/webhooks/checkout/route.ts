@@ -58,7 +58,6 @@ const handleTicketPurchase = async (
       .insert({ attendee_id: user_id, event_id, ticket_id })
       .select();
 
-  console.log(purchasedTicketData, purchasedTicketError);
   if (!purchasedTicketData || purchasedTicketError) {
     return NextResponse.json({
       message: "Error",
@@ -71,8 +70,7 @@ const handleTicketPurchase = async (
   const { event } = await getEventFromId(event_id);
   const posterUrl = await getPublicPosterUrl(event);
 
-  // generate emails props
-  const emailProps = {
+  const ticketPurchaseEmailProps = {
     eventName: event.name,
     posterUrl,
     ticketType: ticket.name,
@@ -89,7 +87,7 @@ const handleTicketPurchase = async (
       profile.email,
       purchasedTicket.id,
       event_id,
-      emailProps
+      ticketPurchaseEmailProps
     );
   }
 };
