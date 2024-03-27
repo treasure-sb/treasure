@@ -19,7 +19,7 @@ import {
 export interface TablePurchasedProps {
   eventName: string;
   posterUrl: string;
-  ticketType: string;
+  tableType: string;
   quantity: number;
   location: string;
   date: string;
@@ -35,7 +35,7 @@ const testEmailValues = {
   eventName: "Garden State Card Show",
   posterUrl:
     "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
-  ticketType: "General Admission",
+  tableType: "General Admission",
   quantity: 1,
   location: "8868 1st St, Los Angeles, CA 90048 United States of America",
   date: "Sat, March 3",
@@ -51,7 +51,7 @@ const testEmailValues = {
 export default function TablePurchased({
   eventName = testEmailValues.eventName,
   posterUrl = testEmailValues.posterUrl,
-  ticketType = testEmailValues.ticketType,
+  tableType = testEmailValues.tableType,
   quantity = testEmailValues.quantity,
   location = testEmailValues.location,
   date = testEmailValues.date,
@@ -119,7 +119,7 @@ export default function TablePurchased({
                 <Column className="text-left text-foreground/40">
                   Table Type
                 </Column>
-                <Column className="text-right">{ticketType}</Column>
+                <Column className="text-right">{tableType}</Column>
               </Row>
               <Hr className="border-foreground/40 my-6" />
               <Row>
@@ -180,7 +180,7 @@ export default function TablePurchased({
                 Visit our{" "}
                 <Link
                   className="font-semibold text-foreground underline"
-                  href="https://www.ontreasure.xyz/faq"
+                  href="https://www.ontreasure.xyz"
                 >
                   Help Center
                 </Link>{" "}

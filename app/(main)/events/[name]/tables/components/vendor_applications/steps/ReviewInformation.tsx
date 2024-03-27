@@ -105,7 +105,7 @@ export default function ReviewInformation() {
     const vendorEmailPayload: VendorAppSubmittedEmailProps = {
       eventName: event.name,
       posterUrl: event.publicPosterUrl,
-      ticketType: table.section_name,
+      tableType: table.section_name,
       quantity: tableQuantity,
       location: event.address,
       date: event.date,

@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { sendTicketPurchasedEmail } from "@/lib/actions/emails";
+import {
+  sendTicketPurchasedEmail,
+  sendTablePurchasedEmail,
+} from "@/lib/actions/emails";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { TablePurchasedProps } from "@/emails/TablePurchased";
 import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
@@ -97,11 +101,48 @@ const handleTablePurchase = async (
   supabase: SupabaseClient<any, "public", any>
 ) => {
   const { event_id, user_id } = checkoutSession;
-  await supabase
+  const { data: updateVendorData, error: updateVendorError } = await supabase
     .from("event_vendors")
     .update({ payment_status: "PAID" })
     .eq("event_id", event_id)
-    .eq("vendor_id", user_id);
+    .eq("vendor_id", user_id)
+    .select("*, events(*), profiles(*), tables(*)")
+    .single();
+
+  if (updateVendorError) {
+    return NextResponse.json({
+      message: "Error",
+      ok: false,
+    });
+  }
+
+  const vendorProfile: Tables<"profiles"> = updateVendorData.profiles;
+  const event: Tables<"events"> = updateVendorData.events;
+  const table: Tables<"tables"> = updateVendorData.tables;
+  const posterUrl = await getPublicPosterUrl(event);
+
+  const tablePurchasedEmailPayload: TablePurchasedProps = {
+    eventName: event.name,
+    posterUrl: posterUrl,
+    tableType: table.section_name,
+    quantity: updateVendorData.table_quantity,
+    location: event.address,
+    date: moment(event.date).format("dddd, MMM Do"),
+    guestName: `${vendorProfile.first_name} ${vendorProfile.last_name}`,
+    businessName: vendorProfile.business_name,
+    itemInventory: updateVendorData.inventory,
+    totalPrice: `$${updateVendorData.table_quantity * table.price}`,
+    numberOfVendors: updateVendorData.vendors_at_table,
+    eventInfo: event.description,
+  };
+
+  const { error: sendTablePurchasedEmailError } = await sendTablePurchasedEmail(
+    updateVendorData.application_email,
+    tablePurchasedEmailPayload
+  );
+  if (sendTablePurchasedEmailError) {
+    console.log(sendTablePurchasedEmailError);
+  }
 };
 
 const handlePaymentIntentSucceeded = async (
