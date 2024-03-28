@@ -167,7 +167,7 @@ export default function Pending({
   };
 
   return (
-    <div className="bg-secondary py-2 px-2 rounded-sm relative">
+    <div className="bg-secondary py-2 px-2 rounded-sm relative mt-3">
       <div className="rounded-full bg-red-600 absolute w-4 h-4 -top-1 -right-0 animate-pulse"></div>
       <Textarea
         onChange={(e) => setMessage(e.target.value)}

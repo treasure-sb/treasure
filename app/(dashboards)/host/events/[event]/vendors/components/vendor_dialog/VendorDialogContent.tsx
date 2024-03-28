@@ -1,8 +1,6 @@
 import { EventVendorData } from "../../page";
 import { DialogContent } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { EventDisplayData } from "@/types/event";
 import Link from "next/link";
 import Pending from "./Pending";
@@ -14,20 +12,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-const LabeledText = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => {
-  return (
-    <p className="text-md">
-      <span className="text-primary font-semibold">{label}:</span> {children}
-    </p>
-  );
-};
 
 export default function VendorDialogContent({
   avatarUrl,
@@ -51,12 +35,10 @@ export default function VendorDialogContent({
   } = vendorData;
 
   return (
-    <DialogContent className="h-[80%] overflow-scroll">
+    <DialogContent className="h-[80%] overflow-scroll sm:overflow-auto">
       <div className="flex flex-col justify-between h-full text-sm md:text-base overflow-scroll scrollbar-hidden">
         <div className="w-full flex flex-col align-middle text-center space-y-4">
-          <h4 className="text-xl font-semibold text-primary">
-            Review Information
-          </h4>
+          <h4 className="text-xl font-semibold">Review Information</h4>
           <div className="flex justify-between px-2 sm:px-4 text-sm sm:text-lg">
             <p>
               {table.section_name}, {vendors_at_table} vendors at table
