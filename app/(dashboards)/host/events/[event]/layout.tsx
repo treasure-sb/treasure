@@ -2,6 +2,7 @@ import EventToolsHeader from "./components/EventToolsHeader";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { validateUser } from "@/lib/actions/auth";
 import { eventDisplayData } from "@/lib/helpers/events";
+import { redirect } from "next/navigation";
 
 export default async function HostEventLayout({
   children,
@@ -15,12 +16,16 @@ export default async function HostEventLayout({
     data: { user },
   } = await validateUser();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
+
+  if (!data || error) {
+    return redirect("/host/events");
+  }
 
   const displayData = await eventDisplayData([data]);
   const eventData = displayData[0];
