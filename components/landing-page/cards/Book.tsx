@@ -2,7 +2,7 @@
 import { CalendarCheck2Icon } from "lucide-react";
 import CardFilp from "../../ui/custom/card-flip";
 
-export default function Create() {
+export default function Book() {
   return (
     <CardFilp>
       <div className="h-[500px] mx-4 sm:m-auto flex flex-col justify-between border px-8 py-10 rounded-sm bg-gray-300 bg-opacity-10">

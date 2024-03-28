@@ -2,7 +2,7 @@
 import Preview from "./Preview";
 import Create from "./Create";
 import Book from "./Book";
-import LockIn from "./LockIn";
+import GetPaid from "./GetPaid";
 
 export default function Features() {
   return (
@@ -10,7 +10,7 @@ export default function Features() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-4 w-full m-auto">
         <Preview />
         <Book />
-        <LockIn />
+        <GetPaid />
         <Create />
       </div>
     </section>

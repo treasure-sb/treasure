@@ -2,7 +2,7 @@
 import CardFilp from "../../ui/custom/card-flip";
 import { CircleDollarSignIcon } from "lucide-react";
 
-export default function Create() {
+export default function GetPaid() {
   return (
     <CardFilp>
       <div className="h-[500px] mx-4 sm:m-auto flex flex-col justify-between border px-8 py-10 rounded-sm bg-black bg-opacity-10">
