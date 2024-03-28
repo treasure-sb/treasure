@@ -28,7 +28,7 @@ export default function Hero() {
         objectPosition="center"
         quality={100}
         alt="hero-image"
-        src={"/static/hero/sports_best.jpg"}
+        src={"/static/landing-page/sports_best.jpg"}
       />
       <div className="bg-gradient-to-b from-transparent to-[#131313] absolute inset-x-0 bottom-0 h-2/5 -z-40" />
     </section>

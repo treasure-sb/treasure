@@ -19,7 +19,7 @@ import { EventFormLocation } from "@/types/event";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import Autocomplete from "@/components/places/Autocomplete";
+import Autocomplete from "./places/Autocomplete";
 
 interface Step1Props {
   onNext: () => void;
