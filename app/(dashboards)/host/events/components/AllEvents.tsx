@@ -1,6 +1,7 @@
 import { eventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
 import { Tables } from "@/types/supabase";
+import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkeleton";
 import EventDisplay from "@/components/events/shared/EventDisplay";
@@ -11,11 +12,15 @@ export default async function AllEvents() {
     data: { user },
   } = await validateUser();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
     .order("date", { ascending: true });
+
+  if (!data || error) {
+    redirect("/events");
+  }
 
   const eventsHosting: Tables<"events">[] = data || [];
   const eventData = await eventDisplayData(eventsHosting);
