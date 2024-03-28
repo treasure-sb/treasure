@@ -18,13 +18,11 @@ async function isUserOrganzierOrAdmin(
   return event && (event.organizer_id === userId || profile.role === "admin");
 }
 
+// segment after split = ["", "host", "events", "[id]", "..."]
 function isOrganizerPage(pathname: string) {
   const segments = pathname.split("/");
   return (
-    segments.length > 3 &&
-    segments[1] === "profile" &&
-    segments[2] === "events" &&
-    segments[3] === "organizer"
+    segments.length >= 4 && segments[1] === "host" && segments[2] === "events"
   );
 }
 
@@ -124,14 +122,14 @@ export async function middleware(request: NextRequest) {
     response = NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // check to see if the route is /profile/events/organizer/[id]/...
+  // check to see if the route is /host/events/[id]/...
   // if so, check to see if the user is the organizer of the event or admin
-  // if not, redirect to /profile/events
+  // if not, redirect to /host/events
   if (isOrganizerPage(pathname)) {
     const userId = session?.user.id;
-    const eventName = request.nextUrl.pathname.split("/")[4];
+    const eventName = request.nextUrl.pathname.split("/")[3];
     if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
-      response = NextResponse.redirect(new URL("/profile/events", request.url));
+      response = NextResponse.redirect(new URL("/host/events", request.url));
     }
   }
   return response;
