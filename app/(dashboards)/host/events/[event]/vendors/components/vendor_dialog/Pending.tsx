@@ -167,31 +167,32 @@ export default function Pending({
   };
 
   return (
-    <div>
+    <div className="bg-secondary py-2 px-2 rounded-sm relative">
+      <div className="rounded-full bg-red-600 absolute w-4 h-4 -top-1 -right-0 animate-pulse"></div>
       <Textarea
         onChange={(e) => setMessage(e.target.value)}
-        className="w-[90%] m-auto"
-        rows={4}
+        className="w-full px-2 sm:px-4"
+        rows={3}
         placeholder="Write Message to the Vendor... (Optional)"
       />
-      <h1 className="text-gray-400 text-xs md:text-sm my-4">
+      <h1 className="text-gray-300 text-xs md:text-sm my-4 mx-2">
         Once accepted, the vendor will receive an email to purchase their table.
       </h1>
       <div className="flex space-x-2">
+        <Button
+          onClick={async () => await rejectVendor()}
+          disabled={loading}
+          className="w-full text-black"
+          variant={"destructive"}
+        >
+          Reject
+        </Button>
         <Button
           onClick={async () => await acceptVendor()}
           disabled={loading}
           className="w-full"
         >
           Accept
-        </Button>
-        <Button
-          onClick={async () => await rejectVendor()}
-          disabled={loading}
-          className="w-full"
-          variant={"destructive"}
-        >
-          Reject
         </Button>
       </div>
     </div>
