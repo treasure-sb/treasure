@@ -4,6 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
@@ -12,11 +13,13 @@ export default function EventDisplay({
   event,
   user,
   redirect,
+  clickable = true,
   showLikeButton = true,
 }: {
   user?: User | null;
   event: EventDisplayData;
   redirect?: string;
+  clickable?: boolean;
   showLikeButton?: boolean;
 }) {
   const [loading, setLoading] = useState(true);
@@ -24,7 +27,12 @@ export default function EventDisplay({
   const skeletonDisplay = loading ? "inline-block" : "hidden";
 
   return (
-    <div className="group w-full relative">
+    <div
+      className={cn(
+        "group w-full relative",
+        !clickable && "pointer-events-none"
+      )}
+    >
       {showLikeButton && (
         <div className="absolute right-2 top-2 p-2 bg-black rounded-full z-10">
           <LikeButton event={event} user={user} />

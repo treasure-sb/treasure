@@ -2,7 +2,7 @@ import FeaturedEvents from "@/components/landing-page/featured-events/FeaturedEv
 import Hero from "@/components/landing-page/Hero";
 import FAQ from "@/components/landing-page/FAQ";
 import Footer from "@/components/shared/Footer";
-import Features from "@/components/landing-page/features/Features";
+import Features from "@/components/landing-page/cards/Features";
 
 export default function Page() {
   return (
