@@ -19,7 +19,6 @@ export default async function HostEventLayout({
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
 
