@@ -1,10 +1,8 @@
 "use client";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Link as Chain } from "lucide-react";
 
 export default function CopyProfileLink({ username }: { username: string }) {
-  const { toast } = useToast();
-
   const handleCopy = async () => {
     const naviagtorCopy = async () => {
       try {
@@ -12,10 +10,7 @@ export default function CopyProfileLink({ username }: { username: string }) {
         setTimeout(() => {
           navigator.clipboard.writeText(inviteLink);
         }, 0);
-
-        toast({
-          title: "Profile Link Copied!",
-        });
+        toast("Profile Link Copied!");
       } catch (err) {
         console.error("Failed to copy: ", err);
       }
