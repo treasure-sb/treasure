@@ -24,9 +24,7 @@ export default function SeeTickets({
             : `Tickets from $${minimumTicketPrice}`}
         </p>
         <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-          <Button className="text-base border-primary" variant={"outline"}>
-            Buy Now
-          </Button>
+          <Button className="border-primary w-32">Buy Now</Button>
         </Link>
       </div>
     </div>

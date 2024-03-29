@@ -17,7 +17,7 @@ export default function VendorApplication() {
       <VendorAppProgress />
       <BackToAllTables />
       <h2 className="text-2xl font-semibold mb-4">Vendor Application</h2>
-      {/* {!profile && <Login />} */}
+      {!profile && <Login />}
       {profile && currentStep === 1 && <VendorInformation />}
       {profile && currentStep === 2 && <TermsAndConditions />}
       {profile && currentStep === 3 && <ReviewInformation />}
