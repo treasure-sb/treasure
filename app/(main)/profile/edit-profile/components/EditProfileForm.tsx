@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
+import { UpdateProfile } from "@/lib/actions/profile";
 import PaymentLinks from "./PaymentLinks";
 import AvatarEdit from "./AvatarEdit";
 import SocialLinks from "./SocialLinks";
@@ -84,11 +85,11 @@ export default function EditProfileForm({
     setSaving(true);
     toast.loading("Updating...");
 
-    const { social_links, payment_links, ...rest } = form.getValues();
-
-    const profileUpdateForm = {
+    const { social_links, payment_links, username, ...rest } = form.getValues();
+    const profileUpdateForm: UpdateProfile = {
       ...profile,
       ...rest,
+      username: username.toLowerCase(),
     };
 
     if (newAvatarFile) {
