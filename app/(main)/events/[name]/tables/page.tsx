@@ -14,6 +14,7 @@ export default async function Page({
   };
 }) {
   const supabase = await createSupabaseServerClient();
+  const eventName = params.name;
 
   const {
     data: { user },
@@ -22,11 +23,10 @@ export default async function Page({
   const { profile: profileData } = await getProfile(user?.id);
   const profile: Tables<"profiles"> | null = profileData;
 
-  const { name } = params;
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", name)
+    .eq("cleaned_name", eventName)
     .single();
   const event: Tables<"events"> = eventData;
   const eventDisplayData = await getEventDisplayData(event);

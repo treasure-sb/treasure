@@ -15,7 +15,9 @@ export default function LoginFlowDialog({
         }}
         className="w-80 md:w-96 h-[22rem] flex items-center"
       >
-        <LoginFlow isDialog={true} subheading="Sig up or Login" />
+        <div className="-mt-8 w-full">
+          <LoginFlow isDialog={true} subheading="Sig up or Login" />
+        </div>
       </DialogContent>
     </Dialog>
   );

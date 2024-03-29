@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
@@ -61,18 +63,18 @@ export default function TicketCounter({
     <Button
       disabled={creatingCheckout}
       onClick={async () => await handleCheckout()}
-      className="w-full rounded-md"
+      className="w-full rounded-full p-6"
     >
       Checkout - ${ticket.price * ticketCount}
     </Button>
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-background">
       <div className="flex space-x-6 justify-center">
         <Button
           disabled={ticketCount === minTickets}
-          className="text-4xl disabled:text-foreground/40"
+          className="text-4xl disabled:text-background/40 hover:bg-background/10 hover:text-background"
           variant={"ghost"}
           onClick={handleDecrement}
         >
@@ -81,7 +83,7 @@ export default function TicketCounter({
         <p className="text-3xl">{ticketCount}</p>
         <Button
           disabled={ticketCount === maxTickets}
-          className="text-4xl rounded-md disabled:text-foreground/40"
+          className="text-4xl disabled:text-background/40 hover:bg-background/10 hover:text-background"
           variant={"ghost"}
           onClick={handleIncrement}
         >
