@@ -5,9 +5,11 @@ import TableFlowProgress from "./TableFlowProgress";
 import Complete from "./vendor_applications/steps/Complete";
 import VendorApplication from "./vendor_applications/VendorApplication";
 import AllTables from "./all_tables/AllTables";
+import { useVendorApplication } from "../context/VendorApplicationContext";
 
 export default function TablesFlow() {
   const { currentView } = useVendorFlow();
+  const { vendorInfo } = useVendorApplication();
 
   return (
     <main className="max-w-lg m-auto">

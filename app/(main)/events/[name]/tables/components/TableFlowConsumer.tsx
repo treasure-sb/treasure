@@ -17,41 +17,28 @@ import TableFlow from "./TableFlow";
 export default function TableFlowConsumer({
   eventDisplay,
   tables,
-  vendorInfo,
+  generalVendorInfo,
   terms,
   profile,
 }: {
   eventDisplay: EventDisplayData;
   tables: Tables<"tables">[];
-  vendorInfo: Tables<"application_vendor_information">;
+  generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   profile: Tables<"profiles"> | null;
 }) {
   const initialVendorFlowState: VendorFlowState = {
     currentView: TableView.Table,
     event: eventDisplay,
-    generalVendorInfo: vendorInfo,
+    generalVendorInfo,
     terms,
     profile,
     tables,
   };
 
-  let initVendorInfo;
-  if (profile) {
-    initVendorInfo = {
-      phone: profile?.phone,
-      email: profile?.email,
-      firstName: profile?.first_name,
-      lastName: profile?.last_name,
-      businessName: profile?.business_name,
-    };
-  } else {
-    initVendorInfo = {} as VendorInfo;
-  }
-
   const initalVendorApplicationState: VendorApplicationState = {
     currentStep: 1,
-    vendorInfo: initVendorInfo,
+    vendorInfo: {} as VendorInfo,
     table: {} as Tables<"tables">,
     inventory: "",
     comments: "",

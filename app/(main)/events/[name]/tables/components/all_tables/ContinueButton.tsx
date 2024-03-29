@@ -1,9 +1,13 @@
 "use client";
 import { Tables } from "@/types/supabase";
-import { useVendorApplication } from "../../context/VendorApplicationContext";
+import {
+  VendorInfo,
+  useVendorApplication,
+} from "../../context/VendorApplicationContext";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TableView, useVendorFlow } from "../../context/VendorFlowContext";
+import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
 
 export default function ContinueButton({
   table,
@@ -15,16 +19,19 @@ export default function ContinueButton({
   const { profile, event, flowDispatch } = useVendorFlow();
   const { applicationDispatch } = useVendorApplication();
 
-  const [creatingCheckout, setCreatingCheckout] = useState(false);
-
   const autofillVendorInfo = () => {
-    const vendorInfo = {
-      phone: profile?.phone || "",
-      email: profile?.email || "",
-      businessName: profile?.business_name || "",
-      firstName: profile?.first_name || "",
-      lastName: profile?.last_name || "",
-    };
+    let vendorInfo: VendorInfo = {} as VendorInfo;
+    if (profile) {
+      vendorInfo = {
+        phone: formatPhoneNumber(
+          profile.phone?.slice(profile?.phone.length - 10) || ""
+        ),
+        email: profile.email,
+        businessName: profile.business_name,
+        firstName: profile.first_name,
+        lastName: profile.last_name,
+      };
+    }
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
   };
 
@@ -39,7 +46,7 @@ export default function ContinueButton({
 
   return (
     <Button
-      disabled={creatingCheckout || event.vendor_exclusivity !== "APPLICATIONS"}
+      disabled={event.vendor_exclusivity !== "APPLICATIONS"}
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6"
     >

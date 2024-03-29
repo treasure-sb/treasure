@@ -60,7 +60,7 @@ export default async function Page({
     <TableFlowConsumer
       eventDisplay={eventDisplayData}
       tables={tables}
-      vendorInfo={vendorInfo}
+      generalVendorInfo={vendorInfo}
       terms={terms}
       profile={profile}
     />

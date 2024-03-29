@@ -9,6 +9,7 @@ import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
+import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 
 export interface VendorApplication {
   event_id: string;
@@ -69,10 +70,11 @@ export default function ReviewInformation() {
   };
 
   const submitApplication = async () => {
+    const filteredPhoneNumber = filterPhoneNumber(vendorInfo.phone as string);
     const vendorApplication: VendorApplication = {
       event_id: event.id,
       vendor_id: profile?.id as string,
-      application_phone: `+1${vendorInfo.phone as string}`,
+      application_phone: `+1${filteredPhoneNumber}`,
       application_email: vendorInfo.email as string,
       table_id: table.id,
       table_quantity: tableQuantity,

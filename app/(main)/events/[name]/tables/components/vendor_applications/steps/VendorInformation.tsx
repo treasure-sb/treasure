@@ -15,6 +15,9 @@ import {
   VendorInfo,
   useVendorApplication,
 } from "../../../context/VendorApplicationContext";
+import PhoneInput, {
+  formatPhoneNumber,
+} from "@/components/ui/custom/phone-input";
 
 export default function VendorInformation() {
   const { profile } = useVendorFlow();
@@ -76,17 +79,23 @@ export default function VendorInformation() {
       <div className="space-y-6 h-full">
         <h2 className="text-xl">Vendor Information</h2>
         {profile?.phone ? (
-          <FloatingLabelInput readOnly label="Phone" value={profile?.phone} />
+          <PhoneInput
+            readOnly
+            phoneNumber={vendorInfo.phone as string}
+            updatePhoneNumber={() => {}}
+          />
         ) : (
-          <FloatingLabelInput
-            label="Phone"
-            type="tel"
-            value={vendorInfo.phone || ""}
-            onChange={(e) => handleSetVendorInfo(e.target.value, "phone")}
+          <PhoneInput
+            phoneNumber={vendorInfo.phone || ""}
+            updatePhoneNumber={(value) => handleSetVendorInfo(value, "phone")}
           />
         )}
         {profile?.email ? (
-          <FloatingLabelInput readOnly label="Email" value={profile?.email} />
+          <FloatingLabelInput
+            readOnly
+            label="Email"
+            value={vendorInfo.email as string}
+          />
         ) : (
           <FloatingLabelInput
             label="Email"

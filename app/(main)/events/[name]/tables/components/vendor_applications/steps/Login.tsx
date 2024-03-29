@@ -30,12 +30,13 @@ export default function Login() {
 
     const profile: Tables<"profiles"> = profileData;
     flowDispatch({ type: "setProfile", payload: profile });
+
     const vendorInfo = {
-      phone: profile?.phone,
-      email: profile?.email,
-      firstName: profile?.first_name,
-      lastName: profile?.last_name,
-      businessName: profile?.business_name,
+      phone: profile.phone?.slice(profile?.phone.length - 10) || "",
+      email: profile.email,
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      businessName: profile.business_name,
     };
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
   };
