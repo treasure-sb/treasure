@@ -29,15 +29,19 @@ export const formatPhoneNumber = (phoneNumber: string) => {
   return formattedPhoneNumber;
 };
 
+interface PhoneInputProps {
+  className?: string;
+  phoneNumber: string;
+  updatePhoneNumber: (phoneNumber: string) => void;
+  [key: string]: any;
+}
+
 export default function PhoneInput({
   className,
   phoneNumber,
   updatePhoneNumber,
-}: {
-  className?: string;
-  phoneNumber: string;
-  updatePhoneNumber: (phoneNumber: string) => void;
-}) {
+  ...props
+}: PhoneInputProps) {
   const handlePhoneInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedPhoneNumber = formatPhoneNumber(e.target.value);
     updatePhoneNumber(formattedPhoneNumber);
@@ -51,6 +55,7 @@ export default function PhoneInput({
       label="Phone Number"
       value={phoneNumber}
       onChange={handlePhoneInputChange}
+      {...props}
     />
   );
 }
