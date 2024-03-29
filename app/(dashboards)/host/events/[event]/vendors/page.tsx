@@ -24,14 +24,10 @@ export default async function Page({
   params: { event: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await validateUser();
 
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
 
