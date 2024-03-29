@@ -24,11 +24,7 @@ export default async function Tickets({
   return (
     <>
       {hasTickets && (
-        <SeeTickets
-          tickets={tickets}
-          user={user}
-          eventDisplayData={eventDisplayData}
-        />
+        <SeeTickets tickets={tickets} eventDisplayData={eventDisplayData} />
       )}
     </>
   );
