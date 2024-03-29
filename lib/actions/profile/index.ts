@@ -14,7 +14,12 @@ interface CreateProfileData {
   id: string;
 }
 
-interface UpdateProfile {
+interface AdditionalInfo {
+  firstName: string;
+  lastName: string;
+}
+
+export interface UpdateProfile {
   first_name?: string | null;
   last_name?: string | null;
   username?: string | null;
@@ -23,11 +28,6 @@ interface UpdateProfile {
   email?: string | null;
   bio?: string | null;
   avatar_url?: string | null;
-}
-
-interface AdditionalInfo {
-  firstName: string;
-  lastName: string;
 }
 
 const createProfile = async (createProfileData: CreateProfileData) => {

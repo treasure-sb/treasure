@@ -15,11 +15,12 @@ const getProfile = async (id: string | undefined) => {
 };
 
 const getProfileByUsername = async (username: string | undefined) => {
+  const lowerCaseUsername = username?.toLowerCase();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
-    .eq("username", username)
+    .eq("username", lowerCaseUsername)
     .single();
 
   const profile: Tables<"profiles"> = data;
