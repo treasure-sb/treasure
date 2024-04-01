@@ -4,7 +4,6 @@ import {
   VendorInfo,
   useVendorApplication,
 } from "../../context/VendorApplicationContext";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TableView, useVendorFlow } from "../../context/VendorFlowContext";
 import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
@@ -30,6 +29,7 @@ export default function ContinueButton({
         businessName: profile.business_name,
         firstName: profile.first_name,
         lastName: profile.last_name,
+        instagram: profile.instagram,
       };
     }
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });

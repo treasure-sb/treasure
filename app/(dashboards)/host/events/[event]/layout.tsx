@@ -1,6 +1,5 @@
 import EventToolsHeader from "./components/EventToolsHeader";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { validateUser } from "@/lib/actions/auth";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 
@@ -12,10 +11,6 @@ export default async function HostEventLayout({
   params: { event: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await validateUser();
-
   const { data, error } = await supabase
     .from("events")
     .select("*")

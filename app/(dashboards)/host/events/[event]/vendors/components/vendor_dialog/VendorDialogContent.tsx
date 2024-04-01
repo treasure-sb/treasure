@@ -2,16 +2,18 @@ import { EventVendorData } from "../../page";
 import { DialogContent } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { EventDisplayData } from "@/types/event";
-import Link from "next/link";
-import Pending from "./Pending";
-import EmailIcon from "@/components/icons/applications/EmailIcon";
-import PhoneIcon from "@/components/icons/applications/PhoneIcon";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { InstagramIcon } from "lucide-react";
+import { socialLinkData } from "@/lib/helpers/links";
+import Link from "next/link";
+import Pending from "./Pending";
+import EmailIcon from "@/components/icons/applications/EmailIcon";
+import PhoneIcon from "@/components/icons/applications/PhoneIcon";
 
 export default function VendorDialogContent({
   avatarUrl,
@@ -33,6 +35,10 @@ export default function VendorDialogContent({
     application_email,
     application_phone,
   } = vendorData;
+
+  const userInstagram = profile.links.find(
+    (link) => link.application === "Instagram"
+  )?.username;
 
   return (
     <DialogContent className="h-[80%] overflow-scroll sm:overflow-auto">
@@ -83,6 +89,14 @@ export default function VendorDialogContent({
               <PhoneIcon width={30} />
               <p className="text-lg">{application_phone}</p>
             </div>
+            <Link
+              href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
+              target="_blank"
+              className="flex w-fit justify-start gap-4 items-center"
+            >
+              <InstagramIcon className="text-primary" size={30} />
+              <p className="text-lg">{userInstagram}</p>
+            </Link>
           </div>
 
           {/* divs for mobile */}
@@ -97,6 +111,14 @@ export default function VendorDialogContent({
               <PhoneIcon width={20} />
               <p className="text-sm md:text-lg">{application_phone}</p>
             </div>
+            <Link
+              href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
+              className="flex w-fit justify-start gap-4 items-center"
+              target="_blank"
+            >
+              <InstagramIcon className="text-primary" size={20} />
+              <p className="text-sm md:text-lg">{userInstagram}</p>
+            </Link>
           </div>
 
           <Accordion type="single" collapsible className="flex flex-col gap-3">

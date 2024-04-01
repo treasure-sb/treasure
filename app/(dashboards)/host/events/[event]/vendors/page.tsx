@@ -13,7 +13,12 @@ type EventVendorTableInfo = {
 };
 
 export type EventVendorData = Tables<"event_vendors"> & {
-  vendor: Tables<"profiles">;
+  vendor: Tables<"profiles"> & {
+    links: {
+      username: string;
+      application: string;
+    }[];
+  };
 } & {
   table: EventVendorTableInfo;
 };
@@ -40,7 +45,9 @@ export default async function Page({
 
   const { data: eventVendorData } = await supabase
     .from("event_vendors")
-    .select("*, vendor:profiles(*), table:tables(section_name, id)")
+    .select(
+      "*, vendor:profiles(*, links(username, application)), table:tables(section_name, id)"
+    )
     .eq("event_id", hostedEvent.id);
 
   const eventVendors = eventVendorData as EventVendorData[];
