@@ -6,6 +6,8 @@ import { createClient } from "@/utils/supabase/client";
 import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
+import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
+import { Link, ProfileWithInstagram } from "../../../page";
 
 export default function Login() {
   const { flowDispatch } = useVendorFlow();
@@ -28,15 +30,30 @@ export default function Login() {
       return;
     }
 
+    const { data: linksData } = await supabase
+      .from("links")
+      .select("username, application")
+      .eq("user_id", user?.id);
+
     const profile: Tables<"profiles"> = profileData;
-    flowDispatch({ type: "setProfile", payload: profile });
+    const links: Link[] = linksData || [];
+    const profileWithInstagram: ProfileWithInstagram | null = {
+      ...profile,
+      instagram: links.find((link) => link.application === "Instagram")
+        ?.username,
+    };
+
+    flowDispatch({ type: "setProfile", payload: profileWithInstagram });
 
     const vendorInfo = {
-      phone: profile.phone?.slice(profile?.phone.length - 10) || "",
+      phone: formatPhoneNumber(
+        profile.phone?.slice(profile?.phone.length - 10) || ""
+      ),
       email: profile.email,
       firstName: profile.first_name,
       lastName: profile.last_name,
       businessName: profile.business_name,
+      instagram: profileWithInstagram.instagram,
     };
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
   };

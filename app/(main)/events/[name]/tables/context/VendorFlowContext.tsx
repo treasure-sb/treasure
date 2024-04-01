@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
+import { ProfileWithInstagram } from "../page";
 
 export enum TableView {
   Table = 1,
@@ -13,7 +14,7 @@ export type VendorFlowState = {
   event: EventDisplayData;
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
-  profile: Tables<"profiles"> | null;
+  profile: ProfileWithInstagram | null;
   tables: Tables<"tables">[];
 };
 
@@ -32,7 +33,7 @@ type VendorFlowActions =
       type: "setGeneralVendorInfo";
       payload: Tables<"application_vendor_information">;
     }
-  | { type: "setProfile"; payload: Tables<"profiles"> }
+  | { type: "setProfile"; payload: ProfileWithInstagram }
   | { type: "setTerms"; payload: Tables<"application_terms_and_conditions">[] }
   | { type: "setEvent"; payload: EventDisplayData };
 

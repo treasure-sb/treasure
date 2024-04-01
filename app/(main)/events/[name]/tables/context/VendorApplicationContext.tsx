@@ -18,6 +18,7 @@ export type VendorInfo = {
   firstName: string | null;
   lastName: string | null;
   businessName: string | null;
+  instagram?: string | null;
 };
 
 const initialState: VendorApplicationState = {

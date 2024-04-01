@@ -15,9 +15,7 @@ import {
   VendorInfo,
   useVendorApplication,
 } from "../../../context/VendorApplicationContext";
-import PhoneInput, {
-  formatPhoneNumber,
-} from "@/components/ui/custom/phone-input";
+import PhoneInput from "@/components/ui/custom/phone-input";
 
 export default function VendorInformation() {
   const { profile } = useVendorFlow();
@@ -120,6 +118,11 @@ export default function VendorInformation() {
           value={vendorInfo.businessName || ""}
           onChange={(e) => handleSetVendorInfo(e.target.value, "businessName")}
           label="Business Name (Optional)"
+        />
+        <FloatingLabelInput
+          value={vendorInfo.instagram || ""}
+          onChange={(e) => handleSetVendorInfo(e.target.value, "instagram")}
+          label="Instagram (Optional)"
         />
         <div className="flex items-center justify-between">
           <p>Vendors at Table</p>

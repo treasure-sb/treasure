@@ -10,6 +10,7 @@ import { useVendorApplication } from "../../../context/VendorApplicationContext"
 import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
+import { updateLink } from "@/lib/actions/links";
 
 export interface VendorApplication {
   event_id: string;
@@ -57,6 +58,7 @@ export default function ReviewInformation() {
 
     const successfulApplication = await submitApplication();
     await updateUserProfile();
+    await updateInstagram();
 
     toast.dismiss();
     if (successfulApplication) {
@@ -97,10 +99,22 @@ export default function ReviewInformation() {
       const { error } = await updateProfile(fieldsToUpdate, profile.id);
       if (error) {
         toast.error("Error updating profile");
-        return false;
       }
     }
-    return true;
+  };
+
+  const updateInstagram = async () => {
+    if (vendorInfo.instagram) {
+      const linkType = {
+        application: "Instagram",
+        username: vendorInfo.instagram,
+        type: "social",
+      };
+      const { error } = await updateLink(linkType, profile?.id as string);
+      if (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleSendSubmittedEmail = async () => {
@@ -145,8 +159,11 @@ export default function ReviewInformation() {
         <LabeledText label="Business Name">
           {vendorInfo.businessName || "N/A"}
         </LabeledText>
+        <LabeledText label="Instagram">
+          {vendorInfo.instagram || "N/A"}
+        </LabeledText>
         <LabeledText label="Inventory">{inventory}</LabeledText>
-        <LabeledText label="Comments">{comments}</LabeledText>
+        <LabeledText label="Comments">{comments || "None"}</LabeledText>
       </div>
       <div>
         <div className="flex justify-between">

@@ -13,6 +13,7 @@ import {
   VendorApplicationProvider,
 } from "../context/VendorApplicationContext";
 import TableFlow from "./TableFlow";
+import { ProfileWithInstagram } from "../page";
 
 export default function TableFlowConsumer({
   eventDisplay,
@@ -25,7 +26,7 @@ export default function TableFlowConsumer({
   tables: Tables<"tables">[];
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
-  profile: Tables<"profiles"> | null;
+  profile: ProfileWithInstagram | null;
 }) {
   const initialVendorFlowState: VendorFlowState = {
     currentView: TableView.Table,
