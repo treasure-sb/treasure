@@ -172,8 +172,16 @@ export default function ReviewInformation() {
           </p>
           <p>Qty: {tableQuantity}</p>
         </div>
-        <Separator className="my-2" />
-        {<div className="flex justify-end">${table.price * tableQuantity}</div>}
+        {event.vendor_exclusivity === "APPLICATIONS" && (
+          <>
+            <Separator className="my-2" />
+            {
+              <div className="flex justify-end">
+                ${table.price * tableQuantity}
+              </div>
+            }
+          </>
+        )}
       </div>
       <div className="flex space-x-2">
         <Button

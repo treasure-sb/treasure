@@ -403,7 +403,6 @@ export type Database = {
           address: string
           city: string
           cleaned_name: string
-          comment: string
           created_at: string
           date: string
           description: string
@@ -419,10 +418,6 @@ export type Database = {
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string
           state: string
-          table_public: number
-          ticket_tailor_event_id: string | null
-          tickets_status: number
-          toc: string
           vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url: string | null
           venue_name: string
@@ -431,7 +426,6 @@ export type Database = {
           address: string
           city?: string
           cleaned_name: string
-          comment?: string
           created_at?: string
           date: string
           description: string
@@ -447,10 +441,6 @@ export type Database = {
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string
           state?: string
-          table_public?: number
-          ticket_tailor_event_id?: string | null
-          tickets_status?: number
-          toc?: string
           vendor_exclusivity?: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url?: string | null
           venue_name: string
@@ -459,7 +449,6 @@ export type Database = {
           address?: string
           city?: string
           cleaned_name?: string
-          comment?: string
           created_at?: string
           date?: string
           description?: string
@@ -475,10 +464,6 @@ export type Database = {
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
           start_time?: string
           state?: string
-          table_public?: number
-          ticket_tailor_event_id?: string | null
-          tickets_status?: number
-          toc?: string
           vendor_exclusivity?: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url?: string | null
           venue_name?: string
@@ -914,7 +899,10 @@ export type Database = {
       "Promo Code Status": "INACTIVE" | "ACTIVE"
       "Promo Code Type": "DOLLAR" | "PERCENT"
       "Question Type": "STANDARD" | "UNIQUE"
-      "Vendor Exclusivity": "PUBLIC" | "APPLICATIONS"
+      "Vendor Exclusivity":
+        | "PUBLIC"
+        | "APPLICATIONS"
+        | "APPLICATIONS_NO_PAYMENT"
     }
     CompositeTypes: {
       [_ in never]: never
