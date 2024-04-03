@@ -91,7 +91,7 @@ export default function ListEvents({
         <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
           {allEvents?.map((event, i) => (
             <div
-              className="hover:translate-y-[-.75rem] transition duration-500"
+              className="hover:translate-y-[-.35rem] transition duration-500"
               ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
               key={event.id + "display"}
             >
