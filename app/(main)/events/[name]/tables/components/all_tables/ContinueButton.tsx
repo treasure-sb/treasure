@@ -18,6 +18,10 @@ export default function ContinueButton({
   const { profile, event, flowDispatch } = useVendorFlow();
   const { applicationDispatch } = useVendorApplication();
 
+  const areApplicationsOpen =
+    event.vendor_exclusivity === "APPLICATIONS" ||
+    event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT";
+
   const autofillVendorInfo = () => {
     let vendorInfo: VendorInfo = {} as VendorInfo;
     if (profile) {
@@ -36,7 +40,7 @@ export default function ContinueButton({
   };
 
   const handleCheckout = async () => {
-    if (event.vendor_exclusivity === "APPLICATIONS") {
+    if (areApplicationsOpen) {
       applicationDispatch({ type: "setTable", payload: table });
       applicationDispatch({ type: "setTableQuantity", payload: tableCount });
       autofillVendorInfo();
@@ -46,11 +50,11 @@ export default function ContinueButton({
 
   return (
     <Button
-      disabled={event.vendor_exclusivity !== "APPLICATIONS"}
+      disabled={!areApplicationsOpen}
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6"
     >
-      {event.vendor_exclusivity === "APPLICATIONS" ? (
+      {areApplicationsOpen ? (
         <p>Continue to Registration</p>
       ) : (
         <p>Not Accepting Applications</p>

@@ -20,7 +20,7 @@ export default function SeeTickets({
       <div className="bg-background border-[1px] w-full rounded-md h-20 items-center flex justify-between px-5 font-bold">
         <p className="text-lg">
           {isTicketFree
-            ? "Tickets are Free!"
+            ? "Tickets FREE"
             : `Tickets from $${minimumTicketPrice}`}
         </p>
         <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>

@@ -22,6 +22,7 @@ export default function TicketCounter({
   const { push } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
   const [creatingCheckout, setCreatingCheckout] = useState(false);
+  const isTicketFree = ticketCount * ticket.price === 0;
   const minTickets = 1;
   const maxTickets = 6;
 
@@ -61,7 +62,7 @@ export default function TicketCounter({
 
   const checkoutButton = (
     <Button
-      disabled={creatingCheckout}
+      disabled={creatingCheckout || isTicketFree}
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6"
     >

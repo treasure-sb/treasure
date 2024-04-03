@@ -6,11 +6,9 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Tickets({
   event,
-  user,
   eventDisplayData,
 }: {
   event: Tables<"events">;
-  user: User | null;
   eventDisplayData: EventDisplayData;
 }) {
   const supabase = await createSupabaseServerClient();
@@ -22,10 +20,8 @@ export default async function Tickets({
   const hasTickets = tickets && tickets.length > 0;
 
   return (
-    <>
-      {hasTickets && (
-        <SeeTickets tickets={tickets} eventDisplayData={eventDisplayData} />
-      )}
-    </>
+    hasTickets && (
+      <SeeTickets tickets={tickets} eventDisplayData={eventDisplayData} />
+    )
   );
 }

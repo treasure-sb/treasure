@@ -34,11 +34,7 @@ export default async function EventPage({
           <EventHeading event={event} />
           <Tags event={event} />
           <div className="space-y-2">
-            <Tickets
-              event={event}
-              user={user}
-              eventDisplayData={eventDisplayData}
-            />
+            <Tickets event={event} eventDisplayData={eventDisplayData} />
             <VendorTables event={event} />
           </div>
           <Separator />

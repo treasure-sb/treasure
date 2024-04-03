@@ -1,7 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import SeeTables from "./SeeTables";
 import { Tables } from "@/types/supabase";
-import { validateUser } from "@/lib/actions/auth";
 
 export default async function VendorTables({
   event,
@@ -16,10 +15,7 @@ export default async function VendorTables({
     .order("price", { ascending: true });
 
   return (
-    <>
-      {tablesData && tablesData.length > 0 && (
-        <SeeTables tables={tablesData} event={event} />
-      )}
-    </>
+    tablesData &&
+    tablesData.length > 0 && <SeeTables tables={tablesData} event={event} />
   );
 }

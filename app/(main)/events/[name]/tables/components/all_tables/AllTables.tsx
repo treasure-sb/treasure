@@ -39,13 +39,29 @@ const TableInfo = ({ type, price }: TicketInfoProps) => (
   </div>
 );
 
+const TableInfoNoPayment = ({ type }: { type: string }) => (
+  <div className="flex space-x-4 text-background items-center">
+    <TicketIcon className="stroke-2 text-background" />
+    <div className="flex items-center">
+      <p>{type}</p>
+      <p className="ml-2 text-gray-700 text-xs md:text-base">
+        (Price Communicated on Approval)
+      </p>
+    </div>
+  </div>
+);
+
 export default function AllTables() {
   const { generalVendorInfo, event, tables } = useVendorFlow();
 
   const tableOptions = tables.map((table, index) => (
     <AccordionItem className="p-4" key={index} value={`item-${index}`}>
       <AccordionTrigger className="decoration-background text-background">
-        <TableInfo type={table.section_name} price={table.price} />
+        {event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT" ? (
+          <TableInfoNoPayment type={table.section_name} />
+        ) : (
+          <TableInfo type={table.section_name} price={table.price} />
+        )}
       </AccordionTrigger>
       <AccordionContent className="px-6 py-2">
         <TablesCounter table={table} />
