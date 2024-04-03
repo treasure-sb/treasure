@@ -1,7 +1,5 @@
 "use clent";
 import { convertToStandardTime } from "@/lib/utils";
-import { EventDisplayData } from "@/types/event";
-import { Tables } from "@/types/supabase";
 import {
   Accordion,
   AccordionContent,
