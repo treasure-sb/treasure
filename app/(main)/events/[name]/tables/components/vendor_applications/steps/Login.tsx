@@ -7,7 +7,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
-import { Link, ProfileWithInstagram } from "../../../page";
+import type { Link, ProfileWithInstagram } from "../../../types";
 
 export default function Login() {
   const { flowDispatch } = useVendorFlow();

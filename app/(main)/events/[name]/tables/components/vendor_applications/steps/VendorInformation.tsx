@@ -11,10 +11,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useVendorFlow } from "../../../context/VendorFlowContext";
-import {
-  VendorInfo,
-  useVendorApplication,
-} from "../../../context/VendorApplicationContext";
+import { useVendorApplication } from "../../../context/VendorApplicationContext";
+import { type VendorInfo } from "../../../types";
 import PhoneInput from "@/components/ui/custom/phone-input";
 
 export default function VendorInformation() {

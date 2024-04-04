@@ -2,17 +2,9 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
+import type { Link, ProfileWithInstagram } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TableFlowConsumer from "./components/TableFlowConsumer";
-
-export type Link = {
-  username: string;
-  application: string;
-};
-
-export type ProfileWithInstagram = Tables<"profiles"> & {
-  instagram?: string;
-};
 
 export default async function Page({
   params,

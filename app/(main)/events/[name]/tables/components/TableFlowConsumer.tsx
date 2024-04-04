@@ -2,18 +2,15 @@
 
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import {
-  VendorFlowProvider,
+import { VendorFlowProvider, TableView } from "../context/VendorFlowContext";
+import { VendorApplicationProvider } from "../context/VendorApplicationContext";
+import type {
+  ProfileWithInstagram,
   VendorFlowState,
-  TableView,
-} from "../context/VendorFlowContext";
-import {
   VendorApplicationState,
   VendorInfo,
-  VendorApplicationProvider,
-} from "../context/VendorApplicationContext";
+} from "../types";
 import TableFlow from "./TableFlow";
-import { ProfileWithInstagram } from "../page";
 
 export default function TableFlowConsumer({
   eventDisplay,

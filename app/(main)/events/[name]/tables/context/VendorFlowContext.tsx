@@ -1,22 +1,13 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { ProfileWithInstagram } from "../page";
+import { type ProfileWithInstagram, VendorFlowState } from "../types";
 
 export enum TableView {
   Table = 1,
   Application = 2,
   Complete = 3,
 }
-
-export type VendorFlowState = {
-  currentView: TableView;
-  event: EventDisplayData;
-  generalVendorInfo: Tables<"application_vendor_information">;
-  terms: Tables<"application_terms_and_conditions">[];
-  profile: ProfileWithInstagram | null;
-  tables: Tables<"tables">[];
-};
 
 const initialState: VendorFlowState = {
   currentView: TableView.Table,

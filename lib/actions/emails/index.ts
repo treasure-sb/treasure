@@ -35,12 +35,13 @@ const sendVendorAppReceivedEmail = async (
   posterUrl: string,
   eventName: string
 ) => {
-  await resend.emails.send({
+  const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
     subject: "You Recieved a Vendor Application!",
     react: VendorAppReceived({ posterUrl, eventName }),
   });
+  return await to(sendEmailPromise);
 };
 
 const sendVendorAppAcceptedEmail = async (
