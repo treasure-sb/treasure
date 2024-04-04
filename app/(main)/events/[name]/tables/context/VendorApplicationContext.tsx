@@ -1,24 +1,21 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { Tables } from "@/types/supabase";
+import type { VendorInfo, VendorApplicationState } from "../types";
 
-export type VendorApplicationState = {
-  currentStep: number;
-  vendorInfo: VendorInfo;
-  table: Tables<"tables">;
-  inventory: string;
-  comments: string;
-  tableQuantity: number;
-  vendorsAtTable: number;
-  termsAccepted: boolean;
-};
+type VendorApplicationActions =
+  | { type: "setTable"; payload: Tables<"tables"> }
+  | { type: "setTableQuantity"; payload: number }
+  | { type: "setVendorsAtTable"; payload: number }
+  | { type: "setCurrentStep"; payload: number }
+  | { type: "setInventory"; payload: string }
+  | { type: "setComments"; payload: string }
+  | { type: "setTermsAccepted"; payload: boolean }
+  | { type: "resetApplication" }
+  | { type: "setVendorInfo"; payload: VendorInfo };
 
-export type VendorInfo = {
-  phone: string | null;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  businessName: string | null;
-  instagram?: string | null;
+type VendorApplicationContextType = {
+  applicationState: VendorApplicationState;
+  applicationDispatch: React.Dispatch<VendorApplicationActions>;
 };
 
 const initialState: VendorApplicationState = {
@@ -31,17 +28,6 @@ const initialState: VendorApplicationState = {
   vendorsAtTable: 0,
   termsAccepted: false,
 };
-
-type VendorApplicationActions =
-  | { type: "setTable"; payload: Tables<"tables"> }
-  | { type: "setTableQuantity"; payload: number }
-  | { type: "setVendorsAtTable"; payload: number }
-  | { type: "setCurrentStep"; payload: number }
-  | { type: "setInventory"; payload: string }
-  | { type: "setComments"; payload: string }
-  | { type: "setTermsAccepted"; payload: boolean }
-  | { type: "resetApplication" }
-  | { type: "setVendorInfo"; payload: VendorInfo };
 
 const reducer = (
   state: VendorApplicationState,
@@ -67,11 +53,6 @@ const reducer = (
     case "resetApplication":
       return initialState;
   }
-};
-
-type VendorApplicationContextType = {
-  applicationState: VendorApplicationState;
-  applicationDispatch: React.Dispatch<VendorApplicationActions>;
 };
 
 const VendorApplicationContext = createContext<VendorApplicationContextType>({

@@ -11,18 +11,7 @@ import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { updateLink } from "@/lib/actions/links";
-
-export interface VendorApplication {
-  event_id: string;
-  vendor_id: string;
-  table_id: string;
-  application_phone: string;
-  application_email: string;
-  table_quantity: number;
-  vendors_at_table: number;
-  inventory: string;
-  comments: string;
-}
+import type { VendorApplication } from "../../../types";
 
 const LabeledText = ({
   label,

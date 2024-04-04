@@ -1,6 +1,6 @@
 "use server";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { VendorApplication } from "@/app/(main)/events/[name]/tables/components/vendor_applications/steps/ReviewInformation";
+import { type VendorApplication } from "@/app/(main)/events/[name]/tables/types";
 import { sendVendorAppReceivedEmail } from "../../emails";
 import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
@@ -11,12 +11,23 @@ const submitVendorApplication = async (
   event: Tables<"events"> | EventDisplayData
 ) => {
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("event_vendors").insert([application]);
+  const { error: eventAppError } = await supabase
+    .from("event_vendors")
+    .insert([application]);
 
-  if (error) {
-    return { error };
+  if (eventAppError) {
+    return { error: eventAppError };
   }
 
+  const { error: sendEmailError } = await sendVendorReceivedEmail(event);
+
+  return { error: null };
+};
+
+const sendVendorReceivedEmail = async (
+  event: Tables<"events"> | EventDisplayData
+) => {
+  const supabase = await createSupabaseServerClient();
   const { data: hostData } = await supabase
     .from("profiles")
     .select("email")
@@ -24,9 +35,14 @@ const submitVendorApplication = async (
     .single();
 
   const eventPosterUrl = await getPublicPosterUrl(event);
-  await sendVendorAppReceivedEmail(hostData?.email, eventPosterUrl, event.name);
+  const { error: sendHostEmailError } = await sendVendorAppReceivedEmail(
+    hostData?.email,
+    eventPosterUrl,
+    event.name
+  );
+
   if (hostData?.email !== "treasure20110@gmail.com") {
-    await sendVendorAppReceivedEmail(
+    const { error: sendAdminEmailError } = await sendVendorAppReceivedEmail(
       "treasure20110@gmail.com",
       eventPosterUrl,
       event.name
