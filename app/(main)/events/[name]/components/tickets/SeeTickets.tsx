@@ -23,9 +23,13 @@ export default function SeeTickets({
             ? "Tickets FREE"
             : `Tickets from $${minimumTicketPrice}`}
         </p>
-        <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-          <Button className="border-primary w-32">Buy Now</Button>
-        </Link>
+        {isTicketFree ? (
+          <></>
+        ) : (
+          <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+            <Button className="border-primary w-32">Buy Now</Button>
+          </Link>
+        )}
       </div>
     </div>
   );
