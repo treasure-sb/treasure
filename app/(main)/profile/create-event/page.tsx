@@ -46,7 +46,6 @@ export default function Page() {
       },
     ],
     tags: [],
-    table_public: 0,
     application_vendor_information: {
       check_in_time: "07:30",
       check_in_location: "",
@@ -79,7 +78,6 @@ export default function Page() {
         tables:
           eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
         tags: eventData.tags,
-        table_public: eventData.table_public,
         sales_status: eventData.sales_status,
         vendor_exclusivity: eventData.vendor_exclusivity,
         // poster_url: eventData.poster_url,

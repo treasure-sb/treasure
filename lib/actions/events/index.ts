@@ -52,7 +52,6 @@ const createEvent = async (values: EventForm) => {
     city,
     state,
     date,
-    table_public,
     vendor_exclusivity,
     sales_status,
     start_time,
@@ -89,7 +88,6 @@ const createEvent = async (values: EventForm) => {
         state,
         start_time,
         end_time,
-        table_public,
         vendor_exclusivity,
         sales_status,
         poster_url,
@@ -114,6 +112,8 @@ const createEvent = async (values: EventForm) => {
   }
   if (!error) {
     redirect(`/events/${cleanedEventName}`);
+  } else {
+    return { error };
   }
 };
 

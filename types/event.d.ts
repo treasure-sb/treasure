@@ -49,7 +49,6 @@ export interface EventForm {
   tickets: EventFormTicket[];
   tables: EventFormTable[];
   tags: EventFormTag[];
-  table_public: number;
   application_vendor_information: EventVendorApplication;
   sales_status: string;
   vendor_exclusivity: string;

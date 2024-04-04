@@ -18,6 +18,7 @@ import { EventForm } from "@/types/event";
 import { useState } from "react";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 import PreviewEvent from "@/components/events/shared/PreviewEvent";
 
 interface Step5Props {
@@ -67,7 +68,10 @@ export default function EventVenueMap({ onBack, eventForm }: Step5Props) {
     newForm.poster_url =
       (await uploadFile(newForm.poster_url, "posters")) || "poster_coming_soon";
 
-    await createEvent(newForm);
+    const { error } = await createEvent(newForm);
+    if (error) {
+      toast.error("Error creating event");
+    }
     setSubmitting(false);
   };
 
