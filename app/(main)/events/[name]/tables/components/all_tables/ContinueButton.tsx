@@ -1,12 +1,10 @@
 "use client";
 import { Tables } from "@/types/supabase";
-import {
-  VendorInfo,
-  useVendorApplication,
-} from "../../context/VendorApplicationContext";
+import { useVendorApplication } from "../../context/VendorApplicationContext";
 import { Button } from "@/components/ui/button";
 import { TableView, useVendorFlow } from "../../context/VendorFlowContext";
 import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
+import { VendorInfo } from "../../types";
 
 export default function ContinueButton({
   table,
