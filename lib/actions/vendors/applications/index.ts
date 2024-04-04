@@ -25,6 +25,13 @@ const submitVendorApplication = async (
 
   const eventPosterUrl = await getPublicPosterUrl(event);
   await sendVendorAppReceivedEmail(hostData?.email, eventPosterUrl, event.name);
+  if (hostData?.email !== "treasure20110@gmail.com") {
+    await sendVendorAppReceivedEmail(
+      "treasure20110@gmail.com",
+      eventPosterUrl,
+      event.name
+    );
+  }
   return { error: null };
 };
 

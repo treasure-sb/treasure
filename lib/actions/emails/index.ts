@@ -50,7 +50,7 @@ const sendVendorAppAcceptedEmail = async (
   const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
-    subject: `You've Been Accepted!: ${emailProps.eventName}`,
+    subject: `[Action Required] You've Been Accepted!: ${emailProps.eventName}`,
     react: VendorAppAccepted(emailProps),
   });
   return await to(sendEmailPromise);

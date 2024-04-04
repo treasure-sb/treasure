@@ -93,6 +93,14 @@ const handleTicketPurchase = async (
       event_id,
       ticketPurchaseEmailProps
     );
+    if (profile.email !== "treasure20110@gmail.com") {
+      await sendTicketPurchasedEmail(
+        "treasure20110@gmail.com",
+        purchasedTicket.id,
+        event_id,
+        ticketPurchaseEmailProps
+      );
+    }
   }
 };
 
@@ -140,6 +148,14 @@ const handleTablePurchase = async (
     updateVendorData.application_email,
     tablePurchasedEmailPayload
   );
+  if (updateVendorData.application_email !== "treasure20110@gmail.com") {
+    const { error: sendAdminTablePurchasedEmailError } =
+      await sendTablePurchasedEmail(
+        "treasure20110@gmail.com",
+        tablePurchasedEmailPayload
+      );
+  }
+
   if (sendTablePurchasedEmailError) {
     console.log(sendTablePurchasedEmailError);
   }
