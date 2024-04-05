@@ -8,7 +8,9 @@ import { createCheckoutSession } from "@/lib/actions/checkout";
 import { useRouter } from "next/navigation";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
+import { addEventAttendee } from "@/lib/actions/tickets";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
+import RSVPSuccess from "./RSVPSuccess";
 
 export default function TicketCounter({
   ticket,
@@ -22,6 +24,7 @@ export default function TicketCounter({
   const { push } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
   const [creatingCheckout, setCreatingCheckout] = useState(false);
+  const [showRSVPSuccess, setShowRSVPSuccess] = useState(false);
   const isTicketFree = ticketCount * ticket.price === 0;
   const minTickets = 1;
   const maxTickets = 6;
@@ -60,6 +63,29 @@ export default function TicketCounter({
     }
   };
 
+  const handleRSVP = async () => {
+    if (!user) {
+      return;
+    }
+    setCreatingCheckout(true);
+
+    const { error } = await addEventAttendee(
+      eventDisplayData.id,
+      user.id,
+      ticket.id,
+      ticketCount
+    );
+
+    setCreatingCheckout(false);
+
+    if (error) {
+      toast.error("Error adding your tickets");
+      return;
+    }
+
+    setShowRSVPSuccess(true);
+  };
+
   const checkoutButton = (
     <Button
       disabled={creatingCheckout || isTicketFree}
@@ -70,8 +96,25 @@ export default function TicketCounter({
     </Button>
   );
 
+  const RSVPButton = (
+    <Button
+      disabled={creatingCheckout}
+      onClick={async () => await handleRSVP()}
+      className="w-full rounded-full p-6"
+    >
+      RSVP - Free
+    </Button>
+  );
+
   return (
     <div className="space-y-4 text-background">
+      {showRSVPSuccess && (
+        <RSVPSuccess
+          quantity={ticketCount}
+          eventDisplay={eventDisplayData}
+          ticketName={ticket.name}
+        />
+      )}
       <div className="flex space-x-6 justify-center">
         <Button
           disabled={ticketCount === minTickets}
@@ -91,7 +134,17 @@ export default function TicketCounter({
           +
         </Button>
       </div>
-      {user ? checkoutButton : <LoginFlowDialog trigger={checkoutButton} />}
+      {user ? (
+        isTicketFree ? (
+          RSVPButton
+        ) : (
+          checkoutButton
+        )
+      ) : isTicketFree ? (
+        <LoginFlowDialog trigger={RSVPButton} />
+      ) : (
+        <LoginFlowDialog trigger={checkoutButton} />
+      )}
     </div>
   );
 }
