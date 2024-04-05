@@ -56,11 +56,12 @@ const handleTicketPurchase = async (
     .single();
 
   const ticket: Tables<"tickets"> = ticketData;
+  const ticketsToInsert = Array.from({ length: quantity }).map(() => {
+    return { attendee_id: user_id, event_id, ticket_id };
+  });
+
   const { data: purchasedTicketData, error: purchasedTicketError } =
-    await supabase
-      .from("event_tickets")
-      .insert({ attendee_id: user_id, event_id, ticket_id })
-      .select();
+    await supabase.from("event_tickets").insert(ticketsToInsert).select();
 
   if (!purchasedTicketData || purchasedTicketError) {
     return NextResponse.json({
