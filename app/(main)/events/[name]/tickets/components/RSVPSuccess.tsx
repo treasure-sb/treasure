@@ -24,7 +24,7 @@ export default function RSVPSuccess({
         <div className="bg-primary w-80 h-80 md:w-[30rem] md:h-[30rem] rounded-lg flex flex-col items-center justify-center text-background">
           <div className="text-center mb-10">
             <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
-            <h2 className="font-semibold text-xl md:text-4xl">You're Going</h2>
+            <h2 className="font-bold text-3xl md:text-5xl">You're Going</h2>
           </div>
           <div className="text-center">
             <p className="font-semibold text-lg md:text-2xl">
