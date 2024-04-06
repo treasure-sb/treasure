@@ -28,15 +28,9 @@ export default function SeeTickets({
             <Button className="border-primary w-32">RSVP</Button>
           </Link>
         ) : (
-          <>
-            {eventDisplayData.cleaned_name.substring(0, 6) == "morris" ? (
-              <></>
-            ) : (
-              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-                <Button className="border-primary w-32">Buy Now</Button>
-              </Link>
-            )}
-          </>
+          <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+            <Button className="border-primary w-32">Buy Now</Button>
+          </Link>
         )}
       </div>
     </div>
