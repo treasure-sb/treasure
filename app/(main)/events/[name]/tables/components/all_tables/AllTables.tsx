@@ -86,10 +86,12 @@ export default function AllTables() {
         </h5>
         <div className="space-y-1">
           <LabeledText label="Location">
-            {generalVendorInfo?.check_in_location}
+            {generalVendorInfo?.check_in_location || "N/A"}
           </LabeledText>
           <LabeledText label="Check In Time">
-            {convertToStandardTime(generalVendorInfo?.check_in_time)}
+            {generalVendorInfo?.check_in_time
+              ? convertToStandardTime(generalVendorInfo?.check_in_time)
+              : "N/A"}
           </LabeledText>
           <LabeledText label="Wifi Availability">
             {generalVendorInfo?.wifi_availability ? "Yes" : "No"}
