@@ -25,9 +25,13 @@ export default function SeeTables({
       ) : (
         <p className="text-lg">Tables from ${minimumTablePrice}</p>
       )}
-      <Link href={`/events/${event.cleaned_name}/tables`}>
-        <Button className="border-primary w-32">Register Now</Button>
-      </Link>
+      {event.cleaned_name.substring(0, 6) == "morris" ? (
+        <></>
+      ) : (
+        <Link href={`/events/${event.cleaned_name}/tables`}>
+          <Button className="border-primary w-32">Register Now</Button>
+        </Link>
+      )}
     </div>
   );
 }
