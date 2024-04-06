@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { validateUser } from "@/lib/actions/auth";
 import { Tables } from "@/types/supabase";
 import EventImage from "@/components/events/shared/EventImage";
+import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
   searchParams,
@@ -22,13 +23,15 @@ export default async function Page({
     redirect("/login");
   }
 
+  const { profile } = await getProfile(user.id);
+
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("id", event_id)
     .single();
 
-  if (!(eventData.organizer_id == user.id || user.role == "admin")) {
+  if (!(eventData.organizer_id == user.id || profile.role === "admin")) {
     redirect("/");
   }
 
