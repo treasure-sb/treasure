@@ -28,7 +28,7 @@ export default async function Page({
     .eq("id", event_id)
     .single();
 
-  if (eventData.organizer_id == user.id || user.role == "admin") {
+  if (!(eventData.organizer_id == user.id || user.role == "admin")) {
     redirect("/");
   }
 
