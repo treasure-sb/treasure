@@ -23,14 +23,21 @@ export default function SeeTickets({
             ? "Tickets FREE"
             : `Tickets from $${minimumTicketPrice}`}
         </p>
-        {isTicketFree ? (
-          <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-            <Button className="border-primary w-32">RSVP</Button>
-          </Link>
+        {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
+        eventDisplayData.sales_status == "SELLING_ALL" ? (
+          <>
+            {isTicketFree ? (
+              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+                <Button className="border-primary w-32">RSVP</Button>
+              </Link>
+            ) : (
+              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+                <Button className="border-primary w-32">Buy Now</Button>
+              </Link>
+            )}
+          </>
         ) : (
-          <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-            <Button className="border-primary w-32">Buy Now</Button>
-          </Link>
+          <></>
         )}
       </div>
     </div>

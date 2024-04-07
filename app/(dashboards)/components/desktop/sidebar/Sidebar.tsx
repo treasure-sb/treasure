@@ -8,6 +8,8 @@ import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
 import VendorSidebarOptions from "./VendorSidebarOptions";
+import { logoutUser } from "@/lib/actions/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   <div
@@ -19,6 +21,12 @@ export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
 
 export default function Sidebar({ type }: { type: "host" | "vendor" }) {
   const [showSidebar, setShowSidebar] = useState(true);
+
+  const queryClient = useQueryClient();
+  const handleLogout = async () => {
+    await logoutUser();
+    queryClient.clear();
+  };
 
   return (
     <motion.div
@@ -76,6 +84,7 @@ export default function Sidebar({ type }: { type: "host" | "vendor" }) {
             "rounded-sm w-full text-lg justify-center space-x-2 p-6 font-normal",
             showSidebar ? "justify-start" : "justify-center"
           )}
+          onClick={async () => await handleLogout()}
         >
           <LogOut className="stroke-1" size={28} />
           {showSidebar && <p>Log out</p>}

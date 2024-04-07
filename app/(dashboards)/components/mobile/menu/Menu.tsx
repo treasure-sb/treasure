@@ -12,9 +12,17 @@ import HostMenuOptions from "./HostMenuOptions";
 import VendorMenuOptions from "./VendorMenuOptions";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
+import { logoutUser } from "@/lib/actions/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Menu({ type }: { type: "host" | "vendor" }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+  const handleLogout = async () => {
+    await logoutUser();
+    queryClient.clear();
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -44,6 +52,7 @@ export default function Menu({ type }: { type: "host" | "vendor" }) {
           <Button
             variant={"ghost"}
             className="rounded-sm text-lg font-normal justify-start space-x-2 p-6"
+            onClick={async () => await handleLogout()}
           >
             <LogOut className="stroke-1" size={28} /> <p>Log out</p>
           </Button>
