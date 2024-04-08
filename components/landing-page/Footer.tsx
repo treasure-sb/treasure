@@ -14,9 +14,6 @@ export default function Footer() {
           Contact
         </Link>
         <Link className="landing-footer-link" href="/">
-          FAQ
-        </Link>
-        <Link className="landing-footer-link" href="/">
           Privacy
         </Link>
         <Link className="landing-footer-link" href="/profile/create-event">
