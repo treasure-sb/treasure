@@ -25,9 +25,14 @@ export default function SeeTables({
       ) : (
         <p className="text-lg">Tables from ${minimumTablePrice}</p>
       )}
-      <Link href={`/events/${event.cleaned_name}/tables`}>
-        <Button className="border-primary w-32">Register Now</Button>
-      </Link>
+      {event.sales_status == "TABLES_ONLY" ||
+      event.sales_status == "SELLING_ALL" ? (
+        <Link href={`/events/${event.cleaned_name}/tables`}>
+          <Button className="border-primary w-32">Register Now</Button>
+        </Link>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

@@ -14,9 +14,11 @@ const stripePromise = loadStripe(
 export default function InitializeCheckout({
   checkoutSession,
   totalPrice,
+  profile,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   totalPrice: number;
+  profile: Tables<"profiles">;
 }) {
   const [clientSecret, setClientSecret] = useState("");
 
@@ -51,7 +53,7 @@ export default function InitializeCheckout({
     <>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm checkoutSession={checkoutSession} />
+          <CheckoutForm checkoutSession={checkoutSession} profile={profile} />
         </Elements>
       )}
     </>

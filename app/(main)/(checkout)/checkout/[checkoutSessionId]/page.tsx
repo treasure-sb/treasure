@@ -6,6 +6,7 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { Separator } from "@/components/ui/separator";
 import { TicketIcon } from "lucide-react";
 import { redirect } from "next/navigation";
+import { getProfile } from "@/lib/helpers/profiles";
 
 interface CheckoutTicketInfo {
   name: string;
@@ -75,6 +76,8 @@ export default async function Page({
   const event: Tables<"events"> = eventData;
   const eventDisplay = await getEventDisplayData(event);
 
+  const { profile } = await getProfile(checkoutSession.user_id);
+
   let totalPrice = 0;
   let ticket: CheckoutTicketInfo;
   switch (ticket_type) {
@@ -119,6 +122,7 @@ export default async function Page({
         <InitializeCheckout
           checkoutSession={checkoutSession}
           totalPrice={totalPrice}
+          profile={profile}
         />
       </div>
     </main>

@@ -50,7 +50,7 @@ export default function FilteringOptions() {
       } flex space-x-2 mb-2`}
     >
       <div className="flex space-x-2">
-        <Button>New York, NY</Button>
+        {/* <Button>New York, NY</Button> */}
         <DateFiltering />
       </div>
       <>
