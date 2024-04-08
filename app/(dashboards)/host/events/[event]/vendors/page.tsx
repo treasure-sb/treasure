@@ -1,5 +1,4 @@
 import { columns } from "./components/table/VendorDataColumns";
-import { validateUser } from "@/lib/actions/auth";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
