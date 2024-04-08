@@ -235,9 +235,9 @@ const getPastEventsAttending = async (page: number, userId: string) => {
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
   const { data: attendeeData, error: attendeeError } = await supabase
-    .from("event_guests")
+    .from("event_tickets")
     .select("events!inner(*)")
-    .eq("guest_id", userId)
+    .eq("attendee_id", userId)
     .lt("events.date", today)
     .order("events(date)", { ascending: false })
     .order("events(id)", { ascending: true });
