@@ -146,14 +146,46 @@ const getUpcomingEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
-    .from("event_guests")
+  const { data: attendeeData, error: attendeeError } = await supabase
+    .from("event_tickets")
     .select("events!inner(*)")
-    .eq("guest_id", userId)
+    .eq("attendee_id", userId)
+    .gte("events.date", today)
+    .order("id", { foreignTable: "events", ascending: true })
+    .order("date", { foreignTable: "events", ascending: true });
+  // .range(startIndex, endIndex);
+
+  // filter out the duplicate events
+  let eventNameList: string[] = [];
+  let filteredData: any[] = [];
+
+  attendeeData?.map((event: any) => {
+    if (!eventNameList.includes(event.events.name as string)) {
+      eventNameList.push(event.events.name);
+      filteredData.push(event);
+    }
+  });
+
+  const { data: vendorData, error: vendorError } = await supabase
+    .from("event_vendors")
+    .select("events!inner(*)")
+    .eq("vendor_id", userId)
+    .eq("payment_status", "PAID")
     .gte("events.date", today)
     .order("id", { foreignTable: "events", ascending: true })
     .order("date", { foreignTable: "events", ascending: true })
     .range(startIndex, endIndex);
+
+  let data = filteredData;
+  let error = attendeeError;
+
+  if (vendorData && vendorData?.length > 0) {
+    data = vendorData;
+    error = vendorError;
+  } else if (page > 1) {
+    data = [];
+    error = null;
+  }
   return { data, error };
 };
 
@@ -202,14 +234,47 @@ const getPastEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
+  const { data: attendeeData, error: attendeeError } = await supabase
     .from("event_guests")
     .select("events!inner(*)")
     .eq("guest_id", userId)
     .lt("events.date", today)
     .order("events(date)", { ascending: false })
-    .order("events(id)", { ascending: true })
+    .order("events(id)", { ascending: true });
+  // .range(startIndex, endIndex);
+
+  // filter out the duplicate events
+  let eventNameList: string[] = [];
+  let filteredData: any[] = [];
+
+  attendeeData?.map((event: any) => {
+    if (!eventNameList.includes(event.events.name as string)) {
+      eventNameList.push(event.events.name);
+      filteredData.push(event);
+    }
+  });
+
+  const { data: vendorData, error: vendorError } = await supabase
+    .from("event_vendors")
+    .select("events!inner(*)")
+    .eq("vendor_id", userId)
+    .eq("payment_status", "PAID")
+    .lt("events.date", today)
+    .order("id", { foreignTable: "events", ascending: true })
+    .order("date", { foreignTable: "events", ascending: true })
     .range(startIndex, endIndex);
+
+  let data = filteredData;
+  let error = attendeeError;
+
+  if (vendorData && vendorData?.length > 0) {
+    data = vendorData;
+    error = vendorError;
+  } else if (page > 1) {
+    data = [];
+    error = null;
+  }
+
   return { data, error };
 };
 

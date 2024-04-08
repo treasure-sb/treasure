@@ -93,6 +93,7 @@ export default function CheckoutForm({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="w-full md:w-96 space-y-8"
       >
+        <div>Attendee Name</div>
         <FormField
           control={form.control}
           name="first_name"
