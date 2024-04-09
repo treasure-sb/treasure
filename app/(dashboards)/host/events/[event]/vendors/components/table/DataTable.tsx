@@ -45,7 +45,7 @@ export default function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedVendor, setSelectedVendor] = useState<any | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const showVendorInfo = (vendor_info: any, avatar_url: string | null) => {
     setSelectedVendor(vendor_info);
@@ -81,7 +81,6 @@ export default function DataTable<TData, TValue>({
   const updatePaymentFilter = (value: string | undefined) => {
     table.getColumn("payment_status")?.setFilterValue(value);
   };
-  console.log(selectedVendor);
 
   return (
     <motion.div
