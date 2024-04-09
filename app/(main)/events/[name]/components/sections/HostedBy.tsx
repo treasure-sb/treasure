@@ -2,6 +2,9 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
+import ContactHost from "./ContactHost";
+import { getSocialLinks } from "@/lib/actions/links";
+import { socialLinkData } from "@/lib/helpers/links";
 
 type OrganizerType = Tables<"profiles"> | Tables<"temporary_profiles">;
 
@@ -35,6 +38,33 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
     type = "temporary_profile";
     organizer = tempUserData;
   }
+  const fetchUserLinksData = async () => {
+    const { links } = await getSocialLinks(organizer.id);
+    const listWithData = links.map((link: Tables<"links">) => {
+      return {
+        ...link,
+        ...socialLinkData[link.application],
+      };
+    });
+    return listWithData;
+  };
+
+  const renderLinks = async () => {
+    const fetchedLinks = await fetchUserLinksData();
+    return fetchedLinks.map((link, index) => (
+      <Link
+        target="_blank"
+        key={index}
+        href={`${link.url}${link.username}`}
+        className=" flex gap-2 items-center justify-center"
+      >
+        <div className="scale-75">{link.icon}</div>
+        <div>@{link.username}</div>
+      </Link>
+    ));
+  };
+
+  let links = await renderLinks();
 
   const { username, avatar_url } = organizer;
   const {
@@ -42,8 +72,16 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   } = await supabase.storage.from("avatars").getPublicUrl(avatar_url);
 
   return (
-    <section>
-      <h3 className="font-semibold text-xl mb-4">Hosted By</h3>
+    <section className="flex flex-col">
+      <div className="w-full justify-between flex">
+        <h3 className="font-semibold text-xl mb-4">Hosted By</h3>
+        <ContactHost
+          organizer={organizer}
+          profileType={type}
+          renderLinks={links}
+        />
+      </div>
+
       <div className="flex flex-col space-y-1 items-center">
         <Link
           href={type === "profile" ? `/${username}` : `/${username}?type=t`}
