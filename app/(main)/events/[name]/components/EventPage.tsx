@@ -44,6 +44,7 @@ export default async function EventPage({
           <Separator />
           <Vendors vendors={vendors} />
           <HostedBy event={event} />
+          <Separator />
           <VenueMap event={event} />
         </div>
       </div>
