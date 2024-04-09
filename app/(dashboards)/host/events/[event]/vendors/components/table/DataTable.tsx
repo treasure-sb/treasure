@@ -43,6 +43,15 @@ export default function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedVendor, setSelectedVendor] = useState<any | null>(null);
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const [open, setOpen] = useState(true);
+
+  const showVendorInfo = (vendor_info: any, avatar_url: string | null) => {
+    setSelectedVendor(vendor_info);
+    setSelectedAvatar(avatar_url);
+    setOpen(true);
+  };
 
   const table = useReactTable({
     data,
@@ -72,6 +81,7 @@ export default function DataTable<TData, TValue>({
   const updatePaymentFilter = (value: string | undefined) => {
     table.getColumn("payment_status")?.setFilterValue(value);
   };
+  console.log(selectedVendor);
 
   return (
     <motion.div
@@ -106,19 +116,23 @@ export default function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <Dialog key={row.id}>
+                <Dialog open={open} onOpenChange={setOpen}>
                   <TableRow
                     className="relative"
                     data-state={row.getIsSelected() && "selected"}
+                    onClick={() =>
+                      showVendorInfo(
+                        row.getValue("vendor_info"),
+                        row.getValue("avatar_url")
+                      )
+                    }
                   >
                     {row.getVisibleCells().map((cell, i) => (
                       <TableCell key={cell.id} className="py-8">
-                        {i === 0 && (
-                          <DialogTrigger className="inset-0 absolute" />
-                        )}
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -127,8 +141,16 @@ export default function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                   <VendorDialogContent
-                    vendorData={row.getValue("vendor_info")}
-                    avatarUrl={row.getValue("avatar_url")}
+                    vendorData={
+                      selectedVendor
+                        ? selectedVendor
+                        : row.getValue("vendor_info")
+                    }
+                    avatarUrl={
+                      selectedAvatar
+                        ? selectedAvatar
+                        : row.getValue("avatar_url")
+                    }
                     eventData={eventData}
                   />
                 </Dialog>
