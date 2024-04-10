@@ -14,6 +14,7 @@ import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
+import { sendSMS } from "@/lib/actions/twilio";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -73,6 +74,7 @@ const handleTicketPurchase = async (
   const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
   const { profile } = await getProfile(user_id);
   const { event } = await getEventFromId(event_id);
+  const host = await getProfile(event.organizer_id);
   const posterUrl = await getPublicPosterUrl(event);
 
   const ticketPurchaseEmailProps = {
@@ -87,22 +89,61 @@ const handleTicketPurchase = async (
     eventInfo: event.description,
   };
 
-  if (profile.email) {
+  // send email to user
+  if (profile.email !== null) {
     await sendTicketPurchasedEmail(
       profile.email,
       purchasedTicket.id,
       event_id,
       ticketPurchaseEmailProps
     );
-    if (profile.email !== "treasure20110@gmail.com") {
-      await sendTicketPurchasedEmail(
-        "treasure20110@gmail.com",
-        purchasedTicket.id,
-        event_id,
-        ticketPurchaseEmailProps
-      );
-    }
   }
+
+  // send email to us
+  if (profile.email === null || profile.email !== "treasure20110@gmail.com") {
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicket.id,
+      event_id,
+      ticketPurchaseEmailProps
+    );
+  }
+
+  // text user
+  if (profile.phone !== null) {
+    await sendSMS(
+      profile.phone,
+      `🙌 You’re going to ${event.name} on ${moment(event.date).format(
+        "dddd, MMM Do"
+      )}!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets"`
+    );
+  }
+
+  // text host
+  if (host.profile.phone !== null) {
+    await sendSMS(
+      host.profile.phone,
+      `🎉 ${
+        profile.business_name === null
+          ? profile.first_name + " " + profile.last_name
+          : profile.business_name
+      } just bought a ticket to ${event.name} on ${moment(event.date).format(
+        "dddd, MMM Do"
+      )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
+    );
+  }
+
+  // text us
+  await sendSMS(
+    "+17039097887",
+    `🎉 ${
+      profile.business_name === null
+        ? profile.first_name + " " + profile.last_name
+        : profile.business_name
+    } just bought a ticket to ${event.name} on ${moment(event.date).format(
+      "dddd, MMM Do"
+    )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
+  );
 };
 
 const handleTablePurchase = async (
@@ -128,6 +169,7 @@ const handleTablePurchase = async (
   const vendorProfile: Tables<"profiles"> = updateVendorData.profiles;
   const event: Tables<"events"> = updateVendorData.events;
   const table: Tables<"tables"> = updateVendorData.tables;
+  const host = await getProfile(event.organizer_id);
   const posterUrl = await getPublicPosterUrl(event);
 
   const tablePurchasedEmailPayload: TablePurchasedProps = {
@@ -156,6 +198,48 @@ const handleTablePurchase = async (
         tablePurchasedEmailPayload
       );
   }
+
+  // text user
+  if (vendorProfile.phone !== null) {
+    await sendSMS(
+      vendorProfile.phone,
+      `🙌 Success! Yoour vendor payment has been received! You are now confirmed to be a vendor at ${
+        event.name
+      } on ${moment(event.date).format(
+        "dddd, MMM Do"
+      )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets"`
+    );
+  }
+
+  // text host
+  if (host.profile.phone !== null) {
+    await sendSMS(
+      host.profile.phone,
+      `💰Congrats! You received payment from ${
+        vendorProfile.business_name === null
+          ? vendorProfile.first_name + " " + vendorProfile.last_name
+          : vendorProfile.business_name
+      } Their table(s) are confirmed for ${event.name} on ${moment(
+        event.date
+      ).format(
+        "dddd, MMM Do"
+      )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
+    );
+  }
+
+  // text us
+  await sendSMS(
+    "+17039097887",
+    `💰Congrats! You received payment from ${
+      vendorProfile.business_name === null
+        ? vendorProfile.first_name + " " + vendorProfile.last_name
+        : vendorProfile.business_name
+    } Their table(s) are confirmed for ${event.name} on ${moment(
+      event.date
+    ).format("dddd, MMM Do")}!\n\nView details\n\nontreasure.xyz/host/events/${
+      event.cleaned_name
+    }`
+  );
 
   if (sendTablePurchasedEmailError) {
     console.log(sendTablePurchasedEmailError);
