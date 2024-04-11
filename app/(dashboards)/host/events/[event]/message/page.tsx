@@ -13,13 +13,14 @@ export default async function Page({
     data: { user },
   } = await validateUser();
 
-  const { data: eventData } = await supabase
+  const { data: eventsData } = await supabase
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
 
+  const eventData: Tables<"events"> = eventsData;
   const { data: tablesData } = await supabase
     .from("tables")
     .select("*")
@@ -29,7 +30,7 @@ export default async function Page({
 
   return (
     <div className="max-w-3xl m-auto">
-      <MessageTables tables={tables} />
+      <MessageTables tables={tables} event={eventData} />
     </div>
   );
 }

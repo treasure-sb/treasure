@@ -5,13 +5,14 @@ import {
   Body,
   Container,
   Heading,
-  Row,
-  Column,
   Html,
   Section,
   Text,
   Img,
+  Hr,
+  Link,
 } from "@react-email/components";
+import BodySection from "./components/Section";
 
 export interface VendorAppRejectedEmailProps {
   eventName: string;
@@ -31,12 +32,11 @@ export default function VendorAppRejected({
           <Container className="bg-background border-2 max-w-lg px-10">
             <Header />
             <Section>
-              <Heading className="text-center font-normal">
-                You were not selected to be a vendor at{" "}
-                <strong>{eventName}</strong>
+              <Heading className="text-left font-normal">
+                You were not selected to be a vendor
               </Heading>
             </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center">
+            <BodySection>
               <Img
                 className="m-auto rounded-[2.5rem]"
                 src={posterUrl}
@@ -55,7 +55,29 @@ export default function VendorAppRejected({
                   <Text className="text-left">{message}</Text>
                 </Section>
               )}
-            </Section>
+            </BodySection>
+
+            <BodySection>
+              <Heading as="h2" className="font-normal text-left">
+                Need Help?
+              </Heading>
+              <Hr className="border-foreground/40 my-6" />
+              <Text className="text-left text-foreground/80">
+                Visit our{" "}
+                <Link
+                  className="font-semibold text-foreground underline"
+                  href="https://www.ontreasure.xyz"
+                >
+                  Help Center
+                </Link>{" "}
+                or for urgent help, contact us at{" "}
+                <span className="text-foreground font-semibold">
+                  george@ontreasure.xyz
+                </span>
+                .
+              </Text>
+            </BodySection>
+
             <Footer />
           </Container>
         </Body>
