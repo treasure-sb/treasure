@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Metadata } from "next";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 
 const inter = Inter({
@@ -12,13 +13,20 @@ const inter = Inter({
   style: "normal",
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL("https://ontreasure.xyz"),
   title: {
     default: "Treasure",
     template: "%s | Treasure",
   },
   description: "Events for everyone",
+  keywords: [
+    "treausre",
+    "treasure events",
+    "card shows near me",
+    "collectible shows near me",
+    "tcg shows near me",
+  ],
 };
 
 export default async function RootLayout({
