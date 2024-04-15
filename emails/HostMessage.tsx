@@ -1,27 +1,32 @@
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
-  Button,
   Container,
   Heading,
+  Hr,
   Html,
   Section,
   Text,
   Img,
-  Hr,
   Link,
 } from "@react-email/components";
-import BodySection from "./components/Section";
 
-export default function VendorAppReceived({
-  posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
-  eventName = "Garden State Card Show",
-}: {
-  posterUrl: string;
+export interface HostMessageProps {
   eventName: string;
-}) {
+  hostName: string;
+  posterUrl: string;
+  message: string;
+}
+
+export default function HostMessage({
+  eventName = "Garden State Card Show",
+  hostName = "Mochito",
+  posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
+  message = "Due to the snowstorm, our show will be postponed from 10am to 11am. Vendor set up has been postponed from 8am to 9am. Sorry for any inconvenience this may cause.",
+}: HostMessageProps) {
   return (
     <Html>
       <TailwindConfig>
@@ -29,15 +34,11 @@ export default function VendorAppReceived({
           <Container className="bg-background border-2 max-w-lg px-10">
             <Header />
             <Section>
-              <Heading className="text-left font-normal">
-                You have a new vendor application
+              <Heading className="font-normal">
+                Hey, {hostName} just sent you a message for {eventName}
               </Heading>
-              <Text>
-                To see the application please click the link below. Note that
-                the vendor will not be able to purchase any tables until you
-                accept them.
-              </Text>
             </Section>
+
             <BodySection>
               <Img
                 className="m-auto rounded-[2.5rem]"
@@ -49,12 +50,16 @@ export default function VendorAppReceived({
               <Heading className="font-normal mt-6 text-left">
                 {eventName}
               </Heading>
-              <Button
-                className="bg-primary ml-auto p-4 rounded-lg text-foreground"
-                href="https://ontreasure.xyz/host"
-              >
-                View Application
-              </Button>
+              {message.length > 0 && (
+                <Section className="mt-6">
+                  <Heading className="font-bold text-sm text-left">
+                    Message from the event host:
+                  </Heading>
+                  <Text className="text-left whitespace-pre-line">
+                    {message}
+                  </Text>
+                </Section>
+              )}
             </BodySection>
 
             <BodySection>

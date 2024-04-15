@@ -15,7 +15,8 @@ import VendorAppSubmitted, {
 import TablePurchased, { TablePurchasedProps } from "@/emails/TablePurchased";
 import { Resend } from "resend";
 import { generateTicketReceipt } from "@/pdfs/tickets";
-import { to } from "@/lib/utils";
+import { to, toMany } from "@/lib/utils";
+import HostMessage, { HostMessageProps } from "@/emails/HostMessage";
 import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
 
@@ -96,6 +97,36 @@ const sendTablePurchasedEmail = async (
   return await to(sendEmailPromise);
 };
 
+const chunkEmails = (emails: string[], batchSize: number) => {
+  const chunks = [];
+  for (let i = 0; i < emails.length; i += batchSize) {
+    const chunk = emails.slice(i, i + batchSize);
+    chunks.push(chunk);
+  }
+  return chunks;
+};
+
+const sendHostMessageEmail = async (
+  emails: string[],
+  emailProps: HostMessageProps
+) => {
+  const emailChunks = chunkEmails(emails, 100);
+
+  const sendEmailPromises = emailChunks.map(async (chunk) => {
+    const batch = chunk.map((email) => {
+      return {
+        from: "Treasure <noreply@ontreasure.xyz>",
+        to: email,
+        subject: `${emailProps.hostName} sent you a message`,
+        react: HostMessage(emailProps),
+      };
+    });
+    return resend.batch.send(batch);
+  });
+
+  return await toMany(sendEmailPromises);
+};
+
 const sendTicketPurchasedEmail = async (
   email: string,
   ticketId: string,
@@ -134,4 +165,5 @@ export {
   sendTicketPurchasedEmail,
   sendVendorAppSubmittedEmail,
   sendTablePurchasedEmail,
+  sendHostMessageEmail,
 };

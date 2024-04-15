@@ -11,8 +11,8 @@ export default function TailwindConfig({
         theme: {
           extend: {
             colors: {
-              background: "#0c0a09",
-              foreground: "#f2f2f2",
+              background: "#f2f2f2",
+              foreground: "#0c0a09",
               primary: {
                 DEFAULT: "#71d08c",
                 foreground: "#fff1f2",

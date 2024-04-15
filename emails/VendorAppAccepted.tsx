@@ -1,5 +1,6 @@
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
@@ -10,6 +11,8 @@ import {
   Section,
   Text,
   Img,
+  Link,
+  Hr,
 } from "@react-email/components";
 
 export interface VendorAppAcceptedEmailProps {
@@ -32,16 +35,15 @@ export default function VendorAppAccepted({
           <Container className="bg-background border-2 max-w-lg px-10">
             <Header />
             <Section>
-              <Heading className="text-center font-normal">
-                You've been accepted to be a vendor at{" "}
-                <strong>{eventName}</strong>!
+              <Heading className="text-left font-normal">
+                Congrats, you've been approved
               </Heading>
               <Text className="text-left">
                 Click the link below to purchase your table! Once purchased,
                 you'll appear as a vendor on the events page.
               </Text>
             </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center">
+            <BodySection>
               <Img
                 className="m-auto rounded-[2.5rem]"
                 src={posterUrl}
@@ -54,7 +56,7 @@ export default function VendorAppAccepted({
               </Heading>
               <Button
                 href={`https://www.ontreasure.xyz/checkout/${checkoutSessionId}`}
-                className="bg-primary ml-auto p-4 rounded-lg text-background"
+                className="bg-primary ml-auto p-4 rounded-lg text-foreground"
               >
                 Pay Now for Table
               </Button>
@@ -66,7 +68,29 @@ export default function VendorAppAccepted({
                   <Text className="text-left">{message}</Text>
                 </Section>
               )}
-            </Section>
+            </BodySection>
+
+            <BodySection>
+              <Heading as="h2" className="font-normal text-left">
+                Need Help?
+              </Heading>
+              <Hr className="border-foreground/40 my-6" />
+              <Text className="text-left text-foreground/80">
+                Visit our{" "}
+                <Link
+                  className="font-semibold text-foreground underline"
+                  href="https://www.ontreasure.xyz"
+                >
+                  Help Center
+                </Link>{" "}
+                or for urgent help, contact us at{" "}
+                <span className="text-foreground font-semibold">
+                  george@ontreasure.xyz
+                </span>
+                .
+              </Text>
+            </BodySection>
+
             <Footer />
           </Container>
         </Body>

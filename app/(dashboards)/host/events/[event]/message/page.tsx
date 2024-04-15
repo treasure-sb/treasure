@@ -1,7 +1,9 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { validateUser } from "@/lib/actions/auth";
-import MessageTables from "./components/MessageTables";
 import { Tables } from "@/types/supabase";
+import Message from "./components/Message";
+import { getEventDisplayData } from "@/lib/helpers/events";
+import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
   params: { event },
@@ -13,23 +15,21 @@ export default async function Page({
     data: { user },
   } = await validateUser();
 
-  const { data: eventData } = await supabase
+  const { data: eventsData } = await supabase
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", event)
     .single();
 
-  const { data: tablesData } = await supabase
-    .from("tables")
-    .select("*")
-    .eq("event_id", eventData.id);
+  const eventData: Tables<"events"> = eventsData;
+  const eventDisplay = await getEventDisplayData(eventData);
 
-  const tables: Tables<"tables">[] = tablesData || [];
+  const { profile: hostProfile } = await getProfile(user?.id);
 
   return (
     <div className="max-w-3xl m-auto">
-      <MessageTables tables={tables} />
+      <Message event={eventDisplay} host={hostProfile} />
     </div>
   );
 }

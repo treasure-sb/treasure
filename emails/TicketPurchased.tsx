@@ -1,5 +1,6 @@
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
@@ -53,7 +54,8 @@ export default function TicketPurchased({
                 You're going to <strong>{eventName}</strong>
               </Text>
             </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center">
+
+            <BodySection>
               <Img
                 className="m-auto rounded-[2.5rem]"
                 src={posterUrl}
@@ -65,66 +67,68 @@ export default function TicketPurchased({
                 {eventName}
               </Heading>
               <Button
-                className="bg-primary text-background font-normal rounded-lg px-6 py-4"
+                className="bg-primary text-foreground font-normal rounded-lg px-6 py-4"
                 href="/profile/tickets"
               >
                 View Tickets
               </Button>
-              <Heading className="text-foreground/40 font-normal" as="h5">
+              <Heading className="text-foreground/80 font-normal" as="h5">
                 Also attached below for offline access
               </Heading>
-            </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center text-lg">
+            </BodySection>
+
+            <BodySection>
               <Heading as="h2" className="font-normal text-left">
                 Ticket Details
               </Heading>
               <Hr className="border-foreground/40 my-6" />
               <Row>
-                <Column className="text-left text-foreground/40">
+                <Column className="text-left text-foreground/80">
                   Ticket Type
                 </Column>
                 <Column className="text-right">{ticketType}</Column>
               </Row>
               <Hr className="border-foreground/40 my-6" />
               <Row>
-                <Column className="text-left text-foreground/40">
+                <Column className="text-left text-foreground/80">
                   Quantity
                 </Column>
                 <Column className="text-right">{quantity}</Column>
               </Row>
               <Hr className="border-foreground/40 my-6" />
               <Row>
-                <Column className="text-left text-foreground/40">
+                <Column className="text-left text-foreground/80">
                   Location
                 </Column>
                 <Column className="text-right w-60">{location}</Column>
               </Row>
               <Hr className="border-foreground/40 my-6" />
               <Row>
-                <Column className="text-left text-foreground/40">Date</Column>
+                <Column className="text-left text-foreground/80">Date</Column>
                 <Column className="text-right">{date}</Column>
               </Row>
               <Hr className="border-foreground/40 my-6" />
               <Row className="mb-6">
-                <Column className="text-left text-foreground/40">
+                <Column className="text-left text-foreground/80">
                   Total Price
                 </Column>
                 <Column className="text-right">{totalPrice}</Column>
               </Row>
-            </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center text-lg">
+            </BodySection>
+
+            <BodySection>
               <Heading as="h2" className="font-normal text-left">
                 Event Information
               </Heading>
               <Hr className="border-foreground/40 my-6" />
-              <Text className="text-left text-foreground/40">{eventInfo}</Text>
-            </Section>
-            <Section className="mb-6 border-solid border-[1px] rounded-[2.5rem] border-foreground/40 p-4 w-full text-center text-lg">
+              <Text className="text-left text-foreground/80">{eventInfo}</Text>
+            </BodySection>
+            <BodySection>
               <Heading as="h2" className="font-normal text-left">
                 Need Help?
               </Heading>
               <Hr className="border-foreground/40 my-6" />
-              <Text className="text-left text-foreground/40">
+              <Text className="text-left text-foreground/80">
                 Visit our{" "}
                 <Link
                   className="font-semibold text-foreground underline"
@@ -138,7 +142,8 @@ export default function TicketPurchased({
                 </span>
                 .
               </Text>
-            </Section>
+            </BodySection>
+
             <Footer />
           </Container>
         </Body>
