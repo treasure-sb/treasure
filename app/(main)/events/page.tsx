@@ -2,6 +2,12 @@ import TagFiltering from "./components/filtering/TagFiltering";
 import FilteringOptions from "./components/filtering/FilteringOptions";
 import Events from "./components/Events";
 import { SearchParams } from "@/types/event";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Events",
+  description: "Popular Events Near New York",
+};
 
 export default function Page({
   searchParams,

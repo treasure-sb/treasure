@@ -5,6 +5,30 @@ import { validateUser } from "@/lib/actions/auth";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import AllTickets from "./components/AllTickets";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { name: string };
+}) {
+  const supabase = await createSupabaseServerClient();
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("name, description")
+    .eq("cleaned_name", params.name)
+    .single();
+
+  if (eventError) {
+    return {
+      title: "Not Found",
+      description: "Event tickets not found",
+    };
+  }
+
+  return {
+    title: `${eventData.name} Tickets`,
+  };
+}
+
 export default async function Page({
   params,
 }: {

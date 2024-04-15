@@ -268,4 +268,12 @@ const unlikeEvent = async (event_id: string, user_id: string) => {
     .eq("user_id", user_id);
 };
 
-export { createEvent, likeEvent, unlikeEvent };
+const getAllEventCleanedNames = async () => {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("events")
+    .select("cleaned_name, created_at");
+  return { data };
+};
+
+export { createEvent, likeEvent, unlikeEvent, getAllEventCleanedNames };
