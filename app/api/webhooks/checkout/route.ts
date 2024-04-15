@@ -200,19 +200,19 @@ const handleTablePurchase = async (
   }
 
   // text user
-  if (vendorProfile.phone !== null) {
+  if (vendorProfile.phone) {
     await sendSMS(
       vendorProfile.phone,
       `🙌 Success! Yoour vendor payment has been received! You are now confirmed to be a vendor at ${
         event.name
       } on ${moment(event.date).format(
         "dddd, MMM Do"
-      )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets"`
+      )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets`
     );
   }
 
   // text host
-  if (host.profile.phone !== null) {
+  if (host.profile.phone) {
     await sendSMS(
       host.profile.phone,
       `💰Congrats! You received payment from ${
@@ -229,7 +229,8 @@ const handleTablePurchase = async (
 
   // text us
   await sendSMS(
-    "+17039097887",
+    // "+17039097887",
+    "+15714800596",
     `💰Congrats! You received payment from ${
       vendorProfile.business_name === null
         ? vendorProfile.first_name + " " + vendorProfile.last_name

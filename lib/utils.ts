@@ -45,3 +45,13 @@ export function to<T>(promise: Promise<T>): Promise<PromiseResult<T>> {
     }
   });
 }
+
+export function toMany<T>(promises: Promise<T>[]): Promise<PromiseResult<T>> {
+  return Promise.allSettled([...promises]).then(function ([result]) {
+    if (result.status === "fulfilled") {
+      return { data: result.value, error: null };
+    } else {
+      return { data: null, error: result.reason };
+    }
+  });
+}

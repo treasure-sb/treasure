@@ -11,9 +11,6 @@ import {
   Section,
   Text,
   Img,
-  Button,
-  Row,
-  Column,
   Link,
 } from "@react-email/components";
 
@@ -58,7 +55,9 @@ export default function HostMessage({
                   <Heading className="font-bold text-sm text-left">
                     Message from the event host:
                   </Heading>
-                  <Text className="text-left">{message}</Text>
+                  <Text className="text-left whitespace-pre-line">
+                    {message}
+                  </Text>
                 </Section>
               )}
             </BodySection>

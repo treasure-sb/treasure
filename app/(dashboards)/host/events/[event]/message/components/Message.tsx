@@ -6,34 +6,40 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import { sendHostMessageEmail } from "@/lib/actions/emails";
+import { HostMessageProps } from "@/emails/HostMessage";
+import { EventDisplayData } from "@/types/event";
 
 enum Recipients {
   ALL_ATTENDEES = "All Attendees",
   ALL_VENDORS = "All Vendors",
   PAID_VENDORS = "Paid Vendors",
   PENDING_VENDORS = "Pending Vendors",
-  WAITLISTED_VENDORS = "Waitlisted Vendors",
 }
 
 type RecipientData = {
-  phone: string;
-  email: string;
+  phone: string | null;
+  email: string | null;
 };
 
-export default function MessageTables({
-  tables,
+type AttendeeData = {
+  profiles: RecipientData[];
+};
+
+export default function Message({
   event,
+  host,
 }: {
-  tables: Tables<"tables">[];
-  event: Tables<"events">;
+  event: EventDisplayData;
+  host: Tables<"profiles">;
 }) {
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
   const supabase = createClient();
 
   const specificVendorSelections = [
     Recipients.PAID_VENDORS,
     Recipients.PENDING_VENDORS,
-    Recipients.WAITLISTED_VENDORS,
   ];
 
   const handleClickGroup = (tableName: string) => {
@@ -63,59 +69,94 @@ export default function MessageTables({
       if (tableName === Recipients.ALL_VENDORS) {
         setSelectedGroups([...selectedGroups, ...allVendors]);
       } else {
-        setSelectedGroups([...selectedGroups, tableName]);
+        setSelectedGroups((currentSelected) => {
+          const updatedSelection = [...currentSelected];
+          updatedSelection.push(tableName);
+
+          const allVendorsSelected = specificVendorSelections.every((vendor) =>
+            updatedSelection.includes(vendor)
+          );
+
+          if (allVendorsSelected) {
+            updatedSelection.push(Recipients.ALL_VENDORS);
+          }
+
+          return updatedSelection;
+        });
       }
     }
   };
 
   const handleSendText = async () => {
-    if (selectedGroups.length === 0) {
-      toast.error("Please select recipients to message");
-      return;
-    }
+    if (handleInitialErrors()) return;
 
     const recipientsToMessage = filterSelectedGroups();
-    const phoneNumbers: string[] = [];
+    const phoneNumbers = new Set<string>();
 
     for (const recipients of recipientsToMessage) {
       const recipientData = await getRecipients(recipients as Recipients);
-      recipientData.forEach((data) => {
-        phoneNumbers.push(data.phone);
+      recipientData.forEach(({ phone }) => {
+        if (phone) {
+          phoneNumbers.add(phone);
+        }
       });
     }
 
-    if (phoneNumbers.length === 0) {
+    if (phoneNumbers.size === 0) {
       toast.error("No recipients to message");
       return;
     }
+
+    const phoneList = [...phoneNumbers];
   };
 
   const handleSendEmail = async () => {
-    if (selectedGroups.length === 0) {
-      toast.error("Please select recipients to message");
-      return;
-    }
+    if (handleInitialErrors()) return;
+
+    toast.loading("Sending emails...");
 
     const recipientsToMessage = filterSelectedGroups();
-    const emails: string[] = [];
+    const emails = new Set<string>();
     for (const recipients of recipientsToMessage) {
       const recipientData = await getRecipients(recipients as Recipients);
-      recipientData.forEach((data) => {
-        emails.push(data.phone);
+      recipientData.forEach(({ email }) => {
+        if (email) {
+          emails.add(email);
+        }
       });
     }
 
-    if (emails.length === 0) {
+    if (emails.size === 0) {
+      toast.dismiss();
       toast.error("No recipients to message");
       return;
     }
+
+    const emailProps: HostMessageProps = {
+      eventName: event.name,
+      hostName: host.business_name || host.first_name,
+      posterUrl: event.publicPosterUrl,
+      message,
+    };
+
+    const emailList = [...emails];
+
+    const { error: sendingEmailsError } = await sendHostMessageEmail(
+      emailList,
+      emailProps
+    );
+
+    if (sendingEmailsError) {
+      toast.error("Error sending emails");
+      return;
+    }
+
+    toast.dismiss();
+    toast.success("Emails sent!");
   };
 
   const handleSendBoth = async () => {
-    if (selectedGroups.length === 0) {
-      toast.error("Please select recipients to message");
-      return;
-    }
+    handleInitialErrors();
   };
 
   const filterSelectedGroups = () => {
@@ -129,17 +170,45 @@ export default function MessageTables({
     return recipientsToMessage;
   };
 
+  const handleInitialErrors = () => {
+    if (message.length === 0) {
+      toast.error("Please enter a message");
+      return true;
+    }
+
+    if (selectedGroups.length === 0) {
+      toast.error("Please select recipients to message");
+      return true;
+    }
+
+    return false;
+  };
+
   const getRecipients = async (
     recipients: Recipients
   ): Promise<RecipientData[]> => {
     switch (recipients) {
+      case Recipients.ALL_ATTENDEES:
+        const { data: allAttendeesData } = await supabase
+          .from("event_tickets")
+          .select("profiles(phone, email)")
+          .eq("event_id", event.id);
+
+        const attendeeProfiles: AttendeeData[] = allAttendeesData || [];
+        const allAttendees: RecipientData[] = attendeeProfiles.flatMap(
+          (item) => {
+            return item.profiles;
+          }
+        );
+        return allAttendees;
+
       case Recipients.ALL_VENDORS:
-        const { data: allData } = await supabase
+        const { data: allVendorsData } = await supabase
           .from("event_vendors")
           .select("phone:application_phone, email:application_email")
           .eq("event_id", event.id);
 
-        const allVendors: RecipientData[] = allData || [];
+        const allVendors: RecipientData[] = allVendorsData || [];
         return allVendors;
 
       case Recipients.PAID_VENDORS:
@@ -182,7 +251,12 @@ export default function MessageTables({
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Select Recipients</h1>
       <div className="flex flex-wrap gap-2">{recipientButtons}</div>
-      <Textarea rows={15} className="my-10" placeholder="Your message..." />
+      <Textarea
+        rows={15}
+        className="my-10"
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Your message..."
+      />
       <div className="flex gap-4">
         <Button className="w-40" onClick={handleSendText} type="button">
           Send Text
