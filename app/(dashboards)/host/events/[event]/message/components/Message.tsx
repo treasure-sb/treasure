@@ -9,11 +9,13 @@ import { toast } from "sonner";
 import { sendHostMessageEmail } from "@/lib/actions/emails";
 import { HostMessageProps } from "@/emails/HostMessage";
 import { EventDisplayData } from "@/types/event";
+import { sendNotifications, sendSMS } from "@/lib/actions/twilio";
 
 enum Recipients {
   ALL_ATTENDEES = "All Attendees",
   ALL_VENDORS = "All Vendors",
   PAID_VENDORS = "Paid Vendors",
+  UNPAID_VENDORS = "Unpaid Vendors",
   PENDING_VENDORS = "Pending Vendors",
 }
 
@@ -37,16 +39,16 @@ export default function Message({
   const [message, setMessage] = useState("");
   const supabase = createClient();
 
-  const specificVendorSelections = [
-    Recipients.PAID_VENDORS,
-    Recipients.PENDING_VENDORS,
-  ];
+  const recipients = Object.values(Recipients);
+  const vendorOptions = recipients.filter(
+    (recipient) => recipient !== "All Attendees" && recipient !== "All Vendors"
+  );
 
   const handleClickGroup = (tableName: string) => {
-    const isSpecificVendorSelection = specificVendorSelections.includes(
+    const isSpecificVendorSelection = vendorOptions.includes(
       tableName as Recipients
     );
-    const allVendors = [...specificVendorSelections, tableName];
+    const allVendors = [...vendorOptions, tableName];
     const isSelected = selectedGroups.includes(tableName);
 
     if (isSelected) {
@@ -73,7 +75,7 @@ export default function Message({
           const updatedSelection = [...currentSelected];
           updatedSelection.push(tableName);
 
-          const allVendorsSelected = specificVendorSelections.every((vendor) =>
+          const allVendorsSelected = vendorOptions.every((vendor) =>
             updatedSelection.includes(vendor)
           );
 
@@ -90,6 +92,8 @@ export default function Message({
   const handleSendText = async () => {
     if (handleInitialErrors()) return;
 
+    toast.loading("Sending texts...");
+
     const recipientsToMessage = filterSelectedGroups();
     const phoneNumbers = new Set<string>();
 
@@ -103,11 +107,23 @@ export default function Message({
     }
 
     if (phoneNumbers.size === 0) {
+      toast.dismiss();
       toast.error("No recipients to message");
       return;
     }
 
     const phoneList = [...phoneNumbers];
+
+    const smsMessage = `📣 The host of ${event.name} sent you a message - \n\n"${message}"\n\nEvent details 👇\n\nwww.ontreasure.xyz/events/${event.cleaned_name}`;
+
+    const response = await sendNotifications(phoneList, smsMessage);
+    if (!response.success) {
+      toast.dismiss();
+      toast.error("Error sending text blast. Please try again.");
+      return;
+    }
+    toast.dismiss();
+    toast.success("Texts Sent!");
   };
 
   const handleSendEmail = async () => {
@@ -155,16 +171,11 @@ export default function Message({
     toast.success("Emails sent!");
   };
 
-  const handleSendBoth = async () => {
-    handleInitialErrors();
-  };
-
   const filterSelectedGroups = () => {
     let recipientsToMessage = selectedGroups;
     if (recipientsToMessage.includes(Recipients.ALL_VENDORS)) {
       recipientsToMessage = recipientsToMessage.filter(
-        (recipient) =>
-          !specificVendorSelections.includes(recipient as Recipients)
+        (recipient) => !vendorOptions.includes(recipient as Recipients)
       );
     }
     return recipientsToMessage;
@@ -229,12 +240,20 @@ export default function Message({
 
         const pendingVendors: RecipientData[] = pendingData || [];
         return pendingVendors;
+      case Recipients.UNPAID_VENDORS:
+        const { data: unpaidData } = await supabase
+          .from("event_vendors")
+          .select("phone:application_phone, email:application_email")
+          .eq("payment_status", "UNPAID")
+          .eq("application_status", "ACCEPTED")
+          .eq("event_id", event.id);
+
+        const unpaidVendors: RecipientData[] = unpaidData || [];
+        return unpaidVendors;
       default:
         return [];
     }
   };
-
-  const recipients = Object.values(Recipients);
 
   const recipientButtons = recipients.map((recipient, i) => (
     <Button
@@ -263,14 +282,6 @@ export default function Message({
         </Button>
         <Button className="w-40" onClick={handleSendEmail} type="button">
           Send Email
-        </Button>
-        <Button
-          variant={"tertiary"}
-          onClick={handleSendBoth}
-          className="w-40"
-          type="button"
-        >
-          Send Text & Email
         </Button>
       </div>
     </div>

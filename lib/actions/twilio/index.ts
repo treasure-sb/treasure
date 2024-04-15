@@ -2,9 +2,11 @@
 import twilio from "twilio";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const notifySid = process.env.TWILIO_NOTIFY_SERVICE_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
 const client = twilio(accountSid, authToken);
+const service = client.notify.v1.services(notifySid as string);
 
 const sendOTP = (phoneNumber: string) => {
   return client.verify.v2
@@ -59,8 +61,8 @@ const sendSMS = async (phoneNumber: string, message: string) => {
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phoneNumber,
     })
-    .then((message) => {
-      if (message.errorCode) {
+    .then((res) => {
+      if (res.errorCode) {
         return {
           success: false,
           message: "Error sending SMS.",
@@ -80,4 +82,27 @@ const sendSMS = async (phoneNumber: string, message: string) => {
     });
 };
 
-export { sendSMS, sendOTP, verifyOTP };
+const sendNotifications = (phoneNumbers: string[], message: string) => {
+  const bindings = phoneNumbers.map((number) => {
+    return JSON.stringify({ binding_type: "sms", address: number });
+  });
+  return service.notifications
+    .create({
+      toBinding: bindings,
+      body: message,
+    })
+    .then((res) => {
+      return {
+        success: true,
+        message: "Notifcations sent successfully.",
+      };
+    })
+    .catch((error) => {
+      return {
+        success: false,
+        message: "Error sending SMS.",
+      };
+    });
+};
+
+export { sendSMS, sendOTP, verifyOTP, sendNotifications };
