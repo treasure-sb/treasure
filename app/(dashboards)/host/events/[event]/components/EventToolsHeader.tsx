@@ -63,7 +63,15 @@ export default function EventToolsHeader({
             {formattedDate}
           </div>
         </div>
-        <div>
+        <div className="flex flex-col items-end gap-4">
+          <Link
+            href={`/host/events/${event.cleaned_name}/edit`}
+            className="group cursor-pointer"
+          >
+            <Button variant={"secondary"} className="flex gap-2">
+              <p>Event Info</p>
+            </Button>
+          </Link>
           <div className="flex gap-2">
             <CopyEventLink cleaned_event_name={event.cleaned_name} />
             <Link
