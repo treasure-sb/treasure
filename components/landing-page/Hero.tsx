@@ -1,36 +1,88 @@
 "use client";
 
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { LucideArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
 export default function Hero() {
+  const [currentTag, setCurrentTag] = useState(0);
+  const tags = [
+    "Collectible",
+    "Pokémon",
+    "Sports",
+    "Comic Book",
+    "TCG",
+    "Toys",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTag((currentTag) => (currentTag + 1) % tags.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const variants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
+
   return (
-    <section className="h-[100svh] relative mx-[-16px] sm:mx-[-32px] flex items-center justify-center -mt-32 px-4 sm:px-8">
-      <div className="flex flex-col items-center space-y-4 md:space-y-12 md:max-w-6xl xl:max-w-7xl m-auto tracking-tight">
-        <p className="text-[2.4rem] font-extrabold text-center leading-tight md:leading-tight md:text-6xl md:max-w-6xl ">
-          Find the Best <span className="text-primary">Sports</span>,{" "}
-          <span className="text-primary">Pokemon</span>, and{" "}
-          <span className="text-primary">TCG</span> Events Near You
+    <section className="h-[80vh] pt-28 relative max-w-[var(--container-width)] m-auto flex flex-row">
+      <div className="text-left flex flex-col space-y-4 md:space-y-12 tracking-tight">
+        <p className="text-[2.4rem] font-semibold leading-tight md:leading-snug md:text-7xl 2xl:text-8xl md:max-w-6xl">
+          Card and <br className="block md:hidden" />
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={tags[currentTag]}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={variants}
+              transition={{ duration: 0.4 }}
+              className="text-primary inline-block"
+            >
+              {tags[currentTag]}
+            </motion.span>
+          </AnimatePresence>{" "}
+          <br />
+          Shows Every Weekend Near You
         </p>
-        <Link href="/events" className="w-fit">
-          <Button className="w-40 md:w-60 md:h-16 md:text-xl">
+        <Link
+          href="/events"
+          className="w-fit flex items-center space-x-1 md:space-x-2 group"
+        >
+          <p className="text-primary font-extrabold text-3xl md:text-5xl 2xl:text-6xl group-hover:text-primary/80 transition duration-300">
             Browse Events
-          </Button>
+          </p>
+          <LucideArrowUpRight
+            size={80}
+            className="text-primary stroke-[3] hidden 2xl:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+          />
+          <LucideArrowUpRight
+            size={70}
+            className="text-primary stroke-[3] hidden md:block 2xl:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+          />
+          <LucideArrowUpRight
+            size={40}
+            className="text-primary stroke-[3] block md:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+          />
         </Link>
       </div>
-      <Image
-        className="-z-50 absolute inset-0 opacity-100"
-        width={0}
-        height={0}
-        layout="fill"
-        objectFit="cover"
-        objectPosition="center"
-        quality={100}
-        alt="hero-image"
-        src={"/static/landing-page/sports_best.jpg"}
-      />
-      <div className="bg-gradient-to-b from-transparent to-[#131313] absolute inset-x-0 bottom-0 h-2/5 -z-40" />
+      <div className="w-[30%] h-full">
+        <Image
+          className="w-full h-full"
+          src="/static/landing-page/fenway.jpg"
+          alt="hero image"
+          width={300}
+          height={400}
+          objectFit="cover"
+          objectPosition="center"
+        />
+      </div>
     </section>
   );
 }

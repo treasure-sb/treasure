@@ -16,8 +16,8 @@ export default function HeaderMotion({
 }) {
   const { scrollY } = useScroll();
   const [scope, animate] = useAnimate();
-  const backgroundOpacity = useTransform(scrollY, [0, 150], [0, 0.98]);
-  const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.2]);
+  const backgroundOpacity = useTransform(scrollY, [0, 80], [0, 0.98]);
+  const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.4]);
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious();
