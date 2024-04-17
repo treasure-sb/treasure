@@ -10,11 +10,10 @@ export default function Hero() {
   const [currentTag, setCurrentTag] = useState(0);
   const tags = [
     "Collectible",
-    "Pokémon",
-    "Sports",
+    "Pokémon Card",
+    "Sports Card",
     "Comic Book",
-    "TCG",
-    "Toys",
+    "Toy and TCG",
   ];
 
   useEffect(() => {
@@ -34,7 +33,6 @@ export default function Hero() {
     <section className="h-[100vh] pb-40 relative max-w-[var(--container-width)] m-auto flex flex-col-reverse space-y-10 lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
       <div className="text-left flex flex-col space-y-4 md:space-y-12 tracking-tight pb-4">
         <p className="text-3xl font-semibold lg:text-8xl lg:max-w-6xl">
-          Card and <br className="hidden 2xl:block" />
           <AnimatePresence mode="wait">
             <motion.span
               key={tags[currentTag]}
