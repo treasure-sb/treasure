@@ -11,7 +11,7 @@ export default function Hero() {
   const tags = [
     "Collectible",
     "Pokémon Card",
-    "Sport Card",
+    "Sports Card",
     "Comic Book",
     "Toy and TCG",
   ];
