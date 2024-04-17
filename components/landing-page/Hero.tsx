@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { LucideArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 
 export default function Hero() {
@@ -31,10 +31,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="h-[80vh] pt-28 relative max-w-[var(--container-width)] m-auto flex flex-row">
-      <div className="text-left flex flex-col space-y-4 md:space-y-12 tracking-tight">
-        <p className="text-[2.4rem] font-semibold leading-tight md:leading-snug md:text-7xl 2xl:text-8xl md:max-w-6xl">
-          Card and <br className="block md:hidden" />
+    <section className="h-[100vh] pb-40 relative max-w-[var(--container-width)] m-auto flex flex-col-reverse space-y-10 lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
+      <div className="text-left flex flex-col space-y-4 md:space-y-12 tracking-tight pb-4">
+        <p className="text-3xl font-semibold lg:text-8xl lg:max-w-6xl">
+          Card and <br className="hidden 2xl:block" />
           <AnimatePresence mode="wait">
             <motion.span
               key={tags[currentTag]}
@@ -55,30 +55,47 @@ export default function Hero() {
           href="/events"
           className="w-fit flex items-center space-x-1 md:space-x-2 group"
         >
-          <p className="text-primary font-extrabold text-3xl md:text-5xl 2xl:text-6xl group-hover:text-primary/80 transition duration-300">
+          <p className="text-primary font-semibold text-2xl lg:text-6xl group-hover:text-primary/80 transition duration-300">
             Browse Events
           </p>
           <LucideArrowUpRight
-            size={80}
-            className="text-primary stroke-[3] hidden 2xl:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
-          />
-          <LucideArrowUpRight
             size={70}
-            className="text-primary stroke-[3] hidden md:block 2xl:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+            className="text-primary hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
           />
           <LucideArrowUpRight
-            size={40}
-            className="text-primary stroke-[3] block md:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+            size={30}
+            className="text-primary block lg:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
           />
         </Link>
       </div>
-      <div className="w-[30%] h-full">
+      <Image
+        className="hidden lg:block w-[40%] h-full object-cover rounded-md"
+        quality={100}
+        src="/static/landing-page/fenway3.png"
+        alt="hero image"
+        width={2000}
+        height={2000}
+        objectFit="cover"
+        objectPosition="center"
+      />
+      <div className="flex lg:hidden mx-[-32px] relative h-full z-40">
         <Image
-          className="w-full h-full"
-          src="/static/landing-page/fenway.jpg"
+          className="absolute top-0 left-0 w-[60%] h-[50%] object-cover rounded-md rotate-2 z-10"
+          quality={100}
+          src="/static/landing-page/fenway2.png"
           alt="hero image"
-          width={300}
-          height={400}
+          width={2000}
+          height={2000}
+          objectFit="cover"
+          objectPosition="center"
+        />
+        <Image
+          className="absolute top-0 left-[38%] mt-20 w-[60%] h-[50%] object-cover rounded-md -rotate-3 z-20"
+          quality={100}
+          src="/static/landing-page/fenway3.png"
+          alt="hero image"
+          width={2000}
+          height={2000}
           objectFit="cover"
           objectPosition="center"
         />
