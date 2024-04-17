@@ -10,11 +10,11 @@ import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
+import { sendSMS } from "@/lib/actions/twilio";
 import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { sendSMS } from "@/lib/actions/twilio";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
