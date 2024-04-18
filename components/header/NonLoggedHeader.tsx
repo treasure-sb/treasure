@@ -1,5 +1,5 @@
 import Link from "next/link";
-import TreasureEmerald from "../icons/TreasureEmerald";
+import Image from "next/image";
 import HeaderMotion from "./HeaderMotion";
 
 export default function NonLoggedHeader() {
@@ -9,10 +9,12 @@ export default function NonLoggedHeader() {
         href="/"
         className="font-bold text-3xl flex items-center justify-start space-x-1"
       >
-        <div className="ml-[-4px]">
-          <TreasureEmerald width={34} height={34} />
-        </div>
-        <p>Treasure</p>
+        <Image
+          src="/static/web_logo.png"
+          alt="web logo"
+          width={150}
+          height={100}
+        />
       </Link>
       <div className="flex items-center space-x-4 md:space-x-8">
         <Link

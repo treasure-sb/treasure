@@ -80,7 +80,7 @@ export const InfiniteMovingCards = ({
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
-        {events.map((event) => event)}
+        {events}
       </ul>
     </div>
   );

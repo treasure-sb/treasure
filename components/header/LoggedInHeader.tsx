@@ -1,6 +1,5 @@
 import Link from "next/link";
 import * as React from "react";
-import TreasureEmerald from "../icons/TreasureEmerald";
 import HamburgerMenu from "./HamburgerMenu";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import HeaderMotion from "./HeaderMotion";
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { User } from "@supabase/supabase-js";
 import { getProfile } from "@/lib/helpers/profiles";
+import Image from "next/image";
 
 export default async function LoggedInHeader({ user }: { user: User }) {
   const supabase = await createSupabaseServerClient();
@@ -27,10 +27,12 @@ export default async function LoggedInHeader({ user }: { user: User }) {
           href="/"
           className="font-bold text-3xl flex items-center justify-start space-x-1"
         >
-          <div className="ml-[-4px]">
-            <TreasureEmerald width={34} height={34} />
-          </div>
-          <p>Treasure</p>
+          <Image
+            src="/static/web_logo.png"
+            alt="web logo"
+            width={150}
+            height={100}
+          />
         </Link>
         {profile.role === "admin" && (
           <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px]">
@@ -48,7 +50,7 @@ export default async function LoggedInHeader({ user }: { user: User }) {
 
         <Popover>
           <PopoverTrigger asChild>
-            <Avatar className="h-16 w-16 border-primary hover:cursor-pointer">
+            <Avatar className="h-14 w-14 border-primary hover:cursor-pointer">
               <AvatarImage src={publicUrl} />
               <AvatarFallback>
                 {profile.first_name[0]}

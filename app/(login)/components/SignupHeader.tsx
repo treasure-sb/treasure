@@ -1,15 +1,19 @@
 import Link from "next/link";
-import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import Image from "next/image";
 
 export default function SignupHeader() {
   return (
     <header className="md:max-w-6xl xl:max-w-7xl m-auto w-full z-10">
       <Link
         href="/"
-        className="font-semibold text-3xl space-x-1 flex items-center justify-center w-fit"
+        className="font-bold text-3xl flex items-center justify-start space-x-1"
       >
-        <TreasureEmerald width={24} height={24} />
-        <p className="text-md">Treasure</p>
+        <Image
+          src="/static/web_logo.png"
+          alt="web logo"
+          width={150}
+          height={100}
+        />
       </Link>
     </header>
   );
