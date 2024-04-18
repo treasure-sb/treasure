@@ -31,7 +31,7 @@ export default function Hero() {
 
   return (
     <section className="h-[100vh] pb-40 relative max-w-[var(--container-width)] m-auto flex flex-col-reverse space-y-10 lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
-      <div className="text-left flex flex-col space-y-4 md:space-y-12 tracking-tight pb-4">
+      <div className="text-left flex flex-col space-y-4 tracking-tight pb-4">
         <p className="text-3xl font-semibold lg:text-8xl lg:max-w-6xl">
           <AnimatePresence mode="wait">
             <motion.span
@@ -66,21 +66,31 @@ export default function Hero() {
           />
         </Link>
       </div>
-      <Image
-        className="hidden lg:block w-[40%] h-full object-cover rounded-md"
-        quality={100}
-        src="/static/landing-page/fenway3.png"
-        alt="hero image"
-        width={2000}
-        height={2000}
-        objectFit="cover"
-        objectPosition="center"
-      />
+      <div className="w-[40%] h-full relative hidden lg:block">
+        <Image
+          className="w-full h-full object-cover rounded-md"
+          quality={100}
+          priority
+          src="/static/landing-page/fenway3.png"
+          alt="hero image"
+          width={2000}
+          height={2000}
+          objectFit="cover"
+          objectPosition="center"
+        />
+        <motion.div
+          initial={{ height: "100%" }}
+          animate={{ height: "0%" }}
+          transition={{ delay: 0.25, duration: 0.7, ease: "easeInOut" }}
+          className="absolute inset-0 bg-background"
+        />
+      </div>
       <div className="flex lg:hidden mx-[-32px] relative h-full z-40">
         <Image
           className="absolute top-0 left-0 w-[60%] h-[50%] object-cover rounded-md rotate-2 z-10"
           quality={100}
           src="/static/landing-page/fenway2.png"
+          priority
           alt="hero image"
           width={2000}
           height={2000}
@@ -91,6 +101,7 @@ export default function Hero() {
           className="absolute top-0 left-[38%] mt-20 w-[60%] h-[50%] object-cover rounded-md -rotate-3 z-20"
           quality={100}
           src="/static/landing-page/fenway3.png"
+          priority
           alt="hero image"
           width={2000}
           height={2000}
