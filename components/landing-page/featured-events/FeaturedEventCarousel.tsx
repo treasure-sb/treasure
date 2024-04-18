@@ -13,7 +13,7 @@ export default function FeaturedEventCarousel({
         additionalTransfrom={0}
         arrows={false}
         autoPlay
-        autoPlaySpeed={3500}
+        autoPlaySpeed={3000}
         centerMode={true}
         containerClass="container-with-dots"
         dotListClass=""
@@ -28,9 +28,17 @@ export default function FeaturedEventCarousel({
         renderButtonGroupOutside={false}
         renderDotsOutside={false}
         responsive={{
+          veryLargeDesktop: {
+            breakpoint: {
+              max: 4000,
+              min: 1700,
+            },
+            items: 4,
+            partialVisibilityGutter: 10,
+          },
           desktop: {
             breakpoint: {
-              max: 3000,
+              max: 1700,
               min: 1024,
             },
             items: 3,
