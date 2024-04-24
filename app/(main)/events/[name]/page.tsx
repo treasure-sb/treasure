@@ -40,15 +40,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     redirect("/events");
   }
 
-  const { data: vendorsData } = await supabase
-    .from("event_vendors")
-    .select("profiles(*)")
-    .eq("event_id", eventData.id)
-    .eq("payment_status", "PAID");
-
   const event: Tables<"events"> = eventData;
-  const vendors: Tables<"profiles">[] =
-    vendorsData?.map((vendor) => vendor.profiles).flat() || [];
 
-  return <EventPage key={event.id} event={event} vendors={vendors} />;
+  return <EventPage key={event.id} event={event} />;
 }

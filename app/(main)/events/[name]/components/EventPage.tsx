@@ -16,10 +16,8 @@ import VenueMap from "./sections/VenueMap";
 
 export default async function EventPage({
   event,
-  vendors,
 }: {
   event: Tables<"events">;
-  vendors: Tables<"profiles">[];
 }) {
   const {
     data: { user },
@@ -27,7 +25,7 @@ export default async function EventPage({
   const eventDisplayData = await getEventDisplayData(event);
 
   return (
-    <main className="w-full md:max-w-[1400px] m-auto">
+    <main className="w-full md:max-w-[1300px] m-auto">
       <div className="flex flex-col md:flex-row md:justify-between md:space-x-14 w-full">
         <Poster event={event} user={user} />
         <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto space-y-8">
@@ -42,9 +40,8 @@ export default async function EventPage({
           <Separator />
           <Location event={event} />
           <Separator />
-          <Vendors vendors={vendors} />
+          <Vendors event={event} />
           <HostedBy event={event} />
-          <Separator />
           <VenueMap event={event} />
         </div>
       </div>
