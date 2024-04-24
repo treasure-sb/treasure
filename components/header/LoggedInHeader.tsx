@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/popover";
 import { User } from "@supabase/supabase-js";
 import { getProfile } from "@/lib/helpers/profiles";
+import {
+  CalendarSearch,
+  TicketIcon,
+  User2Icon,
+  Settings,
+  LayoutDashboardIcon,
+} from "lucide-react";
 import Image from "next/image";
 
 export default async function LoggedInHeader({ user }: { user: User }) {
@@ -35,7 +42,7 @@ export default async function LoggedInHeader({ user }: { user: User }) {
           />
         </Link>
         {profile.role === "admin" && (
-          <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px]">
+          <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
             admin
           </p>
         )}
@@ -60,31 +67,35 @@ export default async function LoggedInHeader({ user }: { user: User }) {
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex flex-col bg-black mt-4 px-0 py-2 overflow-hidden"
+            className="flex flex-col bg-black mt-4 p-2 overflow-hidden"
           >
             <Link
-              className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
+              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
               href="/profile/tickets"
             >
-              Tickets
+              <TicketIcon className="stroke-1" />
+              <p>Tickets</p>
             </Link>
             <Link
-              className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
+              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
               href={`/${profile.username}`}
             >
-              View Profile
+              <User2Icon className="stroke-1" />
+              <p>View Profile</p>
             </Link>
             <Link
-              className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
+              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
               href="/profile"
             >
-              Manage Profile
+              <Settings className="stroke-1" />
+              <p>Manage Profile</p>
             </Link>
             <Link
-              className="hover:text-primary hover:bg-gray-500 hover:bg-opacity-20 px-4 py-2"
+              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
               href="/host/events"
             >
-              Host Dashboard
+              <LayoutDashboardIcon className="stroke-1" />
+              <p>Host Dashboard</p>
             </Link>
           </PopoverContent>
         </Popover>

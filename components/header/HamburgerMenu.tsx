@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import ArrowPointingRight from "@/components/icons/ArrowPointingRight";
+import {
+  CalendarSearch,
+  TicketIcon,
+  User2Icon,
+  Settings,
+  LayoutDashboardIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function HamburgerMenu({
@@ -25,7 +31,7 @@ export default function HamburgerMenu({
 }) {
   const [open, setOpen] = useState(false);
   const animationVariants = {
-    initial: { opacity: 0, y: 14 },
+    initial: { opacity: 0, y: 8 },
     animate: { opacity: 1, y: 0 },
   };
 
@@ -84,16 +90,16 @@ export default function HamburgerMenu({
               variants={animationVariants}
               initial="initial"
               animate="animate"
-              transition={{ delay: 0.35, duration: 0.4 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
               onClick={() => setOpen(false)}
               className="group"
             >
               <Link
                 href="/events"
-                className="text-xl flex justify-between items-center"
+                className="text-xl flex items-center space-x-3"
               >
+                <CalendarSearch />
                 <p>Events</p>
-                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
             <motion.div
@@ -106,10 +112,10 @@ export default function HamburgerMenu({
             >
               <Link
                 href="/profile/tickets"
-                className="text-xl flex justify-between items-center"
+                className="text-xl flex items-center space-x-3"
               >
+                <TicketIcon />
                 <p>Tickets</p>
-                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
             <motion.div
@@ -122,10 +128,10 @@ export default function HamburgerMenu({
             >
               <Link
                 href={`/${profile.username}`}
-                className="text-xl flex justify-between items-center"
+                className="text-xl flex items-center space-x-3"
               >
+                <User2Icon />
                 <p>View Profile</p>
-                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
             <motion.div
@@ -138,10 +144,10 @@ export default function HamburgerMenu({
             >
               <Link
                 href="/profile"
-                className="text-xl flex justify-between items-center"
+                className="text-xl flex items-center space-x-3"
               >
+                <Settings />
                 <p>Manage Profile</p>
-                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
 
@@ -155,10 +161,10 @@ export default function HamburgerMenu({
             >
               <Link
                 href="/host/events"
-                className="text-xl flex justify-between items-center"
+                className="text-xl flex items-center space-x-3"
               >
+                <LayoutDashboardIcon />
                 <p>Host Dashboard</p>
-                <ArrowPointingRight className="group-hover:translate-x-1 transition duration-300 text-2xl" />
               </Link>
             </motion.div>
           </div>
