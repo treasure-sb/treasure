@@ -291,6 +291,7 @@ export type Database = {
       event_tickets: {
         Row: {
           attendee_id: string
+          created_at: string
           event_id: string
           id: string
           ticket_id: string
@@ -298,6 +299,7 @@ export type Database = {
         }
         Insert: {
           attendee_id: string
+          created_at?: string
           event_id: string
           id?: string
           ticket_id: string
@@ -305,6 +307,7 @@ export type Database = {
         }
         Update: {
           attendee_id?: string
+          created_at?: string
           event_id?: string
           id?: string
           ticket_id?: string
@@ -740,6 +743,36 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      temporary_vendors: {
+        Row: {
+          event_id: string
+          vendor_id: string
+        }
+        Insert: {
+          event_id: string
+          vendor_id: string
+        }
+        Update: {
+          event_id?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temporary_vendors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temporary_vendors_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "temporary_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tickets: {
         Row: {

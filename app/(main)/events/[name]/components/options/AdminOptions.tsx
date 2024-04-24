@@ -1,7 +1,8 @@
-import AssignEvent from "./AssignEvent";
+import AssignEventOrganizer from "./AssignEventOrganizer";
 import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import AssignTempVendor from "./AssignTempVendor";
 
 export default async function AdminOptions({ event }: { event: any }) {
   let eventInfo;
@@ -51,7 +52,8 @@ export default async function AdminOptions({ event }: { event: any }) {
 
   return (
     <>
-      <AssignEvent event={event} />
+      <AssignTempVendor event={event} />
+      <AssignEventOrganizer event={event} />
       <Link
         href={{
           pathname: `/profile/create-event`,

@@ -70,18 +70,13 @@ const getProfileAvatar = async (avatar_url: string) => {
   return publicUrl;
 };
 
-/**
- * Fetches temporary profile data based on a search query. This function searches for profiles by matching the username and business name fields with the provided search string.
- * Additionally, it retrieves and includes the public URL for each profile's avatar from Supabase storage.
- * Note: The function limits the results to a maximum of 6 profiles.
- */
 const fetchTemporaryProfiles = async (search: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: profilesData } = await supabase
     .from("temporary_profiles")
     .select("*")
     .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
-    .limit(6);
+    .limit(8);
 
   if (profilesData) {
     const profilesWithAvatar = await Promise.all(
@@ -99,6 +94,34 @@ const fetchTemporaryProfiles = async (search: string) => {
     );
     return profilesWithAvatar;
   }
+  return [];
+};
+
+const fetchTemporaryVendors = async (search: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: profilesData } = await supabase
+    .from("temporary_profiles")
+    .select("*, temporary_vendors(event_id)")
+    .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
+    .limit(8);
+
+  if (profilesData) {
+    const profilesWithAvatar = await Promise.all(
+      profilesData.map(async (profile) => {
+        const {
+          data: { publicUrl },
+        } = await supabase.storage
+          .from("avatars")
+          .getPublicUrl(profile.avatar_url);
+        return {
+          ...profile,
+          avatar_url: publicUrl,
+        };
+      })
+    );
+    return profilesWithAvatar;
+  }
+  return [];
 };
 
 export {
@@ -109,4 +132,5 @@ export {
   getTempProfile,
   getTempProfileFromID,
   fetchTemporaryProfiles,
+  fetchTemporaryVendors,
 };

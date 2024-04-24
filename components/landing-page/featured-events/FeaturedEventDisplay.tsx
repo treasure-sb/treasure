@@ -1,7 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Tables } from "@/types/supabase";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import FeaturedEventImageLink from "./FeaturedEventImageLink";
+import { Tables } from "@/types/supabase";
 
 export default async function FeaturedEventDisplay({
   event,

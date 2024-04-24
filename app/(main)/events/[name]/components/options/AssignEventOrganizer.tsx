@@ -19,7 +19,11 @@ import { useRouter } from "next/navigation";
 import { fetchTemporaryProfiles } from "@/lib/helpers/profiles";
 import AssignEventIcon from "@/components/icons/AssignEventIcon";
 
-export default function AssignEvent({ event }: { event: Tables<"events"> }) {
+export default function AssignEventOrganizer({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   const supabase = createClient();
   const { refresh } = useRouter();
   const [search, setSearch] = useState("");
