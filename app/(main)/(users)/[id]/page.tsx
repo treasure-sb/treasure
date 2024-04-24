@@ -40,8 +40,6 @@ export default async function Page({
     user = tempProfile;
   }
 
-  const isProfile = "bio" in user;
-
   const { data: hostingData } = await getEventsHosting(1, user.id);
   const isHosting = hostingData ? hostingData.length > 0 : false;
   const eventsFilter = filter
@@ -53,11 +51,14 @@ export default async function Page({
   const {
     data: { user: loggedInUser },
   } = await validateUser();
-  const ownProfile = (loggedInUser && loggedInUser.id === user.id) || false;
+
+  const userOnOwnProfile =
+    (loggedInUser && loggedInUser.id === user.id) || false;
+  const isProfile = "bio" in user;
 
   return (
     <main className="m-auto max-w-lg md:max-w-6xl md:flex md:space-x-8 relative min-h-[calc(100vh-220px)]">
-      <UserHeader user={user} ownProfile={ownProfile} />
+      <UserHeader user={user} ownProfile={userOnOwnProfile} />
       <div className="mt-6 md:mt-0 text-lg w-full">
         {isProfile ? (
           <>

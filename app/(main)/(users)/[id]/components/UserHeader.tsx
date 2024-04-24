@@ -105,11 +105,15 @@ export default async function UserHeader({
           ? await renderLinks()
           : (user as Tables<"temporary_profiles">).instagram && (
               <Link
+                target="_blank"
                 href={`https://www.instagram.com/${
                   (user as Tables<"temporary_profiles">).instagram
                 }`}
+                className="border-[1px] w-12 h-12 rounded-full flex items-center justify-center border-white"
               >
-                <h1>@{(user as Tables<"temporary_profiles">).instagram}</h1>
+                <div className="scale-75">
+                  {socialLinkData["Instagram"].icon}
+                </div>
               </Link>
             )}
       </div>
@@ -161,11 +165,15 @@ export default async function UserHeader({
           ? await renderLinks()
           : (user as Tables<"temporary_profiles">).instagram && (
               <Link
+                target="_blank"
                 href={`https://www.instagram.com/${
                   (user as Tables<"temporary_profiles">).instagram
                 }`}
+                className="border-[1px] w-12 h-12 rounded-full flex items-center justify-center border-white"
               >
-                <h1>@{(user as Tables<"temporary_profiles">).instagram}</h1>
+                <div className="scale-75">
+                  {socialLinkData["Instagram"].icon}
+                </div>
               </Link>
             )}
       </div>
