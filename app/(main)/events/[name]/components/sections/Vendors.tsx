@@ -50,44 +50,42 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
       <>
         <h3 className="font-semibold text-xl mb-4">Vendors</h3>
         <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 sm:overflow-auto">
-          {vendorsWithPublicUrls &&
-            vendorsWithPublicUrls.map((vendor) => (
-              <div className="flex flex-col space-y-1 items-center">
-                <Link href={`/${vendor.username}`}>
-                  <Avatar className="h-20 w-20 m-auto">
-                    <AvatarImage src={vendor.vendorPublicUrl} />
-                    <AvatarFallback>
-                      {`${vendor.first_name[0]}${vendor.last_name[0]}`}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-                <div className="items-center text-center">
-                  <div className="font-semibold text-base">
-                    {vendor.business_name
-                      ? vendor.business_name
-                      : vendor.first_name + " " + vendor.last_name}
-                  </div>
-                  <p className="text-sm ">@{vendor.username}</p>
+          {vendorsWithPublicUrls?.map((vendor) => (
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/${vendor.username}`}>
+                <Avatar className="h-20 w-20 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback>
+                    {`${vendor.first_name[0]}${vendor.last_name[0]}`}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <div className="items-center text-center">
+                <div className="font-semibold text-base">
+                  {vendor.business_name
+                    ? vendor.business_name
+                    : vendor.first_name + " " + vendor.last_name}
                 </div>
+                <p className="text-sm ">@{vendor.username}</p>
               </div>
-            ))}
-          {tempVendorsWithPublicUrls &&
-            tempVendorsWithPublicUrls.map((vendor) => (
-              <div className="flex flex-col space-y-1 items-center">
-                <Link href={`/${vendor.username}?type=t`}>
-                  <Avatar className="h-20 w-20 m-auto">
-                    <AvatarImage src={vendor.vendorPublicUrl} />
-                    <AvatarFallback />
-                  </Avatar>
-                </Link>
-                <div className="items-center text-center">
-                  <div className="font-semibold text-base">
-                    {vendor.business_name}
-                  </div>
-                  <p className="text-sm">@{vendor.username}</p>
+            </div>
+          ))}
+          {tempVendorsWithPublicUrls?.map((vendor) => (
+            <div className="flex flex-col space-y-1 items-center">
+              <Link href={`/${vendor.username}?type=t`}>
+                <Avatar className="h-20 w-20 m-auto">
+                  <AvatarImage src={vendor.vendorPublicUrl} />
+                  <AvatarFallback />
+                </Avatar>
+              </Link>
+              <div className="items-center text-center">
+                <div className="font-semibold text-base">
+                  {vendor.business_name}
                 </div>
+                <p className="text-sm">@{vendor.username}</p>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
         <Separator />
       </>
