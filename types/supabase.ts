@@ -781,7 +781,7 @@ export type Database = {
           id: string
           name: string
           price: number
-          quantity: number | null
+          quantity: number
           stripe_price_id: string
           stripe_product_id: string
         }
@@ -791,7 +791,7 @@ export type Database = {
           id?: string
           name?: string
           price: number
-          quantity?: number | null
+          quantity: number
           stripe_price_id: string
           stripe_product_id: string
         }
@@ -801,7 +801,7 @@ export type Database = {
           id?: string
           name?: string
           price?: number
-          quantity?: number | null
+          quantity?: number
           stripe_price_id?: string
           stripe_product_id?: string
         }

@@ -27,7 +27,6 @@ export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
   const handleClick = (filter: string) => {
     if (filter === active) return;
     const params = new URLSearchParams(searchParams);
-
     setActive(filter);
     params.set("events", filter);
     replace(`${pathname}?${params.toString()}`);
