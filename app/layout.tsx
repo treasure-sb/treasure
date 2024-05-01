@@ -36,7 +36,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="overflow-x-hidden w-screen">
+      <body>
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"

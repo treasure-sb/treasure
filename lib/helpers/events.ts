@@ -62,15 +62,9 @@ const getPublicVenueMapUrl = async (event: Tables<"events">) => {
   return publicVenueMapUrl;
 };
 
-/**
- * Converts a date string into a more readable format.
- *
- * @param {string} date - The date string to format.
- * @returns {string} - The formatted date string, showing weekday, day, and month.
- */
 const formatDate = (date: string) => {
   const formattedDate = new Date(date).toLocaleDateString(undefined, {
-    weekday: "short",
+    weekday: "long",
     day: "numeric",
     month: "short",
     timeZone: "UTC",

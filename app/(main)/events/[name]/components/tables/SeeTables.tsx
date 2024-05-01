@@ -14,7 +14,7 @@ export default function SeeTables({
   const minimumTablePrice = tables[0].price;
 
   return (
-    <div className="bg-background border-[1px] w-full rounded-md h-20 items-center flex justify-between px-5 font-bold">
+    <div className="w-full items-center flex justify-between px-5 font-semibold">
       {event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT" ? (
         <div>
           <p className="text-lg">Tables Available</p>
