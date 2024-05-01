@@ -1,10 +1,11 @@
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getSocialLinks } from "@/lib/actions/links";
+import { socialLinkData } from "@/lib/helpers/links";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import ContactHost from "./ContactHost";
-import { getSocialLinks } from "@/lib/actions/links";
-import { socialLinkData } from "@/lib/helpers/links";
+import { ArrowUpRight, InstagramIcon } from "lucide-react";
 
 type OrganizerType = Tables<"profiles"> | Tables<"temporary_profiles">;
 
@@ -50,7 +51,6 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   };
 
   const renderLinks = async () => {
-    const fetchedLinks = await fetchUserLinksData();
     return fetchedLinks.map((link, index) => (
       <Link
         target="_blank"
@@ -64,6 +64,11 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
     ));
   };
 
+  const fetchedLinks = await fetchUserLinksData();
+  const instagramLink = fetchedLinks.find(
+    (link) => link.application === "Instagram"
+  );
+
   let links = await renderLinks();
 
   const { username, avatar_url } = organizer;
@@ -72,9 +77,9 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   } = await supabase.storage.from("avatars").getPublicUrl(avatar_url);
 
   return (
-    <section className="flex flex-col">
-      <div className="w-full justify-between flex">
-        <h3 className="font-semibold text-xl mb-4">Hosted By</h3>
+    <section className="flex flex-col space-y-4">
+      <div className="w-full justify-between flex items-center">
+        <h3 className="font-semibold text-xl">Hosted By</h3>
         <ContactHost
           organizer={organizer}
           profileType={type}
@@ -82,35 +87,56 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
         />
       </div>
 
-      <div className="flex flex-col space-y-1 items-center">
-        <Link
-          href={type === "profile" ? `/${username}` : `/${username}?type=t`}
-        >
-          <Avatar className="h-24 w-24 m-auto">
-            <AvatarImage src={organizerPublicUrl} />
-            <AvatarFallback />
-          </Avatar>
-        </Link>
+      <Link
+        href={type === "profile" ? `/${username}` : `/${username}?type=t`}
+        className="flex space-x-4 items-center border-[1px] rounded-2xl w-full md:w-fit p-4 pr-10 relative group bg-slate-500/5 group-hover:bg-slate-10 hover:bg-slate transition duration-300"
+      >
+        <Avatar className="h-24 md:h-28 w-24 md:w-28">
+          <AvatarImage src={organizerPublicUrl} />
+          <AvatarFallback />
+        </Avatar>
         {event.organizer_type === "profile" ? (
-          <div className="items-center text-center">
-            <div className="font-semibold text-base">
-              {organizer.business_name
-                ? organizer.business_name
-                : (organizer as Tables<"profiles">).first_name +
-                  " " +
-                  (organizer as Tables<"profiles">).last_name}
+          <div className="flex flex-col space-y-2">
+            <div>
+              <p className="font-semibold text-lg md:text-xl">
+                {organizer.business_name
+                  ? organizer.business_name
+                  : (organizer as Tables<"profiles">).first_name +
+                    " " +
+                    (organizer as Tables<"profiles">).last_name}
+              </p>
+              <p className="text-xs text-gray-500">@{username}</p>
             </div>
-            <div className="text-sm ">@{username}</div>
+            {instagramLink && (
+              <div className="flex space-x-1">
+                <InstagramIcon className="text-gray-300" />
+                <p className="text-sm md:text-base text-gray-300">
+                  @{instagramLink.username}
+                </p>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="items-center text-center">
-            <div className="font-semibold text-base">
-              {organizer.business_name}
+          <div className="flex flex-col space-y-2">
+            <div>
+              <p className="font-semibold text-xl">{organizer.business_name}</p>
+              <p className="text-xs text-gray-500">@{username}</p>
             </div>
-            <div className="text-sm ">@{username}</div>
+            {(organizer as Tables<"temporary_profiles">).instagram && (
+              <div className="flex space-x-1">
+                <InstagramIcon className="text-gray-300" />
+                <p className="text-gray-300">
+                  @{(organizer as Tables<"temporary_profiles">).instagram}
+                </p>
+              </div>
+            )}
           </div>
         )}
-      </div>
+        <ArrowUpRight
+          size={18}
+          className="stroke-2 absolute right-3 top-3 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
+        />
+      </Link>
     </section>
   );
 }

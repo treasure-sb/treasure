@@ -1,9 +1,8 @@
 import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
+import { User } from "@supabase/supabase-js";
 import LikeButton from "@/components/events/shared/LikeButton";
 import EventPoster from "@/components/events/shared/EventPoster";
-import ColorThief from "@/components/events/shared/ColorThief";
-import { User } from "@supabase/supabase-js";
 
 export default async function Poster({
   event,
@@ -16,13 +15,12 @@ export default async function Poster({
 
   return (
     <div className="relative md:sticky md:top-28 h-fit m-auto md:m-0">
-      <div className="absolute right-2 top-2 p-2 z-10 bg-black rounded-full hover:bg-black">
+      <div className="absolute right-2 top-2 p-2 z-20 bg-black rounded-full hover:bg-black">
         <LikeButton event={event} user={user} />
       </div>
-      <div className="mb-6 w-full max-w-xl">
+      <div className="mb-6 w-full max-w-xl relative z-10">
         <EventPoster posterUrl={publicPosterUrl} />
       </div>
-      <ColorThief publicUrl={publicPosterUrl} />
     </div>
   );
 }
