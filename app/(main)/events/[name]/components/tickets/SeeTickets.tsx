@@ -16,30 +16,26 @@ export default function SeeTickets({
   const isTicketFree = minimumTicketPrice === 0;
 
   return (
-    <div>
-      <div className="bg-background border-[1px] w-full rounded-md h-20 items-center flex justify-between px-5 font-bold">
-        <p className="text-lg">
-          {isTicketFree
-            ? "Tickets FREE"
-            : `Tickets from $${minimumTicketPrice}`}
-        </p>
-        {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
-        eventDisplayData.sales_status == "SELLING_ALL" ? (
-          <>
-            {isTicketFree ? (
-              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-                <Button className="border-primary w-32">RSVP</Button>
-              </Link>
-            ) : (
-              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-                <Button className="border-primary w-32">Buy Now</Button>
-              </Link>
-            )}
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
+    <div className="w-full rounded-md items-center flex justify-between px-5 font-semibold">
+      <p className="text-lg">
+        {isTicketFree ? "Tickets FREE" : `Tickets from $${minimumTicketPrice}`}
+      </p>
+      {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
+      eventDisplayData.sales_status == "SELLING_ALL" ? (
+        <>
+          {isTicketFree ? (
+            <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+              <Button className="border-primary w-32">RSVP</Button>
+            </Link>
+          ) : (
+            <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+              <Button className="border-primary w-32">Buy Now</Button>
+            </Link>
+          )}
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

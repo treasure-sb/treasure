@@ -7,7 +7,7 @@ export default function ColorThief({ publicUrl }: { publicUrl: string }) {
   });
 
   const initialClass = "bg-transparent opacity-0";
-  const transitionClass = "transition-all duration-700 ease-in-out opacity-100";
+  const transitionClass = "transition-all duration-700 ease-in-out opacity-40";
 
   return (
     <>
