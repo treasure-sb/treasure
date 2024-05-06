@@ -35,7 +35,7 @@ export default async function EventGuests({
   })[];
 
   return (
-    <div className="flex flex-col space-y-6 items-start">
+    <div className="flex flex-col space-y-4 items-start">
       {guests?.map((guest) => (
         <div className="flex space-x-4">
           <Avatar className="h-32 w-32 m-auto">

@@ -15,7 +15,7 @@ export default function AvatarEdit({
   const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null);
 
   return (
-    <div className="relative">
+    <div className="relative flex justify-center flex-grow">
       <label
         className="relative w-fit h-fit hover:cursor-pointer rounded-full group"
         htmlFor="avatar"
