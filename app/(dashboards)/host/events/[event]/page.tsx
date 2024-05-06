@@ -42,7 +42,7 @@ export default async function Page({
   });
 
   return (
-    <div className="lg:grid grid-cols-4 gap-6 min-h-[calc(100vh-24rem)] flex flex-col">
+    <div className="lg:grid grid-cols-4 gap-6 min-h-[calc(100vh-24rem)] flex flex-col pb-8">
       <Link
         href={`/host/events/${event}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
@@ -72,14 +72,10 @@ export default async function Page({
         className="bg-secondary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
         <h1 className="font-semibold text-3xl">Message Center</h1>
-        <h1 className="text-7xl">1</h1>
+        {/* <h1 className="text-7xl">
+          {"1"} <span className="text-3xl">sent</span>
+        </h1> */}
       </Link>
-      <div className="lg:col-span-2 bg-secondary rounded-md">
-        <h1></h1>
-      </div>
-      <div className="lg:col-span-2 bg-secondary rounded-md">
-        <h1></h1>
-      </div>
     </div>
   );
 }
