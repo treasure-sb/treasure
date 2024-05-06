@@ -7,15 +7,15 @@ import {
 } from "@/components/ui/accordion";
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   const { data: ticketsData, error: ticketsError } = await supabase

@@ -6,9 +6,9 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -19,7 +19,7 @@ export default async function Page({
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   const eventData: Tables<"events"> = eventsData;

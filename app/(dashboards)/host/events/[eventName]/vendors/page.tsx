@@ -23,16 +23,16 @@ export type EventVendorData = Tables<"event_vendors"> & {
 };
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
 
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   if (eventError) {

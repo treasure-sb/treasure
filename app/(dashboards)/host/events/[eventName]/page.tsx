@@ -3,15 +3,15 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   const { data: ticketsData, error: ticketsError } = await supabase
@@ -44,21 +44,21 @@ export default async function Page({
   return (
     <div className="lg:grid grid-cols-4 gap-6 min-h-[calc(100vh-24rem)] flex flex-col pb-8">
       <Link
-        href={`/host/events/${event}/attendees`}
+        href={`/host/events/${eventName}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <h1 className="font-semibold text-3xl">Attendees</h1>
         <h1 className="text-7xl">{ticketsSold}</h1>
       </Link>
       <Link
-        href={`/host/events/${event}/attendees`}
+        href={`/host/events/${eventName}/attendees`}
         className="bg-secondary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
         <h1 className="font-semibold text-3xl">Total Sales</h1>
         <h1 className="text-7xl">${ticketSales + tableSales}</h1>
       </Link>
       <Link
-        href={`/host/events/${event}/vendors`}
+        href={`/host/events/${eventName}/vendors`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <h1 className="font-semibold text-3xl">Vendors</h1>
@@ -68,7 +68,7 @@ export default async function Page({
       </Link>
 
       <Link
-        href={`/host/events/${event}/message`}
+        href={`/host/events/${eventName}/message`}
         className="bg-secondary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
         <h1 className="font-semibold text-3xl">Message Center</h1>
