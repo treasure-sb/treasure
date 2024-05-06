@@ -11,6 +11,8 @@ import { Tables } from "@/types/supabase";
 import BasicEventInfo from "./components/BasicEventInfo";
 import TicketsInfo from "./components/TicketsInfo";
 import TablesInfo from "./components/TablesInfo";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function Page({
   params: { event },
@@ -51,7 +53,10 @@ export default async function Page({
 
   return (
     <main>
-      <Accordion type="single" collapsible className="flex flex-col gap-8">
+      <Link href={`/host/events/${event}/edit/add-guest`}>
+        <Button>Add a guest</Button>
+      </Link>
+      <Accordion type="single" collapsible className="flex flex-col gap-8 mt-6">
         <AccordionItem value="item-1" className="border rounded-sm px-6 py-2">
           <AccordionTrigger className="text-lg text-left md:text-2xl decoration-background">
             Basic Event Info

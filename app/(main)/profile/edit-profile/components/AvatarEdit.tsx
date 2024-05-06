@@ -14,13 +14,13 @@ export default function AvatarEdit({
   const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null);
 
   return (
-    <form className="relative flex justify-center md:justify-end flex-grow">
+    <form className="relative flex justify-center flex-grow">
       <label
         className="relative w-fit h-fit hover:cursor-pointer rounded-full group"
         htmlFor="avatar"
       >
         {avatarUrl || avatarFileUrl ? (
-          <Avatar className="h-40 w-40 md:w-60 md:h-60 m-auto">
+          <Avatar className="h-32 w-32 m-auto">
             <AvatarImage src={avatarFileUrl || avatarUrl} />
             <AvatarFallback></AvatarFallback>
           </Avatar>
