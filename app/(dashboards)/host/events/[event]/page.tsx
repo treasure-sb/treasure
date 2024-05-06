@@ -1,5 +1,6 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { Button } from "@/components/ui/button";
 
 export default async function Page({
   params: { event },
@@ -24,11 +25,13 @@ export default async function Page({
     .eq("event_id", eventData.id);
 
   let ticketSales = 0;
+  let ticketsSold = 0;
   let tableSales = 0;
   let tablesSold = 0;
 
   ticketsData?.map((ticket) => {
     ticketSales += ticket.ticket_info.price;
+    ticketsSold += 1;
   });
 
   tablesData?.map((table) => {
@@ -39,48 +42,39 @@ export default async function Page({
   });
 
   return (
-    <div className="lg:grid grid-cols-3 gap-6 min-h-[calc(100vh-24rem)] flex flex-col">
-      <div className="bg-secondary rounded-md col-span-2 p-6 lg:p-10 relative group">
-        <h1 className="font-semibold text-3xl">Sales</h1>
-        <div className="flex flex-col gap-2 m-4 w-fit text-lg">
-          <div className="flex justify-between gap-10">
-            <h1>Tickets</h1> <h1>${ticketSales}</h1>
-          </div>
-          <div className="flex justify-between gap-10">
-            <h1>Tables</h1> <h1>${tableSales}</h1>
-          </div>
-          <div className="flex justify-between gap-10 font-semibold text-xl">
-            <h1>Total</h1> <h1>${ticketSales + tableSales}</h1>
-          </div>
-        </div>
-      </div>
+    <div className="lg:grid grid-cols-4 gap-6 min-h-[calc(100vh-24rem)] flex flex-col pb-8">
       <Link
-        href={`/host/events/${event}/vendors`}
-        className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
+        href={`/host/events/${event}/attendees`}
+        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
-        <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500 rounded-md" />
-        <h1 className="font-semibold text-3xl">Vendors</h1>
+        <h1 className="font-semibold text-3xl">Attendees</h1>
+        <h1 className="text-7xl">{ticketsSold}</h1>
       </Link>
       <Link
         href={`/host/events/${event}/attendees`}
-        className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
+        className="bg-secondary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
-        <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
-        <h1 className="font-semibold text-3xl">Tickets / Attendees</h1>
+        <h1 className="font-semibold text-3xl">Total Sales</h1>
+        <h1 className="text-7xl">${ticketSales + tableSales}</h1>
       </Link>
+      <Link
+        href={`/host/events/${event}/vendors`}
+        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
+      >
+        <h1 className="font-semibold text-3xl">Vendors</h1>
+        <h1 className="text-7xl">
+          {tablesSold} <span className="text-3xl">paid</span>
+        </h1>
+      </Link>
+
       <Link
         href={`/host/events/${event}/message`}
-        className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
+        className="bg-secondary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
-        <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
-        <h1 className="font-semibold text-3xl">Message Guests</h1>
-      </Link>
-      <Link
-        href={`/host/events/${event}/edit`}
-        className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
-      >
-        <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
-        <h1 className="font-semibold text-3xl">Event Info</h1>
+        <h1 className="font-semibold text-3xl">Message Center</h1>
+        {/* <h1 className="text-7xl">
+          {"1"} <span className="text-3xl">sent</span>
+        </h1> */}
       </Link>
     </div>
   );
