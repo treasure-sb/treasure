@@ -64,4 +64,27 @@ const editTags = async (tags: EventFormTag[], event_id: string) => {
   });
 };
 
-export { editEvent };
+const addGuest = async (values: {
+  name: string;
+  bio: string;
+  avatar_url: string;
+  event_id: string;
+}) => {
+  const supabase = await createSupabaseServerClient();
+  let { name, bio, avatar_url, event_id } = values;
+
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("id")
+    .eq("cleaned_name", event_id)
+    .single();
+
+  event_id = eventData?.id;
+
+  const { data, error: userError } = await supabase
+    .from("event_guests")
+    .insert([{ name, bio, avatar_url, event_id }])
+    .select();
+};
+
+export { editEvent, addGuest };

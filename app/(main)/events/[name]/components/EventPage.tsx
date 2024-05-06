@@ -14,6 +14,7 @@ import About from "./sections/About";
 import Poster from "./sections/Poster";
 import VenueMap from "./sections/VenueMap";
 import Blurred from "./Blurred";
+import Guests from "./sections/Guests";
 
 export default async function EventPage({
   event,
@@ -41,6 +42,7 @@ export default async function EventPage({
           <Separator />
           <About event={event} />
           <Separator />
+          <Guests event={event} />
           <Vendors event={event} />
           <HostedBy event={event} />
           <VenueMap event={event} />
