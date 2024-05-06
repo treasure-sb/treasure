@@ -1,5 +1,7 @@
+"use client";
+
 import { Tables } from "@/types/supabase";
-import { EventHighlightPhotos } from "../../types";
+import { EventHighlightPhotos } from "../../../types";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { MoreVertical } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -59,7 +61,7 @@ export default function PastHightlights({
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <MoreVertical className="absolute top-4 right-4 text-foreground/60 group-hover:text-foreground transition duration-500 hover:cursor-pointer" />
+              <MoreVertical className="absolute top-4 right-4 text-foreground/60 group-hover:text-foreground transition duration-500 hover:cursor-pointer z-10" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute right-[-12px]">
               <Button
@@ -71,7 +73,7 @@ export default function PastHightlights({
               </Button>
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* <div className="absolute inset-0 rounded-md bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-500" /> */}
+          <div className="absolute inset-0 rounded-md bg-black bg-opacity-0 group-hover:bg-opacity-30 transition duration-500" />
         </AspectRatio>
       ))}
       <UploadHighlight event={event} />

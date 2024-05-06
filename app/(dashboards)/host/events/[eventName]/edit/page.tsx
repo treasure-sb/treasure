@@ -1,13 +1,10 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import PromoCodes from "./components/PromoCodes";
-import BasicEventInfo from "./components/BasicEventInfo";
-import TicketsInfo from "./components/TicketsInfo";
-import TablesInfo from "./components/TablesInfo";
-import SelectEdit from "./components/SelectEdit";
-import AllEdit from "./components/AllEdit";
+import EditTickets from "./components/tickets/EditTickets";
+import EditEventInfo from "./components/event_info/EditEventInfo";
+import EditVendors from "./components/vendors/EditVendors";
+import EditState from "./components/EditState";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { EventHighlightPhotos } from "./types";
 
 export default async function Page({
   params: { eventName },
@@ -28,59 +25,13 @@ export default async function Page({
 
   const event: Tables<"events"> = eventData || [];
 
-  const { data: ticketsData } = await supabase
-    .from("tickets")
-    .select("*")
-    .eq("event_id", event.id);
-
-  const tickets: Tables<"tickets">[] = ticketsData || [];
-
-  const { data: photoData } = await supabase
-    .from("event_highlights")
-    .select("*")
-    .eq("event_id", event.id);
-
-  const highlights: Tables<"event_highlights">[] = photoData || [];
-
-  const getHighlightPictures = async () => {
-    const imagePromises = highlights.map(async (picture) => {
-      const {
-        data: { publicUrl },
-      } = await supabase.storage
-        .from("event_highlights")
-        .getPublicUrl(picture.picture_url);
-      return { photoUrl: picture.picture_url, publicUrl, id: picture.id };
-    });
-
-    const portfolioPictures: EventHighlightPhotos[] = await Promise.all(
-      imagePromises
-    );
-    return portfolioPictures;
-  };
-
-  const highlightPictures = await getHighlightPictures();
-
-  const { data: tablesData } = await supabase
-    .from("tables")
-    .select("*")
-    .eq("event_id", event.id);
-
-  const tables = tablesData as Tables<"tables">[];
-
-  const { data: codesData } = await supabase
-    .from("event_codes")
-    .select("*")
-    .eq("event_id", event.id);
-
-  const codes = codesData as Tables<"event_codes">[];
-
   return (
     <main>
-      <AllEdit
-        tickets={tickets}
-        event={event}
-        previousHighlights={highlightPictures}
-      />
+      <EditState>
+        <EditEventInfo event={event} />
+        <EditTickets event={event} />
+        <EditVendors />
+      </EditState>
     </main>
   );
 }

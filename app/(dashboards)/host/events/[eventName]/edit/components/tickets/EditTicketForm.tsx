@@ -1,3 +1,5 @@
+"use client";
+
 import { Tables } from "@/types/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

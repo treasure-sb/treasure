@@ -1,12 +1,12 @@
 import { Tables } from "@/types/supabase";
 import {
-  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { TicketIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import createSupabaseServerClient from "@/utils/supabase/server";
 import EditTicketForm from "./EditTicketForm";
 
 interface TicketInfoProps {
@@ -23,11 +23,19 @@ const TicketInfo = ({ name, price }: TicketInfoProps) => (
   </div>
 );
 
-export default function EditTickets({
-  tickets,
+export default async function EditTickets({
+  event,
 }: {
-  tickets: Tables<"tickets">[];
+  event: Tables<"events">;
 }) {
+  const supabase = await createSupabaseServerClient();
+  const { data: ticketsData } = await supabase
+    .from("tickets")
+    .select("*")
+    .eq("event_id", event.id);
+
+  const tickets: Tables<"tickets">[] = ticketsData || [];
+
   const ticketItems = tickets.map((ticket, index) => {
     return (
       <AccordionItem
@@ -46,7 +54,7 @@ export default function EditTickets({
   });
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
+    <div className="max-w-4xl mx-auto space-y-4">
       <h2 className="font-semibold">Ticket Types</h2>
       {/* <Accordion type="multiple" className="rounded-md bg-secondary/20">
         {ticketItems}

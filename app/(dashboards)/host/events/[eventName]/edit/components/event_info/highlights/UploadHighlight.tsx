@@ -1,4 +1,5 @@
 "use client";
+
 import { CameraIcon } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Input } from "@/components/ui/input";

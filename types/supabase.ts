@@ -200,16 +200,25 @@ export type Database = {
       }
       event_guests: {
         Row: {
+          avatar_url: string
+          bio: string
           event_id: string
-          guest_id: string
+          id: string
+          name: string
         }
         Insert: {
+          avatar_url: string
+          bio?: string
           event_id: string
-          guest_id: string
+          id?: string
+          name?: string
         }
         Update: {
+          avatar_url?: string
+          bio?: string
           event_id?: string
-          guest_id?: string
+          id?: string
+          name?: string
         }
         Relationships: [
           {
@@ -217,13 +226,6 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_event_guests_guest_id_fkey"
-            columns: ["guest_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
