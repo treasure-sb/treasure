@@ -1,9 +1,7 @@
 import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import Image from "next/image";
 
 const getGuestsPublicUrl = async (guests: Tables<"event_guests">[]) => {
   const supabase = await createSupabaseServerClient();

@@ -2,6 +2,8 @@ import { EventHighlightPhotos } from "../../types";
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import PastHightlights from "./highlights/PastHighlights";
+import EventGuests from "./guests/EventGuests";
+import GeneralInfo from "./GeneralInfo";
 
 export default async function EditEventInfo({
   event,
@@ -35,10 +37,18 @@ export default async function EditEventInfo({
   const highlightPictures = await getHighlightPictures();
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4">
+    <div className="w-full max-w-4xl mx-auto space-y-8">
+      <div className="space-y-2">
+        <h2 className="font-semibold">Event Guests</h2>
+        <EventGuests event={event} />
+      </div>
       <div className="space-y-2">
         <h2 className="font-semibold">Past Event Highlights</h2>
         <PastHightlights event={event} previousHighlights={highlightPictures} />
+      </div>
+      <div>
+        <h2 className="font-semibold"> General Event Information</h2>
+        <GeneralInfo event={event} />
       </div>
     </div>
   );

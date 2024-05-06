@@ -19,7 +19,7 @@ export default async function Page({
     .from("events")
     .select("*")
     .eq("organizer_id", user?.id as string)
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   const eventData: Tables<"events"> = eventsData;

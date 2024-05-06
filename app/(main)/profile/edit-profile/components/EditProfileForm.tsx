@@ -174,9 +174,14 @@ export default function EditProfileForm({
     <div>
       <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
       <div className="space-y-4 flex flex-col md:flex-row-reverse">
-        {profile.avatar_url && (
-          <AvatarEdit avatarUrl={avatarUrl} setAvatarFile={setNewAvatarFile} />
-        )}
+        <div className="w-fit mx-auto">
+          {profile.avatar_url && (
+            <AvatarEdit
+              avatarUrl={avatarUrl}
+              setAvatarFile={setNewAvatarFile}
+            />
+          )}
+        </div>
         <div className="flex flex-col space-y-6 flex-grow md:max-w-lg">
           <Form {...form}>
             <form

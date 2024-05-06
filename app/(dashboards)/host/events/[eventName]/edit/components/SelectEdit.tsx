@@ -59,7 +59,7 @@ const Tab = ({ text, selected, setSelected, index, children }: TabProps) => {
             animate="animate"
             exit="exit"
             transition={transition}
-            className="overflow-hidden"
+            className="overflow-hidden font-semibold"
           >
             {text}
           </motion.span>

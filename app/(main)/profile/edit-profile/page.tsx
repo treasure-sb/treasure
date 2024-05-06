@@ -25,7 +25,7 @@ export default async function Page() {
   const linksData: Partial<Tables<"links">>[] = data || [];
 
   return (
-    <main className="max-w-lg md:max-w-6xl m-auto space-y-12">
+    <main className="max-w-lg md:max-w-6xl mx-auto space-y-12">
       <EditProfileForm
         profile={profile}
         avatarUrl={publicUrl}

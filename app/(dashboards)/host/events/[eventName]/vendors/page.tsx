@@ -32,7 +32,7 @@ export default async function Page({
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   if (eventError) {
