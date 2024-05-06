@@ -114,6 +114,7 @@ export type Database = {
       }
       checkout_sessions: {
         Row: {
+          created_at: string
           event_id: string
           id: string
           quantity: number
@@ -122,6 +123,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          created_at?: string
           event_id?: string
           id?: string
           quantity: number
@@ -130,6 +132,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string
           event_id?: string
           id?: string
           quantity?: number
@@ -221,6 +224,35 @@ export type Database = {
             columns: ["guest_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_highlights: {
+        Row: {
+          event_id: string
+          id: string
+          picture_url: string
+          uploaded_at: string
+        }
+        Insert: {
+          event_id?: string
+          id?: string
+          picture_url: string
+          uploaded_at?: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          picture_url?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_highlights_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]

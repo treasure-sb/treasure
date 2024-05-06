@@ -23,9 +23,9 @@ export type EventVendorData = Tables<"event_vendors"> & {
 };
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
 

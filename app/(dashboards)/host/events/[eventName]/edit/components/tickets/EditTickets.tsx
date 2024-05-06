@@ -47,10 +47,10 @@ export default function EditTickets({
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
-      <p className="font-semibold">Ticket Types</p>
-      <Accordion type="multiple" className="rounded-md bg-secondary/20">
+      <h2 className="font-semibold">Ticket Types</h2>
+      {/* <Accordion type="multiple" className="rounded-md bg-secondary/20">
         {ticketItems}
-      </Accordion>
+      </Accordion> */}
     </div>
   );
 }

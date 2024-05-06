@@ -6,9 +6,9 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const {

@@ -25,7 +25,6 @@ export default async function Page() {
 
   const portfolio: Tables<"portfolio_pictures">[] = portfolioData || [];
 
-  // get public urls for each picture
   const getPortfolioPictures = async () => {
     const imagePromises = portfolio.map(async (picture) => {
       const {

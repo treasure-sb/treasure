@@ -5,16 +5,16 @@ import { redirect } from "next/navigation";
 
 export default async function HostEventLayout({
   children,
-  params: { event },
+  params: { eventName },
 }: {
   children: React.ReactNode;
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   if (!data || error) {

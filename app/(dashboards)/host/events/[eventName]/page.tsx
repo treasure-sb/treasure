@@ -2,15 +2,15 @@ import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Page({
-  params: { event },
+  params: { eventName },
 }: {
-  params: { event: string };
+  params: { eventName: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", event)
+    .eq("cleaned_name", eventName)
     .single();
 
   const { data: ticketsData, error: ticketsError } = await supabase
@@ -55,28 +55,28 @@ export default async function Page({
         </div>
       </div>
       <Link
-        href={`/host/events/${event}/vendors`}
+        href={`/host/events/${eventName}/vendors`}
         className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500 rounded-md" />
         <h1 className="font-semibold text-3xl">Vendors</h1>
       </Link>
       <Link
-        href={`/host/events/${event}/attendees`}
+        href={`/host/events/${eventName}/attendees`}
         className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group "
       >
         <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
         <h1 className="font-semibold text-3xl">Tickets / Attendees</h1>
       </Link>
       <Link
-        href={`/host/events/${event}/message`}
+        href={`/host/events/${eventName}/message`}
         className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
         <h1 className="font-semibold text-3xl">Message Guests</h1>
       </Link>
       <Link
-        href={`/host/events/${event}/edit`}
+        href={`/host/events/${eventName}/edit`}
         className="border border-primary rounded-md p-6 lg:p-10 hover:translate-y-[-0.5rem] transition duration-500 relative group"
       >
         <div className="absolute inset-0 group-hover:bg-black group-hover:bg-opacity-50 transition duration-500" />
