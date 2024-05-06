@@ -123,24 +123,7 @@ const getAllEventData = async (search: string, page: number) => {
 };
 
 /**
- * Fetches events that a user is attending.
- * This function queries the 'event_guests' table to retrieve events based on the guest's user ID.
- */
-const getEventsAttending = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numEvents - 1;
-  const { data, error } = await supabase
-    .from("event_guests")
-    .select("events(*)")
-    .eq("guest_id", userId)
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
-/**
  * Fetches upcoming events that a user is attending.
- * This function queries the 'event_guests' table to retrieve events based on the guest's user ID.
  */
 const getUpcomingEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
@@ -228,7 +211,6 @@ const getUpcomingEventsHosting = async (page: number, userId: string) => {
 
 /**
  * Fetches past events that a user attended.
- * This function queries the 'event_guests' table to retrieve events based on the guest's user ID.
  */
 const getPastEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
@@ -375,7 +357,6 @@ export {
   getEventDataByDate,
   getEventDataByTag,
   getAllEventData,
-  getEventsAttending,
   getEventsApplied,
   getEventsHosting,
   getEventsLiked,
