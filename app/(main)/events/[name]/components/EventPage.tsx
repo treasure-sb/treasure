@@ -13,6 +13,7 @@ import EventInfo from "./sections/EventInfo";
 import About from "./sections/About";
 import Poster from "./sections/Poster";
 import Blurred from "./Blurred";
+import Guests from "./sections/Guests";
 import PastHighlights from "./past_highlights/PastHighlights";
 
 export default async function EventPage({
@@ -42,6 +43,7 @@ export default async function EventPage({
             <Separator />
             <About event={event} />
             <Separator />
+            <Guests event={event} />
             <Vendors event={event} />
             <HostedBy event={event} />
           </div>
