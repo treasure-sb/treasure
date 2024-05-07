@@ -20,7 +20,7 @@ export default async function EventOptions({
     <div className="fixed right-6 bottom-6 flex flex-col space-y-4 items-end z-20">
       {profileIsAdmin && <AdminOptions event={event} />}
       {(profileIsOrganizer || profileIsAdmin) && (
-        <Link href={`/profile/events/organizer/${event.cleaned_name}`}>
+        <Link href={`/host/events/${event.cleaned_name}/edit`}>
           <div className="opacity-80 sm:opacity-60 hover:opacity-100 transition duration-300">
             <EditEventIcon />
           </div>
