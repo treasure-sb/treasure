@@ -97,7 +97,7 @@ export async function middleware(request: NextRequest) {
 
   // if the user is logged in and the route is /login or /signup, redirect to /
   if (session && (pathname === "/login" || pathname === "/signup")) {
-    response = NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // if a signup invite token is preset and it is not valid, redirect to /signup
@@ -108,7 +108,7 @@ export async function middleware(request: NextRequest) {
     const token = request.nextUrl.searchParams.get("signup_invite_token");
     const verifyToken = await verifySignupInviteToken(token as string);
     if (!verifyToken) {
-      response = NextResponse.redirect(new URL("/signup", request.url));
+      return NextResponse.redirect(new URL("/signup", request.url));
     }
   }
 
@@ -119,7 +119,7 @@ export async function middleware(request: NextRequest) {
       pathname.includes("/vendor") ||
       pathname.includes("/host"))
   ) {
-    response = NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // check to see if the route is /host/events/[id]/...
@@ -129,7 +129,7 @@ export async function middleware(request: NextRequest) {
     const userId = session?.user.id;
     const eventName = request.nextUrl.pathname.split("/")[3];
     if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
-      response = NextResponse.redirect(new URL("/host/events", request.url));
+      return NextResponse.redirect(new URL("/host/events", request.url));
     }
   }
   return response;
