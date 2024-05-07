@@ -72,11 +72,7 @@ export default function DataTable<TData, TValue>({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.85, ease: "easeInOut" }}
-    >
+    <div className="w-full p-4">
       <h1 className="text-2xl mb-4 font-semibold">Event Vendors</h1>
       <Filters
         vendorTypeFilter={vendorTypeFilter}
@@ -155,6 +151,6 @@ export default function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }
