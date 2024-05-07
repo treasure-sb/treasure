@@ -34,7 +34,7 @@ export default async function Guests({ event }: { event: Tables<"events"> }) {
     <>
       {guests?.length > 0 && (
         <>
-          <h3 className="font-semibold text-xl mb-4">Guests</h3>
+          <h3 className="font-semibold text-lg mb-4">Guests</h3>
           <div className="flex flex-col gap-6 items-start">
             {guests?.map((guest) => (
               <div className="flex gap-3">

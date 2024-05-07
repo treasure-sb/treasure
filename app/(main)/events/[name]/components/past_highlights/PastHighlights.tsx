@@ -44,7 +44,7 @@ export default async function PastHighlights({
     highlightPictures &&
     highlightPictures.length > 0 && (
       <section>
-        <h3 className="font-semibold text-xl mb-2">Past Event Highlights</h3>
+        <h3 className="font-semibold text-lg mb-2">Past Event Highlights</h3>
         <ListHighlights highlights={highlightPictures} />
       </section>
     )

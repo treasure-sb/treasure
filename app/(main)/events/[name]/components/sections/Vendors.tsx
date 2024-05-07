@@ -48,8 +48,8 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
     (vendorsWithPublicUrls?.length > 0 ||
       tempVendorsWithPublicUrls?.length > 0) && (
       <>
-        <h3 className="font-semibold text-xl mb-4">Vendors</h3>
-        <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll py-3 sm:overflow-auto">
+        <h3 className="font-semibold text-lg mb-4">Vendors</h3>
+        <div className="flex flex-col gap-4 flex-wrap max-h-80 smScrollbar-hidden overflow-scroll sm:overflow-auto">
           {vendorsWithPublicUrls?.map((vendor) => (
             <div className="flex flex-col space-y-1 items-center">
               <Link href={`/${vendor.username}`}>
