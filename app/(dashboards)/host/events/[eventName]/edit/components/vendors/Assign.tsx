@@ -57,7 +57,6 @@ export default function Assign({
       form.getValues().assignment
     );
 
-    console.log(form.getValues());
     refresh();
   }
 
