@@ -79,7 +79,7 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   return (
     <section className="flex flex-col space-y-4">
       <div className="w-full justify-between flex items-center">
-        <h3 className="font-semibold text-xl">Hosted By</h3>
+        <h3 className="font-semibold text-lg">Hosted By</h3>
         <ContactHost
           organizer={organizer}
           profileType={type}

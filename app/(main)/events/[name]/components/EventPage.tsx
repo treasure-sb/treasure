@@ -30,18 +30,21 @@ export default async function EventPage({
 
   return (
     <main className="relative">
-      <div className="md:max-w-[1300px] m-auto flex flex-col w-full space-y-6">
+      <div className="md:max-w-[1160px] m-auto flex flex-col w-full space-y-3">
         <div className="flex flex-col md:flex-row md:justify-between md:space-x-14">
           <Poster event={event} user={user} />
-          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto space-y-6 relative z-20">
-            <h1 className="text-4xl font-bold">{event.name}</h1>
-            <Tags event={event} />
-            <EventInfo event={event} />
-            <div className="space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/5 bg-opacity-20 py-4 px-1 z-10">
-              <Tickets event={event} eventDisplayData={eventDisplayData} />
-              <VendorTables event={event} />
+          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-3">
+            <div className="space-y-4 mb-8 md:mb-12">
+              <h1 className="text-4xl md:text-5xl font-semibold">
+                {event.name}
+              </h1>
+              <Tags event={event} />
+              <EventInfo event={event} />
+              <div className="space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-1 z-10">
+                <Tickets event={event} eventDisplayData={eventDisplayData} />
+                <VendorTables event={event} />
+              </div>
             </div>
-            <Separator />
             <About event={event} />
             <Separator />
             <Guests event={event} />

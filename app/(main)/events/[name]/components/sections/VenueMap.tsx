@@ -11,7 +11,7 @@ export default async function VenueMap({ event }: { event: Tables<"events"> }) {
     eventHasVenueMap && (
       <>
         <Separator />
-        <h3 className="font-semibold text-2xl my-4 w-full">Venue Map</h3>
+        <h3 className="font-semibold text-lg my-4 w-full">Venue Map</h3>
         <Image
           className="rounded-xl mb-6 lg:mb-0"
           alt="venue map image"
