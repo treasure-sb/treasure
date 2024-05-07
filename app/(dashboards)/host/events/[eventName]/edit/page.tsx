@@ -30,7 +30,7 @@ export default async function Page({
       <EditState>
         <EditEventInfo event={event} />
         <EditTickets event={event} />
-        <EditVendors />
+        <EditVendors event={event} />
       </EditState>
     </main>
   );

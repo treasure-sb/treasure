@@ -15,6 +15,7 @@ import Poster from "./sections/Poster";
 import Blurred from "./Blurred";
 import Guests from "./sections/Guests";
 import PastHighlights from "./past_highlights/PastHighlights";
+import VenueMap from "./sections/VenueMap";
 
 export default async function EventPage({
   event,
@@ -49,6 +50,7 @@ export default async function EventPage({
           </div>
         </div>
         <PastHighlights event={event} />
+        <VenueMap event={event} />
       </div>
       <Blurred posterUrl={publicPosterUrl} />
       <EventOptions event={event} user={user} />
