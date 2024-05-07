@@ -11,7 +11,8 @@ type VendorApplicationActions =
   | { type: "setComments"; payload: string }
   | { type: "setTermsAccepted"; payload: boolean }
   | { type: "resetApplication" }
-  | { type: "setVendorInfo"; payload: VendorInfo };
+  | { type: "setVendorInfo"; payload: VendorInfo }
+  | { type: "setVendorTags"; payload: Tables<"tags">[] };
 
 type VendorApplicationContextType = {
   applicationState: VendorApplicationState;
@@ -26,6 +27,7 @@ const initialState: VendorApplicationState = {
   comments: "",
   tableQuantity: 0,
   vendorsAtTable: 0,
+  vendorTags: [],
   termsAccepted: false,
 };
 
@@ -50,6 +52,8 @@ const reducer = (
       return { ...state, termsAccepted: action.payload };
     case "setVendorInfo":
       return { ...state, vendorInfo: action.payload };
+    case "setVendorTags":
+      return { ...state, vendorTags: action.payload };
     case "resetApplication":
       return initialState;
   }

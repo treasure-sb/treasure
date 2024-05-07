@@ -2,7 +2,7 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import type { Link, ProfileWithInstagram } from "./types";
+import type { EventTagData, Link, ProfileWithInstagram } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TableFlowConsumer from "./components/TableFlowConsumer";
 
@@ -101,12 +101,21 @@ export default async function Page({
     .eq("event_id", event.id);
   const terms: Tables<"application_terms_and_conditions">[] = termsData || [];
 
+  const { data: eventTagsData } = await supabase
+    .from("event_tags")
+    .select("tag:tags(*)")
+    .eq("event_id", event.id);
+
+  const eventTags: EventTagData[] = eventTagsData || [];
+  const tags: Tables<"tags">[] = eventTags.flatMap((tag) => tag.tag) || [];
+
   return (
     <TableFlowConsumer
       eventDisplay={eventDisplayData}
       tables={tables}
       generalVendorInfo={vendorInfo}
       terms={terms}
+      tags={tags}
       profile={profileWithInstagram}
     />
   );

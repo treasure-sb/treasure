@@ -4,7 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Tags({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
-  const { data: tagsData, error: tagsError } = await supabase
+  const { data: tagsData } = await supabase
     .from("event_tags")
     .select("tags(name)")
     .eq("event_id", event.id);

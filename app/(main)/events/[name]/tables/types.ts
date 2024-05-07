@@ -7,6 +7,13 @@ type Link = {
   application: string;
 };
 
+type EventTagData = {
+  tag: {
+    name: string;
+    id: string;
+  }[];
+};
+
 type ProfileWithInstagram = Tables<"profiles"> & {
   instagram?: string;
 };
@@ -16,6 +23,7 @@ type VendorFlowState = {
   event: EventDisplayData;
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
+  tags: Tables<"tags">[];
   profile: ProfileWithInstagram | null;
   tables: Tables<"tables">[];
 };
@@ -23,12 +31,13 @@ type VendorFlowState = {
 type VendorApplicationState = {
   currentStep: number;
   vendorInfo: VendorInfo;
-  table: Tables<"tables">;
   inventory: string;
   comments: string;
   tableQuantity: number;
   vendorsAtTable: number;
   termsAccepted: boolean;
+  table: Tables<"tables">;
+  vendorTags: Tables<"tags">[];
 };
 
 type VendorInfo = {
@@ -54,6 +63,7 @@ type VendorApplication = {
 
 export type {
   Link,
+  EventTagData,
   ProfileWithInstagram,
   VendorFlowState,
   VendorApplicationState,

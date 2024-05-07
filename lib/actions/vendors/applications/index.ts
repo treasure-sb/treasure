@@ -1,4 +1,5 @@
 "use server";
+
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { type VendorApplication } from "@/app/(main)/events/[name]/tables/types";
 import { sendVendorAppReceivedEmail } from "../../emails";
@@ -19,9 +20,30 @@ const submitVendorApplication = async (
     return { error: eventAppError };
   }
 
-  const { error: sendEmailError } = await sendVendorReceivedEmail(event);
-
+  await sendVendorReceivedEmail(event);
   return { error: null };
+};
+
+const createVendorTags = async (
+  tags: Tables<"tags">[],
+  vendorId: string,
+  eventId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const insertedVendorTags = tags.map((tag) => {
+    return {
+      event_id: eventId,
+      vendor_id: vendorId,
+      tag_id: tag.id,
+    };
+  });
+
+  const { error: vendorTagError } = await supabase
+    .from("event_vendor_tags")
+    .insert(insertedVendorTags)
+    .select();
+
+  return { error: vendorTagError?.message || null };
 };
 
 const sendVendorReceivedEmail = async (
@@ -51,4 +73,4 @@ const sendVendorReceivedEmail = async (
   return { error: null };
 };
 
-export { submitVendorApplication };
+export { submitVendorApplication, createVendorTags };

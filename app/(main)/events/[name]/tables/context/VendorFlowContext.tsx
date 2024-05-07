@@ -16,6 +16,7 @@ const initialState: VendorFlowState = {
   profile: null,
   terms: [],
   tables: [],
+  tags: [],
 };
 
 type VendorFlowActions =
@@ -26,7 +27,8 @@ type VendorFlowActions =
     }
   | { type: "setProfile"; payload: ProfileWithInstagram }
   | { type: "setTerms"; payload: Tables<"application_terms_and_conditions">[] }
-  | { type: "setEvent"; payload: EventDisplayData };
+  | { type: "setEvent"; payload: EventDisplayData }
+  | { type: "setTags"; payload: Tables<"tags">[] };
 
 const reducer = (state: VendorFlowState, action: VendorFlowActions) => {
   switch (action.type) {
@@ -40,6 +42,8 @@ const reducer = (state: VendorFlowState, action: VendorFlowActions) => {
       return { ...state, terms: action.payload };
     case "setEvent":
       return { ...state, event: action.payload };
+    case "setTags":
+      return { ...state, tags: action.payload };
     default:
       return state;
   }
