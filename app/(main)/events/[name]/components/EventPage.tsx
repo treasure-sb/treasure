@@ -34,13 +34,15 @@ export default async function EventPage({
         <div className="flex flex-col md:flex-row md:justify-between md:space-x-14">
           <Poster event={event} user={user} />
           <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-3">
-            <div className="space-y-4 mb-8 md:mb-12">
-              <h1 className="text-4xl md:text-5xl font-semibold">
-                {event.name}
-              </h1>
-              <Tags event={event} />
-              <EventInfo event={event} />
-              <div className="space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-1 z-10">
+            <div className="mb-8 md:mb-12">
+              <div className="space-y-4 md:space-y-5">
+                <h1 className="text-4xl md:text-5xl font-semibold">
+                  {event.name}
+                </h1>
+                <Tags event={event} />
+                <EventInfo event={event} />
+              </div>
+              <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-1 z-10">
                 <Tickets event={event} eventDisplayData={eventDisplayData} />
                 <VendorTables event={event} />
               </div>
