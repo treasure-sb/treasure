@@ -7,7 +7,6 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     container: {
@@ -100,7 +99,5 @@ module.exports = {
     require("tailwindcss-animate"),
     require("@tailwindcss/line-clamp"),
     require("@tailwindcss/aspect-ratio"),
-    require("@headlessui/tailwindcss"),
-    require("@tailwindcss/forms"),
   ],
 };
