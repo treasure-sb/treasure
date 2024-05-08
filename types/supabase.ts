@@ -371,11 +371,45 @@ export type Database = {
           },
         ]
       }
+      event_vendor_tags: {
+        Row: {
+          event_id: string
+          tag_id: string
+          vendor_id: string
+        }
+        Insert: {
+          event_id: string
+          tag_id: string
+          vendor_id: string
+        }
+        Update: {
+          event_id?: string
+          tag_id?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_vendor_tags_event_id_vendor_id_fkey"
+            columns: ["event_id", "vendor_id"]
+            isOneToOne: false
+            referencedRelation: "event_vendors"
+            referencedColumns: ["event_id", "vendor_id"]
+          },
+          {
+            foreignKeyName: "event_vendor_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_vendors: {
         Row: {
           application_email: string
           application_phone: string
           application_status: Database["public"]["Enums"]["Application Status"]
+          assignment: number | null
           comments: string | null
           event_id: string
           inventory: string
@@ -389,6 +423,7 @@ export type Database = {
           application_email: string
           application_phone: string
           application_status?: Database["public"]["Enums"]["Application Status"]
+          assignment?: number | null
           comments?: string | null
           event_id: string
           inventory: string
@@ -402,6 +437,7 @@ export type Database = {
           application_email?: string
           application_phone?: string
           application_status?: Database["public"]["Enums"]["Application Status"]
+          assignment?: number | null
           comments?: string | null
           event_id?: string
           inventory?: string
@@ -780,14 +816,17 @@ export type Database = {
       }
       temporary_vendors: {
         Row: {
+          assignment: number | null
           event_id: string
           vendor_id: string
         }
         Insert: {
+          assignment?: number | null
           event_id: string
           vendor_id: string
         }
         Update: {
+          assignment?: number | null
           event_id?: string
           vendor_id?: string
         }

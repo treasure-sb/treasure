@@ -23,7 +23,7 @@ export default function SeeTables({
           </p>
         </div>
       ) : (
-        <p className="text-lg">Tables from ${minimumTablePrice}</p>
+        <p className="text-lg">Tables from ${minimumTablePrice.toFixed(2)}</p>
       )}
       {event.sales_status == "TABLES_ONLY" ||
       event.sales_status == "SELLING_ALL" ? (
