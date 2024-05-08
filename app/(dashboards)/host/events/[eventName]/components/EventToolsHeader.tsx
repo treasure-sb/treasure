@@ -5,11 +5,9 @@ import { motion } from "framer-motion";
 import { MoveLeftIcon } from "lucide-react";
 import { MoveRightIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import EventPoster from "@/components/events/shared/EventPoster";
 import Link from "next/link";
-import { formatDate } from "@/lib/helpers/events";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import CopyEventLink from "./CopyEventLink";
 
 export default function EventToolsHeader({
@@ -24,18 +22,8 @@ export default function EventToolsHeader({
     pathname.includes("attendees") ||
     pathname.includes("edit");
 
-  const [formattedDate, setFormattedDate] = useState("");
-
-  useEffect(() => {
-    setFormattedDate(formatDate(event.date));
-  }, []);
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.85, ease: "easeInOut" }}
-    >
+    <div>
       {isEventTool ? (
         <Link
           href={`/host/events/${event.cleaned_name}`}
@@ -55,12 +43,15 @@ export default function EventToolsHeader({
       )}
       <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-2">
         <div className="flex gap-4 items-center">
-          <div className="w-32">
+          <div className="w-40">
             <EventPoster posterUrl={event.publicPosterUrl} />
           </div>
           <div>
-            <h1 className="text-3xl font-semibold">{event.name}</h1>
-            {formattedDate}
+            <h2 className="text-3xl font-semibold">{event.name}</h2>
+            <p className="text-primary">{event.formattedDate}</p>
+            <p className="text-sm font-normal truncate">
+              {event.city + ", " + event.state}
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-4">
@@ -86,6 +77,6 @@ export default function EventToolsHeader({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

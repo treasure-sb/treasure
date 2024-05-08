@@ -151,7 +151,7 @@ export default function DataTable<TData, TValue>({
                     }
                   >
                     {row.getVisibleCells().map((cell, i) => (
-                      <TableCell key={cell.id} className="py-8">
+                      <TableCell key={cell.id} className="py-4">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
