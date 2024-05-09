@@ -13,16 +13,20 @@ import { cn } from "@/lib/utils";
 import { useVendorFlow } from "../../../context/VendorFlowContext";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { type VendorInfo } from "../../../types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tables } from "@/types/supabase";
+import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/custom/phone-input";
 
 export default function VendorInformation() {
-  const { profile } = useVendorFlow();
+  const { profile, tags } = useVendorFlow();
   const {
     table,
     currentStep,
     inventory,
     comments,
     vendorsAtTable,
+    vendorTags,
     tableQuantity,
     vendorInfo,
     applicationDispatch,
@@ -68,7 +72,8 @@ export default function VendorInformation() {
     vendorInfo.email &&
     vendorInfo.firstName &&
     vendorInfo.lastName &&
-    vendorInfo.phone;
+    vendorInfo.phone &&
+    vendorTags.length > 0;
 
   return (
     <div className="h-full flex flex-col justify-between space-y-10">
@@ -134,10 +139,11 @@ export default function VendorInformation() {
             <SelectContent>{vendorsOptions}</SelectContent>
           </Select>
         </div>
+        <VendorTags tags={tags} />
         <Textarea
           value={inventory}
           onChange={(e) => handleSetInventory(e.target.value)}
-          placeholder="Tell us a little bit more about your inventory. (Required)"
+          placeholder="Tell us a little bit more about your inventory.*"
         />
         <Textarea
           value={comments}
@@ -157,6 +163,50 @@ export default function VendorInformation() {
             Continue
           </Button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function VendorTags({ tags }: { tags: Tables<"tags">[] }) {
+  const { vendorTags, applicationDispatch } = useVendorApplication();
+
+  return (
+    <div>
+      <div className="mb-4">
+        <p>Tags</p>
+        <p className="text-sm text-muted-foreground">
+          Please select tags that best fit your inventory.*
+        </p>
+      </div>
+      <div className="space-y-1">
+        {tags.map((tag) => (
+          <div
+            key={tag.id}
+            className="flex flex-row items-center space-x-3 space-y-0"
+          >
+            <Checkbox
+              id={tag.id}
+              checked={vendorTags.includes(tag)}
+              onCheckedChange={(checked) => {
+                return checked
+                  ? applicationDispatch({
+                      type: "setVendorTags",
+                      payload: [...vendorTags, tag],
+                    })
+                  : applicationDispatch({
+                      type: "setVendorTags",
+                      payload: vendorTags.filter(
+                        (value) => value.id !== tag.id
+                      ),
+                    });
+              }}
+            />
+            <Label htmlFor={tag.id} className="font-normal">
+              {tag.name}
+            </Label>
+          </div>
+        ))}
       </div>
     </div>
   );

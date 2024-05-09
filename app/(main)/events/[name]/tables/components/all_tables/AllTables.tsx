@@ -34,7 +34,7 @@ const TableInfo = ({ type, price }: TicketInfoProps) => (
   <div className="flex space-x-4 text-background">
     <TicketIcon className="stroke-2 text-background" />
     <div className="flex">
-      <p>{type}</p> <p className="ml-2 font-bold">${price}</p>
+      <p>{type}</p> <p className="ml-2 font-bold">${price.toFixed(2)}</p>
     </div>
   </div>
 );

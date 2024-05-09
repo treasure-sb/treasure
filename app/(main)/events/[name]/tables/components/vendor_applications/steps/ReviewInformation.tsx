@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useVendorFlow, TableView } from "../../../context/VendorFlowContext";
-import { submitVendorApplication } from "@/lib/actions/vendors/applications";
+import {
+  createVendorTags,
+  submitVendorApplication,
+} from "@/lib/actions/vendors/applications";
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
@@ -22,7 +25,7 @@ const LabeledText = ({
 }) => {
   return (
     <p className="text-md">
-      <span className="text-primary font-semibold">{label}:</span> {children}
+      <span className="text-primary font-normal">{label}:</span> {children}
     </p>
   );
 };
@@ -36,6 +39,7 @@ export default function ReviewInformation() {
     currentStep,
     vendorsAtTable,
     vendorInfo,
+    vendorTags,
     applicationDispatch,
   } = useVendorApplication();
   const { event, profile, flowDispatch } = useVendorFlow();
@@ -46,6 +50,7 @@ export default function ReviewInformation() {
     toast.loading("Submitting application...");
 
     const successfulApplication = await submitApplication();
+    await setVendorTags();
     await updateUserProfile();
     await updateInstagram();
 
@@ -75,6 +80,18 @@ export default function ReviewInformation() {
     };
     const { error } = await submitVendorApplication(vendorApplication, event);
     return !error;
+  };
+
+  const setVendorTags = async () => {
+    const { error } = await createVendorTags(
+      vendorTags,
+      profile?.id as string,
+      event.id
+    );
+
+    if (error) {
+      console.log(error);
+    }
   };
 
   const updateUserProfile = async () => {
@@ -150,6 +167,9 @@ export default function ReviewInformation() {
         </LabeledText>
         <LabeledText label="Instagram">
           {vendorInfo.instagram || "N/A"}
+        </LabeledText>
+        <LabeledText label="Tags">
+          {vendorTags.map((tag) => tag.name).join(", ")}
         </LabeledText>
         <LabeledText label="Inventory">{inventory}</LabeledText>
         <LabeledText label="Comments">{comments || "None"}</LabeledText>

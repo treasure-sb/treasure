@@ -1,7 +1,6 @@
 "use client";
 
 import VendorDialogContent from "../vendor_dialog/VendorDialogContent";
-import { motion } from "framer-motion";
 import {
   ColumnDef,
   flexRender,
@@ -25,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { EventDisplayData } from "@/types/event";
 import Filters from "./Filters";
 
@@ -33,12 +32,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   eventData: EventDisplayData;
+  tags: string[];
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
   eventData,
+  tags,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -74,26 +75,45 @@ export default function DataTable<TData, TValue>({
     .getColumn("application_status")
     ?.getFilterValue();
   const paymentFilter = table.getColumn("payment_status")?.getFilterValue();
+  const tagFilter = table.getColumn("tags")?.getFilterValue() as string[];
 
   const updateApplicationFilter = (value: string | undefined) => {
     table.getColumn("application_status")?.setFilterValue(value);
   };
+
   const updatePaymentFilter = (value: string | undefined) => {
     table.getColumn("payment_status")?.setFilterValue(value);
   };
 
+  const updateTagFilter = (value: string) => {
+    const currentFilter =
+      (table.getColumn("tags")?.getFilterValue() as string[]) || [];
+
+    if (currentFilter.includes(value)) {
+      const newFilter = currentFilter.filter((tag) => tag !== value);
+      table.getColumn("tags")?.setFilterValue(newFilter);
+    } else {
+      const newFilter = [...currentFilter, value];
+      table.getColumn("tags")?.setFilterValue(newFilter);
+    }
+  };
+
+  const resetTagFilter = () => {
+    table.getColumn("tags")?.setFilterValue([]);
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.85, ease: "easeInOut" }}
-    >
+    <div>
       <h1 className="text-2xl mb-4 font-semibold">Event Vendors</h1>
       <Filters
         paymentFilter={paymentFilter}
         applicationFilter={applicationFilter}
+        tagFilter={tagFilter}
         updateApplicationFilter={updateApplicationFilter}
         updatePaymentFilter={updatePaymentFilter}
+        updateTagFilter={updateTagFilter}
+        resetTagFilter={resetTagFilter}
+        tags={tags}
       />
       <div className="rounded-md border mt-2">
         <Table>
@@ -131,7 +151,7 @@ export default function DataTable<TData, TValue>({
                     }
                   >
                     {row.getVisibleCells().map((cell, i) => (
-                      <TableCell key={cell.id} className="py-8">
+                      <TableCell key={cell.id} className="py-4">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -185,6 +205,6 @@ export default function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }

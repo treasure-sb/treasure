@@ -8,20 +8,29 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Filters({
   paymentFilter,
   applicationFilter,
+  tagFilter,
   updateApplicationFilter,
   updatePaymentFilter,
+  updateTagFilter,
+  resetTagFilter,
+  tags,
 }: {
   paymentFilter?: unknown;
   applicationFilter?: unknown;
+  tagFilter?: string[];
   updateApplicationFilter: (value: string | undefined) => void;
   updatePaymentFilter: (value: string | undefined) => void;
+  updateTagFilter: (value: string) => void;
+  resetTagFilter: () => void;
+  tags: string[];
 }) {
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 overflow-scroll scrollbar-hidden">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -29,7 +38,7 @@ export default function Filters({
             role="combobox"
             className="border-dotted border-[1px] rounded-sm flex items-center"
           >
-            <h1>Payment Status</h1>
+            <p>Payment Status</p>
             <div
               className={cn(
                 "w-2 h-2 rounded-full ml-3 transition-all duration-300",
@@ -42,7 +51,7 @@ export default function Filters({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40 p-1 bg-background">
+        <PopoverContent align="start" className="w-40 p-1 bg-background">
           <Command>
             <CommandGroup>
               <CommandItem onSelect={() => updatePaymentFilter("PAID")}>
@@ -86,7 +95,7 @@ export default function Filters({
             role="combobox"
             className="border-dotted border-[1px] rounded-sm flex items-center"
           >
-            <h1>Application Status</h1>
+            <p>Application Status</p>
             <div
               className={cn(
                 "w-2 h-2 rounded-full ml-3 transition-all duration-300",
@@ -101,7 +110,7 @@ export default function Filters({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40 p-1 bg-background mr-3">
+        <PopoverContent align="start" className="w-40 p-1 bg-background">
           <Command>
             <CommandGroup>
               <CommandItem onSelect={() => updateApplicationFilter("ACCEPTED")}>
@@ -154,11 +163,78 @@ export default function Filters({
           </Command>
         </PopoverContent>
       </Popover>
-      {applicationFilter || paymentFilter ? (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"ghost"}
+            role="combobox"
+            className="border-dotted border-[1px] rounded-sm flex items-center"
+          >
+            <p>Tags</p>
+            {tagFilter && tagFilter.length > 0 ? (
+              <div className="ml-2 flex space-x-1 border-l-[1px] pl-2">
+                {tagFilter.length < 4 ? (
+                  tagFilter.map((tag) => (
+                    <div
+                      key={tag}
+                      className="bg-secondary rounded-sm px-2 text-sm"
+                    >
+                      {tag}
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-secondary rounded-sm px-2 text-sm">
+                    {tagFilter.length} selected
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="p-1 bg-background w-40">
+          <Command>
+            <CommandGroup>
+              {tags.map((tag) => (
+                <CommandItem
+                  key={tag}
+                  onSelect={() => {
+                    updateTagFilter(tag);
+                  }}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      checked={tagFilter?.includes(tag)}
+                      className="border-muted-foreground data-[state=checked]:bg-foreground data-[state=checked]:text-background"
+                      id={tag}
+                    />
+                    <p>{tag}</p>
+                  </div>
+                </CommandItem>
+              ))}
+              {tagFilter && tagFilter.length > 0 ? (
+                <>
+                  <Separator className="my-2" />
+                  <Button
+                    onClick={() => resetTagFilter()}
+                    variant={"ghost"}
+                    className="w-full rounded-sm"
+                  >
+                    Clear Filter
+                  </Button>
+                </>
+              ) : null}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {applicationFilter ||
+      paymentFilter ||
+      (tagFilter && tagFilter.length > 0) ? (
         <Button
           onClick={() => {
             updateApplicationFilter(undefined);
             updatePaymentFilter(undefined);
+            resetTagFilter();
           }}
           className="rounded-sm"
           variant={"secondary"}

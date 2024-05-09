@@ -1,5 +1,4 @@
 import { Tables } from "@/types/supabase";
-import { User } from "@supabase/supabase-js";
 import { EventDisplayData } from "@/types/event";
 import SeeTickets from "./SeeTickets";
 import createSupabaseServerClient from "@/utils/supabase/server";

@@ -5,7 +5,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { EventVendorData } from "../../page";
+import { EventVendorData } from "../../types";
 import { Check } from "lucide-react";
 import { X } from "lucide-react";
 
@@ -16,6 +16,7 @@ export type Vendor = {
   payment_status: Tables<"event_vendors">["payment_status"];
   application_status: Tables<"event_vendors">["application_status"];
   vendor_info: EventVendorData;
+  tags: string[];
 };
 
 type VendorStatusColorMap = {
@@ -59,6 +60,22 @@ const ApplicationStatusCell = ({ cell }: CellContext<Vendor, any>) => {
   );
 };
 
+const TagsCell = ({ cell }: CellContext<Vendor, any>) => {
+  const value = cell.getValue() as string[];
+  return (
+    <div className="flex flex-col space-y-1">
+      {value.slice(0, 3).map((tag, i) => (
+        <div key={i}>
+          <p>
+            {tag}
+            {i === 2 && value.length > 3 && <span>...</span>}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const PaidHeader = ({ column }: { column: any }) => {
   return (
     <Button
@@ -84,6 +101,15 @@ export const columns: ColumnDef<Vendor>[] = [
   {
     accessorKey: "section",
     header: "Section",
+  },
+  {
+    accessorKey: "tags",
+    header: "Tags",
+    cell: TagsCell,
+    filterFn: (row, id, value: string[]) => {
+      const rowTags = row.getValue(id) as string[];
+      return value.every((item) => rowTags.includes(item)) || value.length == 0;
+    },
   },
   {
     accessorKey: "payment_status",

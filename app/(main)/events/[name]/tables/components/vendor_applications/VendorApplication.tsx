@@ -1,12 +1,13 @@
 "use client";
+
 import { useVendorFlow } from "../../context/VendorFlowContext";
+import { useVendorApplication } from "../../context/VendorApplicationContext";
 import Login from "./steps/Login";
 import VendorInformation from "./steps/VendorInformation";
 import TermsAndConditions from "./steps/TermsAndConditions";
 import ReviewInformation from "./steps/ReviewInformation";
 import BackToAllTables from "./BackToAllTables";
 import VendorAppProgress from "./VendorAppProgress";
-import { useVendorApplication } from "../../context/VendorApplicationContext";
 
 export default function VendorApplication() {
   const { profile } = useVendorFlow();

@@ -1,4 +1,5 @@
 "use client";
+
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

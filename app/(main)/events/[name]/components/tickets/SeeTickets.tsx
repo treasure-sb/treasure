@@ -18,7 +18,9 @@ export default function SeeTickets({
   return (
     <div className="w-full rounded-md items-center flex justify-between px-5 font-semibold">
       <p className="text-lg">
-        {isTicketFree ? "Tickets FREE" : `Tickets from $${minimumTicketPrice}`}
+        {isTicketFree
+          ? "Tickets FREE"
+          : `Tickets from $${minimumTicketPrice.toFixed(2)}`}
       </p>
       {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
       eventDisplayData.sales_status == "SELLING_ALL" ? (

@@ -1,26 +1,10 @@
 import { columns } from "./components/table/VendorDataColumns";
-import { eventDisplayData } from "@/lib/helpers/events";
-import { Tables } from "@/types/supabase";
+import { getEventDisplayData } from "@/lib/helpers/events";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import { redirect } from "next/navigation";
+import { EventVendorData, TagData } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DataTable from "./components/table/DataTable";
-
-type EventVendorTableInfo = {
-  section_name: string;
-  id: string;
-};
-
-export type EventVendorData = Tables<"event_vendors"> & {
-  vendor: Tables<"profiles"> & {
-    links: {
-      username: string;
-      application: string;
-    }[];
-  };
-} & {
-  table: EventVendorTableInfo;
-};
 
 export default async function Page({
   params: { eventName },
@@ -39,17 +23,25 @@ export default async function Page({
     redirect("/");
   }
 
-  const displayData = await eventDisplayData([eventData]);
-  const hostedEvent = displayData[0];
+  const displayData = await getEventDisplayData(eventData);
+
+  const { data: tagsData } = await supabase
+    .from("event_tags")
+    .select("tags(name)")
+    .eq("event_id", displayData.id);
+
+  const eventTagsData = tagsData as unknown as TagData[];
+  const eventTags = eventTagsData.map((tag) => tag.tags.name);
 
   const { data: eventVendorData } = await supabase
     .from("event_vendors")
     .select(
-      "*, vendor:profiles(*, links(username, application)), table:tables(section_name, id)"
+      "*, vendor:profiles(*, links(username, application)), table:tables(section_name, id), tags:event_vendor_tags(tags(name))"
     )
-    .eq("event_id", hostedEvent.id);
+    .eq("event_id", displayData.id);
 
-  const eventVendors = eventVendorData as EventVendorData[];
+  const eventVendors: EventVendorData[] = eventVendorData || [];
+
   const tableDataPromise = eventVendors.map(async (eventVendor) => {
     const avatar = await getProfileAvatar(eventVendor.vendor.avatar_url);
     return {
@@ -58,6 +50,7 @@ export default async function Page({
       section: eventVendor.table.section_name as string,
       payment_status: eventVendor.payment_status,
       application_status: eventVendor.application_status,
+      tags: eventVendor.tags.flatMap((tag) => tag.tags.name),
       vendor_info: eventVendor,
     };
   });
@@ -68,7 +61,8 @@ export default async function Page({
       <DataTable
         columns={columns}
         data={vendorsTableData || []}
-        eventData={hostedEvent}
+        eventData={displayData}
+        tags={eventTags}
       />
     </div>
   );

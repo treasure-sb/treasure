@@ -17,12 +17,14 @@ export default function TableFlowConsumer({
   tables,
   generalVendorInfo,
   terms,
+  tags,
   profile,
 }: {
   eventDisplay: EventDisplayData;
   tables: Tables<"tables">[];
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
+  tags: Tables<"tags">[];
   profile: ProfileWithInstagram | null;
 }) {
   const initialVendorFlowState: VendorFlowState = {
@@ -30,6 +32,7 @@ export default function TableFlowConsumer({
     event: eventDisplay,
     generalVendorInfo,
     terms,
+    tags,
     profile,
     tables,
   };
@@ -41,6 +44,7 @@ export default function TableFlowConsumer({
     inventory: "",
     comments: "",
     tableQuantity: 0,
+    vendorTags: [],
     vendorsAtTable: 0,
     termsAccepted: false,
   };
