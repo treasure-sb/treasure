@@ -1,10 +1,10 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import SalesChart from "./components/SalesChart";
-import VendorsChart from "./components/VendorsChart";
+import SalesChart from "./components/charts/SalesChart";
+import VendorBreakdown from "./components/charts/VendorBreakdown";
 import { Tables } from "@/types/supabase";
 import { UsersIcon, BadgeDollarSign, Star, MessageCircle } from "lucide-react";
-import VendorBreakdown from "./components/VendorBreakdown";
+import SalesAnalytics from "./components/charts/SalesAnalytics";
 
 export default async function Page({
   params: { eventName },
@@ -100,7 +100,7 @@ export default async function Page({
           <MessageCircle size={28} />
         </div>
       </Link>
-      <SalesChart />
+      <SalesAnalytics event={event} />
       <VendorBreakdown event={event} />
     </div>
   );

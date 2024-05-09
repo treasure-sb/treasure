@@ -1,7 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import VendorsChart from "./VendorsChart";
-import { TagData } from "../vendors/types";
+import { TagData } from "../../vendors/types";
 
 export type VendorBreakdownData = {
   name: string;
