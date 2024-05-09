@@ -16,7 +16,7 @@ export default function SeeTickets({
   const isTicketFree = minimumTicketPrice === 0;
 
   return (
-    <div className="w-full rounded-md items-center flex justify-between px-5 font-semibold">
+    <div className="w-full rounded-md items-center flex justify-between px-5 font-semibold space-x-4">
       <p className="text-lg">
         {isTicketFree
           ? "Tickets FREE"

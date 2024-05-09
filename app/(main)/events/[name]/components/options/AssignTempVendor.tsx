@@ -8,6 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -19,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { fetchTemporaryVendors } from "@/lib/helpers/profiles";
 import { LucideUserPlus2 } from "lucide-react";
 import { toast } from "sonner";
+import { TagData } from "../../types";
 
 type TemporaryVendor = Tables<"temporary_profiles"> & {
   temporary_vendors: {
@@ -28,12 +36,15 @@ type TemporaryVendor = Tables<"temporary_profiles"> & {
 
 export default function AssignTempVendor({
   event,
+  tags,
 }: {
   event: Tables<"events">;
+  tags: TagData[];
 }) {
-  const supabase = createClient();
   const { refresh } = useRouter();
   const [search, setSearch] = useState("");
+  const [tagId, setTagId] = useState("");
+  const supabase = createClient();
 
   const { data, refetch } = useQuery({
     queryKey: ["profiles", search],
@@ -51,9 +62,14 @@ export default function AssignTempVendor({
   }, 300);
 
   const handleAddVendor = async (profileId: string) => {
+    if (tagId === "") {
+      toast.error("Please add a vendor tag");
+      return;
+    }
+
     const { error } = await supabase
       .from("temporary_vendors")
-      .insert([{ vendor_id: profileId, event_id: event.id }]);
+      .insert([{ vendor_id: profileId, event_id: event.id, tag_id: tagId }]);
 
     if (error) {
       toast.error("Error adding vendor");
@@ -96,35 +112,50 @@ export default function AssignTempVendor({
             placeholder="Search Profile"
             className="pl-0"
           />
+          <Select onValueChange={(value) => setTagId(value)}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Tag" />
+            </SelectTrigger>
+            <SelectContent>
+              {tags.map(({ tags }) => (
+                <SelectItem value={tags.id}>{tags.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </DialogHeader>
         {data &&
           search.trim().length > 0 &&
           temporaryVendors.map((profile) => (
-            <div key={profile.id} className="flex justify-between items-center">
-              <div className="flex space-x-3 items-center">
-                <Avatar className="h-14 w-14">
-                  <AvatarFallback />
-                  <AvatarImage src={profile.avatar_url} />
-                </Avatar>
-                <div>
-                  <p className="text-lg font-semibold">
+            <div key={profile.id} className="flex flex-col space-y-2">
+              <div className="flex justify-between items-center">
+                <div className="flex space-x-2 items-center">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback />
+                    <AvatarImage src={profile.avatar_url} />
+                  </Avatar>
+                  <p className="text-sm font-semibold">
                     {profile.business_name}
                   </p>
-                  <p className="text-sm text-gray-400">@{profile.username}</p>
                 </div>
+                {profile.temporary_vendors
+                  .map((event) => event.event_id)
+                  .includes(event.id) ? (
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => handleRemoveVendor(profile.id)}
+                    className="h-6 p-4 text-xs w-16"
+                  >
+                    Remove
+                  </Button>
+                ) : (
+                  <Button
+                    className="h-6 p-4 text-xs w-16"
+                    onClick={() => handleAddVendor(profile.id)}
+                  >
+                    Add
+                  </Button>
+                )}
               </div>
-              {profile.temporary_vendors
-                .map((event) => event.event_id)
-                .includes(event.id) ? (
-                <Button
-                  variant={"destructive"}
-                  onClick={() => handleRemoveVendor(profile.id)}
-                >
-                  Remove
-                </Button>
-              ) : (
-                <Button onClick={() => handleAddVendor(profile.id)}>Add</Button>
-              )}
             </div>
           ))}
       </DialogContent>

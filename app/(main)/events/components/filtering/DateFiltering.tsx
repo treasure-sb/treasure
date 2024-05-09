@@ -12,16 +12,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
 import Cancel from "@/components/icons/Cancel";
 
-/**
- * DateFiltering provides a dropdown menu for filtering events based on specific dates.
- * It offers quick selections for 'Today', 'Tomorrow', and 'This Week', as well as a calendar for custom date selection.
- * The selected date range is displayed on the button and can be cleared using a cancel icon.
- *
- * TODO: Refactor to make more DRY
- */
 export default function DateFiltering() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isCalenderOpen, setIsCalenderOpen] = useState(false);
@@ -137,7 +129,7 @@ export default function DateFiltering() {
             {hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="start">
           <div className="flex justify-center p-2">
             <DropdownMenuItem onClick={handleClickThisWeek}>
               This Week

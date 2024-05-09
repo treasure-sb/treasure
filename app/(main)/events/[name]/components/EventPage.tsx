@@ -7,7 +7,7 @@ import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
 import VendorTables from "./tables/VendorTables";
 import HostedBy from "./sections/HostedBy";
-import Vendors from "./sections/Vendors";
+import Vendors from "./vendors/Vendors";
 import EventOptions from "./options/EventOptions";
 import EventInfo from "./sections/EventInfo";
 import About from "./sections/About";

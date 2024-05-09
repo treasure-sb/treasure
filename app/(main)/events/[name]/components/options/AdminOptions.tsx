@@ -3,14 +3,23 @@ import DuplicateEvent from "@/components/icons/DuplicateEvent";
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import AssignTempVendor from "./AssignTempVendor";
+import { Tables } from "@/types/supabase";
+import { TagData } from "../../types";
 
-export default async function AdminOptions({ event }: { event: any }) {
+export default async function AdminOptions({
+  event,
+}: {
+  event: Tables<"events">;
+}) {
   let eventInfo;
   const supabase = await createSupabaseServerClient();
   const { data: tagsData, error: tagsError } = await supabase
     .from("event_tags")
-    .select("tags(name,id)")
-    .eq("event_id", event.id);
+    .select("tags(*)")
+    .eq("event_id", event.id)
+    .returns<TagData[]>();
+
+  const eventTags = tagsData || [];
 
   const { data: ticketsData, error: ticketError } = await supabase
     .from("tickets")
@@ -52,7 +61,7 @@ export default async function AdminOptions({ event }: { event: any }) {
 
   return (
     <>
-      <AssignTempVendor event={event} />
+      <AssignTempVendor event={event} tags={eventTags} />
       <AssignEventOrganizer event={event} />
       <Link
         href={{
