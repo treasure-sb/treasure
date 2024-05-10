@@ -95,14 +95,6 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
     .eq("event_id", event.id)
     .returns<TempProfileVendor[]>();
 
-  const { data: tagsData } = await supabase
-    .from("event_tags")
-    .select("tags(*)")
-    .eq("event_id", event.id)
-    .returns<TagData[]>();
-
-  const tags = tagsData || [];
-
   const profileVendors: Vendor[] =
     vendorsData?.flatMap((vendor) => createVendorFromProfile(vendor)) || [];
 
@@ -114,6 +106,9 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
     ...(await getVendorsWithPublicUrl(profileVendors)),
     ...(await getVendorsWithPublicUrl(tempVendors)),
   ];
+
+  const allTags = new Set(allVendors.flatMap((vendor) => vendor.tags));
+  const tags = Array.from(allTags);
 
   return (
     allVendors.length > 0 && (
