@@ -48,7 +48,7 @@ export default function Page() {
       </p>
 
       <h3 className="text-xl font-bold">TABLE OF CONTENTS</h3>
-      <ul className="list-disc ml-8">
+      <ul className="list-decimal ml-8">
         <li>OUR SERVICES</li>
         <li>INTELLECTUAL PROPERTY RIGHTS</li>
         <li>USER REPRESENTATIONS</li>
