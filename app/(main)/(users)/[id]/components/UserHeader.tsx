@@ -157,7 +157,7 @@ export default async function UserHeader({
         <CopyProfileLink username={user.username} />
         {ownProfile && <QRCode username={user.username} />}
       </div>
-      {ownProfile && (
+      {isProfile && (
         <p className="text-center">{(user as Tables<"profiles">).bio}</p>
       )}
       <div className="m-auto flex space-x-4 justify-center items-center overflow-scroll scrollbar-hidden">

@@ -9,7 +9,7 @@ export default function Footer() {
         </Link>
         <Link
           className="landing-footer-link"
-          href="mailto: george@ontreasure.xyz"
+          href="https://app.formbricks.com/s/cls9piboz4960sted3d1snwj2"
         >
           Contact
         </Link>
