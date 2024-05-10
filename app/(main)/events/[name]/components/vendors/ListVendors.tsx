@@ -34,8 +34,8 @@ export default function ListVendors({
       <div className="flex flex-wrap gap-1">
         <Button
           className={cn(
-            `text-xs md:text-sm p-2 h-6 text-foreground decoration-primary`,
-            filter === "All" && "underline"
+            `text-xs md:text-sm p-2 h-6 decoration-primary text-muted-foreground`,
+            filter === "All" && "underline text-foreground"
           )}
           onClick={() => handleClickFilter("All")}
           variant={"link"}
@@ -44,10 +44,11 @@ export default function ListVendors({
         </Button>
         {tags.map(({ tags }) => (
           <Button
+            key={tags.id}
             onClick={() => handleClickFilter(tags.name)}
             className={cn(
-              `text-xs md:text-sm p-2 h-6 text-foreground decoration-primary`,
-              filter === tags.name && "underline"
+              `text-xs md:text-sm p-2 h-6 text-muted-foreground decoration-primary`,
+              filter === tags.name && "underline text-foreground"
             )}
             variant={"link"}
           >
@@ -55,13 +56,24 @@ export default function ListVendors({
           </Button>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid md:hidden grid-cols-2 gap-2">
         {filteredVendors[0] && <MainVendorCard vendor={filteredVendors[0]} />}
         {filteredVendors[1] && <SubVendorCard vendor={filteredVendors[1]} />}
         {filteredVendors[2] && <SubVendorCard vendor={filteredVendors[2]} />}
       </div>
-      {filteredVendors.length > 3 && (
-        <VendorGroup vendors={filteredVendors.slice(3)} />
+      <div className="hidden md:grid grid-cols-2 gap-2">
+        {filteredVendors[0] && <MainVendorCard vendor={filteredVendors[0]} />}
+        {filteredVendors[1] && <MainVendorCard vendor={filteredVendors[1]} />}
+        {filteredVendors[2] && <MainVendorCard vendor={filteredVendors[2]} />}
+        {filteredVendors[3] && <MainVendorCard vendor={filteredVendors[3]} />}
+      </div>
+      {filteredVendors.length > 4 && (
+        <VendorGroup vendors={filteredVendors.slice(4)} />
+      )}
+      {filteredVendors.length === 0 && (
+        <p className="text-center text-muted-foreground text-sm">
+          No vendors found
+        </p>
       )}
     </>
   );

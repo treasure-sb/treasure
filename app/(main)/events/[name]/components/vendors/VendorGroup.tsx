@@ -11,6 +11,7 @@ export default function VendorGroup({ vendors }: { vendors: Vendor[] }) {
     <div className="flex flex-wrap mt-2">
       {vendors.slice(0, vendorsToShow).map((vendor, i) => (
         <Avatar
+          key={i}
           className={cn(
             "h-14 w-14 border-4 border-background",
             i !== 0 && "-ml-5"

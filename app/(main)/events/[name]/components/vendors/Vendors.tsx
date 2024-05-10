@@ -57,7 +57,7 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
     firstName: null,
     lastName: null,
     bio: null,
-    tags: [tags.name],
+    tags: [tags && tags.name],
   };
 };
 
