@@ -5,7 +5,8 @@ import { type TagData } from "../../types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import MainVendorCard from "./MainVendorCard";
 import SubVendorCard from "./SubVendorCard";
 import VendorGroup from "./VendorGroup";
@@ -18,17 +19,39 @@ export default function ListVendors({
   tags: TagData[];
 }) {
   const [filter, setFilter] = useState("All");
+  const [vendors, setVendors] = useState<Vendor[]>(allVendors);
 
   const filteredVendors = useMemo(() => {
     if (filter === "All") {
-      return allVendors;
+      return vendors;
     }
-    return allVendors.filter((vendor) => vendor.tags.includes(filter));
-  }, [filter, allVendors]);
+
+    return vendors.filter((vendor) => vendor.tags.includes(filter));
+  }, [filter, vendors]);
+
+  const shuffleVendors = () => {
+    const shuffled = vendors.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  useEffect(() => {
+    setVendors(shuffleVendors());
+    const interval = setInterval(() => {
+      if (filteredVendors.length > 4) {
+        setVendors(shuffleVendors());
+      }
+    }, 20000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleClickFilter = (tag: string) => {
     setFilter(tag);
   };
+
   return (
     <>
       <div className="flex flex-wrap gap-1">
@@ -56,16 +79,12 @@ export default function ListVendors({
           </Button>
         ))}
       </div>
-      <div className="grid md:hidden grid-cols-2 gap-2">
-        {filteredVendors[0] && <MainVendorCard vendor={filteredVendors[0]} />}
-        {filteredVendors[1] && <SubVendorCard vendor={filteredVendors[1]} />}
-        {filteredVendors[2] && <SubVendorCard vendor={filteredVendors[2]} />}
-      </div>
-      <div className="hidden md:grid grid-cols-2 gap-2">
-        {filteredVendors[0] && <MainVendorCard vendor={filteredVendors[0]} />}
-        {filteredVendors[1] && <MainVendorCard vendor={filteredVendors[1]} />}
-        {filteredVendors[2] && <MainVendorCard vendor={filteredVendors[2]} />}
-        {filteredVendors[3] && <MainVendorCard vendor={filteredVendors[3]} />}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <AnimatePresence mode="wait">
+          {filteredVendors.slice(0, 4).map((vendor, index) => (
+            <MainVendorCard key={vendor.username} vendor={vendor} />
+          ))}
+        </AnimatePresence>
       </div>
       {filteredVendors.length > 4 && (
         <VendorGroup vendors={filteredVendors.slice(4)} />

@@ -67,7 +67,14 @@ const getVendorsWithPublicUrl = async (vendors: Vendor[]) => {
     vendors.map(async (vendor) => {
       const {
         data: { publicUrl },
-      } = await supabase.storage.from("avatars").getPublicUrl(vendor.avatarUrl);
+      } = await supabase.storage
+        .from("avatars")
+        .getPublicUrl(vendor.avatarUrl, {
+          transform: {
+            width: 200,
+            height: 200,
+          },
+        });
       return { ...vendor, publicUrl: publicUrl };
     })
   );

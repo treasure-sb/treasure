@@ -19,8 +19,10 @@ export default async function ContactHost({
 }) {
   return (
     <Dialog>
-      <DialogTrigger className="hover:scale-105 transition duration-500 focus:outline-none">
-        <Button variant={"secondary"}>Contact</Button>
+      <DialogTrigger>
+        <Button className="text-foreground decoration-primary" variant={"link"}>
+          Contact
+        </Button>
       </DialogTrigger>
       <DialogContent className="flex items-center flex-col justify-center focus:outline-none">
         <div className="text-2xl font-semibold">Contact Host</div>
