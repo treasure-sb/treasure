@@ -13,7 +13,7 @@ export default function Footer() {
         >
           Contact
         </Link>
-        <Link className="landing-footer-link" href="/">
+        <Link className="landing-footer-link" href="/privacy">
           Privacy
         </Link>
         <Link className="landing-footer-link" href="/profile/create-event">
