@@ -44,15 +44,13 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
         className="flex flex-col space-y-2 overflow-hidden"
       >
         <motion.div variants={variants}>
-          <p className="font-semibold text-lg md:text-xl line-clamp-2">
+          <p className="font-semibold text-lg md:text-xl line-clamp-1">
             {vendor.businessName
               ? vendor.businessName
               : vendor.firstName + " " + vendor.lastName}
           </p>
-          <p className="text-xxs md:text-xs text-gray-500">
-            @{vendor.username}
-          </p>
-          <p className="text-muted-foreground text-sm line-clamp-2">
+          <p className="text-xs md:text-xs text-gray-500">@{vendor.username}</p>
+          <p className="text-muted-foreground text-sm line-clamp-1">
             {vendor.bio}
           </p>
         </motion.div>

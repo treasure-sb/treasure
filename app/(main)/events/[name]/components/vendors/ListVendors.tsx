@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { useMemo, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import MainVendorCard from "./MainVendorCard";
-import SubVendorCard from "./SubVendorCard";
 import VendorGroup from "./VendorGroup";
 
 export default function ListVendors({
@@ -16,7 +15,7 @@ export default function ListVendors({
   tags,
 }: {
   allVendors: Vendor[];
-  tags: TagData[];
+  tags: string[];
 }) {
   const [filter, setFilter] = useState("All");
   const [vendors, setVendors] = useState<Vendor[]>(allVendors);
@@ -65,17 +64,17 @@ export default function ListVendors({
         >
           All
         </Button>
-        {tags.map(({ tags }) => (
+        {tags.map((tag) => (
           <Button
-            key={tags.id}
-            onClick={() => handleClickFilter(tags.name)}
+            key={tag}
+            onClick={() => handleClickFilter(tag)}
             className={cn(
               `text-xs md:text-sm p-2 h-6 text-muted-foreground decoration-primary`,
-              filter === tags.name && "underline text-foreground"
+              filter === tag && "underline text-foreground"
             )}
             variant={"link"}
           >
-            {tags.name}
+            {tag}
           </Button>
         ))}
       </div>

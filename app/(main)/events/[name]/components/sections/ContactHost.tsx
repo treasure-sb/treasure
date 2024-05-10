@@ -1,10 +1,10 @@
 "use client";
 
 import { Tables } from "@/types/supabase";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import InstagramIcon from "@/components/icons/applications/InstagramIcon";
+import Link from "next/link";
 
 type OrganizerType = Tables<"profiles"> | Tables<"temporary_profiles">;
 
