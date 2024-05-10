@@ -103,7 +103,7 @@ const fetchTemporaryVendors = async (search: string) => {
     .from("temporary_profiles")
     .select("*, temporary_vendors(event_id)")
     .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
-    .limit(8);
+    .limit(4);
 
   if (profilesData) {
     const profilesWithAvatar = await Promise.all(
