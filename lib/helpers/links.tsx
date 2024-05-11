@@ -38,7 +38,7 @@ export const socialLinkData: SocialLinkData = {
     icon: <TikTokIcon />,
   },
   Whatnot: {
-    url: "https://whatnot.com/",
+    url: "https://whatnot.com/user/",
     icon: <WhatNotIcon />,
   },
 };
