@@ -80,7 +80,7 @@ export default function VendorAppSubmitted({
                 Need Help or Have Questions?
               </Heading>
               <Link
-                href="mailto:george@ontreasure.xyz"
+                href="https://app.formbricks.com/s/cls9piboz4960sted3d1snwj2"
                 className="underline text-foreground text-xs"
               >
                 Get in Touch
