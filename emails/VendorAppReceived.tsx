@@ -18,9 +18,11 @@ import BodySection from "./components/Section";
 export default function VendorAppReceived({
   posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
   eventName = "Garden State Card Show",
+  cleanedEventName = "garden-state-card-show",
 }: {
   posterUrl: string;
   eventName: string;
+  cleanedEventName: string;
 }) {
   return (
     <Html>
@@ -51,7 +53,7 @@ export default function VendorAppReceived({
               </Heading>
               <Button
                 className="bg-primary ml-auto p-4 rounded-lg text-foreground"
-                href="https://ontreasure.xyz/host"
+                href={`https://ontreasure.xyz/host/events/${cleanedEventName}/vendors`}
               >
                 View Application
               </Button>
