@@ -39,7 +39,7 @@ export default function Sidebar({ type }: { type: "host" | "vendor" }) {
     >
       <div>
         <Link
-          href="/"
+          href="/home"
           className="font-semibold text-3xl flex items-center justify-center mb-8"
         >
           <TreasureEmerald width={28} height={28} />

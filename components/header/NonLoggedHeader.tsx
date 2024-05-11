@@ -6,7 +6,7 @@ export default function NonLoggedHeader() {
   return (
     <HeaderMotion>
       <Link
-        href="/"
+        href="/home"
         className="font-bold text-3xl flex items-center justify-start space-x-1"
       >
         <Image

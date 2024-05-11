@@ -33,7 +33,7 @@ export default function Menu({ type }: { type: "host" | "vendor" }) {
         <SheetHeader className="mt-6">
           <SheetTitle>
             <Link
-              href="/"
+              href="/home"
               className="font-semibold text-3xl space-x-1 flex items-center justify-center mr-6"
             >
               <TreasureEmerald width={28} height={28} />
