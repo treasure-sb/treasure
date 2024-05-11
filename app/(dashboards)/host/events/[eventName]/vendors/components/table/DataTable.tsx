@@ -28,6 +28,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { EventDisplayData } from "@/types/event";
 import Filters from "./Filters";
 import { mkConfig, generateCsv, download } from "export-to-csv";
+import ExportIcon from "@/components/icons/ExportIcon";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -110,36 +111,62 @@ export default function DataTable<TData, TValue>({
     table.getColumn("tags")?.setFilterValue([]);
   };
 
-  const csvConfig = mkConfig({ useKeysAsHeaders: true });
+  const exportFunction = () => {
+    const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
-  let exportData = [
-    { name: "", assignment: "", number_of_tables: "", contact: "" },
-  ];
+    let exportData = [
+      { name: "", assignment: "", number_of_tables: "", contact: "" },
+    ];
 
-  table.getRowModel().rows?.map((row) => {
-    let temp: exportInfo = {
-      name: row.getValue("name"),
-      assignment:
-        (row.getValue("vendor_info") as any).assignment === null
-          ? "none"
-          : (row.getValue("vendor_info") as any).assignment,
-      number_of_tables: (row.getValue("vendor_info") as any).table_quantity,
-      contact:
-        (row.getValue("vendor_info") as any).application_email +
-        " , " +
-        (row.getValue("vendor_info") as any).application_phone,
-    };
-    exportData.push(temp);
-  });
+    table.getRowModel().rows?.map((row, i) => {
+      if (i === 0) {
+        exportData[0] = {
+          name: row.getValue("name"),
+          assignment:
+            (row.getValue("vendor_info") as any).assignment === null
+              ? "none"
+              : (row.getValue("vendor_info") as any).assignment,
+          number_of_tables: (row.getValue("vendor_info") as any).table_quantity,
+          contact:
+            (row.getValue("vendor_info") as any).application_email +
+            " , " +
+            (row.getValue("vendor_info") as any).application_phone,
+        };
+      } else {
+        let temp: exportInfo = {
+          name: row.getValue("name"),
+          assignment:
+            (row.getValue("vendor_info") as any).assignment === null
+              ? "none"
+              : (row.getValue("vendor_info") as any).assignment,
+          number_of_tables: (row.getValue("vendor_info") as any).table_quantity,
+          contact:
+            (row.getValue("vendor_info") as any).application_email +
+            " , " +
+            (row.getValue("vendor_info") as any).application_phone,
+        };
+        exportData.push(temp);
+      }
+    });
 
-  // Converts your Array<Object> to a CsvOutput string based on the configs
-  const csv = generateCsv(csvConfig)(exportData);
+    // Converts your Array<Object> to a CsvOutput string based on the configs
+    const csv = generateCsv(csvConfig)(exportData);
+
+    download(csvConfig)(csv);
+  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-semibold">Event Vendors</h1>
-        <Button onClick={() => download(csvConfig)(csv)}>Export</Button>
+        <Button
+          onClick={exportFunction}
+          variant={"outline"}
+          className="flex gap-2"
+        >
+          <ExportIcon />
+          Export
+        </Button>
       </div>
 
       <Filters

@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ExportButton from "./ExportButton";
 
 export default async function Page({
   params: { eventName },
@@ -29,19 +30,21 @@ export default async function Page({
     .eq("event_id", eventData.id)
     .order("created_at", { ascending: false });
 
+  const ticketsArr: any[] = soldTicketsData ? soldTicketsData : [];
+
   return (
-    <div className="flex flex-col gap-4 overflow-visible">
+    <div className="flex flex-col gap-4 overflow-visible ">
       <h1 className="font-semibold text-4xl text-tertiary">Sales</h1>
       <h1 className="text-2xl font-semibold mt-4">Ticket Types</h1>
-      <div className="flex flex-col gap-2 min-w-fit sm:w-full text-sm sm:text-lg">
-        <div className="w-full flex px-4">
+      <div className="flex flex-col gap-2 min-w-fit sm:w-full text-sm sm:text-lg border border-secondary rounded-sm">
+        <div className="w-full flex p-4">
           <div className="w-2/5">Name</div>
           <div className="w-1/5 text-center">Status</div>
           <div className="w-1/5 text-center">Price</div>
           <div className="w-1/5 text-right">Sold</div>
         </div>
-        {ticketsData?.map((ticket) => (
-          <div className="w-full flex bg-secondary p-4 rounded-md">
+        {ticketsData?.map((ticket: any) => (
+          <div className="w-full flex p-4 border-t">
             <div className="w-2/5">{ticket.name}</div>
 
             {eventData.sales_status === "SELLING_ALL" ||
@@ -58,17 +61,17 @@ export default async function Page({
           </div>
         ))}
       </div>
-      <h1 className="text-2xl font-semibold mt-6">Sales</h1>
-      <div className="sm:flex flex-col gap-2 hidden w-full text-lg">
-        <div className="flex px-4">
+      <ExportButton soldTicketsData={ticketsArr} />
+      <div className="sm:flex flex-col hidden w-full text-lg border border-secondary rounded-sm">
+        <div className="flex p-4">
           <div className="w-2/6">Name</div>
           <div className="w-1/6 text-center">Tickets</div>
           <div className="w-1/6 text-center">Total Spend</div>
           <div className="w-1/6 text-center">Contact</div>
           <div className="w-1/6 text-right">Purchase Date</div>
         </div>
-        {soldTicketsData?.map((ticket) => (
-          <div className="w-full flex bg-secondary p-4 rounded-md">
+        {soldTicketsData?.map((ticket: any) => (
+          <div className="w-full flex p-4 border-t">
             <div className="w-2/6 flex flex-col">
               <div>
                 {ticket.user_info.first_name + " " + ticket.user_info.last_name}
@@ -108,14 +111,10 @@ export default async function Page({
       <Accordion
         type="single"
         collapsible
-        className="flex flex-col sm:hidden gap-4 w-full mb-4"
+        className="flex flex-col border border-secondary sm:hidden gap-4 w-full mb-4 rounded-sm"
       >
-        {soldTicketsData?.map((ticket, i) => (
-          <AccordionItem
-            key={i}
-            value={i.toString()}
-            className="w-full bg-secondary px-2 rounded-md"
-          >
+        {soldTicketsData?.map((ticket: any, i: number) => (
+          <AccordionItem key={i} value={i.toString()} className="w-full px-2">
             <AccordionTrigger className="flex text-lg text-left w-full hover:no-underline">
               <div className="flex flex-col">
                 <div>{ticket.user_info.first_name}</div>
