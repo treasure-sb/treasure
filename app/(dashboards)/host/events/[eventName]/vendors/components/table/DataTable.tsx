@@ -39,6 +39,7 @@ interface DataTableProps<TData, TValue> {
 
 interface exportInfo {
   name: string;
+  payment_status: string;
   assignment: string;
   number_of_tables: string;
   contact: string;
@@ -112,16 +113,26 @@ export default function DataTable<TData, TValue>({
   };
 
   const exportFunction = () => {
-    const csvConfig = mkConfig({ useKeysAsHeaders: true });
+    const csvConfig = mkConfig({
+      useKeysAsHeaders: true,
+      filename: "vendors-" + eventData.cleaned_name,
+    });
 
     let exportData = [
-      { name: "", assignment: "", number_of_tables: "", contact: "" },
+      {
+        name: "",
+        payment_status: "",
+        assignment: "",
+        number_of_tables: "",
+        contact: "",
+      },
     ];
 
     table.getRowModel().rows?.map((row, i) => {
       if (i === 0) {
         exportData[0] = {
           name: row.getValue("name"),
+          payment_status: (row.getValue("vendor_info") as any).payment_status,
           assignment:
             (row.getValue("vendor_info") as any).assignment === null
               ? "none"
@@ -135,6 +146,7 @@ export default function DataTable<TData, TValue>({
       } else {
         let temp: exportInfo = {
           name: row.getValue("name"),
+          payment_status: (row.getValue("vendor_info") as any).payment_status,
           assignment:
             (row.getValue("vendor_info") as any).assignment === null
               ? "none"

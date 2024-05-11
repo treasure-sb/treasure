@@ -60,14 +60,16 @@ const sendVendorReceivedEmail = async (
   const { error: sendHostEmailError } = await sendVendorAppReceivedEmail(
     hostData?.email,
     eventPosterUrl,
-    event.name
+    event.name,
+    event.cleaned_name
   );
 
   if (hostData?.email !== "treasure20110@gmail.com") {
     const { error: sendAdminEmailError } = await sendVendorAppReceivedEmail(
       "treasure20110@gmail.com",
       eventPosterUrl,
-      event.name
+      event.name,
+      event.cleaned_name
     );
   }
   return { error: null };

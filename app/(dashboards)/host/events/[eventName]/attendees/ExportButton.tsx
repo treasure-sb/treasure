@@ -5,11 +5,16 @@ import ExportIcon from "@/components/icons/ExportIcon";
 
 export default function ExportButton({
   soldTicketsData,
+  eventName,
 }: {
   soldTicketsData: any[];
+  eventName: string;
 }) {
   const exporting = () => {
-    const csvConfig = mkConfig({ useKeysAsHeaders: true });
+    const csvConfig = mkConfig({
+      useKeysAsHeaders: true,
+      filename: "tickets-" + eventName,
+    });
 
     let exportData = [
       { name: "", ticket: "", number_of_tickets: "", contact: "" },

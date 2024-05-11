@@ -61,7 +61,7 @@ export default async function Page({
           </div>
         ))}
       </div>
-      <ExportButton soldTicketsData={ticketsArr} />
+      <ExportButton soldTicketsData={ticketsArr} eventName={eventName} />
       <div className="sm:flex flex-col hidden w-full text-lg border border-secondary rounded-sm">
         <div className="flex p-4">
           <div className="w-2/6">Name</div>
