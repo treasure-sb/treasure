@@ -12,7 +12,6 @@ import {
 import { User } from "@supabase/supabase-js";
 import { getProfile } from "@/lib/helpers/profiles";
 import {
-  CalendarSearch,
   TicketIcon,
   User2Icon,
   Settings,
@@ -31,7 +30,7 @@ export default async function LoggedInHeader({ user }: { user: User }) {
     <HeaderMotion>
       <div className="relative">
         <Link
-          href="/"
+          href="/home"
           className="font-bold text-3xl flex items-center justify-start space-x-1"
         >
           <Image

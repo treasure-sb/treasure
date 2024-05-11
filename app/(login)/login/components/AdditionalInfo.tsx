@@ -111,7 +111,7 @@ export default function AdditionalInfo() {
             Get started
           </Button>
           <div className="flex justify-center">
-            <Link className="block m-auto" href="/">
+            <Link className="block m-auto" href="/home">
               Skip
             </Link>
           </div>
