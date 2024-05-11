@@ -66,7 +66,7 @@ export default function ExportButton({
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold">Event Vendors</h1>
+        <h1 className="text-2xl font-semibold">Sales</h1>
         {soldTicketsData && soldTicketsData.length > 0 && (
           <Button
             onClick={exporting}
