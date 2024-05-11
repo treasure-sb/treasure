@@ -68,7 +68,7 @@ export default function TicketPurchased({
               </Heading>
               <Button
                 className="bg-primary text-foreground font-normal rounded-lg px-6 py-4"
-                href="/profile/tickets"
+                href="https://www.ontreasure.xyz/profile/tickets"
               >
                 View Tickets
               </Button>
