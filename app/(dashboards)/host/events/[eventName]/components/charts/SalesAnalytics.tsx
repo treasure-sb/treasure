@@ -3,15 +3,22 @@ import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { formatDate } from "@/lib/helpers/events";
 
-type TicketSoldData = {
+type OrderQueryData = {
   created_at: string;
-  tickets: { price: number };
+  amount_paid: number;
+  line_items: Tables<"line_items">[];
 }[];
+
+type SalesMapValue = {
+  tickets: number;
+  tables: number;
+};
 
 export type SalesData = {
   day: string;
   formattedDate: string;
-  sales: number;
+  tickets: number;
+  tables: number;
 }[];
 
 const normalizeDate = (date: Date) => {
@@ -25,30 +32,34 @@ export default async function SalesAnalytics({
   event: Tables<"events">;
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: ticketSoldData } = await supabase
-    .from("event_tickets")
-    .select("created_at, tickets(price)")
-    .eq("event_id", event.id)
-    .returns<TicketSoldData>();
+  const { data: ordersData } = await supabase
+    .from("orders")
+    .select("created_at, amount_paid, line_items(*)")
+    .eq("event_id", event.id);
 
+  const orders: OrderQueryData = ordersData || [];
   const today = new Date();
-  const lastThirtyDaysMap = new Map<string, number>();
+  const lastThirtyDaysMap = new Map<string, SalesMapValue>();
 
   Array.from({ length: 30 }).forEach((_, i) => {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    lastThirtyDaysMap.set(normalizeDate(date), 0);
+    lastThirtyDaysMap.set(normalizeDate(date), { tickets: 0, tables: 0 });
   });
 
-  ticketSoldData?.forEach((sale) => {
-    const saleDate = normalizeDate(new Date(sale.created_at));
-    const ticketPrice = sale.tickets.price;
-    lastThirtyDaysMap.set(
-      saleDate,
-      lastThirtyDaysMap.has(saleDate)
-        ? lastThirtyDaysMap.get(saleDate)! + ticketPrice
-        : 0
-    );
+  orders.forEach((order) => {
+    const saleDate = normalizeDate(new Date(order.created_at));
+    if (lastThirtyDaysMap.has(saleDate)) {
+      order.line_items.forEach((item) => {
+        const itemType = item.item_type;
+        const itemMap = lastThirtyDaysMap.get(saleDate)!;
+        if (itemType === "TICKET") {
+          itemMap.tickets += item.price * item.quantity;
+        } else {
+          itemMap.tables += item.price * item.quantity;
+        }
+      });
+    }
   });
 
   const salesData: SalesData = [];
@@ -56,7 +67,8 @@ export default async function SalesAnalytics({
     salesData.push({
       day: new Date(key).getDate().toString(),
       formattedDate: formatDate(key),
-      sales: value,
+      tickets: value.tickets,
+      tables: value.tables,
     });
   });
 

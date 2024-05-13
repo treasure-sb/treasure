@@ -13,7 +13,7 @@ export default function NotFound() {
 
         <p className="mt-4 text-gray-400">We can't find that page.</p>
 
-        <Link href="/" className="w-fit mt-6 inline-block">
+        <Link href="/home" className="w-fit mt-6 inline-block">
           <Button className="p-6 rounded-md">Go Back Home</Button>
         </Link>
       </div>

@@ -53,8 +53,6 @@ const createOrder = async (orderPayload: OrderPayload) => {
     .select()
     .single();
 
-  console.log(createOrderData, createOrderError);
-
   const order: Tables<"orders"> = createOrderData;
 
   if (createOrderError) {
@@ -76,7 +74,6 @@ const createOrder = async (orderPayload: OrderPayload) => {
       },
     ]);
 
-  console.log(createLineItemsError);
   if (createLineItemsError) {
     return NextResponse.json({
       message: "Error",
@@ -84,7 +81,7 @@ const createOrder = async (orderPayload: OrderPayload) => {
     });
   }
 
-  return order;
+  return null;
 };
 
 const handleTicketPurchase = async (
@@ -152,14 +149,14 @@ const handleTicketPurchase = async (
   }
 
   // send email to us
-  if (profile.email === null || profile.email !== "treasure20110@gmail.com") {
-    await sendTicketPurchasedEmail(
-      "treasure20110@gmail.com",
-      purchasedTicket.id,
-      event_id,
-      ticketPurchaseEmailProps
-    );
-  }
+  // if (profile.email === null || profile.email !== "treasure20110@gmail.com") {
+  //   await sendTicketPurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     purchasedTicket.id,
+  //     event_id,
+  //     ticketPurchaseEmailProps
+  //   );
+  // }
 
   // text user
   if (profile.phone) {
