@@ -29,20 +29,62 @@ if (!stripeSecret || !webhookSecret) {
 
 const stripe = new Stripe(stripeSecret);
 
-const generateOrder = async (user_id: string) => {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("orders")
-    .insert([{ user_id }])
-    .select();
+type OrderPayload = {
+  userId: string;
+  eventId: string;
+  quantity: number;
+  price: number;
+  itemId: string;
+  itemType: "TICKET" | "TABLE";
+};
 
-  if (error) {
+const createOrder = async (orderPayload: OrderPayload) => {
+  const supabase = await createSupabaseServerClient();
+  const { userId, eventId, quantity, price, itemId, itemType } = orderPayload;
+  const { data: createOrderData, error: createOrderError } = await supabase
+    .from("orders")
+    .insert([
+      {
+        customer_id: userId,
+        amount_paid: quantity * price,
+        event_id: eventId,
+      },
+    ])
+    .select()
+    .single();
+
+  console.log(createOrderData, createOrderError);
+
+  const order: Tables<"orders"> = createOrderData;
+
+  if (createOrderError) {
     return NextResponse.json({
       message: "Error",
       ok: false,
     });
   }
-  return data[0];
+
+  const { error: createLineItemsError } = await supabase
+    .from("line_items")
+    .insert([
+      {
+        order_id: order.id,
+        item_type: itemType,
+        item_id: itemId,
+        quantity: quantity,
+        price: price,
+      },
+    ]);
+
+  console.log(createLineItemsError);
+  if (createLineItemsError) {
+    return NextResponse.json({
+      message: "Error",
+      ok: false,
+    });
+  }
+
+  return order;
 };
 
 const handleTicketPurchase = async (
@@ -71,6 +113,16 @@ const handleTicketPurchase = async (
     });
   }
 
+  const createOrderPayload = {
+    userId: user_id,
+    eventId: event_id,
+    quantity: quantity,
+    price: ticket.price,
+    itemId: ticket.id,
+    itemType: "TICKET" as const,
+  };
+  const order = await createOrder(createOrderPayload);
+
   const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
   const { profile } = await getProfile(user_id);
   const { event } = await getEventFromId(event_id);
@@ -85,12 +137,12 @@ const handleTicketPurchase = async (
     location: event.address,
     date: moment(event.date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${ticketData.price}`,
+    totalPrice: `$${ticket.price}`,
     eventInfo: event.description,
   };
 
   // send email to user
-  if (profile.email !== null) {
+  if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
       purchasedTicket.id,
@@ -110,7 +162,7 @@ const handleTicketPurchase = async (
   }
 
   // text user
-  if (profile.phone !== null) {
+  if (profile.phone) {
     await sendSMS(
       profile.phone,
       `🙌 You’re going to ${event.name} on ${moment(event.date).format(
@@ -120,7 +172,7 @@ const handleTicketPurchase = async (
   }
 
   // text host
-  if (host.profile.phone !== null) {
+  if (host.profile.phone) {
     await sendSMS(
       host.profile.phone,
       `🎉 ${
@@ -132,25 +184,13 @@ const handleTicketPurchase = async (
       )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
     );
   }
-
-  // text us
-  await sendSMS(
-    "+17039097887",
-    `🎉 ${
-      profile.business_name === null
-        ? profile.first_name + " " + profile.last_name
-        : profile.business_name
-    } just bought a ticket to ${event.name} on ${moment(event.date).format(
-      "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
-  );
 };
 
 const handleTablePurchase = async (
   checkoutSession: Tables<"checkout_sessions">,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, user_id } = checkoutSession;
+  const { event_id, user_id, quantity } = checkoutSession;
   const { data: updateVendorData, error: updateVendorError } = await supabase
     .from("event_vendors")
     .update({ payment_status: "PAID" })
@@ -169,6 +209,17 @@ const handleTablePurchase = async (
   const vendorProfile: Tables<"profiles"> = updateVendorData.profiles;
   const event: Tables<"events"> = updateVendorData.events;
   const table: Tables<"tables"> = updateVendorData.tables;
+
+  const createOrderPayload = {
+    userId: user_id,
+    eventId: event_id,
+    quantity: quantity,
+    price: table.price,
+    itemId: table.id,
+    itemType: "TABLE" as const,
+  };
+  const order = await createOrder(createOrderPayload);
+
   const host = await getProfile(event.organizer_id);
   const posterUrl = await getPublicPosterUrl(event);
 
@@ -191,6 +242,7 @@ const handleTablePurchase = async (
     updateVendorData.application_email,
     tablePurchasedEmailPayload
   );
+
   if (updateVendorData.application_email !== "treasure20110@gmail.com") {
     const { error: sendAdminTablePurchasedEmailError } =
       await sendTablePurchasedEmail(
@@ -203,7 +255,7 @@ const handleTablePurchase = async (
   if (vendorProfile.phone) {
     await sendSMS(
       vendorProfile.phone,
-      `🙌 Success! Yoour vendor payment has been received! You are now confirmed to be a vendor at ${
+      `🙌 Success! Your vendor payment has been received! You are now confirmed to be a vendor at ${
         event.name
       } on ${moment(event.date).format(
         "dddd, MMM Do"
@@ -225,25 +277,6 @@ const handleTablePurchase = async (
         "dddd, MMM Do"
       )}!\n\nView details\n\nontreasure.xyz/host/events/${event.cleaned_name}`
     );
-  }
-
-  // text us
-  await sendSMS(
-    // "+17039097887",
-    "+15714800596",
-    `💰Congrats! You received payment from ${
-      vendorProfile.business_name === null
-        ? vendorProfile.first_name + " " + vendorProfile.last_name
-        : vendorProfile.business_name
-    } Their table(s) are confirmed for ${event.name} on ${moment(
-      event.date
-    ).format("dddd, MMM Do")}!\n\nView details\n\nontreasure.xyz/host/events/${
-      event.cleaned_name
-    }`
-  );
-
-  if (sendTablePurchasedEmailError) {
-    console.log(sendTablePurchasedEmailError);
   }
 };
 
