@@ -1,15 +1,21 @@
 "use server";
 
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { type VendorApplication } from "@/app/(main)/events/[name]/tables/types";
+import {
+  type VendorInfo,
+  type VendorApplication,
+} from "@/app/(main)/events/[name]/tables/types";
 import { sendVendorAppReceivedEmail } from "../../emails";
 import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { EventDisplayData } from "@/types/event";
+import { HostSoldPayload } from "@/lib/sms";
+import { sendHostVendorAppReceievedSMS } from "@/lib/sms";
 
 const submitVendorApplication = async (
   application: VendorApplication,
-  event: Tables<"events"> | EventDisplayData
+  event: EventDisplayData,
+  vendorInfo: VendorInfo
 ) => {
   const supabase = await createSupabaseServerClient();
   const { error: eventAppError } = await supabase
@@ -20,7 +26,28 @@ const submitVendorApplication = async (
     return { error: eventAppError };
   }
 
-  await sendVendorReceivedEmail(event);
+  const { data: hostData } = await supabase
+    .from("profiles")
+    .select("email, phone")
+    .eq("id", event.organizer_id)
+    .single();
+
+  const hostContactInfo: { email?: string; phone?: string } = hostData || {};
+  if (hostContactInfo.phone) {
+    const sendHostSMSPayload: HostSoldPayload = {
+      phone: hostContactInfo.phone,
+      businessName: vendorInfo.businessName,
+      firstName: vendorInfo.firstName,
+      lastName: vendorInfo.lastName,
+      eventName: event.name,
+      eventDate: event.date,
+      eventCleanedName: event.cleaned_name,
+    };
+    await sendHostVendorAppReceievedSMS(sendHostSMSPayload);
+  }
+  if (hostContactInfo.email) {
+    await sendVendorReceivedEmail(event, hostContactInfo.email);
+  }
   return { error: null };
 };
 
@@ -47,25 +74,20 @@ const createVendorTags = async (
 };
 
 const sendVendorReceivedEmail = async (
-  event: Tables<"events"> | EventDisplayData
+  event: EventDisplayData,
+  hostEmail: string
 ) => {
-  const supabase = await createSupabaseServerClient();
-  const { data: hostData } = await supabase
-    .from("profiles")
-    .select("email")
-    .eq("id", event.organizer_id)
-    .single();
-
   const eventPosterUrl = await getPublicPosterUrl(event);
-  const { error: sendHostEmailError } = await sendVendorAppReceivedEmail(
-    hostData?.email,
+
+  await sendVendorAppReceivedEmail(
+    hostEmail,
     eventPosterUrl,
     event.name,
     event.cleaned_name
   );
 
-  if (hostData?.email !== "treasure20110@gmail.com") {
-    const { error: sendAdminEmailError } = await sendVendorAppReceivedEmail(
+  if (hostEmail !== "treasure20110@gmail.com") {
+    await sendVendorAppReceivedEmail(
       "treasure20110@gmail.com",
       eventPosterUrl,
       event.name,

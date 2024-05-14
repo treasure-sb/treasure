@@ -10,11 +10,15 @@ import {
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
-import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
+import {
+  sendVendorAppReceivedEmail,
+  sendVendorAppSubmittedEmail,
+} from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/lib/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { updateLink } from "@/lib/actions/links";
 import type { VendorApplication } from "../../../types";
+import { sendVendorAppSubmittedSMS } from "@/lib/sms";
 
 const LabeledText = ({
   label,
@@ -58,6 +62,7 @@ export default function ReviewInformation() {
     if (successfulApplication) {
       toast.success("Application submitted successfully");
       await handleSendSubmittedEmail();
+      await handleSendSubmittedSMS();
       flowDispatch({ type: "setCurrentView", payload: TableView.Complete });
     } else {
       toast.error("Error submitting application");
@@ -78,7 +83,11 @@ export default function ReviewInformation() {
       inventory,
       comments,
     };
-    const { error } = await submitVendorApplication(vendorApplication, event);
+    const { error } = await submitVendorApplication(
+      vendorApplication,
+      event,
+      vendorInfo
+    );
     return !error;
   };
 
@@ -138,14 +147,18 @@ export default function ReviewInformation() {
       numberOfVendors: vendorsAtTable,
       eventInfo: event.description,
     };
-    const { error } = await sendVendorAppSubmittedEmail(
+    await sendVendorAppSubmittedEmail(
       vendorInfo.email as string,
       vendorEmailPayload
     );
+  };
 
-    if (error) {
-      console.log(error);
-    }
+  const handleSendSubmittedSMS = async () => {
+    await sendVendorAppSubmittedSMS(
+      vendorInfo.phone as string,
+      vendorInfo.firstName as string,
+      event.name
+    );
   };
 
   const handleBack = () => {

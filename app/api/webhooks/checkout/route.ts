@@ -10,7 +10,6 @@ import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/lib/emails/TablePurchased";
-import { sendSMS } from "@/lib/actions/twilio";
 import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
@@ -177,14 +176,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  // if (!profile.email || profile.email !== "treasure20110@gmail.com") {
-  //   await sendTicketPurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     purchasedTicket.id,
-  //     event_id,
-  //     ticketPurchaseEmailProps
-  //   );
-  // }
+  if (!profile.email || profile.email !== "treasure20110@gmail.com") {
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicket.id,
+      event_id,
+      ticketPurchaseEmailProps
+    );
+  }
 };
 
 const handleTablePurchase = async (
@@ -263,12 +262,12 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  // if (updateVendorData.application_email !== "treasure20110@gmail.com") {
-  //   await sendTablePurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     tablePurchasedEmailPayload
-  //   );
-  // }
+  if (updateVendorData.application_email !== "treasure20110@gmail.com") {
+    await sendTablePurchasedEmail(
+      "treasure20110@gmail.com",
+      tablePurchasedEmailPayload
+    );
+  }
 };
 
 const handlePaymentIntentSucceeded = async (

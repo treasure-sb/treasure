@@ -81,10 +81,45 @@ const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
   );
 };
 
+const sendHostVendorAppReceievedSMS = async (
+  vendorAppSMSPayload: HostSoldPayload
+) => {
+  const {
+    phone,
+    eventName,
+    eventDate,
+    eventCleanedName,
+    businessName,
+    firstName,
+    lastName,
+  } = vendorAppSMSPayload;
+  return await sendSMS(
+    phone,
+    `🚨 You just received a new vendor application for ${eventName} on ${moment(
+      eventDate
+    ).format("dddd, MMM Do")} from ${
+      !businessName ? `${firstName} ${lastName}` : businessName
+    }! Please review their application: ontreasure.xyz/host/events/${eventCleanedName}/vendors`
+  );
+};
+
+const sendVendorAppSubmittedSMS = async (
+  phone: string,
+  firstName: string,
+  eventName: string
+) => {
+  return await sendSMS(
+    phone,
+    `🚨 ${firstName}, thank you for applying to ${eventName}! We will message you once you are approved by the host!`
+  );
+};
+
 export {
   sendAttendeeTicketPurchasedSMS,
   sendVendorTablePurchasedSMS,
+  sendVendorAppSubmittedSMS,
   sendHostTableSoldSMS,
   sendHostTicketSoldSMS,
+  sendHostVendorAppReceievedSMS,
   type HostSoldPayload,
 };
