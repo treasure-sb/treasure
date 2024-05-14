@@ -83,10 +83,10 @@ const CustomTooltip = ({
       <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
         <p className="text-medium text-lg">{formattedDate}</p>
         <p className="text-sm text-primary">
-          Tickets Sales:
+          Ticket Sales:
           <span className="ml-2">${ticketSales.toFixed(2)}</span>
         </p>
-        <p className="text-sm text-primary">
+        <p className="text-sm text-tertiary">
           Table Sales:
           <span className="ml-2">${tableSales.toFixed(2)}</span>
         </p>
