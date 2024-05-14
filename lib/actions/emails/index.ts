@@ -2,23 +2,25 @@
 
 import VendorAppAccepted, {
   VendorAppAcceptedEmailProps,
-} from "@/emails/VendorAppAccepted";
+} from "@/lib/emails/VendorAppAccepted";
 import VendorAppRejected, {
   VendorAppRejectedEmailProps,
-} from "@/emails/VendorAppRejected";
+} from "@/lib/emails/VendorAppRejected";
 import TicketPurchased, {
   TicketPurchasedProps,
-} from "@/emails/TicketPurchased";
+} from "@/lib/emails/TicketPurchased";
 import VendorAppSubmitted, {
   VendorAppSubmittedEmailProps,
-} from "@/emails/VendorAppSubmitted";
-import TablePurchased, { TablePurchasedProps } from "@/emails/TablePurchased";
+} from "@/lib/emails/VendorAppSubmitted";
+import TablePurchased, {
+  TablePurchasedProps,
+} from "@/lib/emails/TablePurchased";
 import { Resend } from "resend";
-import { generateTicketReceipt } from "@/pdfs/tickets";
+import { generateTicketReceipt } from "@/lib/pdfs/tickets";
 import { to, toMany } from "@/lib/utils";
-import HostMessage, { HostMessageProps } from "@/emails/HostMessage";
-import VendorAppReceived from "@/emails/VendorAppReceived";
-import Welcome from "@/emails/Welcome";
+import HostMessage, { HostMessageProps } from "@/lib/emails/HostMessage";
+import VendorAppReceived from "@/lib/emails/VendorAppReceived";
+import Welcome from "@/lib/emails/Welcome";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 

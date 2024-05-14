@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
-import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
+import { VendorAppSubmittedEmailProps } from "@/lib/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { updateLink } from "@/lib/actions/links";
 import type { VendorApplication } from "../../../types";

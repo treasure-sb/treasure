@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { TicketSuccessInformation } from "../page";
+import { TicketIcon } from "lucide-react";
+import moment from "moment";
+import Image from "next/image";
 import Link from "next/link";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
@@ -54,26 +57,62 @@ export default function PaymentIntent({
     getPaymentIntent(clientSecret);
   }, [stripe]);
 
-  const { quantity, ticketName, email } = ticketInfo;
+  const { quantity, ticketName, email, type } = ticketInfo;
+  const isTicket = type === "TICKET";
 
   return (
-    <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-10">
-      <div className="border-[1px] border-foreground/20 rounded-lg space-y-6 p-6 w-full max-w-xl m-auto">
-        <h1 className="text-center font-semibold text-2xl">
-          Thanks for your order!
-        </h1>
-        <h2 className="text-tertiary text-center">
-          {quantity}x {ticketName} ticket sent to {email}
-        </h2>
-        <div className="w-[70%] m-auto">
-          <EventDisplay event={eventDisplay} showLikeButton={false} />
+    <div className="flex flex-col items-center">
+      <h1 className="text-2xl md:text-3xl font-semibold mb-10">
+        Thank you for your order
+      </h1>
+      <div className="flex flex-col space-y-6 md:flex-row md:space-y-0 md:space-x-10 items-center justify-center">
+        <div className="bg-primary w-80 h-80 md:w-[30rem] md:h-[30rem] rounded-lg flex flex-col items-center justify-center text-background">
+          <div className="text-center mb-10">
+            <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
+            <h2 className="font-bold text-3xl md:text-5xl">You're Going!</h2>
+          </div>
+          <div className="text-center">
+            <p className="font-semibold text-lg md:text-2xl">
+              {eventDisplay.name}
+            </p>
+            <p className="text-md md:text-lg">
+              {moment(eventDisplay.date).format("dddd, MMM Do")}
+            </p>
+          </div>
         </div>
-        <div className="flex justify-center">
-          <Link href="/profile/tickets">
-            <Button className="rounded-lg w-40" variant={"tertiary"}>
-              View Tickets
-            </Button>
-          </Link>
+        <div className="border-[1px] border-foreground/20 rounded-lg w-80 h-80 md:w-[30rem] md:h-[30rem] m-auto flex flex-col justify-between p-3 md:p-6">
+          <p className="mx-auto font-semibold text-sm md:text-base text-center">
+            {quantity}x {ticketName}{" "}
+            {isTicket
+              ? ticketInfo.quantity > 1
+                ? "tickets"
+                : "ticket"
+              : ticketInfo.quantity > 1
+              ? "tables"
+              : "table"}{" "}
+            sent to <span className="font-bold">{email}</span>
+          </p>
+          <div className="w-52 md:w-80 mx-auto">
+            <div className="aspect-w-1 aspect-h-1">
+              <Image
+                className="rounded-xl my-auto"
+                alt="event poster image"
+                objectFit="cover"
+                src={eventDisplay.publicPosterUrl}
+                width={1000}
+                height={1000}
+                priority
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <Link href="/profile/tickets">
+              <Button className="rounded-lg w-32 md:w-40">
+                View {isTicket ? "Tickets" : "Tables"}{" "}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

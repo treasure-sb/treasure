@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { sendHostMessageEmail } from "@/lib/actions/emails";
-import { HostMessageProps } from "@/emails/HostMessage";
+import { HostMessageProps } from "@/lib/emails/HostMessage";
 import { EventDisplayData } from "@/types/event";
 import { sendNotifications, sendSMS } from "@/lib/actions/twilio";
 
