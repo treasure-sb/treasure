@@ -34,10 +34,9 @@ interface TabProps {
   selected: boolean;
   setSelected: (selected: string) => void;
   children: ReactNode;
-  index: number;
 }
 
-const Tab = ({ text, selected, setSelected, index, children }: TabProps) => {
+const Tab = ({ text, selected, setSelected, children }: TabProps) => {
   return (
     <motion.button
       variants={buttonVariants}
@@ -81,7 +80,7 @@ export default function SelectEdit({
   return (
     <div
       className={` ${
-        center ? "justify-center " : ""
+        center ? "justify-center" : ""
       } border-black-500/25 mb-8 flex flex-wrap items-center gap-2 border-b pb-2`}
     >
       {tabs.map((tab, index) => (
@@ -89,7 +88,6 @@ export default function SelectEdit({
           text={tab.title}
           selected={active === tab.title}
           setSelected={onSelect}
-          index={index}
           key={tab.title}
         >
           {tab.icon}

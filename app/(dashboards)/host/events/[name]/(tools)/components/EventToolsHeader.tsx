@@ -1,9 +1,7 @@
 "use client";
 
 import { EventDisplayData } from "@/types/event";
-import { motion } from "framer-motion";
-import { MoveLeftIcon } from "lucide-react";
-import { MoveRightIcon } from "lucide-react";
+import { ArrowUpLeft, ArrowUpRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import EventPoster from "@/components/events/shared/EventPoster";
@@ -27,17 +25,17 @@ export default function EventToolsHeader({
       {isEventTool ? (
         <Link
           href={`/host/events/${event.cleaned_name}`}
-          className="flex items-center mb-4 group cursor-pointer w-fit"
+          className="flex space-x-1 items-center mb-4 group cursor-pointer w-fit"
         >
-          <MoveLeftIcon className="mr-2 stroke-1 group-hover:translate-x-[-0.25rem] transition duration-300" />
+          <ArrowUpLeft className="group-hover:-translate-x-[0.15rem] group-hover:-translate-y-[0.15rem] transition duration-300" />
           <p className="md:text-lg">Event Tools</p>
         </Link>
       ) : (
         <Link
           href={`/host/events`}
-          className="flex items-center mb-4 group cursor-pointer w-fit"
+          className="flex space-x-1 items-center mb-4 group cursor-pointer w-fit"
         >
-          <MoveLeftIcon className="mr-2 stroke-1 group-hover:translate-x-[-0.25rem] transition duration-300" />
+          <ArrowUpLeft className="group-hover:-translate-x-[0.15rem] group-hover:-translate-y-[0.15rem] transition duration-300" />
           <p className="md:text-lg">All Events</p>
         </Link>
       )}
@@ -63,15 +61,18 @@ export default function EventToolsHeader({
               <p>Event Info</p>
             </Button>
           </Link>
-          <div className="flex gap-2">
+          <div className="flex space-x-1">
             <CopyEventLink cleaned_event_name={event.cleaned_name} />
             <Link
               href={`/events/${event.cleaned_name}`}
               className="group cursor-pointer"
             >
-              <Button variant={"secondary"} className="flex gap-2">
+              <Button variant={"ghost"} className="flex space-x-1">
                 <p>Go to Event</p>
-                <MoveRightIcon className="mr-2 stroke-1 group-hover:translate-x-[0.25rem] transition duration-300" />
+                <ArrowUpRight
+                  size={20}
+                  className="group-hover:translate-x-[0.10rem] group-hover:-translate-y-[0.10rem] transition duration-300"
+                />
               </Button>
             </Link>
           </div>

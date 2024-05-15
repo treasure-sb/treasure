@@ -1,21 +1,20 @@
 import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import SalesChart from "./components/charts/SalesChart";
 import VendorBreakdown from "./components/charts/VendorBreakdown";
+import SalesAnalytics from "./components/charts/SalesAnalytics";
 import { Tables } from "@/types/supabase";
 import { UsersIcon, BadgeDollarSign, Star, MessageCircle } from "lucide-react";
-import SalesAnalytics from "./components/charts/SalesAnalytics";
 
 export default async function Page({
-  params: { eventName },
+  params: { name },
 }: {
-  params: { eventName: string };
+  params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", eventName)
+    .eq("cleaned_name", name)
     .single();
 
   const event: Tables<"events"> = eventData;
@@ -50,7 +49,7 @@ export default async function Page({
   return (
     <div className="lg:grid grid-cols-4 gap-4 flex flex-col">
       <Link
-        href={`/host/events/${eventName}/attendees`}
+        href={`/host/events/${name}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 md:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
@@ -62,7 +61,7 @@ export default async function Page({
         <p className="text-5xl lg:text-3xl 2xl:text-4xl">{ticketsSold}</p>
       </Link>
       <Link
-        href={`/host/events/${eventName}/attendees`}
+        href={`/host/events/${name}/attendees`}
         className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
@@ -76,7 +75,7 @@ export default async function Page({
         </p>
       </Link>
       <Link
-        href={`/host/events/${eventName}/vendors`}
+        href={`/host/events/${name}/vendors`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
@@ -90,7 +89,7 @@ export default async function Page({
         </p>
       </Link>
       <Link
-        href={`/host/events/${eventName}/message`}
+        href={`/host/events/${name}/message`}
         className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">

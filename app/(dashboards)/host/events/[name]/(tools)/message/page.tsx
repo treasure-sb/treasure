@@ -1,14 +1,14 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import { validateUser } from "@/lib/actions/auth";
 import { Tables } from "@/types/supabase";
-import Message from "./components/Message";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
+import Message from "./components/Message";
+import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function Page({
-  params: { eventName },
+  params: { name },
 }: {
-  params: { eventName: string };
+  params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -18,7 +18,7 @@ export default async function Page({
   const { data: eventsData } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", eventName)
+    .eq("cleaned_name", name)
     .single();
 
   const eventData: Tables<"events"> = eventsData;

@@ -5,18 +5,20 @@ import EditVendors from "./components/vendors/EditVendors";
 import EditState from "./components/EditState";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import EditHeader from "./components/header/EditHeader";
+import { getEventDisplayData } from "@/lib/helpers/events";
 
 export default async function Page({
-  params: { eventName },
+  params: { name },
 }: {
-  params: { eventName: string };
+  params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
 
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", eventName)
+    .eq("cleaned_name", name)
     .single();
 
   if (eventError || !eventData) {
@@ -24,9 +26,11 @@ export default async function Page({
   }
 
   const event: Tables<"events"> = eventData || [];
+  const eventDisplayData = await getEventDisplayData(event);
 
   return (
-    <main>
+    <main className="space-y-8 max-w-5xl mx-auto">
+      <EditHeader event={eventDisplayData} />
       <EditState>
         <EditEventInfo event={event} />
         <EditTickets event={event} />

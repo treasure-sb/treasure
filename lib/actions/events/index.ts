@@ -276,4 +276,42 @@ const getAllEventCleanedNames = async () => {
   return { data };
 };
 
-export { createEvent, likeEvent, unlikeEvent, getAllEventCleanedNames };
+type EditEvent = {
+  posterUrl: string;
+  name: string;
+  description: string;
+  venueName: string;
+  date: Date;
+  startTime: string;
+  endTime: string;
+};
+
+const updateEvent = async (editEventData: EditEvent, eventId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { name, posterUrl, description, venueName, date, startTime, endTime } =
+    editEventData;
+
+  const { error } = await supabase
+    .from("events")
+    .update({
+      name,
+      description,
+      venue_name: venueName,
+      date,
+      start_time: startTime,
+      end_time: endTime,
+      poster_url: posterUrl,
+    })
+    .eq("id", eventId);
+
+  return { error };
+};
+
+export {
+  createEvent,
+  likeEvent,
+  unlikeEvent,
+  getAllEventCleanedNames,
+  updateEvent,
+  type EditEvent,
+};

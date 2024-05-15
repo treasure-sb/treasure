@@ -1,4 +1,4 @@
-import { type TagData } from "@/app/(dashboards)/host/events/[eventName]/vendors/types";
+import { type TagData } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/types";
 import { Button } from "@/components/ui/button";
 
 export default function VendorFilter({ tags }: { tags: TagData[] }) {
