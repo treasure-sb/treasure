@@ -7,13 +7,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { AlignLeftIcon, LogOut } from "lucide-react";
+import { LogOut, MenuIcon } from "lucide-react";
+import { logoutUser } from "@/lib/actions/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import HostMenuOptions from "./HostMenuOptions";
 import VendorMenuOptions from "./VendorMenuOptions";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
-import { logoutUser } from "@/lib/actions/auth";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function Menu({ type }: { type: "host" | "vendor" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function Menu({ type }: { type: "host" | "vendor" }) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger>
-        <AlignLeftIcon className="stroke-1" size={38} />
+        <MenuIcon className="stroke-1" size={38} />
       </SheetTrigger>
       <SheetContent side={"left"}>
         <SheetHeader className="mt-6">
