@@ -1,15 +1,18 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { EyeOff, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { logoutUser } from "@/lib/actions/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
 import VendorSidebarOptions from "./VendorSidebarOptions";
-import { logoutUser } from "@/lib/actions/auth";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   <div
@@ -19,7 +22,11 @@ export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   />
 );
 
-export default function Sidebar({ type }: { type: "host" | "vendor" }) {
+export default function Sidebar() {
+  const pathname = usePathname();
+  const isVendor = pathname.startsWith("/vendor");
+  const type = isVendor ? "vendor" : "host";
+
   const [showSidebar, setShowSidebar] = useState(true);
 
   const queryClient = useQueryClient();
