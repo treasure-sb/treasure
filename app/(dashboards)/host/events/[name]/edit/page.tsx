@@ -29,7 +29,7 @@ export default async function Page({
   const eventDisplayData = await getEventDisplayData(event);
 
   return (
-    <main className="space-y-8 max-w-5xl mx-auto">
+    <main className="max-w-5xl mx-auto">
       <EditHeader event={eventDisplayData} />
       <EditState>
         <EditEventInfo event={event} />

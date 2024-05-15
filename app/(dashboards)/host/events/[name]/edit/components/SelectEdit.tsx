@@ -27,7 +27,7 @@ const spanVariants = {
   exit: { width: 0, opacity: 0 },
 };
 
-const transition = { delay: 0, type: "spring", bounce: 0, duration: 0.45 };
+const transition = { delay: 0, type: "spring", bounce: 0, duration: 0.65 };
 
 interface TabProps {
   text: string;
@@ -46,7 +46,9 @@ const Tab = ({ text, selected, setSelected, children }: TabProps) => {
       onClick={() => setSelected(text)}
       transition={transition}
       className={`${
-        selected ? "bg-primary text-background" : "hover:text-foreground/60"
+        selected
+          ? "bg-primary text-background"
+          : "hover:text-foreground/60 text-muted-foreground"
       } relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300`}
     >
       {children}

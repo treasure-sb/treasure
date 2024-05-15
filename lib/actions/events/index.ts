@@ -284,20 +284,45 @@ type EditEvent = {
   date: Date;
   startTime: string;
   endTime: string;
+} & EventLocation;
+
+type EventLocation = {
+  address: string;
+  lng: number;
+  lat: number;
+  city: string;
+  state: string;
 };
 
 const updateEvent = async (editEventData: EditEvent, eventId: string) => {
   const supabase = await createSupabaseServerClient();
-  const { name, posterUrl, description, venueName, date, startTime, endTime } =
-    editEventData;
+  const {
+    name,
+    posterUrl,
+    description,
+    venueName,
+    date,
+    startTime,
+    endTime,
+    address,
+    lat,
+    lng,
+    city,
+    state,
+  } = editEventData;
 
   const { error } = await supabase
     .from("events")
     .update({
       name,
       description,
-      venue_name: venueName,
       date,
+      address,
+      lat,
+      lng,
+      city,
+      state,
+      venue_name: venueName,
       start_time: startTime,
       end_time: endTime,
       poster_url: posterUrl,
@@ -314,4 +339,5 @@ export {
   getAllEventCleanedNames,
   updateEvent,
   type EditEvent,
+  type EventLocation,
 };
