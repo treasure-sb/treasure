@@ -1,5 +1,4 @@
 import { Section } from "@react-email/components";
-import { cn } from "@/lib/utils";
 
 export default function BodySection({
   children,

@@ -11,7 +11,7 @@ import {
 import { InstagramIcon } from "lucide-react";
 import { socialLinkData } from "@/lib/helpers/links";
 import Link from "next/link";
-import Pending from "./Pending";
+import ApplicationOptions from "./ApplicationOptions";
 import EmailIcon from "@/components/icons/applications/EmailIcon";
 import PhoneIcon from "@/components/icons/applications/PhoneIcon";
 
@@ -19,10 +19,12 @@ export default function VendorDialogContent({
   avatarUrl,
   vendorData,
   eventData,
+  closeDialog,
 }: {
   avatarUrl: string;
   vendorData: EventVendorData;
   eventData: EventDisplayData;
+  closeDialog: () => void;
 }) {
   const profile = vendorData.vendor;
   const table = vendorData.table;
@@ -51,7 +53,7 @@ export default function VendorDialogContent({
             </p>
             <p>Qty: {table_quantity}</p>
           </div>
-          <div className="relative flex w-full justify-start gap-3 bg-secondary px-2 md:px-4 pt-4 pb-6 rounded-sm items-center">
+          <div className="relative flex w-full justify-start gap-3 bg-secondary/30 px-2 md:px-4 pt-4 pb-6 rounded-sm items-center">
             <Avatar className="w-16 h-16 md:w-24 md:h-24">
               <AvatarImage src={avatarUrl} />
               <AvatarFallback />
@@ -74,19 +76,19 @@ export default function VendorDialogContent({
             <Link
               target="_blank"
               href={`/${profile.username}`}
-              className="absolute right-2 bottom-2 text-xs text-primary bg-secondary"
+              className="absolute right-2 bottom-2 text-xs underline decoration-primary"
             >
-              Full Profile →
+              Full Profile
             </Link>
           </div>
           {/* divs for desktop */}
           <div className="hidden sm:flex flex-col gap-3 px-4">
             <div className="flex w-full justify-start gap-4 items-center">
-              <EmailIcon width={30} />
+              <EmailIcon width={24} />
               <p className="text-sm md:text-lg">{application_email}</p>
             </div>
             <div className="flex w-full justify-start gap-4 items-center">
-              <PhoneIcon width={30} />
+              <PhoneIcon width={24} />
               <p className="text-lg">{application_phone}</p>
             </div>
             <Link
@@ -94,7 +96,7 @@ export default function VendorDialogContent({
               target="_blank"
               className="flex w-fit justify-start gap-4 items-center"
             >
-              <InstagramIcon className="text-primary" size={30} />
+              <InstagramIcon className="text-primary" size={24} />
               <p className="text-lg">{userInstagram}</p>
             </Link>
           </div>
@@ -126,26 +128,36 @@ export default function VendorDialogContent({
               value="1"
               className="border px-2 sm:px-4 rounded-sm "
             >
-              <AccordionTrigger className="w-full justify-between text-sm sm:text-lg text-primary">
+              <AccordionTrigger className="w-full justify-between text-sm sm:text-lg decoration-primary">
                 <p>Inventory</p>
               </AccordionTrigger>
               <AccordionContent>
                 <p className="text-left">{inventory}</p>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="2" className="border px-2 sm:px-4 rounded-sm">
-              <AccordionTrigger className="w-full justify-between text-sm sm:text-lg text-primary">
-                <p>Comments</p>
-              </AccordionTrigger>
-              <AccordionContent>
-                <p className="text-left">{comments}</p>
-              </AccordionContent>
-            </AccordionItem>
+            {comments && (
+              <AccordionItem
+                value="2"
+                className="border px-2 sm:px-4 rounded-sm"
+              >
+                <AccordionTrigger className="w-full justify-between text-sm sm:text-lg decoration-primary">
+                  <p>Comments</p>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-left">{comments}</p>
+                </AccordionContent>
+              </AccordionItem>
+            )}
           </Accordion>
         </div>
 
-        {application_status === "PENDING" && (
-          <Pending vendorData={vendorData} eventData={eventData} />
+        {(application_status === "PENDING" ||
+          application_status === "WAITLISTED") && (
+          <ApplicationOptions
+            vendorData={vendorData}
+            eventData={eventData}
+            closeDialog={closeDialog}
+          />
         )}
       </div>
     </DialogContent>

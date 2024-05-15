@@ -27,6 +27,7 @@ const VendorStatusColorMap: VendorStatusColorMap = {
   ACCEPTED: "bg-primary",
   PENDING: "bg-tertiary",
   REJECTED: "bg-destructive",
+  WAITLISTED: "bg-orange-500",
 };
 
 const AvatarCell = ({ row }: CellContext<Vendor, any>) => {
@@ -42,8 +43,8 @@ const AvatarCell = ({ row }: CellContext<Vendor, any>) => {
 
 const PaymentStatusCell = ({ cell }: CellContext<Vendor, any>) => {
   const value = cell.getValue() as string;
-  const PaidCheck = <Check className="h-8 w-8 text-primary ml-6" />;
-  const UnpaidX = <X className="h-8 w-8 text-destructive ml-6" />;
+  const PaidCheck = <Check className="h-6 w-6 text-primary ml-7" />;
+  const UnpaidX = <X className="h-6 w-6 text-red-500 ml-7" />;
   return value === "PAID" ? PaidCheck : UnpaidX;
 };
 

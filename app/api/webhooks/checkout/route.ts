@@ -9,7 +9,7 @@ import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { TablePurchasedProps } from "@/lib/emails/TablePurchased";
+import { TablePurchasedProps } from "@/emails/TablePurchased";
 import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
