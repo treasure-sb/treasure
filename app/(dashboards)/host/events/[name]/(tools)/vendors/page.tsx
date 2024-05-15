@@ -7,16 +7,16 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import DataTable from "./components/table/DataTable";
 
 export default async function Page({
-  params: { eventName },
+  params: { name },
 }: {
-  params: { eventName: string };
+  params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
 
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", eventName)
+    .eq("cleaned_name", name)
     .single();
 
   if (eventError) {

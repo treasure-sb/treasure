@@ -8,15 +8,15 @@ import {
 import ExportButton from "./ExportButton";
 
 export default async function Page({
-  params: { eventName },
+  params: { name },
 }: {
-  params: { eventName: string };
+  params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
-    .eq("cleaned_name", eventName)
+    .eq("cleaned_name", name)
     .single();
 
   const { data: ticketsData, error: ticketsError } = await supabase
@@ -61,7 +61,7 @@ export default async function Page({
           </div>
         ))}
       </div>
-      <ExportButton soldTicketsData={ticketsArr} eventName={eventName} />
+      <ExportButton soldTicketsData={ticketsArr} eventName={name} />
       <div className="sm:flex flex-col hidden w-full text-lg border border-secondary rounded-sm">
         <div className="flex p-4">
           <div className="w-2/6">Name</div>

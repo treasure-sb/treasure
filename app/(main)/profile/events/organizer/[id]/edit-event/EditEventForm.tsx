@@ -20,7 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { EventFormLocation } from "@/types/event";
-import Autocomplete from "../../../../create-event/components/places/Autocomplete";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -28,6 +27,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { editEvent } from "@/lib/actions/edit-events";
+import Autocomplete from "../../../../create-event/components/places/Autocomplete";
 
 interface EventProps {
   event: any;

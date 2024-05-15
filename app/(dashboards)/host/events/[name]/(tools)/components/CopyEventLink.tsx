@@ -25,9 +25,9 @@ export default function CopyEventLink({
   };
 
   return (
-    <Button onClick={handleCopy} variant={"secondary"} className="flex gap-2">
+    <Button onClick={handleCopy} variant={"ghost"} className="flex space-x-1">
       <Chain className="w-5 h-5 text-primary" />
-      Copy Link
+      <p> Copy Link</p>
     </Button>
   );
 }

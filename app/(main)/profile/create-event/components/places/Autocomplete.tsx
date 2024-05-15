@@ -49,6 +49,7 @@ const PlacesAutocomplete = ({
         value={value}
         onValueChange={setValue}
         placeholder="Venue Address"
+        className="placeholder:text-sm"
       />
       <CommandList>
         <CommandGroup>

@@ -21,9 +21,6 @@ export default function ExportButton({
     ];
 
     let userArr: string[] = [];
-
-    console.log(soldTicketsData);
-
     soldTicketsData.map((ticket: any, i: number) => {
       if (i === 0) {
         exportData[0] = {
@@ -62,9 +59,7 @@ export default function ExportButton({
       }
     });
 
-    // Converts your Array<Object> to a CsvOutput string based on the configs
     const csv = generateCsv(csvConfig)(exportData);
-
     download(csvConfig)(csv);
   };
 
