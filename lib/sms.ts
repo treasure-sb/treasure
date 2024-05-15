@@ -39,6 +39,42 @@ const sendVendorTablePurchasedSMS = async (
   );
 };
 
+const sendVendorAppAcceptedSMS = async (
+  phone: string,
+  checkoutSessionId: string,
+  message: string,
+  eventName: string
+) => {
+  const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
+  const smsMessage = message
+    ? `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
+    : `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
+  return await sendSMS(phone, smsMessage);
+};
+
+const sendVendorAppWaitlistedSMS = async (
+  phone: string,
+  message: string,
+  eventName: string
+) => {
+  const smsMessage = message
+    ? `🚨 Thanks for your interest in being a vendor at ${eventName}! Currently at this time you've been placed on the waitlist.\n\nMessage from the host: ${message}`
+    : `🚨 Thanks for your interest in being a vendor at ${eventName}! Currently at this time you've been placed on the waitlist.`;
+
+  return await sendSMS(phone, smsMessage);
+};
+
+const sendVendorAppSubmittedSMS = async (
+  phone: string,
+  firstName: string,
+  eventName: string
+) => {
+  return await sendSMS(
+    phone,
+    `🚨 ${firstName}, thank you for applying to ${eventName}! We will message you once you are approved by the host!`
+  );
+};
+
 const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
   const {
     phone,
@@ -103,20 +139,11 @@ const sendHostVendorAppReceievedSMS = async (
   );
 };
 
-const sendVendorAppSubmittedSMS = async (
-  phone: string,
-  firstName: string,
-  eventName: string
-) => {
-  return await sendSMS(
-    phone,
-    `🚨 ${firstName}, thank you for applying to ${eventName}! We will message you once you are approved by the host!`
-  );
-};
-
 export {
   sendAttendeeTicketPurchasedSMS,
   sendVendorTablePurchasedSMS,
+  sendVendorAppAcceptedSMS,
+  sendVendorAppWaitlistedSMS,
   sendVendorAppSubmittedSMS,
   sendHostTableSoldSMS,
   sendHostTicketSoldSMS,

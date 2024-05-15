@@ -236,6 +236,7 @@ export default function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                   <VendorDialogContent
+                    closeDialog={() => setOpen(false)}
                     vendorData={
                       selectedVendor
                         ? selectedVendor

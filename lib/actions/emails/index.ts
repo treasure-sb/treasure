@@ -19,6 +19,9 @@ import { to, toMany } from "@/lib/utils";
 import HostMessage, { HostMessageProps } from "@/emails/HostMessage";
 import VendorAppReceived from "@/emails/VendorAppReceived";
 import Welcome from "@/emails/Welcome";
+import VendorAppWaitlisted, {
+  VendorAppWaitlistedEmailProps,
+} from "@/emails/VendorAppWaitlisted";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -68,6 +71,19 @@ const sendVendorAppRejectedEmail = async (
     to: email,
     subject: `Update on your ${emailProps.eventName} vendor application`,
     react: VendorAppRejected(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
+const sendVendorAppWaitlistedEmail = async (
+  email: string,
+  emailProps: VendorAppWaitlistedEmailProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `Update on your ${emailProps.eventName} vendor application`,
+    react: VendorAppWaitlisted(emailProps),
   });
   return await to(sendEmailPromise);
 };
@@ -163,6 +179,7 @@ export {
   sendVendorAppReceivedEmail,
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,
+  sendVendorAppWaitlistedEmail,
   sendTicketPurchasedEmail,
   sendVendorAppSubmittedEmail,
   sendTablePurchasedEmail,

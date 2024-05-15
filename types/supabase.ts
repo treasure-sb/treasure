@@ -1052,7 +1052,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      "Application Status": "REJECTED" | "DRAFT" | "PENDING" | "ACCEPTED"
+      "Application Status":
+        | "REJECTED"
+        | "DRAFT"
+        | "PENDING"
+        | "ACCEPTED"
+        | "WAITLISTED"
       "Checkout Ticket Types": "TICKET" | "TABLE"
       "Event Ticket Status":
         | "NO_SALE"

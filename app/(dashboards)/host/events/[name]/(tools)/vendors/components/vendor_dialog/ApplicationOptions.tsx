@@ -10,18 +10,26 @@ import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
 import {
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,
+  sendVendorAppWaitlistedEmail,
 } from "@/lib/actions/emails";
 import { useRouter } from "next/navigation";
 import { EventVendorData } from "../../types";
 import { EventDisplayData } from "@/types/event";
 import { sendSMS } from "@/lib/actions/twilio";
+import { VendorAppWaitlistedEmailProps } from "@/emails/VendorAppWaitlisted";
+import {
+  sendVendorAppAcceptedSMS,
+  sendVendorAppWaitlistedSMS,
+} from "@/lib/sms";
 
-export default function Pending({
+export default function ApplicationOptions({
   vendorData,
   eventData,
+  closeDialog,
 }: {
   vendorData: EventVendorData;
   eventData: EventDisplayData;
+  closeDialog: () => void;
 }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +42,7 @@ export default function Pending({
     vendor_id,
     application_email,
     application_phone,
+    application_status,
   } = vendorData;
   const { name: eventName, publicPosterUrl: posterUrl } = eventData;
   const table = vendorData.table;
@@ -67,10 +76,12 @@ export default function Pending({
       return;
     }
 
-    const successfullySentSMS = await handleSendSMS(checkoutSession.id);
-    if (!successfullySentSMS) {
-      handleError("Failed to send SMS. Please try again.");
-    }
+    await sendVendorAppAcceptedSMS(
+      application_phone,
+      checkoutSession.id,
+      message,
+      eventName
+    );
 
     const { error: vendorUpdateError } = await supabase
       .from("event_vendors")
@@ -87,35 +98,7 @@ export default function Pending({
     toast.success("Vendor Accepted!");
     setLoading(false);
     refresh();
-  };
-
-  const handleSendSMS = async (checkoutSessionId: string) => {
-    const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
-    const smsMessage = message
-      ? `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
-      : `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
-    const { success: smsSuccess } = await sendSMS(
-      application_phone,
-      smsMessage
-    );
-
-    return smsSuccess;
-  };
-
-  const handleSendAcceptedEmail = async (checkoutSessionId: string) => {
-    const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
-      eventName,
-      posterUrl,
-      message,
-      checkoutSessionId: checkoutSessionId,
-    };
-
-    const { error: sendVendorEmailError } = await sendVendorAppAcceptedEmail(
-      application_email,
-      vendorAcceptedEmailProps
-    );
-
-    return !sendVendorEmailError;
+    closeDialog();
   };
 
   const rejectVendor = async () => {
@@ -140,9 +123,57 @@ export default function Pending({
     }
 
     toast.dismiss();
-    toast.success("Vendor Rejected!");
+    toast.success("Vendor Rejected");
     setLoading(false);
     refresh();
+    closeDialog();
+  };
+
+  const waitlistVendor = async () => {
+    setLoading(true);
+    toast.loading("Waitlisting Vendor...");
+
+    const { error: vendorUpdateError } = await supabase
+      .from("event_vendors")
+      .update({ application_status: "WAITLISTED" })
+      .eq("vendor_id", vendor_id)
+      .eq("event_id", event_id);
+
+    if (vendorUpdateError) {
+      handleError("Failed to update vendor status. Please try again.");
+      return;
+    }
+
+    const successfullySentEmail = await handleSendWaitlistEmail();
+
+    if (!successfullySentEmail) {
+      handleError("Failed to send vendor email. Please try again.");
+      return;
+    }
+
+    await sendVendorAppWaitlistedSMS(application_phone, message, eventName);
+
+    toast.dismiss();
+    toast.success("Vendor Waitlisted");
+    setLoading(false);
+    refresh();
+    closeDialog();
+  };
+
+  const handleSendAcceptedEmail = async (checkoutSessionId: string) => {
+    const vendorAcceptedEmailProps: VendorAppAcceptedEmailProps = {
+      eventName,
+      posterUrl,
+      message,
+      checkoutSessionId: checkoutSessionId,
+    };
+
+    const { error: sendVendorEmailError } = await sendVendorAppAcceptedEmail(
+      application_email,
+      vendorAcceptedEmailProps
+    );
+
+    return !sendVendorEmailError;
   };
 
   const handleSendRejectedEmail = async () => {
@@ -156,6 +187,20 @@ export default function Pending({
       application_email,
       vendorRejectedEmailProps
     );
+    return !sendVendorEmailError;
+  };
+
+  const handleSendWaitlistEmail = async () => {
+    const vendorWaitlistedEmailProps: VendorAppWaitlistedEmailProps = {
+      eventName,
+      posterUrl,
+      message,
+    };
+
+    const { error: sendVendorEmailError } = await sendVendorAppWaitlistedEmail(
+      application_email,
+      vendorWaitlistedEmailProps
+    );
 
     return !sendVendorEmailError;
   };
@@ -167,17 +212,17 @@ export default function Pending({
   };
 
   return (
-    <div className="bg-secondary py-2 px-2 rounded-sm relative mt-3">
-      <div className="rounded-full bg-red-600 absolute w-4 h-4 -top-1 -right-0 animate-pulse"></div>
+    <div className="bg-secondary/40 py-2 px-2 rounded-sm relative mt-3">
+      <div className="rounded-full bg-red-600 absolute w-4 h-4 -top-1 -right-0 animate-pulse" />
       <Textarea
         onChange={(e) => setMessage(e.target.value)}
         className="w-full px-2 sm:px-4"
         rows={3}
         placeholder="Write Message to the Vendor... (Optional)"
       />
-      <h1 className="text-gray-300 text-xs md:text-sm my-4 mx-2">
-        Once accepted, the vendor will receive an email to purchase their table.
-      </h1>
+      <p className="text-gray-300 text-xs md:text-sm my-4 mx-2">
+        If accepted, the vendor will receive an email to purchase their table.
+      </p>
       <div className="flex space-x-2">
         <Button
           onClick={async () => await rejectVendor()}
@@ -187,6 +232,16 @@ export default function Pending({
         >
           Reject
         </Button>
+        {application_status !== "WAITLISTED" && (
+          <Button
+            onClick={async () => await waitlistVendor()}
+            disabled={loading}
+            className="w-full"
+            variant={"tertiary"}
+          >
+            Waitlist
+          </Button>
+        )}
         <Button
           onClick={async () => await acceptVendor()}
           disabled={loading}

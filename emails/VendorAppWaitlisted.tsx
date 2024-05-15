@@ -5,29 +5,25 @@ import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
-  Button,
   Container,
   Heading,
   Html,
   Section,
   Text,
   Img,
-  Link,
-  Hr,
 } from "@react-email/components";
 
-export interface VendorAppAcceptedEmailProps {
+export interface VendorAppWaitlistedEmailProps {
   eventName: string;
   posterUrl: string;
   message: string;
-  checkoutSessionId: string;
 }
 
 export default function VendorAppWaitlisted({
   eventName = "Garden State Card Show",
   posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
   message = "Unfortunately, we have received a large number of application and cannot accommodate everyone at this time. However, we have added you to our waitlist. If a spot becomes available, we will reach out to you with further instructions",
-}: VendorAppAcceptedEmailProps) {
+}: VendorAppWaitlistedEmailProps) {
   return (
     <Html>
       <TailwindConfig>
@@ -41,8 +37,7 @@ export default function VendorAppWaitlisted({
               <Text className="text-left">
                 Hi there, thank you for your application to be a vendor at{" "}
                 {eventName}. While we've currently filled our initial spots,
-                we're excited to inform you that you've been placed on our
-                waitlist.
+                we'd like to inform you that you've been placed on our waitlist.
               </Text>
             </Section>
             <BodySection>
