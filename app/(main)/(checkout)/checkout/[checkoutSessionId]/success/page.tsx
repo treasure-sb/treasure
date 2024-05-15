@@ -8,6 +8,7 @@ export interface TicketSuccessInformation {
   ticketName: string;
   quantity: number;
   email: string;
+  type: "TICKET" | "TABLE";
 }
 
 const getTicketName = async (ticketId: string) => {
@@ -63,12 +64,15 @@ export default async function Page({
   const eventDisplay = await getEventDisplayData(event);
 
   let ticketName: string;
+  let type: "TICKET" | "TABLE";
   switch (checkoutSessionData.ticket_type) {
     case "TICKET":
       ticketName = await getTicketName(checkoutSessionData.ticket_id);
+      type = "TICKET";
       break;
     case "TABLE":
       ticketName = await getTableName(checkoutSessionData.ticket_id);
+      type = "TABLE";
       break;
     default:
       throw new Error("Invalid Ticket Type");
@@ -81,6 +85,7 @@ export default async function Page({
     ticketName,
     quantity,
     email,
+    type,
   };
 
   return (

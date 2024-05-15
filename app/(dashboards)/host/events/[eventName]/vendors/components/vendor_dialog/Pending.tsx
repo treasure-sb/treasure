@@ -5,8 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { createCheckoutSession } from "@/lib/actions/checkout";
 import { Tables } from "@/types/supabase";
-import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";
-import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
+import { VendorAppAcceptedEmailProps } from "@/lib/emails/VendorAppAccepted";
+import { VendorAppRejectedEmailProps } from "@/lib/emails/VendorAppRejected";
 import {
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,
@@ -92,8 +92,8 @@ export default function Pending({
   const handleSendSMS = async (checkoutSessionId: string) => {
     const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
     const smsMessage = message
-      ? `Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
-      : `Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
+      ? `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
+      : `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
     const { success: smsSuccess } = await sendSMS(
       application_phone,
       smsMessage

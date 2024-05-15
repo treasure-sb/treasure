@@ -81,7 +81,9 @@ export default function VerifyCode({
       if (isDialog) {
         action && (await action());
       } else {
-        verfication.profileExists ? replace("/") : setAdditionalInfo(true);
+        verfication.profileExists
+          ? replace("/events")
+          : setAdditionalInfo(true);
       }
     } else {
       toast.error("Verification Error");

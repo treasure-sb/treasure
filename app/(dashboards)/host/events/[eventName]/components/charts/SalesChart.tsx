@@ -18,7 +18,7 @@ import { SalesData } from "./SalesAnalytics";
 
 export default function SalesChart({ salesData }: { salesData: SalesData }) {
   const maxValue = salesData.reduce(
-    (max, item) => Math.max(max, item.sales),
+    (max, item) => Math.max(max, Math.max(item.tables, item.tickets)),
     0
   );
 
@@ -57,7 +57,13 @@ export default function SalesChart({ salesData }: { salesData: SalesData }) {
             tickFormatter={formatTick}
             ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
           />
-          <Line type="monotone" dataKey="sales" stroke="#71d08c" dot={false} />
+          <Line type="monotone" dataKey="tables" stroke="#eac362" dot={false} />
+          <Line
+            type="monotone"
+            dataKey="tickets"
+            stroke="#71d08c"
+            dot={false}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -70,14 +76,19 @@ const CustomTooltip = ({
   label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    const payloadValue = payload[0].value as number;
+    const ticketSales = payload[0].payload.tickets;
+    const tableSales = payload[0].payload.tables;
     const formattedDate = payload[0].payload.formattedDate;
     return (
       <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
         <p className="text-medium text-lg">{formattedDate}</p>
         <p className="text-sm text-primary">
-          Tickets Sales:
-          <span className="ml-2">${payloadValue.toFixed(2)}</span>
+          Ticket Sales:
+          <span className="ml-2">${ticketSales.toFixed(2)}</span>
+        </p>
+        <p className="text-sm text-tertiary">
+          Table Sales:
+          <span className="ml-2">${tableSales.toFixed(2)}</span>
         </p>
       </div>
     );

@@ -92,7 +92,7 @@ export default function TicketCounter({
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6"
     >
-      Checkout - ${ticket.price * ticketCount}
+      Checkout - ${(ticket.price * ticketCount).toFixed(2)}
     </Button>
   );
 

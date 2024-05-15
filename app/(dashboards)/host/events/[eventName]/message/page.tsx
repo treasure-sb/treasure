@@ -18,7 +18,6 @@ export default async function Page({
   const { data: eventsData } = await supabase
     .from("events")
     .select("*")
-    .eq("organizer_id", user?.id as string)
     .eq("cleaned_name", eventName)
     .single();
 
