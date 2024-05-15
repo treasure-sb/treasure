@@ -14,6 +14,7 @@ import {
   Link,
 } from "@react-email/components";
 import BodySection from "./components/Section";
+import NeedHelp from "./components/NeedHelp";
 
 export default function VendorAppReceived({
   posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
@@ -59,27 +60,7 @@ export default function VendorAppReceived({
               </Button>
             </BodySection>
 
-            <BodySection>
-              <Heading as="h2" className="font-normal text-left">
-                Need Help?
-              </Heading>
-              <Hr className="border-foreground/40 my-6" />
-              <Text className="text-left text-foreground/80">
-                Visit our{" "}
-                <Link
-                  className="font-semibold text-foreground underline"
-                  href="https://www.ontreasure.xyz"
-                >
-                  Help Center
-                </Link>{" "}
-                or for urgent help, contact us at{" "}
-                <span className="text-foreground font-semibold">
-                  george@ontreasure.xyz
-                </span>
-                .
-              </Text>
-            </BodySection>
-
+            <NeedHelp />
             <Footer />
           </Container>
         </Body>

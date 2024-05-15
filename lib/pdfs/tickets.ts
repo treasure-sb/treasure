@@ -1,5 +1,5 @@
 import { PDFDocument, rgb } from "pdf-lib";
-import { TicketPurchasedProps } from "@/lib/emails/TicketPurchased";
+import { TicketPurchasedProps } from "@/emails/TicketPurchased";
 import QRCode from "qrcode";
 
 const generateTicketReceipt = async (

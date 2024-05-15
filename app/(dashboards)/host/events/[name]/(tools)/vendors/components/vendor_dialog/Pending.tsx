@@ -5,8 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { createCheckoutSession } from "@/lib/actions/checkout";
 import { Tables } from "@/types/supabase";
-import { VendorAppAcceptedEmailProps } from "@/lib/emails/VendorAppAccepted";
-import { VendorAppRejectedEmailProps } from "@/lib/emails/VendorAppRejected";
+import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";
+import { VendorAppRejectedEmailProps } from "@/emails/VendorAppRejected";
 import {
   sendVendorAppAcceptedEmail,
   sendVendorAppRejectedEmail,

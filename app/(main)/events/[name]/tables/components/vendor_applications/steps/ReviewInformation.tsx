@@ -14,7 +14,7 @@ import {
   sendVendorAppReceivedEmail,
   sendVendorAppSubmittedEmail,
 } from "@/lib/actions/emails";
-import { VendorAppSubmittedEmailProps } from "@/lib/emails/VendorAppSubmitted";
+import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { updateLink } from "@/lib/actions/links";
 import type { VendorApplication } from "../../../types";
