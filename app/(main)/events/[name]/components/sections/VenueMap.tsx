@@ -1,24 +1,55 @@
+"use client";
+
 import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
-import { getPublicVenueMapUrl } from "@/lib/helpers/events";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
 import Image from "next/image";
 
-export default async function VenueMap({ event }: { event: Tables<"events"> }) {
-  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+export default function VenueMap({
+  event,
+  venueMapPublicUrl,
+}: {
+  event: Tables<"events">;
+  venueMapPublicUrl: string;
+}) {
+  const [showOverlay, setShowOverlay] = useState(false);
   const eventHasVenueMap =
     event.venue_map_url && event.venue_map_url != "venue_map_coming_soon";
+
+  const handleClose = () => {
+    setShowOverlay(false);
+  };
+
   return (
     eventHasVenueMap && (
       <>
         <Separator />
         <h3 className="font-semibold text-lg my-4 w-full">Venue Map</h3>
-        <Image
-          className="rounded-xl mb-6 lg:mb-0"
-          alt="venue map image"
-          src={publicVenueMapUrl}
-          width={500}
-          height={200}
-        />
+        <AspectRatio
+          ratio={2 / 1}
+          onClick={() => {
+            setShowOverlay(true);
+          }}
+          className="relative group w-full md:w-[34rem]"
+        >
+          <Image
+            className="rounded-xl object-cover"
+            alt="venue map image"
+            src={venueMapPublicUrl}
+            layout="fill"
+          />
+        </AspectRatio>
+        <AnimatePresence>
+          {showOverlay && (
+            <SingleImageOverlay
+              photoSrc={venueMapPublicUrl}
+              handleClose={handleClose}
+            />
+          )}
+        </AnimatePresence>
       </>
     )
   );

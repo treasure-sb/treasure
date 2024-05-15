@@ -1,4 +1,5 @@
 import { Tables } from "@/types/supabase";
+import { Separator } from "@/components/ui/separator";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import ListHighlights from "./ListHighlights";
 
@@ -43,10 +44,13 @@ export default async function PastHighlights({
   return (
     highlightPictures &&
     highlightPictures.length > 0 && (
-      <section>
-        <h3 className="font-semibold text-lg mb-2">Past Event Highlights</h3>
-        <ListHighlights highlights={highlightPictures} />
-      </section>
+      <>
+        <Separator />
+        <section>
+          <h3 className="font-semibold text-lg mb-2">Past Event Highlights</h3>
+          <ListHighlights highlights={highlightPictures} />
+        </section>
+      </>
     )
   );
 }
