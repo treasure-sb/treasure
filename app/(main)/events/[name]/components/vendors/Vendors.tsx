@@ -113,9 +113,9 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   return (
     allVendors.length > 0 && (
       <>
-        <h3 className="font-semibold text-lg mb-4">Vendors</h3>
-        <ListVendors allVendors={allVendors} tags={tags} />
         <Separator />
+        <h3 className="font-semibold text-lg mb-2">Vendors</h3>
+        <ListVendors allVendors={allVendors} tags={tags} />
       </>
     )
   );

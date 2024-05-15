@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import { Tables } from "@/types/supabase";
 
 export default function About({ event }: { event: Tables<"events"> }) {

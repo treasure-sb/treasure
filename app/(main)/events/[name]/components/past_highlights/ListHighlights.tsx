@@ -5,7 +5,7 @@ import { EventHighlightPhoto } from "./PastHighlights";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import HighlightsOverlay from "./HighlightsOverlay";
+import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
 
 export default function ListHighlights({
   highlights,
@@ -25,7 +25,7 @@ export default function ListHighlights({
   };
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
       {highlights.map((picture, index) => (
         <AspectRatio
           ratio={1 / 1}
@@ -43,7 +43,7 @@ export default function ListHighlights({
       ))}
       <AnimatePresence>
         {showOverlay && (
-          <HighlightsOverlay
+          <SingleImageOverlay
             photoSrc={currentPhoto}
             handleClose={handleClose}
           />
