@@ -105,6 +105,8 @@ export default function Filters({
                   ? "bg-destructive"
                   : applicationFilter === "PENDING"
                   ? "bg-tertiary"
+                  : applicationFilter === "WAITLISTED"
+                  ? "bg-orange-500"
                   : "bg-secondary"
               )}
             />
@@ -134,6 +136,20 @@ export default function Filters({
                   )}
                 />
                 Rejected
+              </CommandItem>
+              <CommandItem
+                onSelect={() => updateApplicationFilter("WAITLISTED")}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+
+                    applicationFilter === "WAITLISTED"
+                      ? "opacity-100"
+                      : "opacity-0"
+                  )}
+                />
+                Waitlited
               </CommandItem>
               <CommandItem onSelect={() => updateApplicationFilter("PENDING")}>
                 <Check
