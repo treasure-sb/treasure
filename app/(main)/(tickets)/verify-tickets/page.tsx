@@ -1,9 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { validateUser } from "@/lib/actions/auth";
-import { Tables } from "@/types/supabase";
 import EventImage from "@/components/events/shared/EventImage";
-import { getProfile } from "@/lib/helpers/profiles";
+import { redirect } from "next/navigation";
+import { Tables } from "@/types/supabase";
 
 export default async function Page({
   searchParams,
@@ -14,26 +12,12 @@ export default async function Page({
   };
 }) {
   const { ticket_id, event_id } = searchParams;
-  const {
-    data: { user },
-  } = await validateUser();
   const supabase = await createSupabaseServerClient();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { profile } = await getProfile(user.id);
-
-  const { data: eventData, error: eventError } = await supabase
+  const { data: eventData } = await supabase
     .from("events")
     .select("*")
     .eq("id", event_id)
     .single();
-
-  if (!(eventData.organizer_id == user.id || profile.role === "admin")) {
-    redirect("/");
-  }
 
   const { data: eventTicketData, error: eventTicketError } = await supabase
     .from("event_tickets")
@@ -68,16 +52,16 @@ export default async function Page({
       {valid ? (
         <>
           <h1 className="text-2xl mt-2 text-primary font-bold">{`${attendee.first_name} ${attendee.last_name} has checked in!`}</h1>
-          <h2 className="text-tertiary font-bold text-xl">
+          <p className="text-tertiary font-bold text-xl">
             Ticket Type: {eventTicket.tickets.name}
-          </h2>
+          </p>
         </>
       ) : (
-        <h1 className="text-2xl mt-2 text-destructive">
+        <h1 className="text-2xl mt-2 text-destructive font-bold">
           This ticket has already been used.
         </h1>
       )}
-      <h1 className="text-sm">Ticket ID: {eventTicket.id}</h1>
+      <p className="text-sm">Ticket ID: {eventTicket.id}</p>
     </main>
   );
 }
