@@ -20,7 +20,7 @@ export default async function Page({
     type: string;
   };
 }) {
-  const username = params.id;
+  const username = decodeURIComponent(params.id);
   const tab = searchParams?.tab || "Events";
   const filter = searchParams?.events;
   const type = searchParams?.type || "profile";
