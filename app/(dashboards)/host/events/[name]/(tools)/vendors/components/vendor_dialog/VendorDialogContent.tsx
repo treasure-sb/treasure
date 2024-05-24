@@ -91,14 +91,14 @@ export default function VendorDialogContent({
               <PhoneIcon width={24} />
               <p className="text-lg">{application_phone}</p>
             </div>
-            <Link
+            {userInstagram != null && <Link
               href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
               target="_blank"
               className="flex w-fit justify-start gap-4 items-center"
             >
               <InstagramIcon className="text-primary" size={24} />
               <p className="text-lg">{userInstagram}</p>
-            </Link>
+            </Link>}
           </div>
 
           {/* divs for mobile */}
