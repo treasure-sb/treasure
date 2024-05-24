@@ -95,7 +95,7 @@ const sendNotifications = (phoneNumbers: string[], message: string) => {
     .then((res) => {
       return {
         success: true,
-        message: "Notifcations sent successfully.",
+        message: "Notifications sent successfully.",
       };
     })
     .catch((error) => {
