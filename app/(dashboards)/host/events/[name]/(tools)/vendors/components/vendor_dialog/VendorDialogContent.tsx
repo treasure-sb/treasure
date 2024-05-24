@@ -91,14 +91,14 @@ export default function VendorDialogContent({
               <PhoneIcon width={24} />
               <p className="text-lg">{application_phone}</p>
             </div>
-            <Link
+            {userInstagram && <Link
               href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
               target="_blank"
               className="flex w-fit justify-start gap-4 items-center"
             >
               <InstagramIcon className="text-primary" size={24} />
               <p className="text-lg">{userInstagram}</p>
-            </Link>
+            </Link>}
           </div>
 
           {/* divs for mobile */}
@@ -113,14 +113,14 @@ export default function VendorDialogContent({
               <PhoneIcon width={20} />
               <p className="text-sm md:text-lg">{application_phone}</p>
             </div>
-            <Link
+            {userInstagram && <Link
               href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
               className="flex w-fit justify-start gap-4 items-center"
               target="_blank"
             >
               <InstagramIcon className="text-primary" size={20} />
               <p className="text-sm md:text-lg">{userInstagram}</p>
-            </Link>
+            </Link>}
           </div>
 
           <Accordion type="single" collapsible className="flex flex-col gap-3">

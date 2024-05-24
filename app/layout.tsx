@@ -28,7 +28,6 @@ export const metadata: Metadata = {
     "tcg shows near me",
   ],
 };
-
 export default async function RootLayout({
   children,
 }: {
