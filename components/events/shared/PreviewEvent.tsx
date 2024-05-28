@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { formatDate } from "@/lib/helpers/events";
+import { formatDate } from "@/lib/utils";
 import { convertToStandardTime } from "@/lib/utils";
 
 export default function PreviewEvent({ event }: { event: any }) {

@@ -31,6 +31,20 @@ export function validateEmail(email: string) {
   return regex.test(email);
 }
 
+export function formatDate(date: string) {
+  const formattedDate = new Date(date).toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+  return formattedDate;
+}
+
+export function roundPrice(price: string) {
+  return parseFloat(parseFloat(price).toFixed(2));
+}
+
 type PromiseResult<T> = {
   data: T | null;
   error: any | null;

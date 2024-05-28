@@ -16,6 +16,7 @@ import {
   getUpcomingEventsHosting,
   getPastEventsHosting,
 } from "./eventsFiltering";
+import { formatDate } from "../utils";
 import createSupabaseServerClient from "../../utils/supabase/server";
 
 /**
@@ -60,16 +61,6 @@ const getPublicVenueMapUrl = async (event: Tables<"events">) => {
     publicVenueMapUrl = venueMapPublicUrl;
   }
   return publicVenueMapUrl;
-};
-
-const formatDate = (date: string) => {
-  const formattedDate = new Date(date).toLocaleDateString(undefined, {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-    timeZone: "UTC",
-  });
-  return formattedDate;
 };
 
 const getEventFromCleanedName = async (cleanedName: string) => {
@@ -285,7 +276,6 @@ export {
   getEventFromCleanedName,
   getEventFromId,
   getEventDisplayData,
-  formatDate,
   getEventsDisplayData,
   getUserEventsDisplayData,
 };

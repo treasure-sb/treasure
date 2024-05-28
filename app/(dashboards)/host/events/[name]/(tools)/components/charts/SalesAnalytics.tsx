@@ -1,7 +1,7 @@
 import { Tables } from "@/types/supabase";
 import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { formatDate } from "@/lib/helpers/events";
+import { formatDate } from "@/lib/utils";
 
 type OrderQueryData = {
   created_at: string;

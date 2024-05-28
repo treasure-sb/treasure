@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { Accordion } from "@/components/ui/accordion";
-import { formatDate } from "@/lib/helpers/events";
+import { formatDate } from "@/lib/utils";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import AttendeesOptions from "./components/AttendeesOptions";
 import EventOptions from "./components/EventOptions";
