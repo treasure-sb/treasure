@@ -164,48 +164,50 @@ export default function EditEventForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="md:max-w-[1160px] mx-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
-          <FormField
-            control={form.control}
-            name="posterUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  className="hover:cursor-pointer inline-block"
-                  htmlFor="poster"
-                >
-                  {imageUrl && (
-                    <div className="w-full group max-w-xl relative z-10">
-                      <EventPoster posterUrl={imageUrl} />
-                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
-                        <p className="hidden group-hover:block transition duration-300">
-                          Replace Poster
-                        </p>
+          <div className="flex">
+            <FormField
+              control={form.control}
+              name="posterUrl"
+              render={({ field }) => (
+                <FormItem className="mx-auto">
+                  <FormLabel
+                    className="hover:cursor-pointer inline-block"
+                    htmlFor="poster"
+                  >
+                    {imageUrl && (
+                      <div className="w-full group max-w-xl relative z-10">
+                        <EventPoster posterUrl={imageUrl} />
+                        <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
+                          <p className="hidden group-hover:block transition duration-300">
+                            Replace Poster
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    id="poster"
-                    className="hidden"
-                    placeholder="Ticket Quantity"
-                    type="file"
-                    multiple={false}
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files ? e.target.files[0] : null;
-                      if (file) {
-                        setImageUrl(URL.createObjectURL(file));
-                      }
-                      field.onChange(file);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-3">
+                    )}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="poster"
+                      className="hidden"
+                      placeholder="Ticket Quantity"
+                      type="file"
+                      multiple={false}
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (file) {
+                          setImageUrl(URL.createObjectURL(file));
+                        }
+                        field.onChange(file);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -223,7 +225,11 @@ export default function EditEventForm({
               )}
             />
             <EditTimeAndDate form={form} event={event} />
-            <EditLocation form={form} />
+            <EditLocation
+              form={form}
+              setVenueLocation={setVenueLocation}
+              venueLocation={venueLocation}
+            />
             <FormField
               control={form.control}
               name="description"
