@@ -85,46 +85,48 @@ export default function EditTimeAndDate({
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="startTime"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
+      <div className="flex space-x-2">
+        <FormField
+          control={form.control}
+          name="startTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <FloatingLabelInput
+                  className="border-none"
+                  label="Start Time"
+                  type="time"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setCurrentStartTime(e.target.value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="endTime"
+          render={({ field }) => (
+            <FormItem>
               <FloatingLabelInput
                 className="border-none"
-                label="Start Time"
                 type="time"
+                label="End Time"
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
-                  setCurrentStartTime(e.target.value);
+                  setCurrentEndTime(e.target.value);
                 }}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="endTime"
-        render={({ field }) => (
-          <FormItem>
-            <FloatingLabelInput
-              className="border-none"
-              type="time"
-              label="End Time"
-              {...field}
-              onChange={(e) => {
-                field.onChange(e);
-                setCurrentEndTime(e.target.value);
-              }}
-            />
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <EyeIcon
         size={22}
         onClick={() => {

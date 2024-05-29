@@ -163,7 +163,7 @@ export default function EditEventForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="md:max-w-[1160px] mx-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
+        <div className="mx-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
           <div className="flex">
             <FormField
               control={form.control}

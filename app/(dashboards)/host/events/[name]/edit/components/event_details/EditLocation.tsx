@@ -18,7 +18,6 @@ export default function EditLocation({
   setVenueLocation: Dispatch<SetStateAction<EventLocation>>;
 }) {
   const [edit, setEdit] = useState(false);
-
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     venueLocation.address
   )}`;
@@ -46,12 +45,12 @@ export default function EditLocation({
                   <Link
                     target="_blank"
                     href={googleMapsUrl}
-                    className="relative group"
+                    className="relative group flex"
                   >
                     <p>{field.value}</p>
                     <ArrowUpRight
                       size={18}
-                      className="stroke-1 absolute -right-5 top-0 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
+                      className="stroke-1 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
                     />
                   </Link>
                 )}
@@ -72,7 +71,7 @@ export default function EditLocation({
           <PencilIcon
             size={20}
             onClick={() => setEdit(true)}
-            className="absolute -top-1 -right-12 text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
+            className="absolute -top-1 -right-8 text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
           />
         )}
       </div>
