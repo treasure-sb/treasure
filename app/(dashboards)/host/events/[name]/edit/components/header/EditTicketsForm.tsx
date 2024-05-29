@@ -173,76 +173,81 @@ export default function EditTicketsForm({
           </div>
         </div>
         {fields.map((field, index) => (
-          <div key={field.id} className="flex justify-between space-x-4">
-            <FormField
-              control={form.control}
-              name={`tickets.${index}.name`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FloatingLabelInput
-                      label="Name"
-                      {...field}
-                      className="border-none"
-                    />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
+          <div>
+            <div className="flex items-center mb-4">
+              <p className="font-semibold text-sm">Ticket Tier {index + 1}</p>
+              {!field.db_id && (
+                <Button
+                  type="button"
+                  variant={"link"}
+                  onClick={() => removeTicket(index)}
+                  className="text-red-400 hover:text-destructive duration-300 transition hover:bg-transparent"
+                >
+                  Remove
+                </Button>
               )}
-            />
-            <FormField
-              control={form.control}
-              name={`tickets.${index}.price`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FloatingLabelInput
-                      label="Price"
-                      {...field}
-                      value={`$${field.value}`}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9.]/g, "");
-                        field.onChange(value);
-                      }}
-                      className="border-none"
-                    />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`tickets.${index}.quantity`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FloatingLabelInput
-                      label="Quantity"
-                      {...field}
-                      className="border-none"
-                    />
-                  </FormControl>
-                  <div className="h-1">
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-            {!field.db_id && (
-              <Button
-                type="button"
-                variant={"ghost"}
-                onClick={() => removeTicket(index)}
-                className="text-red-500 hover:text-destructive duration-300 transition hover:bg-transparent"
-              >
-                x
-              </Button>
-            )}
+            </div>
+            <div key={field.id} className="flex justify-between space-x-4">
+              <FormField
+                control={form.control}
+                name={`tickets.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FloatingLabelInput
+                        label="Name"
+                        {...field}
+                        className="border-none"
+                      />
+                    </FormControl>
+                    <div className="h-1">
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`tickets.${index}.price`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FloatingLabelInput
+                        label="Price"
+                        {...field}
+                        value={`$${field.value}`}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9.]/g, "");
+                          field.onChange(value);
+                        }}
+                        className="border-none"
+                      />
+                    </FormControl>
+                    <div className="h-1">
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`tickets.${index}.quantity`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FloatingLabelInput
+                        label="Quantity"
+                        {...field}
+                        className="border-none"
+                      />
+                    </FormControl>
+                    <div className="h-1">
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
         ))}
         <div className="flex justify-end">

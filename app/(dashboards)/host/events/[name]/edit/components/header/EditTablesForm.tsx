@@ -13,11 +13,16 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useFieldArray } from "react-hook-form";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import {
+  FloatingLabelInput,
+  FloatingInput,
+  FloatingLabel,
+} from "@/components/ui/floating-label-input";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormTable, createTables, updateTables } from "@/lib/actions/tables";
+import { X } from "lucide-react";
 
 export const tableSchema = z.object({
   db_id: z.string().optional(),
@@ -195,131 +200,143 @@ export default function EditTablesForm({
         </div>
         <div className="space-y-10">
           {fields.map((field, index) => (
-            <div className="flex">
-              <div key={field.id} className="grid grid-cols-3">
-                <FormField
-                  control={form.control}
-                  name={`tables.${index}.section_name`}
-                  render={({ field }) => (
-                    <FormItem className="row-span-2">
-                      <FormControl>
-                        <FloatingLabelInput
-                          label="Name"
-                          {...field}
-                          className="border-none"
-                        />
-                      </FormControl>
-                      <div className="h-1">
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`tables.${index}.price`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <FloatingLabelInput
-                          label="Price"
-                          {...field}
-                          value={`$${field.value}`}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(
-                              /[^0-9.]/g,
-                              ""
-                            );
-                            field.onChange(value);
-                          }}
-                          className="border-none"
-                        />
-                      </FormControl>
-                      <div className="h-1">
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`tables.${index}.quantity`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <FloatingLabelInput
-                          label="Quantity"
-                          {...field}
-                          className="border-none"
-                        />
-                      </FormControl>
-                      <div className="h-1">
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`tables.${index}.table_provided`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                      <div className="leading-none">
-                        <FormLabel className="text-xs text-gray-500">
-                          Table Provided
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Checkbox
-                          className="h-4 w-4 border-foreground/20 data-[state=checked]:bg-foreground data-[state=checked]:text-background"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="h-1">
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`tables.${index}.space_allocated`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <FloatingLabelInput
-                          label="Space Allocated"
-                          {...field}
-                          value={`${field.value}ft`}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(
-                              /[^0-9.]/g,
-                              ""
-                            );
-                            field.onChange(value);
-                          }}
-                          className="border-none"
-                        />
-                      </FormControl>
-                      <div className="h-1">
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
+            <div>
+              <div className="flex items-center mb-4">
+                <p className="font-semibold text-sm">Table Tier {index + 1}</p>
+                {!field.db_id && (
+                  <Button
+                    type="button"
+                    variant={"link"}
+                    onClick={() => removeTable(index)}
+                    className="text-red-400 hover:text-destructive duration-300 transition hover:bg-transparent"
+                  >
+                    Remove
+                  </Button>
+                )}
               </div>
-
-              {!field.db_id && (
-                <Button
-                  type="button"
-                  variant={"ghost"}
-                  onClick={() => removeTable(index)}
-                  className="text-red-500 hover:text-destructive duration-300 transition hover:bg-transparent"
-                >
-                  x
-                </Button>
-              )}
+              <div className="flex items-center">
+                <div key={field.id} className="grid grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.section_name`}
+                    render={({ field }) => (
+                      <FormItem className="row-span-2">
+                        <FormControl>
+                          <FloatingLabelInput
+                            label="Name"
+                            {...field}
+                            className="border-none"
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.price`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <FloatingLabelInput
+                            label="Price"
+                            {...field}
+                            value={`$${field.value}`}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(
+                                /[^0-9.]/g,
+                                ""
+                              );
+                              field.onChange(value);
+                            }}
+                            className="border-none"
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.quantity`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <FloatingLabelInput
+                            label="Quantity"
+                            {...field}
+                            className="border-none"
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.table_provided`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center md:space-x-2 space-x-1 space-y-0">
+                        <div className="leading-none">
+                          <FormLabel className="text-xs text-gray-500">
+                            Table Provided
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Checkbox
+                            className="h-4 w-4 border-foreground/20 data-[state=checked]:bg-foreground data-[state=checked]:text-background"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.space_allocated`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative hover:cursor-text w-full">
+                            <FloatingInput
+                              id="space-input"
+                              {...field}
+                              value={`${field.value}ft`}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(
+                                  /[^0-9.]/g,
+                                  ""
+                                );
+                                field.onChange(value);
+                              }}
+                              className="border-none"
+                            />
+                            <FloatingLabel
+                              className="whitespace-nowrap"
+                              htmlFor="space-input"
+                            >
+                              Space Allocated
+                            </FloatingLabel>
+                          </div>
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>
