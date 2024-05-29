@@ -3,8 +3,8 @@
 import { Tables } from "@/types/supabase";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import EditTables from "./EditTables";
-import EditTickets from "./EditTickets";
+import EditTables from "./tables/EditTables";
+import EditTickets from "./tickets/EditTickets";
 
 export default function EditTicketTables({
   tickets,

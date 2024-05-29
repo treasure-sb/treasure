@@ -22,7 +22,6 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormTable, createTables, updateTables } from "@/lib/actions/tables";
-import { X } from "lucide-react";
 
 export const tableSchema = z.object({
   db_id: z.string().optional(),

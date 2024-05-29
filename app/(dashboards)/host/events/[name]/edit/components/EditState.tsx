@@ -8,7 +8,7 @@ export default function EditState({
 }: {
   children: React.ReactNode[];
 }) {
-  const [active, setActive] = useState("Event");
+  const [active, setActive] = useState("Event Details");
 
   const handleSelect = (selected: string) => {
     setActive(selected);
@@ -18,9 +18,8 @@ export default function EditState({
     <div>
       <SelectEdit active={active} onSelect={handleSelect} />
       <div className="mt-8">
-        {active === "Event" && children[0]}
-        {active === "Tickets" && children[1]}
-        {active === "Vendors" && children[2]}
+        {active === "Event Details" && children[0]}
+        {active === "Vendors" && children[1]}
       </div>
     </div>
   );

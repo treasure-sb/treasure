@@ -1,100 +1,56 @@
-import { useState, ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Users, TicketIcon, Calendar } from "lucide-react";
+import { motion } from "framer-motion";
 
-const tabs = [
-  { title: "Event", icon: <Calendar /> },
-  { title: "Tickets", icon: <TicketIcon /> },
-  { title: "Vendors", icon: <Users /> },
-];
-
-const buttonVariants = {
-  initial: {
-    gap: 0,
-    paddingLeft: ".5rem",
-    paddingRight: ".5rem",
-  },
-  animate: (selected: boolean) => ({
-    gap: selected ? ".5rem" : 0,
-    paddingLeft: selected ? "1rem" : ".5rem",
-    paddingRight: selected ? "1rem" : ".5rem",
-  }),
-};
-
-const spanVariants = {
-  initial: { width: 0, opacity: 0 },
-  animate: { width: "auto", opacity: 1 },
-  exit: { width: 0, opacity: 0 },
-};
-
-const transition = { delay: 0, type: "spring", bounce: 0, duration: 0.65 };
+const tabs = ["Event Details", "Vendors"];
 
 interface TabProps {
   text: string;
   selected: boolean;
-  setSelected: (selected: string) => void;
-  children: ReactNode;
+  setSelected: (text: string) => void;
 }
 
-const Tab = ({ text, selected, setSelected, children }: TabProps) => {
+const Tab = ({ text, selected, setSelected }: TabProps) => {
   return (
-    <motion.button
-      variants={buttonVariants}
-      initial="initial"
-      animate="animate"
-      custom={selected}
+    <button
       onClick={() => setSelected(text)}
-      transition={transition}
-      className={`${
+      className={` ${
         selected
-          ? "bg-primary text-background"
-          : "hover:text-foreground/60 text-muted-foreground"
-      } relative flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300`}
+          ? "text-foreground"
+          : "text-foreground/30 hover:text-foregrond/40"
+      } relative rounded-md  px-2 py-1 text-sm font-medium transition-colors duration-500`}
     >
-      {children}
-      <AnimatePresence>
-        {selected && (
-          <motion.span
-            variants={spanVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={transition}
-            className="overflow-hidden font-semibold"
-          >
-            {text}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </motion.button>
+      <span className="relative z-10">{text}</span>
+      {selected && (
+        <motion.div
+          className="absolute left-0 top-0 flex size-full h-full w-full items-end justify-center"
+          layoutId={"linetab"}
+          transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+        >
+          <span className="z-0 h-[3px] w-[60%] rounded-full bg-primary"></span>
+        </motion.div>
+      )}
+    </button>
   );
 };
 
-export default function SelectEdit({
-  center,
+const LineTabs = ({
   active,
   onSelect,
 }: {
-  center?: boolean;
   active: string;
-  onSelect: (selected: string) => void;
-}) {
+  onSelect: (select: string) => void;
+}) => {
   return (
-    <div
-      className={` ${
-        center ? "justify-center" : ""
-      } border-black-500/25 mb-8 flex flex-wrap items-center gap-2 border-b pb-2`}
-    >
-      {tabs.map((tab, index) => (
+    <div className="mb-8 flex flex-wrap items-center gap-2 justify-center">
+      {tabs.map((tab) => (
         <Tab
-          text={tab.title}
-          selected={active === tab.title}
+          text={tab}
+          selected={active === tab}
           setSelected={onSelect}
-          key={tab.title}
-        >
-          {tab.icon}
-        </Tab>
+          key={tab}
+        />
       ))}
     </div>
   );
-}
+};
+
+export default LineTabs;
