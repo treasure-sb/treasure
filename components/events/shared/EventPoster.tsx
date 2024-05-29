@@ -27,7 +27,7 @@ export default function EventPoster({
         priority
         onLoad={() => setLoading(false)}
       />
-      {loading && (
+      {loading && !hidden && (
         <Skeleton
           className={`w-full h-full absolute inset-0 ${skeletonDisplay}`}
         />
