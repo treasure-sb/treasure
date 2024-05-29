@@ -27,7 +27,7 @@ export default async function Page({
   const event: Tables<"events"> = eventData || [];
 
   return (
-    <main className="relative max-w-6xl mx-auto">
+    <main className="relative">
       <Link
         href={`/host/events/${event.cleaned_name}`}
         className="flex space-x-1 items-center mb-4 group cursor-pointer w-fit"
