@@ -15,7 +15,7 @@ export default function EditState({
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-[1160px] mx-auto">
       <SelectEdit active={active} onSelect={handleSelect} />
       <div className="mt-8">
         {active === "Event Details" && children[0]}

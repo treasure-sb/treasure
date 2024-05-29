@@ -33,6 +33,14 @@ export default async function EditEventDetails({
 
   const tables: Tables<"tables">[] = tablesData || [];
 
+  const { data: tagsData } = await supabase
+    .from("event_tags")
+    .select("tags(name)")
+    .eq("event_id", event.id);
+
+  const tags: string[] = tagsData?.map((tag) => tag.tags.name) || [];
+  console.log(tags);
+
   const { data: photoData } = await supabase
     .from("event_highlights")
     .select("*")
@@ -60,7 +68,7 @@ export default async function EditEventDetails({
 
   return (
     <div>
-      <EditEventForm event={eventDisplayData} tickets={tickets} />
+      <EditEventForm event={eventDisplayData} tags={tags} />
       <div className="mx-auto flex justify-between md:space-x-14">
         <div className="md:inline-block hidden">
           <div className="w-full max-w-xl relative z-10">

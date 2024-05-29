@@ -25,6 +25,7 @@ import EventPoster from "@/components/events/shared/EventPoster";
 import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
 import EditLocation from "./EditLocation";
 import EditTimeAndDate from "./EditTimeAndDate";
+import EditTags from "./EditTags";
 
 const fixDate = (time: string) => {
   let fixedTime = time
@@ -96,10 +97,10 @@ export type FormType = UseFormReturn<
 
 export default function EditEventForm({
   event,
-  tickets,
+  tags,
 }: {
   event: EventDisplayData;
-  tickets: Tables<"tickets">[];
+  tags: string[];
 }) {
   const [imageUrl, setImageUrl] = useState(event.publicPosterUrl);
   const [venueLocation, setVenueLocation] = useState<EventLocation>({
@@ -212,11 +213,11 @@ export default function EditEventForm({
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="relative mb-4">
+                <FormItem className="relative">
                   <FormControl>
                     <Input
                       {...field}
-                      className="border-none text-4xl md:text-5xl font-semibold pb-10"
+                      className="border-none text-4xl md:text-5xl font-semibold"
                       placeholder="Event Name"
                     />
                   </FormControl>
@@ -224,6 +225,7 @@ export default function EditEventForm({
                 </FormItem>
               )}
             />
+            <EditTags tags={tags} />
             <EditTimeAndDate form={form} event={event} />
             <EditLocation
               form={form}
