@@ -19,6 +19,7 @@ import { EventDisplayData } from "@/types/event";
 import { FormType } from "./EditEventForm";
 import { useState } from "react";
 import { convertToStandardTime, formatDate } from "@/lib/utils";
+import { PencilIcon, EyeIcon } from "lucide-react";
 import EventCalendar from "@/components/ui/custom/event-calendar";
 
 export default function EditTimeAndDate({
@@ -42,7 +43,7 @@ export default function EditTimeAndDate({
   return (
     <div>
       {edit ? (
-        <div className="flex flex-wrap space-x-2">
+        <div className="flex flex-wrap space-x-2 items-center">
           <FormField
             control={form.control}
             name="date"
@@ -54,7 +55,7 @@ export default function EditTimeAndDate({
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "flex justify-between w-60 pl-2 text-left font-normal",
+                          "flex justify-between w-60 pl-4 bg-transparent text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -69,10 +70,12 @@ export default function EditTimeAndDate({
                     <Calendar
                       mode="single"
                       selected={field.value}
+                      defaultMonth={field.value}
                       onSelect={(date) => {
-                        field.onChange(date);
-                        setCurrentDate(date?.toISOString().split("T")[0] ?? "");
-                        setEdit(false);
+                        field.onChange(date || field.value);
+                        setCurrentDate(
+                          date?.toISOString().split("T")[0] ?? currentDate
+                        );
                       }}
                       initialFocus
                     />
@@ -98,7 +101,6 @@ export default function EditTimeAndDate({
                     onChange={(e) => {
                       field.onChange(e);
                       setCurrentStartTime(e.target.value);
-                      setEdit(false);
                     }}
                   />
                 </FormControl>
@@ -119,18 +121,24 @@ export default function EditTimeAndDate({
                   onChange={(e) => {
                     field.onChange(e);
                     setCurrentEndTime(e.target.value);
-                    setEdit(false);
                   }}
                 />
                 <FormMessage />
               </FormItem>
             )}
           />
+          <EyeIcon
+            size={22}
+            onClick={() => {
+              setEdit(false);
+            }}
+            className="text-foreground/30 hover:text-foreground duration-500 transition hover:cursor-pointer"
+          />
         </div>
       ) : (
         <div
-          className="flex space-x-4 items-center"
-          onDoubleClick={() => setEdit(true)}
+          className="flex space-x-4 items-center relative w-fit group hover:cursor-pointer"
+          onClick={() => setEdit(true)}
         >
           <EventCalendar month={eventMonth} day={eventDay} />
           <div>
@@ -139,6 +147,10 @@ export default function EditTimeAndDate({
               {formattedStartTime} - {formattedEndTime}
             </p>
           </div>
+          <PencilIcon
+            size={20}
+            className="absolute -top-2 -right-5 text-foreground/30 group-hover:text-foreground transition duration-500"
+          />
         </div>
       )}
     </div>
