@@ -56,13 +56,15 @@ export default function EditTicketsForm({
   toggleEdit: () => void;
 }) {
   const { refresh } = useRouter();
-  const ticketFields = tickets.map((ticket) => ({
-    db_id: ticket.id,
-    price: ticket.price.toFixed(2),
-    quantity: ticket.quantity.toString(),
-    name: ticket.name,
-    status: "unchanged" as const,
-  }));
+  const ticketFields: z.infer<typeof ticketSchema>[] = tickets.map(
+    (ticket) => ({
+      db_id: ticket.id,
+      price: ticket.price.toFixed(2),
+      quantity: ticket.quantity.toString(),
+      name: ticket.name,
+      status: "unchanged" as const,
+    })
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -128,10 +130,16 @@ export default function EditTicketsForm({
 
     toast.dismiss();
 
-    if (
-      createResult.status === "rejected" ||
+    const createError =
+      createResult.status === "rejected"
+        ? createResult.reason
+        : createResult.value.error;
+    const updateError =
       updateResult.status === "rejected"
-    ) {
+        ? updateResult.reason
+        : updateResult.value.error;
+
+    if (createError || updateError) {
       toast.error("Error updating tickets, please try again");
       return;
     }
@@ -193,6 +201,11 @@ export default function EditTicketsForm({
                     <FloatingLabelInput
                       label="Price"
                       {...field}
+                      value={`$${field.value}`}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9.]/g, "");
+                        field.onChange(value);
+                      }}
                       className="border-none"
                     />
                   </FormControl>
@@ -239,7 +252,7 @@ export default function EditTicketsForm({
             onClick={addTicket}
             className="text-white"
           >
-            Add Ticket
+            + Add Ticket
           </Button>
         </div>
       </motion.form>

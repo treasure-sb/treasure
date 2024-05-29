@@ -77,10 +77,7 @@ export default function AddEventGuests({ event }: { event: Tables<"events"> }) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="md:w-[30rem] space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex gap-4">
           <div className="w-fit">
             <AvatarEdit setAvatarFile={setAvatarFile} />

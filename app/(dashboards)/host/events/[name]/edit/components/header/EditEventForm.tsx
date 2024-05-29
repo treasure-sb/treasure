@@ -163,93 +163,89 @@ export default function EditEventForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="md:max-w-[1160px] m-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
-          <div className="flex">
+        <div className="md:max-w-[1160px] mx-auto flex flex-col items-center md:flex-row md:justify-between md:space-x-14 mb-4">
+          <FormField
+            control={form.control}
+            name="posterUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel
+                  className="hover:cursor-pointer inline-block"
+                  htmlFor="poster"
+                >
+                  {imageUrl && (
+                    <div className="w-full group max-w-xl relative z-10">
+                      <EventPoster posterUrl={imageUrl} />
+                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
+                        <p className="hidden group-hover:block transition duration-300">
+                          Replace Poster
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="poster"
+                    className="hidden"
+                    placeholder="Ticket Quantity"
+                    type="file"
+                    multiple={false}
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (file) {
+                        setImageUrl(URL.createObjectURL(file));
+                      }
+                      field.onChange(file);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-3">
             <FormField
               control={form.control}
-              name="posterUrl"
+              name="name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="hover:cursor-pointer inline-block"
-                    htmlFor="poster"
-                  >
-                    {imageUrl && (
-                      <div className="w-full group max-w-xl relative z-10">
-                        <EventPoster posterUrl={imageUrl} />
-                        <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
-                          <p className="hidden group-hover:block transition duration-300">
-                            Replace Poster
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </FormLabel>
+                <FormItem className="relative mb-4">
                   <FormControl>
                     <Input
-                      id="poster"
-                      className="hidden"
-                      placeholder="Ticket Quantity"
-                      type="file"
-                      multiple={false}
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        if (file) {
-                          setImageUrl(URL.createObjectURL(file));
-                        }
-                        field.onChange(file);
-                      }}
+                      {...field}
+                      className="border-none text-4xl md:text-5xl font-semibold pb-10"
+                      placeholder="Event Name"
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="absolute left-28 top-1" />
+                </FormItem>
+              )}
+            />
+            <EditTimeAndDate form={form} event={event} />
+            <EditLocation form={form} />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="ml-2 my-4 md:mb-0">
+                  <FormLabel className="font-semibold text-lg mb-2">
+                    About
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="w-full h-40 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                      {...field}
+                    ></Textarea>
+                  </FormControl>
+                  <FormMessage className="text-xs md:text-sm" />
                 </FormItem>
               )}
             />
           </div>
-          <div className="flex flex-col w-full max-w-2xl">
-            <div>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="relative mb-4">
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="border-none text-4xl md:text-5xl font-semibold pb-10"
-                        placeholder="Event Name"
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute left-28 top-1" />
-                  </FormItem>
-                )}
-              />
-              <EditTimeAndDate form={form} event={event} />
-              <EditLocation form={form} />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="ml-2 my-4 md:mb-0">
-                    <FormLabel className="font-semibold text-lg mb-2">
-                      About
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="w-full h-40 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-                        {...field}
-                      ></Textarea>
-                    </FormControl>
-                    <FormMessage className="text-xs md:text-sm" />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
         </div>
-        <div className="md:max-w-[1160px] mx-auto w-full flex justify-end">
-          <Button type="submit" variant={"secondary"} className="w-40">
+        <div className="md:max-w-[1160px] max-w-xl mx-auto flex justify-end">
+          <Button type="submit" className="w-40">
             Edit Basic Info
           </Button>
         </div>

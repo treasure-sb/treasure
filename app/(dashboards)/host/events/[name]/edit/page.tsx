@@ -8,6 +8,7 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhotos } from "./types";
+import EventPoster from "@/components/events/shared/EventPoster";
 import PastHighlights from "./components/event_info/highlights/PastHighlights";
 import EventGuests from "./components/event_info/guests/EventGuests";
 
@@ -83,9 +84,15 @@ export default async function Page({
           <p className="md:text-lg">Event Tools</p>
         </Link>
       </div>
+
       <EditEventForm event={eventDisplayData} tickets={tickets} />
-      <div className="md:max-w-[1160px] mx-auto flex justify-end">
-        <div className="max-w-2xl justify-end flex-grow flex flex-col space-y-8 md:space-y-3">
+      <div className="md:max-w-[1160px] mx-auto flex justify-between md:space-x-14">
+        <div className="md:inline-block hidden">
+          <div className="w-full max-w-xl relative z-10">
+            <EventPoster hidden posterUrl={eventDisplayData.publicPosterUrl} />
+          </div>
+        </div>
+        <div className="w-full max-w-xl md:max-w-2xl relative z-20 space-y-3 mx-auto md:mx-0">
           <EditTicketTables
             tickets={tickets}
             tables={tables}

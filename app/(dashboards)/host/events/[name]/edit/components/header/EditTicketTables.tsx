@@ -24,7 +24,7 @@ export default function EditTicketTables({
     <motion.div
       layout
       transition={{ duration: 0.15, type: "spring", stiffness: 55 }}
-      className="w-full mt-8 md:mt-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-6 z-10"
+      className="mt-8 md:mt-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-6 z-10"
     >
       <EditTickets
         tickets={tickets}

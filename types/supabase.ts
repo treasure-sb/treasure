@@ -779,7 +779,7 @@ export type Database = {
           price: number
           quantity: number
           section_name: string
-          space_allocated: number | null
+          space_allocated: number
           stripe_price_id: string | null
           stripe_product_id: string | null
           table_provided: boolean
@@ -792,7 +792,7 @@ export type Database = {
           price: number
           quantity: number
           section_name: string
-          space_allocated?: number | null
+          space_allocated?: number
           stripe_price_id?: string | null
           stripe_product_id?: string | null
           table_provided?: boolean
@@ -805,7 +805,7 @@ export type Database = {
           price?: number
           quantity?: number
           section_name?: string
-          space_allocated?: number | null
+          space_allocated?: number
           stripe_price_id?: string | null
           stripe_product_id?: string | null
           table_provided?: boolean
@@ -913,8 +913,8 @@ export type Database = {
           name: string
           price: number
           quantity: number
-          stripe_price_id: string
-          stripe_product_id: string
+          stripe_price_id: string | null
+          stripe_product_id: string | null
         }
         Insert: {
           created_at?: string
@@ -923,8 +923,8 @@ export type Database = {
           name?: string
           price: number
           quantity: number
-          stripe_price_id: string
-          stripe_product_id: string
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
         }
         Update: {
           created_at?: string
@@ -933,8 +933,8 @@ export type Database = {
           name?: string
           price?: number
           quantity?: number
-          stripe_price_id?: string
-          stripe_product_id?: string
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
         }
         Relationships: [
           {

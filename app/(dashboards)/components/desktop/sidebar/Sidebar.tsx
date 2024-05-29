@@ -9,6 +9,7 @@ import { useState } from "react";
 import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
@@ -49,8 +50,16 @@ export default function Sidebar() {
           href="/home"
           className="font-semibold text-3xl flex items-center justify-center mb-8"
         >
-          <TreasureEmerald width={28} height={28} />
-          {showSidebar && <h1>Treasure</h1>}
+          {showSidebar ? (
+            <Image
+              src="/static/web_logo.png"
+              alt="web logo"
+              width={160}
+              height={100}
+            />
+          ) : (
+            <TreasureEmerald width={28} height={28} />
+          )}
         </Link>
         <div className="space-y-6 flex flex-col">
           {type === "host" ? (
