@@ -1,7 +1,9 @@
+"use client";
+
 import { z } from "zod";
 import { EventDisplayData } from "@/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,22 +15,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
-import EventPoster from "@/components/events/shared/EventPoster";
-import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
 import { toast } from "sonner";
 import { EditEvent, EventLocation, updateEvent } from "@/lib/actions/events";
-import { CalendarDays } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Tables } from "@/types/supabase";
+import EventPoster from "@/components/events/shared/EventPoster";
+import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
+import EditLocation from "./EditLocation";
+import EditTimeAndDate from "./EditTimeAndDate";
 
 const fixDate = (time: string) => {
   let fixedTime = time
@@ -84,7 +80,27 @@ const formSchema = z.object({
   posterUrl: z.union([z.instanceof(File), z.string()]),
 });
 
-export default function EditEventForm({ event }: { event: EventDisplayData }) {
+export type FormType = UseFormReturn<
+  {
+    name: string;
+    description: string;
+    venueName: string;
+    date: Date;
+    startTime: string;
+    endTime: string;
+    posterUrl: (string | File) & (string | File | undefined);
+  },
+  any,
+  undefined
+>;
+
+export default function EditEventForm({
+  event,
+  tickets,
+}: {
+  event: EventDisplayData;
+  tickets: Tables<"tickets">[];
+}) {
   const [imageUrl, setImageUrl] = useState(event.publicPosterUrl);
   const [venueLocation, setVenueLocation] = useState<EventLocation>({
     lat: event.lat,
@@ -93,6 +109,7 @@ export default function EditEventForm({ event }: { event: EventDisplayData }) {
     city: event.city,
     state: event.state,
   });
+  const { refresh } = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -140,24 +157,25 @@ export default function EditEventForm({ event }: { event: EventDisplayData }) {
       return;
     }
     toast.success("Event updated!");
+    refresh();
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col md:flex-row md:space-x-4">
-          <div className="flex items-center">
+        <div className="md:max-w-[1160px] mx-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
+          <div className="flex">
             <FormField
               control={form.control}
               name="posterUrl"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mx-auto">
                   <FormLabel
                     className="hover:cursor-pointer inline-block"
                     htmlFor="poster"
                   >
                     {imageUrl && (
-                      <div className="w-28 md:w-80 relative group">
+                      <div className="w-full group max-w-xl relative z-10">
                         <EventPoster posterUrl={imageUrl} />
                         <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
                           <p className="hidden group-hover:block transition duration-300">
@@ -188,175 +206,53 @@ export default function EditEventForm({ event }: { event: EventDisplayData }) {
                 </FormItem>
               )}
             />
-            <div className="block md:hidden">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <FloatingLabelInput
-                        className="border-none"
-                        label="Event Name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute left-28 top-1 text-xs" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="venueName"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <FloatingLabelInput
-                        className="border-none"
-                        label="Venue Name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute left-28 top-1 text-xs" />
-                  </FormItem>
-                )}
-              />
-            </div>
           </div>
-          <div className="flex flex-col md:flex-row md:space-x-4 w-full">
-            <div>
-              <div className="hidden md:block">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormControl>
-                        <FloatingLabelInput
-                          className="border-none"
-                          label="Event Name"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="absolute left-28 top-1" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="venueName"
-                  render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormControl>
-                        <FloatingLabelInput
-                          className="border-none"
-                          label="Venue Name"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="absolute left-28 top-1" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="ml-2 mb-2 md:mb-0">
-                    <FormLabel className="text-xs text-gray-500 ml-1">
-                      Description
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="w-full h-20 md:w-80 md:h-40"
-                        {...field}
-                      ></Textarea>
-                    </FormControl>
-                    <FormMessage className="text-xs md:text-sm" />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-full">
-              <div className="mt-2 flex">
-                <FormField
-                  control={form.control}
-                  name="startTime"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormControl>
-                        <FloatingLabelInput
-                          className="border-none flex-grow w-full"
-                          label="Start Time"
-                          type="time"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="endTime"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FloatingLabelInput
-                        className="border-none flex-grow w-full"
-                        type="time"
-                        label="End Time"
-                        {...field}
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem className="ml-2">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "flex justify-between w-60 pl-2 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? format(field.value, "PPP")
-                              : format(new Date(event.date), "PPP")}
-                            <CalendarDays className="stroke-1" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <div className="h-1">
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <Autocomplete setVenueLocation={setVenueLocation} />
-            </div>
+          <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="relative mb-4">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      className="border-none text-4xl md:text-5xl font-semibold pb-10"
+                      placeholder="Event Name"
+                    />
+                  </FormControl>
+                  <FormMessage className="absolute left-28 top-1" />
+                </FormItem>
+              )}
+            />
+            <EditTimeAndDate form={form} event={event} />
+            <EditLocation
+              form={form}
+              setVenueLocation={setVenueLocation}
+              venueLocation={venueLocation}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="ml-2 my-4 md:mb-0">
+                  <FormLabel className="font-semibold text-lg mb-2">
+                    About
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="w-full h-40 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                      {...field}
+                    ></Textarea>
+                  </FormControl>
+                  <FormMessage className="text-xs md:text-sm" />
+                </FormItem>
+              )}
+            />
           </div>
         </div>
-        <div className="w-full flex">
-          <Button type="submit" variant={"secondary"} className="ml-auto w-20">
-            Edit
+        <div className="md:max-w-[1160px] max-w-xl mx-auto flex justify-end">
+          <Button type="submit" className="w-40">
+            Edit Basic Info
           </Button>
         </div>
       </form>

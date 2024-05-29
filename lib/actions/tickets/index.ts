@@ -1,6 +1,15 @@
 "use server";
 
+import { roundPrice } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
+
+type Ticket = {
+  name: string;
+  price: string;
+  quantity: string;
+  event_id?: string;
+  id?: string;
+};
 
 const addEventAttendee = async (
   event_id: string,
@@ -19,4 +28,33 @@ const addEventAttendee = async (
   return { data, error };
 };
 
-export { addEventAttendee };
+const createTickets = async (tickets: Ticket[]) => {
+  const supabase = await createSupabaseServerClient();
+  const roundedTickets = tickets.map((ticket) => ({
+    ...ticket,
+    price: roundPrice(ticket.price),
+  }));
+  const { error } = await supabase.from("tickets").insert(roundedTickets);
+  return { error };
+};
+
+const updateTickets = async (tickets: Ticket[]) => {
+  const supabase = await createSupabaseServerClient();
+  for (const ticket of tickets) {
+    const { error } = await supabase
+      .from("tickets")
+      .update({
+        price: roundPrice(ticket.price),
+        quantity: ticket.quantity,
+        name: ticket.name,
+      })
+      .eq("id", ticket.id);
+
+    if (error) {
+      return { error };
+    }
+  }
+  return { error: null };
+};
+
+export { addEventAttendee, createTickets, updateTickets, type Ticket };

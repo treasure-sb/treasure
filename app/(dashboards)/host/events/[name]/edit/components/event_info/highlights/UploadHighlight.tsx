@@ -46,7 +46,7 @@ export default function UploadHighlight({
       <Label htmlFor="upload">
         <AspectRatio
           ratio={1 / 1}
-          className="bg-slate-500/5 rounded-md flex items-center justify-center group hover:cursor-pointer hover:bg-slate-400/5 transition duration-500"
+          className="bg-slate-500/5 flex items-center justify-center group hover:cursor-pointer hover:bg-slate-400/5 transition duration-500"
         >
           <div className="flex items-center justify-center w-full absolute">
             <CameraIcon

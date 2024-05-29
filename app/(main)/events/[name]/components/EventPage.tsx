@@ -43,7 +43,7 @@ export default async function EventPage({
               <Tags event={event} />
               <EventInfo event={event} />
             </div>
-            <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-1 z-10">
+            <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-4 px-6 z-10">
               <Tickets event={event} eventDisplayData={eventDisplayData} />
               <VendorTables event={event} />
             </div>
