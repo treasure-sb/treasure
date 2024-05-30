@@ -22,11 +22,13 @@ export default function EditTags({
         initialTags={selectedTags}
         allTags={allTags}
       />
-      <EyeIcon
-        size={22}
-        className="text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
-        onClick={() => setEdit(false)}
-      />
+      <div className="flex justify-end">
+        <EyeIcon
+          size={22}
+          className="text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer my-auto"
+          onClick={() => setEdit(false)}
+        />
+      </div>
     </div>
   ) : (
     <div className="flex gap-2 w-full flex-wrap">

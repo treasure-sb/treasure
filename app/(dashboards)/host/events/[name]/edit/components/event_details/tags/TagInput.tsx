@@ -55,7 +55,7 @@ const TagInput: React.FC<tagsInputProps> = ({
   return (
     <div>
       <div
-        className="flex flex-wrap gap-2 overflow-y-auto"
+        className="flex flex-wrap gap-2 overflow-y-auto items-center"
         style={{ maxHeight: "300px" }}
       >
         {initialTags.map((keyword, index) => (
@@ -74,7 +74,7 @@ const TagInput: React.FC<tagsInputProps> = ({
           value={inputValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          className="my-1 flex-1 text-sm outline-none border-none"
+          className="my-1 flex-1 text-base placeholder:text-sm outline-none border-none"
           placeholder="Search for tags..."
         />
       </div>

@@ -23,12 +23,9 @@ export default function EditLocation({
   )}`;
 
   return (
-    <div className="flex items-center relative w-fit">
-      <div className="w-10">
-        <MapPinIcon className="stroke-1 text-foreground/60 mx-auto" />
-      </div>
-
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
+    <div>
+      <div className="flex space-x-2 items-center relative w-fit">
+        <MapPinIcon className="stroke-1 text-foreground/60" />
         <FormField
           control={form.control}
           name="venueName"
@@ -58,16 +55,7 @@ export default function EditLocation({
             </FormItem>
           )}
         />
-        {edit ? (
-          <div className="flex space-x-2 items-center">
-            <Autocomplete setVenueLocation={setVenueLocation} />
-            <EyeIcon
-              size={22}
-              className="text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
-              onClick={() => setEdit(false)}
-            />
-          </div>
-        ) : (
+        {!edit && (
           <PencilIcon
             size={20}
             onClick={() => setEdit(true)}
@@ -75,6 +63,20 @@ export default function EditLocation({
           />
         )}
       </div>
+      {edit && (
+        <>
+          <div className="w-full md:w-[75%]">
+            <Autocomplete setVenueLocation={setVenueLocation} />
+          </div>
+          <div className="flex justify-end">
+            <EyeIcon
+              size={22}
+              className="text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
+              onClick={() => setEdit(false)}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

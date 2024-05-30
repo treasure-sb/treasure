@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormType } from "./EditEventForm";
 import { useState } from "react";
 import { PencilIcon, EyeIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function EditAbout({ form }: { form: FormType }) {
   const [edit, setEdit] = useState(false);
@@ -19,7 +20,12 @@ export default function EditAbout({ form }: { form: FormType }) {
       name="description"
       render={({ field }) => (
         <FormItem className="ml-2 my-4 md:mb-0">
-          <FormLabel className="mb-2 flex space-x-2 items-center">
+          <FormLabel
+            className={cn(
+              "mb-2 flex items-center",
+              edit ? "justify-between" : "space-x-2"
+            )}
+          >
             <span className="text-lg font-semibold">About</span>
             {edit ? (
               <EyeIcon
