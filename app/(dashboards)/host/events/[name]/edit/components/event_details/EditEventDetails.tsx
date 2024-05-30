@@ -35,11 +35,14 @@ export default async function EditEventDetails({
 
   const { data: tagsData } = await supabase
     .from("event_tags")
-    .select("tags(name)")
-    .eq("event_id", event.id);
+    .select("tags(*)")
+    .eq("event_id", event.id)
+    .returns<{ tags: Tables<"tags"> }[]>();
 
-  const tags: string[] = tagsData?.map((tag) => tag.tags.name) || [];
-  console.log(tags);
+  const { data: allTagsData } = await supabase.from("tags").select("*");
+
+  const eventTags: Tables<"tags">[] = tagsData?.map((tag) => tag.tags) || [];
+  const allTags: Tables<"tags">[] = allTagsData || [];
 
   const { data: photoData } = await supabase
     .from("event_highlights")
@@ -68,7 +71,11 @@ export default async function EditEventDetails({
 
   return (
     <div>
-      <EditEventForm event={eventDisplayData} tags={tags} />
+      <EditEventForm
+        event={eventDisplayData}
+        initialTags={eventTags}
+        allTags={allTags}
+      />
       <div className="mx-auto flex justify-between md:space-x-14">
         <div className="md:inline-block hidden">
           <div className="w-full max-w-xl relative z-10">

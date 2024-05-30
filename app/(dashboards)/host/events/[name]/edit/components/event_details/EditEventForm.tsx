@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { EditEvent, EventLocation, updateEvent } from "@/lib/actions/events";
@@ -27,6 +26,7 @@ import EditLocation from "./EditLocation";
 import EditTimeAndDate from "./EditTimeAndDate";
 import EditTags from "./tags/EditTags";
 import EditAbout from "./EditAbout";
+import { EventTag, addEventTags, removeEventTags } from "@/lib/actions/tags";
 
 const fixDate = (time: string) => {
   let fixedTime = time
@@ -98,10 +98,12 @@ export type FormType = UseFormReturn<
 
 export default function EditEventForm({
   event,
-  tags,
+  initialTags,
+  allTags,
 }: {
   event: EventDisplayData;
-  tags: string[];
+  initialTags: Tables<"tags">[];
+  allTags: Tables<"tags">[];
 }) {
   const [imageUrl, setImageUrl] = useState(event.publicPosterUrl);
   const [venueLocation, setVenueLocation] = useState<EventLocation>({
@@ -111,8 +113,13 @@ export default function EditEventForm({
     city: event.city,
     state: event.state,
   });
-  const { refresh } = useRouter();
 
+  const [selectedTags, setSelectedTags] = useState(initialTags);
+  const handleTagsChange = (newTags: Tables<"tags">[]) => {
+    setSelectedTags(newTags);
+  };
+
+  const { refresh } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -152,14 +159,53 @@ export default function EditEventForm({
     }
 
     const { error } = await updateEvent(editEventForm, event.id);
+    const { addError, removeError } = await updateTags();
 
     toast.dismiss();
     if (error) {
       toast.error("Error updating event, please try again");
       return;
+    } else if (addError || removeError) {
+      toast.error("Error updating tags, please try again");
     }
     toast.success("Event updated!");
     refresh();
+  };
+
+  const updateTags = async () => {
+    const tagsToDelete: EventTag[] = initialTags
+      .filter(
+        (tag) =>
+          !selectedTags.some((selectedTag) => selectedTag.name === tag.name)
+      )
+      .map((tag) => ({
+        event_id: event.id,
+        tag_id: tag.id,
+      }));
+
+    const tagsToAdd: EventTag[] = selectedTags
+      .filter(
+        (tag) => !initialTags.some((initTag) => initTag.name === tag.name)
+      )
+      .map((tag) => ({
+        event_id: event.id,
+        tag_id: tag.id,
+      }));
+
+    const [addResult, removeResult] = await Promise.allSettled([
+      addEventTags(tagsToAdd),
+      removeEventTags(tagsToDelete),
+    ]);
+    const addError =
+      addResult.status === "rejected"
+        ? addResult.reason
+        : addResult.value.error;
+    const removeError =
+      removeResult.status === "rejected"
+        ? removeResult.reason
+        : removeResult.value.error;
+
+    return { addError, removeError };
   };
 
   return (
@@ -178,8 +224,8 @@ export default function EditEventForm({
                   {imageUrl && (
                     <div className="w-full group max-w-xl relative z-10">
                       <EventPoster posterUrl={imageUrl} />
-                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
-                        <p className="hidden group-hover:block transition duration-300">
+                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-500 flex items-center justify-center">
+                        <p className="hidden group-hover:block">
                           Replace Poster
                         </p>
                       </div>
@@ -223,7 +269,11 @@ export default function EditEventForm({
                 </FormItem>
               )}
             />
-            <EditTags tags={tags} />
+            <EditTags
+              allTags={allTags}
+              handleTagsChange={handleTagsChange}
+              selectedTags={selectedTags}
+            />
             <EditTimeAndDate form={form} event={event} />
             <EditLocation
               form={form}

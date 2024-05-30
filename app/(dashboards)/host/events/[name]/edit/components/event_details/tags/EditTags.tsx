@@ -1,14 +1,27 @@
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { PencilIcon, EyeIcon } from "lucide-react";
+import { Tables } from "@/types/supabase";
 import TagInput from "./TagInput";
 
-export default function EditTags({ tags }: { tags: string[] }) {
+export default function EditTags({
+  allTags,
+  selectedTags,
+  handleTagsChange,
+}: {
+  allTags: Tables<"tags">[];
+  selectedTags: Tables<"tags">[];
+  handleTagsChange: (tag: Tables<"tags">[]) => void;
+}) {
   const [edit, setEdit] = useState(false);
 
   return edit ? (
     <div>
-      <TagInput initialTags={tags} />
+      <TagInput
+        onTagsChange={handleTagsChange}
+        initialTags={selectedTags}
+        allTags={allTags}
+      />
       <EyeIcon
         size={22}
         className="text-foreground/30 hover:text-foreground transition duration-500 hover:cursor-pointer"
@@ -17,9 +30,9 @@ export default function EditTags({ tags }: { tags: string[] }) {
     </div>
   ) : (
     <div className="flex gap-2 w-full flex-wrap">
-      {tags.map((tag) => (
-        <Badge variant={"eventTag"} key={tag}>
-          {tag}
+      {selectedTags.map((tag) => (
+        <Badge variant={"eventTag"} key={tag.id}>
+          {tag.name}
         </Badge>
       ))}
       <PencilIcon
