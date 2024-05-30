@@ -14,7 +14,7 @@ export default function EditTables({
   setParentEdit: (toggle: boolean) => void;
 }) {
   const [edit, setEdit] = useState(false);
-  const minimumTablePrice = tables[0].price;
+  const minimumTablePrice = tables.length > 0 ? tables[0].price : 0;
 
   const toggleEdit = () => {
     setParentEdit(!edit);

@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { EditEvent, EventLocation, updateEvent } from "@/lib/actions/events";
@@ -25,6 +24,9 @@ import EventPoster from "@/components/events/shared/EventPoster";
 import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
 import EditLocation from "./EditLocation";
 import EditTimeAndDate from "./EditTimeAndDate";
+import EditTags from "./tags/EditTags";
+import EditAbout from "./EditAbout";
+import { EventTag, addEventTags, removeEventTags } from "@/lib/actions/tags";
 
 const fixDate = (time: string) => {
   let fixedTime = time
@@ -96,10 +98,12 @@ export type FormType = UseFormReturn<
 
 export default function EditEventForm({
   event,
-  tickets,
+  initialTags,
+  allTags,
 }: {
   event: EventDisplayData;
-  tickets: Tables<"tickets">[];
+  initialTags: Tables<"tags">[];
+  allTags: Tables<"tags">[];
 }) {
   const [imageUrl, setImageUrl] = useState(event.publicPosterUrl);
   const [venueLocation, setVenueLocation] = useState<EventLocation>({
@@ -109,8 +113,13 @@ export default function EditEventForm({
     city: event.city,
     state: event.state,
   });
-  const { refresh } = useRouter();
 
+  const [selectedTags, setSelectedTags] = useState(initialTags);
+  const handleTagsChange = (newTags: Tables<"tags">[]) => {
+    setSelectedTags(newTags);
+  };
+
+  const { refresh } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -150,73 +159,109 @@ export default function EditEventForm({
     }
 
     const { error } = await updateEvent(editEventForm, event.id);
+    const { addError, removeError } = await updateTags();
 
     toast.dismiss();
     if (error) {
       toast.error("Error updating event, please try again");
       return;
+    } else if (addError || removeError) {
+      toast.error("Error updating tags, please try again");
     }
     toast.success("Event updated!");
     refresh();
+  };
+
+  const updateTags = async () => {
+    const tagsToDelete: EventTag[] = initialTags
+      .filter(
+        (tag) =>
+          !selectedTags.some((selectedTag) => selectedTag.name === tag.name)
+      )
+      .map((tag) => ({
+        event_id: event.id,
+        tag_id: tag.id,
+      }));
+
+    const tagsToAdd: EventTag[] = selectedTags
+      .filter(
+        (tag) => !initialTags.some((initTag) => initTag.name === tag.name)
+      )
+      .map((tag) => ({
+        event_id: event.id,
+        tag_id: tag.id,
+      }));
+
+    const [addResult, removeResult] = await Promise.allSettled([
+      addEventTags(tagsToAdd),
+      removeEventTags(tagsToDelete),
+    ]);
+    const addError =
+      addResult.status === "rejected"
+        ? addResult.reason
+        : addResult.value.error;
+    const removeError =
+      removeResult.status === "rejected"
+        ? removeResult.reason
+        : removeResult.value.error;
+
+    return { addError, removeError };
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="mx-auto flex flex-col md:flex-row md:justify-between md:space-x-14 mb-4">
-          <div className="flex">
-            <FormField
-              control={form.control}
-              name="posterUrl"
-              render={({ field }) => (
-                <FormItem className="mx-auto">
-                  <FormLabel
-                    className="hover:cursor-pointer inline-block"
-                    htmlFor="poster"
-                  >
-                    {imageUrl && (
-                      <div className="w-full group max-w-xl relative z-10">
-                        <EventPoster posterUrl={imageUrl} />
-                        <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
-                          <p className="hidden group-hover:block transition duration-300">
-                            Replace Poster
-                          </p>
-                        </div>
+          <FormField
+            control={form.control}
+            name="posterUrl"
+            render={({ field }) => (
+              <FormItem className="mx-auto">
+                <FormLabel
+                  className="hover:cursor-pointer inline-block"
+                  htmlFor="poster"
+                >
+                  {imageUrl && (
+                    <div className="w-full group max-w-xl relative z-10">
+                      <EventPoster posterUrl={imageUrl} />
+                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-500 flex items-center justify-center">
+                        <p className="hidden group-hover:block">
+                          Replace Poster
+                        </p>
                       </div>
-                    )}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="poster"
-                      className="hidden"
-                      placeholder="Ticket Quantity"
-                      type="file"
-                      multiple={false}
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        if (file) {
-                          setImageUrl(URL.createObjectURL(file));
-                        }
-                        field.onChange(file);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                    </div>
+                  )}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="poster"
+                    className="hidden"
+                    type="file"
+                    multiple={false}
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (file) {
+                        setImageUrl(URL.createObjectURL(file));
+                      }
+                      field.onChange(file);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="text-left w-full max-w-xl md:max-w-2xl mx-auto relative z-20 space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="relative mb-4">
+                <FormItem className="relative">
                   <FormControl>
                     <Input
                       {...field}
-                      className="border-none text-4xl md:text-5xl font-semibold pb-10"
+                      className="border-none text-4xl md:text-5xl font-semibold"
                       placeholder="Event Name"
                     />
                   </FormControl>
@@ -224,30 +269,18 @@ export default function EditEventForm({
                 </FormItem>
               )}
             />
+            <EditTags
+              allTags={allTags}
+              handleTagsChange={handleTagsChange}
+              selectedTags={selectedTags}
+            />
             <EditTimeAndDate form={form} event={event} />
             <EditLocation
               form={form}
               setVenueLocation={setVenueLocation}
               venueLocation={venueLocation}
             />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem className="ml-2 my-4 md:mb-0">
-                  <FormLabel className="font-semibold text-lg mb-2">
-                    About
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      className="w-full h-40 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
-                      {...field}
-                    ></Textarea>
-                  </FormControl>
-                  <FormMessage className="text-xs md:text-sm" />
-                </FormItem>
-              )}
-            />
+            <EditAbout form={form} />
           </div>
         </div>
         <div className="md:max-w-[1160px] max-w-xl mx-auto flex justify-end">
