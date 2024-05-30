@@ -74,7 +74,7 @@ const TagInput: React.FC<tagsInputProps> = ({
           value={inputValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          className="my-1 flex-1 text-base placeholder:text-sm outline-none border-none"
+          className="my-1 flex-1 text-base h-fit placeholder:text-sm outline-none border-none"
           placeholder="Search for tags..."
         />
       </div>
