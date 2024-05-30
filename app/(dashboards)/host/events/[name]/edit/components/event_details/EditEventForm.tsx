@@ -261,7 +261,7 @@ export default function EditEventForm({
                   <FormControl>
                     <Input
                       {...field}
-                      className="border-none text-4xl md:text-5xl font-semibold"
+                      className="border-none h-14 text-4xl md:text-5xl font-semibold"
                       placeholder="Event Name"
                     />
                   </FormControl>
