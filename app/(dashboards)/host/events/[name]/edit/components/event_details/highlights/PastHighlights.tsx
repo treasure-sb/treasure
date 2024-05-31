@@ -1,7 +1,7 @@
 "use client";
 
 import { Tables } from "@/types/supabase";
-import { EventHighlightPhotos } from "../../../types";
+import { EventHighlightPhoto } from "../../../types";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { MoreVertical } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -16,16 +16,33 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import UploadHighlight from "./UploadHighlight";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
 
 export default function PastHighlights({
   event,
   previousHighlights,
 }: {
   event: Tables<"events">;
-  previousHighlights: EventHighlightPhotos[];
+  previousHighlights: EventHighlightPhoto[];
 }) {
   const supabase = createClient();
   const { refresh } = useRouter();
+
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [currentPhoto, setCurrentPhoto] = useState(
+    previousHighlights[0].publicUrl
+  );
+
+  const handleOpen = (picture: EventHighlightPhoto) => {
+    setShowOverlay(true);
+    setCurrentPhoto(picture.publicUrl);
+  };
+
+  const handleClose = () => {
+    setShowOverlay(false);
+  };
 
   const handleDelete = async (pictureUrl: string) => {
     toast.loading("Deleting image...");
@@ -56,7 +73,12 @@ export default function PastHighlights({
       <h3 className="font-semibold text-lg mb-4">Edit Past Event Highlights</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
         {previousHighlights.map((picture, index) => (
-          <AspectRatio ratio={1 / 1} key={index} className="relative group">
+          <AspectRatio
+            onClick={() => handleOpen(picture)}
+            ratio={1 / 1}
+            key={index}
+            className="relative group"
+          >
             <Image
               className="w-full h-full object-cover"
               layout="fill"
@@ -81,6 +103,14 @@ export default function PastHighlights({
           </AspectRatio>
         ))}
         <UploadHighlight event={event} />
+        <AnimatePresence>
+          {showOverlay && (
+            <SingleImageOverlay
+              photoSrc={currentPhoto}
+              handleClose={handleClose}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
