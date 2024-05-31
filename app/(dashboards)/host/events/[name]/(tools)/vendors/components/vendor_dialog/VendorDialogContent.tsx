@@ -11,9 +11,10 @@ import {
 import { InstagramIcon } from "lucide-react";
 import { socialLinkData } from "@/lib/helpers/links";
 import Link from "next/link";
-import ApplicationOptions from "./ApplicationOptions";
+import PendingWaitlist from "./PendingWaitlistOptions";
 import EmailIcon from "@/components/icons/applications/EmailIcon";
 import PhoneIcon from "@/components/icons/applications/PhoneIcon";
+import AcceptedOptions from "./AcceptedOptions";
 
 export default function VendorDialogContent({
   avatarUrl,
@@ -91,14 +92,16 @@ export default function VendorDialogContent({
               <PhoneIcon width={24} />
               <p className="text-lg">{application_phone}</p>
             </div>
-            {userInstagram && <Link
-              href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
-              target="_blank"
-              className="flex w-fit justify-start gap-4 items-center"
-            >
-              <InstagramIcon className="text-primary" size={24} />
-              <p className="text-lg">{userInstagram}</p>
-            </Link>}
+            {userInstagram && (
+              <Link
+                href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
+                target="_blank"
+                className="flex w-fit justify-start gap-4 items-center"
+              >
+                <InstagramIcon className="text-primary" size={24} />
+                <p className="text-lg">{userInstagram}</p>
+              </Link>
+            )}
           </div>
 
           {/* divs for mobile */}
@@ -113,14 +116,16 @@ export default function VendorDialogContent({
               <PhoneIcon width={20} />
               <p className="text-sm md:text-lg">{application_phone}</p>
             </div>
-            {userInstagram && <Link
-              href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
-              className="flex w-fit justify-start gap-4 items-center"
-              target="_blank"
-            >
-              <InstagramIcon className="text-primary" size={20} />
-              <p className="text-sm md:text-lg">{userInstagram}</p>
-            </Link>}
+            {userInstagram && (
+              <Link
+                href={`${socialLinkData["Instagram"].url}/${userInstagram}`}
+                className="flex w-fit justify-start gap-4 items-center"
+                target="_blank"
+              >
+                <InstagramIcon className="text-primary" size={20} />
+                <p className="text-sm md:text-lg">{userInstagram}</p>
+              </Link>
+            )}
           </div>
 
           <Accordion type="single" collapsible className="flex flex-col gap-3">
@@ -151,14 +156,20 @@ export default function VendorDialogContent({
           </Accordion>
         </div>
 
-        {(application_status === "PENDING" ||
-          application_status === "WAITLISTED") && (
-          <ApplicationOptions
+        {application_status === "PENDING" ||
+        application_status === "WAITLISTED" ? (
+          <PendingWaitlist
             vendorData={vendorData}
             eventData={eventData}
             closeDialog={closeDialog}
           />
-        )}
+        ) : application_status === "ACCEPTED" ? (
+          <AcceptedOptions
+            vendorData={vendorData}
+            eventData={eventData}
+            closeDialog={closeDialog}
+          />
+        ) : null}
       </div>
     </DialogContent>
   );

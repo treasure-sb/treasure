@@ -145,6 +145,7 @@ export default function DateFiltering() {
           <Calendar
             mode="single"
             selected={date}
+            defaultMonth={date}
             onSelect={handleCalenderDateSelect}
             className="rounded-md"
           />
