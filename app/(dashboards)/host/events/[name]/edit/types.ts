@@ -1,7 +1,7 @@
-type EventHighlightPhotos = {
+type EventHighlightPhoto = {
   photoUrl: string;
   publicUrl: string;
   id: string;
 };
 
-export type { EventHighlightPhotos };
+export type { EventHighlightPhoto };

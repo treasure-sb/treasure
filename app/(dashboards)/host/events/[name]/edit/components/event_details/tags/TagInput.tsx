@@ -60,7 +60,7 @@ const TagInput: React.FC<tagsInputProps> = ({
       >
         {initialTags.map((keyword, index) => (
           <Badge
-            key={index}
+            key={keyword.id}
             onClick={() => removeKeyword(index)}
             variant={"eventTag"}
             className="cursor-pointer"
