@@ -52,6 +52,19 @@ const sendVendorAppAcceptedSMS = async (
   return await sendSMS(phone, smsMessage);
 };
 
+const sendReminderVendorAppAcceptedSMS = async (
+  phone: string,
+  checkoutSessionId: string,
+  message: string,
+  eventName: string
+) => {
+  const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
+  const smsMessage = message
+    ? `💵 [Action Required (Reminder)] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
+    : `💵 [Action Required (Reminder)] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
+  return await sendSMS(phone, smsMessage);
+};
+
 const sendVendorAppWaitlistedSMS = async (
   phone: string,
   message: string,
@@ -146,6 +159,7 @@ export {
   sendVendorAppWaitlistedSMS,
   sendVendorAppSubmittedSMS,
   sendHostTableSoldSMS,
+  sendReminderVendorAppAcceptedSMS,
   sendHostTicketSoldSMS,
   sendHostVendorAppReceievedSMS,
   type HostSoldPayload,

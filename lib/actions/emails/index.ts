@@ -62,6 +62,19 @@ const sendVendorAppAcceptedEmail = async (
   return await to(sendEmailPromise);
 };
 
+const sendReminderVendorAppAcceptedEmail = async (
+  email: string,
+  emailProps: VendorAppAcceptedEmailProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `[Action Required (Reminder)] You've Been Accepted!: ${emailProps.eventName}`,
+    react: VendorAppAccepted(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
 const sendVendorAppRejectedEmail = async (
   email: string,
   emailProps: VendorAppRejectedEmailProps
@@ -183,5 +196,6 @@ export {
   sendTicketPurchasedEmail,
   sendVendorAppSubmittedEmail,
   sendTablePurchasedEmail,
+  sendReminderVendorAppAcceptedEmail,
   sendHostMessageEmail,
 };

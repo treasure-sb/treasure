@@ -22,7 +22,7 @@ import {
   sendVendorAppWaitlistedSMS,
 } from "@/lib/sms";
 
-export default function ApplicationOptions({
+export default function PendingWaitlistOptions({
   vendorData,
   eventData,
   closeDialog,
