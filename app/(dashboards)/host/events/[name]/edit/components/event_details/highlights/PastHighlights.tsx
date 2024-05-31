@@ -32,7 +32,7 @@ export default function PastHighlights({
 
   const [showOverlay, setShowOverlay] = useState(false);
   const [currentPhoto, setCurrentPhoto] = useState(
-    previousHighlights[0].publicUrl
+    previousHighlights.length > 0 ? previousHighlights[0].publicUrl : null
   );
 
   const handleOpen = (picture: EventHighlightPhoto) => {
@@ -104,7 +104,7 @@ export default function PastHighlights({
         ))}
         <UploadHighlight event={event} />
         <AnimatePresence>
-          {showOverlay && (
+          {showOverlay && currentPhoto && (
             <SingleImageOverlay
               photoSrc={currentPhoto}
               handleClose={handleClose}
