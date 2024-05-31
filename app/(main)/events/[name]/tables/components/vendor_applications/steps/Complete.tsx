@@ -17,7 +17,7 @@ export default function Complete() {
             table(s)
           </li>
           <li>
-            Please pay within 24 hours of apporval to guarantee table
+            Please pay within 24 hours of approval to guarantee table
             availability
           </li>
           <li>
