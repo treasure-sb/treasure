@@ -7,7 +7,7 @@ import Blurred from "@/app/(main)/events/[name]/components/Blurred";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";
-import { EventHighlightPhotos } from "../../types";
+import { EventHighlightPhoto } from "../../types";
 
 export default async function EditEventDetails({
   event,
@@ -61,7 +61,7 @@ export default async function EditEventDetails({
       return { photoUrl: picture.picture_url, publicUrl, id: picture.id };
     });
 
-    const portfolioPictures: EventHighlightPhotos[] = await Promise.all(
+    const portfolioPictures: EventHighlightPhoto[] = await Promise.all(
       imagePromises
     );
     return portfolioPictures;
