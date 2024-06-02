@@ -23,15 +23,25 @@ export default function SeeTables({
           </p>
         </div>
       ) : (
-        <p className="text-lg">Tables from ${minimumTablePrice.toFixed(2)}</p>
-      )}
-      {event.sales_status == "TABLES_ONLY" ||
-      event.sales_status == "SELLING_ALL" ? (
-        <Link href={`/events/${event.cleaned_name}/tables`}>
-          <Button className="border-primary w-32">Register Now</Button>
-        </Link>
-      ) : (
-        <></>
+        <>
+          {event.sales_status == "TABLES_ONLY" ||
+          event.sales_status == "SELLING_ALL" ? (
+            <>
+              <div className="flex flex-col sm:flex-row sm:gap-1">
+                <p className="text-lg">Tables from</p>
+                <p className="text-lg">${minimumTablePrice.toFixed(2)}</p>
+              </div>
+              <Link href={`/events/${event.cleaned_name}/tables`}>
+                <Button className="border-primary w-32">Register Now</Button>
+              </Link>
+            </>
+          ) : (
+            <div className="flex gap-1">
+              <p className="text-lg">Tables from</p>
+              <p className="text-lg">${minimumTablePrice.toFixed(2)}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
