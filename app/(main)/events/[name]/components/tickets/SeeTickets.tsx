@@ -17,26 +17,34 @@ export default function SeeTickets({
 
   return (
     <div className="w-full rounded-md items-center flex justify-between font-semibold space-x-4">
-      <p className="text-lg">
-        {isTicketFree
-          ? "Tickets FREE"
-          : `Tickets from $${minimumTicketPrice.toFixed(2)}`}
-      </p>
       {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
       eventDisplayData.sales_status == "SELLING_ALL" ? (
         <>
           {isTicketFree ? (
-            <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-              <Button className="border-primary w-32">RSVP</Button>
-            </Link>
+            <>
+              <p className="text-lg">Tickets FREE</p>
+              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+                <Button className="border-primary w-32">RSVP</Button>
+              </Link>
+            </>
           ) : (
-            <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-              <Button className="border-primary w-32">Buy Now</Button>
-            </Link>
+            <>
+              <div className="flex flex-col sm:flex-row sm:gap-1">
+                <p className="text-lg">Tickets from</p>
+                <p className="text-lg">${minimumTicketPrice.toFixed(2)}</p>
+              </div>
+              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
+                <Button className="border-primary w-32">Buy Now</Button>
+              </Link>
+            </>
           )}
         </>
       ) : (
-        <></>
+        <p className="text-lg">
+          {isTicketFree
+            ? "Tickets FREE"
+            : `Tickets from $${minimumTicketPrice.toFixed(2)}`}
+        </p>
       )}
     </div>
   );
