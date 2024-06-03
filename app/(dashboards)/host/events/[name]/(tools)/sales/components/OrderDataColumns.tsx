@@ -137,6 +137,9 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "type",
     header: "Type",
     cell: TypeCell,
+    filterFn: (row, id, value) => {
+      return row.getValue(id) === value;
+    },
   },
   {
     accessorKey: "quantity",

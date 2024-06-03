@@ -56,7 +56,7 @@ export default async function Page({
   return (
     <div className="max-w-7xl mx-auto py-10">
       <h1 className="text-2xl font-semibold mb-4">Orders</h1>
-      <DataTable columns={columns} data={tableData} />
+      <DataTable columns={columns} data={tableData} event={event} />
     </div>
   );
 }
