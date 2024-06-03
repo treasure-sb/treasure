@@ -20,7 +20,7 @@ export default async function Page({
     .single();
 
   if (eventError) {
-    redirect("/");
+    redirect("/host/events");
   }
 
   const displayData = await getEventDisplayData(eventData);

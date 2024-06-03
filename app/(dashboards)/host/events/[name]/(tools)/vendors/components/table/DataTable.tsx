@@ -180,7 +180,6 @@ export default function DataTable<TData, TValue>({
           Export
         </Button>
       </div>
-
       <Filters
         paymentFilter={paymentFilter}
         applicationFilter={applicationFilter}

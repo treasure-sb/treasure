@@ -4,6 +4,7 @@ import VendorBreakdown from "./components/charts/VendorBreakdown";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import { Tables } from "@/types/supabase";
 import { UsersIcon, BadgeDollarSign, Star, MessageCircle } from "lucide-react";
+import { totalmem } from "os";
 
 export default async function Page({
   params: { name },
@@ -29,22 +30,26 @@ export default async function Page({
     .select("*, table_info:tables(*)")
     .eq("event_id", event.id);
 
-  let ticketSales = 0;
   let ticketsSold = 0;
-  let tableSales = 0;
   let tablesSold = 0;
 
   ticketsData?.map((ticket) => {
-    ticketSales += ticket.ticket_info.price;
     ticketsSold += 1;
   });
 
   tablesData?.map((table) => {
     if (table.payment_status === "PAID") {
       tablesSold += 1;
-      tableSales += table.table_quantity * table.table_info.price;
     }
   });
+
+  const { data: ordersData } = await supabase
+    .from("orders")
+    .select("amount_paid")
+    .eq("event_id", event.id);
+
+  const totalSales =
+    ordersData?.reduce((acc, order) => acc + order.amount_paid, 0) || 0;
 
   return (
     <div className="lg:grid grid-cols-4 gap-4 flex flex-col">
@@ -61,7 +66,7 @@ export default async function Page({
         <p className="text-5xl lg:text-3xl 2xl:text-4xl">{ticketsSold}</p>
       </Link>
       <Link
-        href={`/host/events/${name}/attendees`}
+        href={`/host/events/${name}/sales`}
         className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
@@ -71,7 +76,7 @@ export default async function Page({
           <BadgeDollarSign size={28} />
         </div>
         <p className="text-5xl lg:text-3xl 2xl:text-4xl">
-          ${(ticketSales + tableSales).toFixed(2)}
+          ${totalSales.toFixed(2)}
         </p>
       </Link>
       <Link
