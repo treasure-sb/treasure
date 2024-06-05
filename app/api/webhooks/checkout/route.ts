@@ -146,7 +146,7 @@ const handleTicketPurchase = async (
     location: event.address,
     date: moment(event.date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${ticket.price}`,
+    totalPrice: `$${ticket.price * quantity}`,
     eventInfo: event.description,
   };
 
