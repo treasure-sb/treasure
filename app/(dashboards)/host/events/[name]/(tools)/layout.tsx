@@ -25,7 +25,7 @@ export default async function HostEventLayout({
   const eventData = displayData[0];
   return (
     eventData && (
-      <div className="space-y-10">
+      <div className="space-y-4">
         <EventToolsHeader event={eventData} />
         {children}
       </div>

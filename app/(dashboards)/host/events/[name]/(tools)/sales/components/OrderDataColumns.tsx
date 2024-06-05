@@ -13,6 +13,7 @@ export type Order = {
   amountPaid: number;
   purchaseDate: Date;
   type: "TABLE" | "TICKET";
+  itemName: string;
   customer: CustomerData;
 };
 
@@ -36,18 +37,22 @@ const CustomerCell = ({ row }: CellContext<Order, any>) => {
   );
 };
 
-const TypeCell = ({ cell }: CellContext<Order, any>) => {
-  const type = cell.getValue() as Order["type"];
+const TypeCell = ({ row }: CellContext<Order, any>) => {
+  const type = row.getValue("type") as Order["type"];
+  const itemName = row.getValue("itemName") as string;
   const typeText = type === "TABLE" ? "Table" : "Ticket";
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-4">
       {type === "TICKET" ? (
         <TicketIcon className="stroke-1 text-tertiary" />
       ) : (
         <TableIcon />
       )}
-      <p>{typeText}</p>
+      <div>
+        <p>{typeText}</p>
+        <p className="text-muted-foreground">{itemName}</p>
+      </div>
     </div>
   );
 };
@@ -160,5 +165,10 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "purchaseDate",
     header: DateHeader,
     cell: DateCell,
+  },
+  {
+    accessorKey: "itemName",
+    header: undefined,
+    cell: undefined,
   },
 ];
