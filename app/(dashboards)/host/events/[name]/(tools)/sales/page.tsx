@@ -87,8 +87,8 @@ export default async function Page({
 
   return (
     <div className="max-w-7xl mx-auto py-10">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-semibold mb-4">
+      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
+        <h1 className="text-2xl font-semibold">
           Orders <span className="text-muted-foreground">{orders.length}</span>
         </h1>
         <DateRangeFilter />
