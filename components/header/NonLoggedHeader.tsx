@@ -1,10 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeaderMotion from "./HeaderMotion";
+import HeaderStatic from "./HeaderStatic";
 
-export default function NonLoggedHeader() {
+export default function NonLoggedHeader({
+  useMotion = true,
+}: {
+  useMotion?: boolean;
+}) {
+  const Header = useMotion ? HeaderMotion : HeaderStatic;
+
   return (
-    <HeaderMotion>
+    <Header>
       <Link
         href="/home"
         className="font-bold text-3xl flex items-center justify-start space-x-1"
@@ -30,6 +37,6 @@ export default function NonLoggedHeader() {
           Login
         </Link>
       </div>
-    </HeaderMotion>
+    </Header>
   );
 }

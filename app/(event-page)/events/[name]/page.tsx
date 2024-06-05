@@ -1,5 +1,5 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventPage from "@/app/(main)/events/[name]/components/EventPage";
+import EventPage from "@/app/(event-page)/events/[name]/components/EventPage";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
 

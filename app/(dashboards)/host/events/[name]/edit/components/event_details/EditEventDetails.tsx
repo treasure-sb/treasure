@@ -3,7 +3,7 @@ import EditEventForm from "./EditEventForm";
 import EditTicketTables from "./EditTicketTables";
 import EventGuests from "./guests/EventGuests";
 import PastHighlights from "./highlights/PastHighlights";
-import Blurred from "@/app/(main)/events/[name]/components/Blurred";
+import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";

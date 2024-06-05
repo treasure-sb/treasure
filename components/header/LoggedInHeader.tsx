@@ -18,16 +18,25 @@ import {
   LayoutDashboardIcon,
 } from "lucide-react";
 import Image from "next/image";
+import HeaderStatic from "./HeaderStatic";
 
-export default async function LoggedInHeader({ user }: { user: User }) {
+export default async function LoggedInHeader({
+  user,
+  useMotion = true,
+}: {
+  user: User;
+  useMotion?: boolean;
+}) {
   const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(user.id);
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
+  const Header = useMotion ? HeaderMotion : HeaderStatic;
+
   return (
-    <HeaderMotion>
+    <Header>
       <div className="relative">
         <Link
           href="/home"
@@ -100,6 +109,6 @@ export default async function LoggedInHeader({ user }: { user: User }) {
         </Popover>
       </div>
       <HamburgerMenu profile={profile} profilePublicUrl={publicUrl} />
-    </HeaderMotion>
+    </Header>
   );
 }
