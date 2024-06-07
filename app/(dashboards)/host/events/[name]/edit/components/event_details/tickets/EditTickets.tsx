@@ -14,7 +14,7 @@ export default function EditTickets({
   setParentEdit: (toggle: boolean) => void;
 }) {
   const [edit, setEdit] = useState(false);
-  const minimumTicketPrice = tickets[0].price;
+  const minimumTicketPrice = tickets.length > 0 ? tickets[0].price : 0;
   const isTicketFree = minimumTicketPrice === 0;
 
   const toggleEdit = () => {
