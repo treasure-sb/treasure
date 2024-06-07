@@ -67,10 +67,11 @@ export default function EventVenueMap({ onBack, eventForm }: Step5Props) {
       "venue_map_coming_soon";
     newForm.poster_url =
       (await uploadFile(newForm.poster_url, "posters")) || "poster_coming_soon";
-
-    const { error } = await createEvent(newForm);
-    if (error) {
+    try {
+      await createEvent(newForm);
+    } catch (error) {
       toast.error("Error creating event");
+      console.log(error);
     }
     setSubmitting(false);
   };
