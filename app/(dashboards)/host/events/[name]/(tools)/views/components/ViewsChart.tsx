@@ -15,12 +15,18 @@ import {
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { ViewsChartData } from "../page";
+import { format, parseISO } from "date-fns";
 
-export default function ViewsChart({ data }: { data: ViewsChartData }) {
-  const maxValue = data.reduce(
-    (max, item) => Math.max(max, Math.max(item.views)),
-    0
-  );
+export default function ViewsChart({
+  data,
+  period,
+}: {
+  data: ViewsChartData;
+  period?: string;
+}) {
+  const formatTick = (day: string) => {
+    return format(parseISO(day), "M/d");
+  };
 
   return (
     <div className="h-[30rem] bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
@@ -33,18 +39,14 @@ export default function ViewsChart({ data }: { data: ViewsChartData }) {
           />
           <Tooltip content={<CustomTooltip />} />
           <XAxis
-            dataKey="day"
+            dataKey="normalizedDate"
             axisLine={false}
             tickSize={0}
+            interval={period === "30d" ? 6 : 0}
             tickMargin={16}
-            interval={0}
+            tickFormatter={formatTick}
           />
-          <YAxis
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
-          />
+          <YAxis axisLine={false} tickSize={0} tickMargin={16} dataKey="day" />
           <Area
             type="monotone"
             dataKey="views"
