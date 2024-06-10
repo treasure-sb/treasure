@@ -3,8 +3,13 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import VendorBreakdown from "./components/charts/VendorBreakdown";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import { Tables } from "@/types/supabase";
-import { UsersIcon, BadgeDollarSign, Star, MessageCircle } from "lucide-react";
-import { totalmem } from "os";
+import {
+  UsersIcon,
+  BadgeDollarSign,
+  Star,
+  MessageCircle,
+  AppWindowIcon,
+} from "lucide-react";
 
 export default async function Page({
   params: { name },
@@ -52,7 +57,7 @@ export default async function Page({
     ordersData?.reduce((acc, order) => acc + order.amount_paid, 0) || 0;
 
   return (
-    <div className="lg:grid grid-cols-4 gap-4 flex flex-col">
+    <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
         href={`/host/events/${name}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 md:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
@@ -94,8 +99,20 @@ export default async function Page({
         </p>
       </Link>
       <Link
-        href={`/host/events/${name}/message`}
+        href={`/host/events/${name}/views`}
         className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
+      >
+        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+            Page Views
+          </h3>
+          <AppWindowIcon size={28} />
+        </div>
+        <p className="text-5xl lg:text-3xl 2xl:text-4xl">{2}</p>
+      </Link>
+      <Link
+        href={`/host/events/${name}/message`}
+        className="bg-primary text-black flex flex-col rounded-md p-6 md:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
