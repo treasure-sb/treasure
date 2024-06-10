@@ -56,6 +56,18 @@ export default async function Page({
   const totalSales =
     ordersData?.reduce((acc, order) => acc + order.amount_paid, 0) || 0;
 
+  const today = new Date();
+  const lastWeekStartDate = new Date(today);
+  lastWeekStartDate.setDate(today.getDate() - 7);
+
+  const { count: lastPeriodViewsCount } = await supabase
+    .from("event_views")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", event.id)
+    .gte("visited_at", lastWeekStartDate.toISOString());
+
+  const viewCount = lastPeriodViewsCount || 0;
+
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
@@ -68,7 +80,7 @@ export default async function Page({
           </h3>
           <UsersIcon size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">{ticketsSold}</p>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">{ticketsSold}</p>
       </Link>
       <Link
         href={`/host/events/${name}/sales`}
@@ -80,7 +92,7 @@ export default async function Page({
           </h3>
           <BadgeDollarSign size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
           ${totalSales.toFixed(2)}
         </p>
       </Link>
@@ -94,8 +106,8 @@ export default async function Page({
           </h3>
           <Star size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">
-          {tablesSold} <span className="text-3xl">paid</span>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
+          {tablesSold} <span className="text-xl">paid</span>
         </p>
       </Link>
       <Link
@@ -108,7 +120,9 @@ export default async function Page({
           </h3>
           <AppWindowIcon size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">{2}</p>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
+          {viewCount} <span className="text-xl">this week</span>
+        </p>
       </Link>
       <Link
         href={`/host/events/${name}/message`}

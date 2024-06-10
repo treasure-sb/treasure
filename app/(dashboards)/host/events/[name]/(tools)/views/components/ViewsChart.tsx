@@ -73,7 +73,7 @@ const CustomTooltip = ({
       <div className="p-4 bg-background flex flex-col gap-2 rounded-md border-[1px]">
         <p className="text-base">
           Page Views
-          <span className="ml-2 bg-secondary rounded-none p-1">{views}</span>
+          <span className="ml-2 bg-secondary rounded-[3px] p-1">{views}</span>
         </p>
         <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
