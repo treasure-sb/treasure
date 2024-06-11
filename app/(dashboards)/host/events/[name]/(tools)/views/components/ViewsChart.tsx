@@ -28,6 +28,8 @@ export default function ViewsChart({
     return format(parseISO(day), "M/d");
   };
 
+  const maxValue = Math.max(...data.map((d) => d.views));
+
   return (
     <div className="h-[30rem] bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
       <ResponsiveContainer width="100%" height="100%">
@@ -46,7 +48,13 @@ export default function ViewsChart({
             tickMargin={16}
             tickFormatter={formatTick}
           />
-          <YAxis axisLine={false} tickSize={0} tickMargin={16} dataKey="day" />
+          <YAxis
+            axisLine={false}
+            tickSize={0}
+            tickMargin={16}
+            dataKey="day"
+            ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
+          />
           <Area
             type="monotone"
             dataKey="views"
