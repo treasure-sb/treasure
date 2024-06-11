@@ -27,7 +27,7 @@ export default function SalesChart({ salesData }: { salesData: SalesData }) {
   };
 
   return (
-    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
+    <div className="h-80 md:h-[29rem] col-span-3 bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
       <div className="flex space-x-2 items-end justify-between mb-4">
         <h3 className="text-2xl font-semibold">Sales Analytics</h3>
         <p className="text-sm md:text-base font-semibold text-muted-foreground">

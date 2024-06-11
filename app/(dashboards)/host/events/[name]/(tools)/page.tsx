@@ -3,8 +3,13 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import VendorBreakdown from "./components/charts/VendorBreakdown";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import { Tables } from "@/types/supabase";
-import { UsersIcon, BadgeDollarSign, Star, MessageCircle } from "lucide-react";
-import { totalmem } from "os";
+import {
+  UsersIcon,
+  BadgeDollarSign,
+  Star,
+  MessageCircle,
+  AppWindowIcon,
+} from "lucide-react";
 
 export default async function Page({
   params: { name },
@@ -51,8 +56,20 @@ export default async function Page({
   const totalSales =
     ordersData?.reduce((acc, order) => acc + order.amount_paid, 0) || 0;
 
+  const today = new Date();
+  const lastWeekStartDate = new Date(today);
+  lastWeekStartDate.setDate(today.getDate() - 7);
+
+  const { count: lastPeriodViewsCount } = await supabase
+    .from("event_views")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", event.id)
+    .gte("visited_at", lastWeekStartDate.toISOString());
+
+  const viewCount = lastPeriodViewsCount || 0;
+
   return (
-    <div className="lg:grid grid-cols-4 gap-4 flex flex-col">
+    <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
         href={`/host/events/${name}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 md:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
@@ -63,7 +80,7 @@ export default async function Page({
           </h3>
           <UsersIcon size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">{ticketsSold}</p>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">{ticketsSold}</p>
       </Link>
       <Link
         href={`/host/events/${name}/sales`}
@@ -75,7 +92,7 @@ export default async function Page({
           </h3>
           <BadgeDollarSign size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
           ${totalSales.toFixed(2)}
         </p>
       </Link>
@@ -89,13 +106,27 @@ export default async function Page({
           </h3>
           <Star size={28} />
         </div>
-        <p className="text-5xl lg:text-3xl 2xl:text-4xl">
-          {tablesSold} <span className="text-3xl">paid</span>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
+          {tablesSold} <span className="text-xl">paid</span>
+        </p>
+      </Link>
+      <Link
+        href={`/host/events/${name}/views`}
+        className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
+      >
+        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+            Page Views
+          </h3>
+          <AppWindowIcon size={28} />
+        </div>
+        <p className="text-5xl lg:text-3xl 2xl:text-3xl">
+          {viewCount} <span className="text-xl">this week</span>
         </p>
       </Link>
       <Link
         href={`/host/events/${name}/message`}
-        className="bg-secondary rounded-md p-6 lg:p-8 relative group h-44 hover:bg-secondary/60 transition duration-300"
+        className="bg-primary text-black flex flex-col rounded-md p-6 md:p-8 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
         <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">

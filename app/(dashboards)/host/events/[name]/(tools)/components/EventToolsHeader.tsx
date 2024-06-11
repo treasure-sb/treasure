@@ -19,7 +19,8 @@ export default function EventToolsHeader({
     pathname.includes("message") ||
     pathname.includes("attendees") ||
     pathname.includes("sales") ||
-    pathname.includes("edit");
+    pathname.includes("edit") ||
+    pathname.includes("views");
 
   return (
     <div>

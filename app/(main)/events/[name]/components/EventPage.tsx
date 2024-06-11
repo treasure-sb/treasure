@@ -17,6 +17,7 @@ import Blurred from "./Blurred";
 import Guests from "./sections/Guests";
 import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
+import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function EventPage({
   event,
@@ -26,6 +27,16 @@ export default async function EventPage({
   const {
     data: { user },
   } = await validateUser();
+  const supabase = await createSupabaseServerClient();
+
+  const { error: viewError } = await supabase
+    .from("event_views")
+    .insert([{ event_id: event.id, visitor_id: user?.id }]);
+
+  if (viewError) {
+    console.error(viewError);
+  }
+
   const eventDisplayData = await getEventDisplayData(event);
   const publicPosterUrl = await getPublicPosterUrl(event);
   const publicVenueMapUrl = await getPublicVenueMapUrl(event);
