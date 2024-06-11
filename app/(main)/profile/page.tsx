@@ -16,6 +16,7 @@ import {
   Megaphone,
   Users,
   UserCheck,
+  Crown,
 } from "lucide-react";
 
 export default async function Page() {
@@ -76,6 +77,13 @@ export default async function Page() {
           </Link>
           {profile.role === "admin" && (
             <>
+              <Link href="/admin">
+                <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+                  <Crown className="stroke-2" />
+                  <p className="font-semibold">Admin Dashboard</p>
+                  <BadgeCheck className="stroke-2 text-primary" />
+                </div>
+              </Link>
               <Link href="/profile/featured-events">
                 <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
                   <Megaphone className="stroke-2" />
