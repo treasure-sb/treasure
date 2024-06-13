@@ -14,30 +14,39 @@ export default function SeeTickets({
 }) {
   const minimumTicketPrice = tickets[0].price;
   const isTicketFree = minimumTicketPrice === 0;
+  const numTicketsLeft = tickets.reduce(
+    (acc, ticket) => acc + ticket.quantity,
+    0
+  );
 
   return (
     <div className="w-full rounded-md items-center flex justify-between font-semibold space-x-4">
       {eventDisplayData.sales_status == "ATTENDEES_ONLY" ||
       eventDisplayData.sales_status == "SELLING_ALL" ? (
         <>
-          {isTicketFree ? (
-            <>
-              <p className="text-lg">Tickets FREE</p>
-              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-                <Button className="border-primary w-32">RSVP</Button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <div className="flex flex-col sm:flex-row sm:gap-1">
-                <p className="text-lg">Tickets from</p>
-                <p className="text-lg">${minimumTicketPrice.toFixed(2)}</p>
-              </div>
-              <Link href={`/events/${eventDisplayData.cleaned_name}/tickets`}>
-                <Button className="border-primary w-32">Buy Now</Button>
-              </Link>
-            </>
-          )}
+          <div
+            className={isTicketFree ? "" : "flex flex-col sm:flex-row sm:gap-1"}
+          >
+            <p className="text-lg">
+              {isTicketFree ? "Tickets FREE" : "Tickets from"}
+            </p>
+            {!isTicketFree && (
+              <p className="text-lg">${minimumTicketPrice.toFixed(2)}</p>
+            )}
+          </div>
+          <Link
+            href={`/events/${eventDisplayData.cleaned_name}/tickets`}
+            className="relative"
+          >
+            <Button className="border-primary w-32">
+              {isTicketFree ? "RSVP" : "Buy Now"}
+            </Button>
+            {numTicketsLeft < 50 && (
+              <p className="text-xs absolute right-0 italic text-tertiary">
+                Selling fast!
+              </p>
+            )}
+          </Link>
         </>
       ) : (
         <p className="text-lg">
