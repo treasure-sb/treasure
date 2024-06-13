@@ -12,6 +12,7 @@ export default function SeeTables({
   event: Tables<"events">;
 }) {
   const minimumTablePrice = tables[0].price;
+  const numTablesLeft = tables.reduce((acc, table) => acc + table.quantity, 0);
 
   return (
     <div className="w-full items-center flex justify-between font-semibold space-x-4">
@@ -31,8 +32,16 @@ export default function SeeTables({
                 <p className="text-lg">Tables from</p>
                 <p className="text-lg">${minimumTablePrice.toFixed(2)}</p>
               </div>
-              <Link href={`/events/${event.cleaned_name}/tables`}>
+              <Link
+                href={`/events/${event.cleaned_name}/tables`}
+                className="relative"
+              >
                 <Button className="border-primary w-32">Register Now</Button>
+                {numTablesLeft < 20 && (
+                  <p className="absolute text-xs right-0 -bottom-4 italic text-primary/90">
+                    {numTablesLeft} tables left!
+                  </p>
+                )}
               </Link>
             </>
           ) : (
