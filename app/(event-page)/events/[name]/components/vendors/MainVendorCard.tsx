@@ -4,27 +4,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type Vendor, VendorTypes } from "./Vendors";
 import { getTagIcon } from "@/lib/helpers/TagIcons";
 import { ArrowUpRight } from "lucide-react";
+import { useMediaQuery } from "@mantine/hooks";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
+  const [open, setOpen] = useState(false);
   const variants = {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 },
   };
-
   const transition = { duration: 0.35, ease: "easeInOut" };
-
   const MotionAvatar = motion(Avatar);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <Link
-      href={
-        vendor.type === VendorTypes.PROFILE
-          ? `/${vendor.username}`
-          : `/${vendor.username}?type=t`
-      }
-      className="h-28 md:h-32 col-span-2 md:col-span-1 flex space-x-4 items-center border-[1px] rounded-2xl w-full p-4 py-2 relative group bg-background"
-    >
+    <div className="h-28 md:h-32 col-span-2 md:col-span-1 flex space-x-4 items-center border-[1px] rounded-2xl w-full p-4 py-2 relative group bg-background">
       <MotionAvatar
         variants={variants}
         initial="initial"
@@ -64,6 +70,6 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
         size={18}
         className="stroke-2 absolute right-3 top-3 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
       />
-    </Link>
+    </div>
   );
 }
