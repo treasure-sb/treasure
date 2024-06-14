@@ -20,6 +20,8 @@ export default function ContinueButton({
     event.vendor_exclusivity === "APPLICATIONS" ||
     event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT";
 
+  const isSoldOut = table.quantity === 0;
+
   const autofillVendorInfo = () => {
     let vendorInfo: VendorInfo = {} as VendorInfo;
     if (profile) {
@@ -48,14 +50,17 @@ export default function ContinueButton({
 
   return (
     <Button
-      disabled={!areApplicationsOpen}
+      disabled={!areApplicationsOpen || isSoldOut}
       onClick={async () => await handleCheckout()}
-      className="w-full rounded-full p-6"
+      className="w-full rounded-full p-6 relative"
     >
       {areApplicationsOpen ? (
         <p>Continue to Registration</p>
       ) : (
         <p>Not Accepting Applications</p>
+      )}
+      {isSoldOut && (
+        <div className="absolute -rotate-12 bg-red-500 p-2 w-36">Sold Out</div>
       )}
     </Button>
   );

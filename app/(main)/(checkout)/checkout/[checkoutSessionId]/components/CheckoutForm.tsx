@@ -59,8 +59,6 @@ export default function CheckoutForm({
       .eq("id", profile.id)
       .select();
 
-    console.log(updateNameError);
-
     if (!stripe || !elements) {
       return;
     }

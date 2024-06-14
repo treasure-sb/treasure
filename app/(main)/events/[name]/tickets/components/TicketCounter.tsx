@@ -26,8 +26,9 @@ export default function TicketCounter({
   const [creatingCheckout, setCreatingCheckout] = useState(false);
   const [showRSVPSuccess, setShowRSVPSuccess] = useState(false);
   const isTicketFree = ticketCount * ticket.price === 0;
+  const isSoldOut = ticket.quantity === 0;
   const minTickets = 1;
-  const maxTickets = 6;
+  const maxTickets = Math.min(ticket.quantity, 6);
 
   const handleIncrement = () => {
     if (ticketCount < maxTickets) {
@@ -88,11 +89,14 @@ export default function TicketCounter({
 
   const checkoutButton = (
     <Button
-      disabled={creatingCheckout || isTicketFree}
+      disabled={creatingCheckout || isTicketFree || isSoldOut}
       onClick={async () => await handleCheckout()}
-      className="w-full rounded-full p-6"
+      className="w-full rounded-full p-6 relative"
     >
       Checkout - ${(ticket.price * ticketCount).toFixed(2)}
+      {isSoldOut && (
+        <div className="absolute -rotate-12 bg-red-500 p-2 w-36">Sold Out</div>
+      )}
     </Button>
   );
 
