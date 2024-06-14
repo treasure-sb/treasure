@@ -25,9 +25,11 @@ import Link from "next/link";
 export default function HamburgerMenu({
   profile,
   profilePublicUrl,
+  isEventPage = false,
 }: {
   profile: Tables<"profiles">;
   profilePublicUrl: string;
+  isEventPage?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const animationVariants = {
@@ -36,7 +38,7 @@ export default function HamburgerMenu({
   };
 
   return (
-    <div className="block md:hidden">
+    <div className="block md:hidden ml-auto">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <MenuIcon
@@ -86,22 +88,24 @@ export default function HamburgerMenu({
             <Separator className="my-10" />
           </motion.div>
           <div className="flex flex-col space-y-8 w-full">
-            <motion.div
-              variants={animationVariants}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: 0.4, duration: 0.4 }}
-              onClick={() => setOpen(false)}
-              className="group"
-            >
-              <Link
-                href="/events"
-                className="text-xl flex items-center space-x-3"
+            {!isEventPage && (
+              <motion.div
+                variants={animationVariants}
+                initial="initial"
+                animate="animate"
+                transition={{ delay: 0.4, duration: 0.4 }}
+                onClick={() => setOpen(false)}
+                className="group"
               >
-                <CalendarSearch />
-                <p>Events</p>
-              </Link>
-            </motion.div>
+                <Link
+                  href="/events"
+                  className="text-xl flex items-center space-x-3"
+                >
+                  <CalendarSearch />
+                  <p>Events</p>
+                </Link>
+              </motion.div>
+            )}
             <motion.div
               variants={animationVariants}
               initial="initial"

@@ -2,7 +2,7 @@
 
 import Menu from "./menu/Menu";
 import HeaderAvatar from "../HeaderAvatar";
-import HeaderMotion from "@/components/header/HeaderMotion";
+import HeaderMotion from "@/components/shared/header/HeaderMotion";
 import { usePathname } from "next/navigation";
 
 export default function MobileHeader() {

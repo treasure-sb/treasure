@@ -18,42 +18,56 @@ import {
   LayoutDashboardIcon,
 } from "lucide-react";
 import Image from "next/image";
+import HeaderStatic from "./HeaderStatic";
 
-export default async function LoggedInHeader({ user }: { user: User }) {
+export default async function LoggedInHeader({
+  user,
+  useMotion = true,
+  isEventPage = false,
+}: {
+  user: User;
+  useMotion?: boolean;
+  isEventPage?: boolean;
+}) {
   const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(user.id);
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
-  return (
-    <HeaderMotion>
-      <div className="relative">
-        <Link
-          href="/home"
-          className="font-bold text-3xl flex items-center justify-start space-x-1"
-        >
-          <Image
-            src="/static/web_logo.png"
-            alt="web logo"
-            width={150}
-            height={100}
-          />
-        </Link>
-        {profile.role === "admin" && (
-          <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
-            admin
-          </p>
-        )}
-      </div>
-      <div className="hidden md:flex items-center space-x-6">
-        <Link
-          href="/events"
-          className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
-        >
-          Events
-        </Link>
+  const Header = useMotion ? HeaderMotion : HeaderStatic;
 
+  return (
+    <Header>
+      {!isEventPage && (
+        <div className="relative">
+          <Link
+            href="/home"
+            className="font-bold text-3xl flex items-center justify-start space-x-1"
+          >
+            <Image
+              src="/static/web_logo.png"
+              alt="web logo"
+              width={150}
+              height={100}
+            />
+          </Link>
+          {profile.role === "admin" && (
+            <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
+              admin
+            </p>
+          )}
+        </div>
+      )}
+      <div className="hidden md:flex items-center space-x-6 ml-auto">
+        {!isEventPage && (
+          <Link
+            href="/events"
+            className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
+          >
+            Events
+          </Link>
+        )}
         <Popover>
           <PopoverTrigger asChild>
             <Avatar className="h-14 w-14 border-primary hover:cursor-pointer">
@@ -99,7 +113,11 @@ export default async function LoggedInHeader({ user }: { user: User }) {
           </PopoverContent>
         </Popover>
       </div>
-      <HamburgerMenu profile={profile} profilePublicUrl={publicUrl} />
-    </HeaderMotion>
+      <HamburgerMenu
+        profile={profile}
+        profilePublicUrl={publicUrl}
+        isEventPage={isEventPage}
+      />
+    </Header>
   );
 }

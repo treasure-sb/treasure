@@ -14,7 +14,7 @@ export default async function Poster({
   const publicPosterUrl = await getPublicPosterUrl(event);
 
   return (
-    <div className="relative md:sticky md:top-28 h-fit m-auto md:m-0">
+    <div className="relative md:sticky md:top-20 h-fit m-auto md:m-0">
       <div className="absolute right-2 top-2 p-2 z-20 bg-black rounded-full hover:bg-black">
         <LikeButton event={event} user={user} />
       </div>
