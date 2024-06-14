@@ -12,7 +12,7 @@ export default async function EventPageLayout({
   } = await validateUser();
 
   return (
-    <div className="px-4 sm:px-8 flex flex-col justify-between min-h-screen">
+    <div className="px-4 sm:px-8">
       <div className="relative z-50">
         {user ? (
           <LoggedInHeader user={user} isEventPage={true} />
