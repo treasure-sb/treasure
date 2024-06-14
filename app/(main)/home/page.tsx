@@ -1,7 +1,7 @@
 import FeaturedEvents from "@/components/landing-page/featured-events/FeaturedEvents";
 import Hero from "@/components/landing-page/Hero";
 import FAQ from "@/components/landing-page/FAQ";
-import Footer from "@/components/landing-page/Footer";
+import Footer from "@/components/shared/Footer";
 import Features from "@/components/landing-page/cards/Features";
 
 export default function Page() {
@@ -18,7 +18,9 @@ export default function Page() {
         </div>
       </div>
       <FAQ />
-      <Footer />
+      <div className="mt-10">
+        <Footer />
+      </div>
     </main>
   );
 }

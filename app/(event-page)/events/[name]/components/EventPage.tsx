@@ -1,6 +1,5 @@
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import { Separator } from "@/components/ui/separator";
 import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
@@ -18,6 +17,7 @@ import Guests from "./sections/Guests";
 import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import Footer from "@/components/shared/Footer";
 
 export default async function EventPage({
   event,
@@ -69,6 +69,9 @@ export default async function EventPage({
       </div>
       <Blurred posterUrl={publicPosterUrl} />
       <EventOptions event={event} user={user} />
+      <div className="mt-6 md:mt-20">
+        <Footer isEventPage={true} />
+      </div>
     </main>
   );
 }
