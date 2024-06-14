@@ -108,18 +108,33 @@ const handleTicketPurchase = async (
     .single();
 
   const ticket: Tables<"tickets"> = ticketData;
+
+  if (ticket.quantity < quantity) {
+    throw new Error("Not enough tickets available");
+  }
+
+  const { error: updatedTicketError } = await supabase
+    .from("tickets")
+    .update({ quantity: ticket.quantity - quantity })
+    .eq("id", ticket_id);
+
+  if (updatedTicketError) {
+    throw new Error("Error updating ticket quantity");
+  }
+
   const ticketsToInsert = Array.from({ length: quantity }).map(() => {
     return { attendee_id: user_id, event_id, ticket_id };
   });
-
   const { data: purchasedTicketData, error: purchasedTicketError } =
     await supabase.from("event_tickets").insert(ticketsToInsert).select();
 
   if (!purchasedTicketData || purchasedTicketError) {
-    return NextResponse.json({
-      message: "Error",
-      ok: false,
-    });
+    await supabase
+      .from("tickets")
+      .update({ quantity: ticket.quantity })
+      .eq("id", ticket_id);
+
+    throw new Error("Error inserting purchased tickets");
   }
 
   const createOrderPayload = {
@@ -190,7 +205,29 @@ const handleTablePurchase = async (
   checkoutSession: Tables<"checkout_sessions">,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, user_id, quantity } = checkoutSession;
+  const { event_id, user_id, quantity, ticket_id } = checkoutSession;
+
+  const { data: tableData } = await supabase
+    .from("tables")
+    .select("*")
+    .eq("id", ticket_id)
+    .single();
+
+  const table: Tables<"tables"> = tableData;
+
+  if (table.quantity < quantity) {
+    throw new Error("Not enough tables available");
+  }
+
+  const { error: updateTableError } = await supabase
+    .from("tables")
+    .update({ quantity: table.quantity - quantity })
+    .eq("id", table.id);
+
+  if (updateTableError) {
+    throw new Error("Error updating table quantity");
+  }
+
   const { data: updateVendorData, error: updateVendorError } = await supabase
     .from("event_vendors")
     .update({ payment_status: "PAID" })
@@ -200,16 +237,12 @@ const handleTablePurchase = async (
     .single();
 
   if (updateVendorError) {
-    return NextResponse.json({
-      message: "Error",
-      ok: false,
-    });
+    throw new Error("Error updating vendor data");
   }
 
   const eventVendorData: EventVendorQueryData = updateVendorData;
   const vendorProfile = eventVendorData.profile;
   const event = eventVendorData.event;
-  const table = eventVendorData.table;
 
   const createOrderPayload = {
     userId: user_id,
@@ -311,14 +344,23 @@ export async function POST(req: Request) {
     );
 
     if (event.type === "payment_intent.succeeded") {
-      await handlePaymentIntentSucceeded(
-        event as Stripe.PaymentIntentSucceededEvent
-      );
+      try {
+        await handlePaymentIntentSucceeded(
+          event as Stripe.PaymentIntentSucceededEvent
+        );
+        return NextResponse.json({
+          message: "Payment Intent Succeeded",
+          ok: true,
+        });
+      } catch (err) {
+        await stripe.refunds.create({ payment_intent: event.data.object.id });
+        console.error("Failed to process post-payment actions:", err);
+        return NextResponse.json({
+          message: "An error has occurred",
+          ok: false,
+        });
+      }
     }
-    return NextResponse.json({
-      result: "Payment Intent Succeeded",
-      ok: true,
-    });
   } catch (err) {
     return NextResponse.json({
       message: "An error has occurred",

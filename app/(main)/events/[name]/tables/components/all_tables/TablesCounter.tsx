@@ -8,7 +8,7 @@ import ContinueButton from "./ContinueButton";
 export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
   const [tableCount, setTableCount] = useState(1);
   const minTables = 1;
-  const maxTables = 6;
+  const maxTables = Math.min(table.quantity, 6);
 
   const handleIncrement = () => {
     if (tableCount < maxTables) {

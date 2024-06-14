@@ -10,7 +10,6 @@ import { TicketIcon } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import EventDisplay from "@/components/events/shared/EventDisplay";
 
 export default function PaymentIntent({
   eventDisplay,
@@ -39,9 +38,11 @@ export default function PaymentIntent({
       const { paymentIntent } = await stripe.retrievePaymentIntent(
         clientSecret
       );
+
       if (!paymentIntent) {
         return;
       }
+
       switch (paymentIntent.status) {
         case "succeeded":
           toast.success("Your payment was successful.");
