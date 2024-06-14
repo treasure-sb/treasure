@@ -471,6 +471,42 @@ export type Database = {
           },
         ]
       }
+      event_views: {
+        Row: {
+          event_id: string
+          id: string
+          visited_at: string
+          visitor_id: string | null
+        }
+        Insert: {
+          event_id?: string
+          id?: string
+          visited_at?: string
+          visitor_id?: string | null
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          visited_at?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_page_views_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_page_views_visitor_id_fkey"
+            columns: ["visitor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           address: string
@@ -780,8 +816,6 @@ export type Database = {
           quantity: number
           section_name: string
           space_allocated: number
-          stripe_price_id: string | null
-          stripe_product_id: string | null
           table_provided: boolean
         }
         Insert: {
@@ -793,8 +827,6 @@ export type Database = {
           quantity: number
           section_name: string
           space_allocated?: number
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
           table_provided?: boolean
         }
         Update: {
@@ -806,8 +838,6 @@ export type Database = {
           quantity?: number
           section_name?: string
           space_allocated?: number
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
           table_provided?: boolean
         }
         Relationships: [
@@ -913,8 +943,6 @@ export type Database = {
           name: string
           price: number
           quantity: number
-          stripe_price_id: string | null
-          stripe_product_id: string | null
         }
         Insert: {
           created_at?: string
@@ -923,8 +951,6 @@ export type Database = {
           name?: string
           price: number
           quantity: number
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
         }
         Update: {
           created_at?: string
@@ -933,8 +959,6 @@ export type Database = {
           name?: string
           price?: number
           quantity?: number
-          stripe_price_id?: string | null
-          stripe_product_id?: string | null
         }
         Relationships: [
           {
@@ -942,48 +966,6 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      vendor_applications: {
-        Row: {
-          collection_type: string
-          contact: string
-          created_at: string
-          event_id: string
-          status: number
-          vendor_id: string
-        }
-        Insert: {
-          collection_type?: string
-          contact?: string
-          created_at?: string
-          event_id: string
-          status?: number
-          vendor_id: string
-        }
-        Update: {
-          collection_type?: string
-          contact?: string
-          created_at?: string
-          event_id?: string
-          status?: number
-          vendor_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "vendor_applications_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "vendor_applications_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

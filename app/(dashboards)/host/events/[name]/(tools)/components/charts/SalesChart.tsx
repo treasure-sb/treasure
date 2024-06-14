@@ -15,58 +15,57 @@ import {
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { SalesData } from "./SalesAnalytics";
+import { format, parseISO } from "date-fns";
 
-export default function SalesChart({ salesData }: { salesData: SalesData }) {
+export default function SalesChart({
+  salesData,
+  periodLength,
+}: {
+  salesData: SalesData;
+  periodLength: number;
+}) {
   const maxValue = salesData.reduce(
     (max, item) => Math.max(max, Math.max(item.tables, item.tickets)),
     0
   );
 
-  const formatTick = (value: string) => {
+  const formatYTick = (value: string) => {
     return `$${value}`;
   };
 
+  const formatXTick = (day: string) => {
+    return format(parseISO(day), "M/d");
+  };
+
   return (
-    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
-      <div className="flex space-x-2 items-end justify-between mb-4">
-        <h3 className="text-2xl font-semibold">Sales Analytics</h3>
-        <p className="text-sm md:text-base font-semibold text-muted-foreground">
-          Last 30 days
-        </p>
-      </div>
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart width={500} height={300} data={salesData}>
-          <CartesianGrid
-            strokeDasharray="4 1"
-            stroke="#27272a"
-            vertical={false}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <XAxis
-            dataKey="day"
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            padding={{ left: 40 }}
-            interval={3}
-          />
-          <YAxis
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            tickFormatter={formatTick}
-            ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
-          />
-          <Line type="monotone" dataKey="tables" stroke="#eac362" dot={false} />
-          <Line
-            type="monotone"
-            dataKey="tickets"
-            stroke="#71d08c"
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height="90%">
+      <LineChart width={500} height={300} data={salesData}>
+        <CartesianGrid
+          strokeDasharray="4 1"
+          stroke="#27272a"
+          vertical={false}
+        />
+        <Tooltip content={<CustomTooltip />} />
+        <XAxis
+          dataKey="normalizedDate"
+          axisLine={false}
+          tickSize={0}
+          tickMargin={16}
+          padding={{ left: 40 }}
+          tickFormatter={formatXTick}
+          interval={periodLength === 7 ? 0 : 3}
+        />
+        <YAxis
+          axisLine={false}
+          tickSize={0}
+          tickMargin={16}
+          tickFormatter={formatYTick}
+          ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
+        />
+        <Line type="monotone" dataKey="tables" stroke="#71d08c" dot={false} />
+        <Line type="monotone" dataKey="tickets" stroke="#eac362" dot={false} />
+      </LineChart>
+    </ResponsiveContainer>
   );
 }
 
@@ -80,16 +79,20 @@ const CustomTooltip = ({
     const tableSales = payload[0].payload.tables;
     const formattedDate = payload[0].payload.formattedDate;
     return (
-      <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
-        <p className="text-medium text-lg">{formattedDate}</p>
-        <p className="text-sm text-primary">
-          Ticket Sales:
-          <span className="ml-2">${ticketSales.toFixed(2)}</span>
+      <div className="p-4 bg-background flex flex-col gap-2 rounded-md border-[1px]">
+        <p className="text-base">
+          Ticket Sales
+          <span className="ml-2 bg-tertiary/10 text-yellow-500 rounded-[3px] p-1">
+            ${ticketSales.toFixed(2)}
+          </span>
         </p>
-        <p className="text-sm text-tertiary">
-          Table Sales:
-          <span className="ml-2">${tableSales.toFixed(2)}</span>
+        <p className="text-base">
+          Table Sales
+          <span className="ml-2 bg-primary/10 text-green-500 rounded-[3px] p-1">
+            ${tableSales.toFixed(2)}
+          </span>
         </p>
+        <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
     );
   }

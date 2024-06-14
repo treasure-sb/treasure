@@ -142,22 +142,12 @@ const createTickets = async (
   const ticketsPromise = tickets.map(async (ticket) => {
     const { ticket_price, ticket_quantity, ticket_name } = ticket;
 
-    // create ticket on stripe
-    const ticketProduct = {
-      name: `${event_name} Ticket: ${ticket_name}`,
-      price: ticket_price,
-      poster_url,
-    };
-
-    const stripeTicketProduct = await createStripeProduct(ticketProduct);
     await supabase.from("tickets").insert([
       {
         price: ticket_price,
         quantity: ticket_quantity,
         name: ticket_name,
         event_id,
-        stripe_product_id: stripeTicketProduct.id,
-        stripe_price_id: stripeTicketProduct.default_price,
       },
     ]);
   });
@@ -183,15 +173,6 @@ const createTableTicket = async (
       additional_information,
     } = table;
 
-    // create table ticket on stripe
-    const tableTicketProduct = {
-      name: `${event_name} Table: ${section_name}`,
-      price: table_price,
-      poster_url,
-    };
-
-    const stripeTableProduct = await createStripeProduct(tableTicketProduct);
-
     await supabase.from("tables").insert([
       {
         section_name,
@@ -202,8 +183,6 @@ const createTableTicket = async (
         number_vendors_allowed,
         additional_information,
         event_id,
-        stripe_product_id: stripeTableProduct.id,
-        stripe_price_id: stripeTableProduct.default_price,
       },
     ]);
   });
