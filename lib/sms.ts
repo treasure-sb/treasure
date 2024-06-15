@@ -20,7 +20,7 @@ const sendAttendeeTicketPurchasedSMS = async (
     phone,
     `🙌 You’re going to ${eventName} on ${moment(eventDate).format(
       "dddd, MMM Do"
-    )}!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets`
+    )}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
   );
 };
 
@@ -35,7 +35,7 @@ const sendVendorTablePurchasedSMS = async (
       eventDate
     ).format(
       "dddd, MMM Do"
-    )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ ontreasure.xyz/tickets`
+    )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
   );
 };
 
@@ -45,7 +45,7 @@ const sendVendorAppAcceptedSMS = async (
   message: string,
   eventName: string
 ) => {
-  const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
+  const checkoutUrl = `https://www.ontreasure.com/checkout/${checkoutSessionId}`;
   const smsMessage = message
     ? `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
     : `💵 [Action Required] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
@@ -58,7 +58,7 @@ const sendReminderVendorAppAcceptedSMS = async (
   message: string,
   eventName: string
 ) => {
-  const checkoutUrl = `https://www.ontreasure.xyz/checkout/${checkoutSessionId}`;
+  const checkoutUrl = `https://www.ontreasure.com/checkout/${checkoutSessionId}`;
   const smsMessage = message
     ? `💵 [Action Required (Reminder)] Congrats! Your application for ${eventName} has been accepted!\n\nMessage from the host: ${message}\n\nPurchase your table here: ${checkoutUrl}`
     : `💵 [Action Required (Reminder)] Congrats! Your application for ${eventName} has been accepted!\n\nPurchase your table here: ${checkoutUrl}`;
@@ -104,7 +104,7 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
       !businessName ? `${firstName} ${lastName}` : businessName
     } just bought a ticket to ${eventName} on ${moment(eventDate).format(
       "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.xyz/host/events/${eventCleanedName}`
+    )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
 };
 
@@ -126,7 +126,7 @@ const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
       eventDate
     ).format(
       "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.xyz/host/events/${eventCleanedName}`
+    )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
 };
 
@@ -148,7 +148,7 @@ const sendHostVendorAppReceievedSMS = async (
       eventDate
     ).format("dddd, MMM Do")} from ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    }! Please review their application: ontreasure.xyz/host/events/${eventCleanedName}/vendors`
+    }! Please review their application: ontreasure.com/host/events/${eventCleanedName}/vendors`
   );
 };
 
