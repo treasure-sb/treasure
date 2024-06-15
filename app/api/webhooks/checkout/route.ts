@@ -185,7 +185,7 @@ const handleTicketPurchase = async (
       firstName: profile.first_name,
       lastName: profile.last_name,
       eventName: event.name,
-      eventDate: event.cleaned_name,
+      eventDate: event.date,
       eventCleanedName: event.cleaned_name,
     };
     await sendHostTicketSoldSMS(hostSMSPayload);
