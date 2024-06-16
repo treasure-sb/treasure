@@ -135,7 +135,7 @@ export default function HamburgerMenu({
                 className="text-xl flex items-center space-x-3"
               >
                 <User2Icon />
-                <p>View Profile</p>
+                <p>Profile</p>
               </Link>
             </motion.div>
             <motion.div
@@ -151,7 +151,7 @@ export default function HamburgerMenu({
                 className="text-xl flex items-center space-x-3"
               >
                 <Settings />
-                <p>Manage Profile</p>
+                <p>Settings</p>
               </Link>
             </motion.div>
 

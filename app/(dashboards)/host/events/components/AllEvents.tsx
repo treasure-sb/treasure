@@ -3,8 +3,8 @@ import { validateUser } from "@/lib/actions/auth";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventDisplaySkeleton from "@/components/events/skeletons/EventDisplaySkeleton";
-import EventDisplay from "@/components/events/shared/EventDisplay";
+import EventCardSkeleton from "@/components/events/skeletons/EventCardSkeleton";
+import EventCard from "@/components/events/shared/EventCard";
 
 export default async function AllEvents() {
   const supabase = await createSupabaseServerClient();
@@ -26,7 +26,7 @@ export default async function AllEvents() {
   const eventData = await eventDisplayData(eventsHosting);
 
   const loadingSkeletons = Array.from({ length: 6 }).map((_, i) => (
-    <EventDisplaySkeleton key={i} />
+    <EventCardSkeleton key={i} />
   ));
 
   return (
@@ -34,10 +34,10 @@ export default async function AllEvents() {
       {!data && loadingSkeletons}
       {eventData.map((event) => (
         <div className="hover:translate-y-[-.5rem] transition duration-500">
-          <EventDisplay
+          <EventCard
             user={user}
             showLikeButton={false}
-            redirect={`/host/events/${event.cleaned_name}`}
+            redirectTo={`/host/events/${event.cleaned_name}`}
             event={event}
           />
         </div>

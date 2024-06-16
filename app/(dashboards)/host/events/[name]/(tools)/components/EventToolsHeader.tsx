@@ -60,7 +60,7 @@ export default function EventToolsHeader({
             className="group cursor-pointer"
           >
             <Button variant={"secondary"} className="flex gap-2">
-              <p>Event Info</p>
+              <p>Edit Event</p>
             </Button>
           </Link>
           <div className="flex space-x-1">
