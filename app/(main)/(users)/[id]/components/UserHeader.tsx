@@ -54,13 +54,6 @@ export default async function UserHeader({
   const mobileHeader = (
     <div className="flex flex-col space-y-4 md:hidden relative">
       <div className="text-center md:mt-16">
-        {ownProfile && (
-          <div className="w-full flex justify-end">
-            <Link href="/profile">
-              <Settings className="w-8 h-8 hover:cursor-pointer stroke-1 mr-3" />
-            </Link>
-          </div>
-        )}
         <div className="space-y-4 m-auto">
           <h1 className="text-2xl font-bold">
             {isProfile ? (
@@ -83,6 +76,14 @@ export default async function UserHeader({
               <AvatarImage src={publicUrl} />
               <AvatarFallback />
             </Avatar>
+            {ownProfile && (
+              <Link
+                href="/profile"
+                className="absolute top-1 right-1 w-11 h-11 flex items-center justify-center rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500 focus:outline-none"
+              >
+                <Settings className="w-7 h-7 m-auto text-background" />
+              </Link>
+            )}
             <CopyProfileLink username={user.username} />
             {ownProfile && <QRCode username={user.username} />}
           </div>
@@ -126,13 +127,6 @@ export default async function UserHeader({
       className="md:flex md:flex-col md:space-y-6 
     md:text-center md:mt-8 hidden w-[40%] sticky top-0"
     >
-      {ownProfile && (
-        <div className="w-full flex justify-end">
-          <Link href="/profile">
-            <Settings className="w-8 h-8 hover:cursor-pointer stroke-1 mr-3" />
-          </Link>
-        </div>
-      )}
       <h1 className="text-2xl md:text-3xl font-bold">
         {isProfile ? (
           <>
@@ -154,6 +148,14 @@ export default async function UserHeader({
           <AvatarImage src={publicUrl} />
           <AvatarFallback />
         </Avatar>
+        {ownProfile && (
+          <Link
+            href="/profile"
+            className="absolute top-1 right-1 w-11 h-11 flex items-center justify-center rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500 focus:outline-none"
+          >
+            <Settings className="w-7 h-7 m-auto text-background" />
+          </Link>
+        )}
         <CopyProfileLink username={user.username} />
         {ownProfile && <QRCode username={user.username} />}
       </div>

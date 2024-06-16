@@ -1,5 +1,6 @@
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Image from "next/image";
+import Link from "next/link";
 
 interface NavigationItem {
   name: string;
@@ -43,14 +44,14 @@ export default function Footer({
             </a>
           ))}
         </nav>
-        <div className="flex items-center justify-center w-full">
+        <Link href="/home" className="flex items-center justify-center w-full">
           <Image
             src="/static/web_logo.png"
             alt="web logo"
             width={120}
             height={100}
           />
-        </div>
+        </Link>
         <p className="text-center text-sm text-gray-600 dark:text-gray-100 px-2 py-1">
           &copy; {new Date().getFullYear()} Treasure. All rights reserved.
         </p>

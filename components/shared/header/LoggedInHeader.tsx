@@ -94,14 +94,14 @@ export default async function LoggedInHeader({
               href={`/${profile.username}`}
             >
               <User2Icon className="stroke-1" />
-              <p>View Profile</p>
+              <p>Profile</p>
             </Link>
             <Link
               className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
               href="/profile"
             >
               <Settings className="stroke-1" />
-              <p>Manage Profile</p>
+              <p>Settings</p>
             </Link>
             <Link
               className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
