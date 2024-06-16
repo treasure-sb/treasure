@@ -65,9 +65,8 @@ export default function ListEvents({
 
   return (
     <>
-      <div className="space-y-8 md:hidden block">
-        <EventDisplay event={events[0]} user={user} />
-        {allEvents?.slice(1).map((event, i) => (
+      <div className="space-y-8 md:hidden block mt-8">
+        {allEvents?.map((event, i) => (
           <div
             key={event.id + "card"}
             ref={allEvents.length - 1 === i + 1 ? ref : null}

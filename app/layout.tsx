@@ -21,11 +21,12 @@ export const metadata: Metadata = {
   },
   description: "Events for everyone",
   keywords: [
-    "treausre",
+    "treasure",
     "treasure events",
     "card shows near me",
     "collectible shows near me",
     "tcg shows near me",
+    "tickets",
   ],
 };
 export default async function RootLayout({

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
+import { Ticket } from "lucide-react";
 
 export default function EventCard({
   event,
@@ -30,7 +31,7 @@ export default function EventCard({
   return (
     <div
       className={cn(
-        `w-full h-25 flex items-center justify-between`,
+        `w-full h-25 flex items-center justify-between relative`,
         !clickable && "pointer-events-none"
       )}
     >
@@ -54,12 +55,14 @@ export default function EventCard({
               sizes="100px"
               onLoad={() => setLoading(false)}
             />
+
             {loading && (
               <Skeleton
                 className={`rounded-xl w-full h-full absolute inset-0 ${skeletonDisplay}`}
               />
             )}
           </div>
+
           <div className="max-w-[65%] my-auto">
             <p className="text-lg font-bold line-clamp-2">{event.name}</p>
             <p className="text-primary text-sm font-normal">{formattedDate} </p>
@@ -70,6 +73,12 @@ export default function EventCard({
         </div>
       </Link>
       {showLikeButton && <LikeButton event={event} user={user} />}
+      {event.sales_status !== "NO_SALE" && (
+        <Ticket
+          fill="black"
+          className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg]"
+        />
+      )}
     </div>
   );
 }
