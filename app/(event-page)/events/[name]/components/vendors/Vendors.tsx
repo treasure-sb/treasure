@@ -19,16 +19,26 @@ export type Vendor = {
   lastName: string | null;
   bio: string | null;
   tags: string[];
+  links: Link[];
+  inventory: string | null;
 };
 
 type ProfileVendor = {
-  profile: Tables<"profiles">;
+  inventory: string;
+  profile: Tables<"profiles"> & {
+    links: Link[];
+  };
   tags: TagData[];
 };
 
 type TempProfileVendor = {
   profile: Tables<"temporary_profiles">;
   tags: Tables<"tags">;
+};
+
+type Link = {
+  username: string;
+  application: string;
 };
 
 const createVendorFromProfile = (profile: ProfileVendor) => {
@@ -43,11 +53,16 @@ const createVendorFromProfile = (profile: ProfileVendor) => {
     lastName: vendorProfile.last_name,
     bio: vendorProfile.bio,
     tags: tags.map((tag) => tag.tags.name),
+    links: vendorProfile.links,
+    inventory: profile.inventory,
   };
 };
 
 const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
   const { profile: vendorProfile, tags } = tempProfile;
+  const instagramLink = vendorProfile.instagram
+    ? [{ username: vendorProfile.instagram, application: "Instagram" }]
+    : [];
   return {
     username: vendorProfile.username,
     avatarUrl: vendorProfile.avatar_url,
@@ -58,6 +73,8 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
     lastName: null,
     bio: null,
     tags: [tags && tags.name],
+    links: instagramLink,
+    inventory: null,
   };
 };
 
@@ -84,7 +101,9 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
   const { data: vendorsData } = await supabase
     .from("event_vendors")
-    .select("profile:profiles(*), tags:event_vendor_tags(tags(*))")
+    .select(
+      "inventory, profile:profiles(*, links(username, application)), tags:event_vendor_tags(tags(*))"
+    )
     .eq("event_id", event.id)
     .eq("payment_status", "PAID")
     .returns<ProfileVendor[]>();

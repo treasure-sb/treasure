@@ -34,4 +34,29 @@ const getTagIcon = (tag: string) => {
   }
 };
 
-export { getTagIcon };
+const getTagColor = (tag: string) => {
+  switch (tag) {
+    case "Pokemon":
+      return "#ffd65b";
+    case "Sports":
+      return "#ff814a";
+    case "Comics":
+      return "#00449e";
+    case "Toys":
+      return "#ff59b9";
+    case "Collectibles":
+      return "#c362dd";
+    case "Autographs":
+      return "#00bac2";
+    case "Anime":
+      return "#00449e";
+    case "One-Piece":
+      return "#ff001b";
+    case "TCG":
+      return "#117cae";
+    default:
+      return "#70cf8c";
+  }
+};
+
+export { getTagIcon, getTagColor };

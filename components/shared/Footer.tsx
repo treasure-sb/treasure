@@ -31,7 +31,7 @@ export default function Footer({
 
   return (
     <footer className="w-full">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8 space-y-2">
+      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 space-y-2">
         <nav className="flex flex-wrap justify-center md:space-x-4">
           {filteredNavigation.map((item) => (
             <a
