@@ -18,6 +18,7 @@ export default function ListVendors({
   tags: string[];
 }) {
   const [filter, setFilter] = useState("All");
+  const [numVendors, setNumVendors] = useState(4);
   const [vendors, setVendors] = useState<Vendor[]>(allVendors);
 
   const filteredVendors = useMemo(() => {
@@ -27,25 +28,6 @@ export default function ListVendors({
 
     return vendors.filter((vendor) => vendor.tags.includes(filter));
   }, [filter, vendors]);
-
-  const shuffleVendors = () => {
-    const shuffled = vendors.slice();
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
-  useEffect(() => {
-    setVendors(shuffleVendors());
-    const interval = setInterval(() => {
-      if (filteredVendors.length > 4) {
-        setVendors(shuffleVendors());
-      }
-    }, 20000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleClickFilter = (tag: string) => {
     setFilter(tag);
@@ -80,14 +62,34 @@ export default function ListVendors({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <AnimatePresence mode="wait">
-          {filteredVendors.slice(0, 4).map((vendor, index) => (
+          {filteredVendors.slice(0, numVendors).map((vendor) => (
             <MainVendorCard key={vendor.username} vendor={vendor} />
           ))}
         </AnimatePresence>
       </div>
-      {filteredVendors.length > 4 && (
-        <VendorGroup vendors={filteredVendors.slice(4)} />
+      {filteredVendors.length > numVendors && (
+        <VendorGroup vendors={filteredVendors.slice(numVendors)} />
       )}
+      <div className="flex justify-center">
+        {numVendors > 4 && (
+          <Button
+            variant={"link"}
+            onClick={() => setNumVendors(4)}
+            className="text-white hover:no-underline"
+          >
+            See Less
+          </Button>
+        )}
+        {numVendors < filteredVendors.length && (
+          <Button
+            variant={"link"}
+            onClick={() => setNumVendors((numVendors) => numVendors + 4)}
+            className="text-white hover:no-underline"
+          >
+            See More
+          </Button>
+        )}
+      </div>
       {filteredVendors.length === 0 && (
         <p className="text-center text-muted-foreground text-sm">
           No vendors found
