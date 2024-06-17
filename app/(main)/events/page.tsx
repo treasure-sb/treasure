@@ -26,7 +26,7 @@ export default function Page({
         ) : (
           <h1 className="font-semibold text-2xl">Popular Events</h1>
         )}
-        <h2 className="font-bold text-gray-500">Near New York, NY</h2>
+        <h2 className="font-bold text-muted-foreground">Near New York, NY</h2>
       </div>
       <Events searchParams={searchParams} />
     </main>

@@ -27,12 +27,11 @@ import {
 import VendorCardTrigger from "./VendorCardTrigger";
 
 export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
-  const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog>
         <DialogTrigger>
           <VendorCardTrigger vendor={vendor} />
         </DialogTrigger>
@@ -119,7 +118,7 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer>
       <DrawerTrigger>
         <VendorCardTrigger vendor={vendor} />
       </DrawerTrigger>
