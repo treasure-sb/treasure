@@ -1,11 +1,12 @@
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import { Tables } from "@/types/supabase";
-import Image from "next/image";
-import DataTable from "../../../(tools)/vendors/components/assignments/table/DataTable";
 import { eventDisplayData } from "@/lib/helpers/events";
-import { columns } from "../../../(tools)/vendors/components/assignments/table/VendorDataColumns";
-import Assign from "./Assign";
+import { columns } from "./table/VendorDataColumns";
+import { Tables } from "@/types/supabase";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import Image from "next/image";
+import DataTable from "./table/DataTable";
+import AssignForm from "./AssignForm";
+import { EventDisplayData } from "@/types/event";
 
 const getVendorPublicUrl = async (vendors: any[]) => {
   const supabase = await createSupabaseServerClient();
@@ -35,10 +36,10 @@ const getTempVendorPublicUrl = async (vendors: any[]) => {
   );
 };
 
-export default async function EditVendors({
+export default async function VendorAssignment({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventDisplayData;
 }) {
   const publicVenueMapUrl = await getPublicVenueMapUrl(event);
   const supabase = await createSupabaseServerClient();
@@ -95,7 +96,7 @@ export default async function EditVendors({
       : 50;
 
   return (
-    <>
+    <div>
       <h3 className="font-semibold text-2xl">Vendor Assignment</h3>
       <div className="max-w-4xl mx-auto py-4 gap-4 items-center flex flex-col">
         <Image
@@ -105,9 +106,13 @@ export default async function EditVendors({
           width={500}
           height={200}
         />
-        <Assign event_id={event.id} vendors={tableData} numTables={numTables} />
+        <AssignForm
+          event_id={event.id}
+          vendors={tableData}
+          numTables={numTables}
+        />
         <DataTable columns={columns} data={tableData} eventData={eData} />
       </div>
-    </>
+    </div>
   );
 }

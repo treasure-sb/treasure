@@ -37,7 +37,6 @@ export default async function Page({
       </Link>
       <EditState>
         <EditEventDetails event={event} />
-        <EditVendors event={event} />
       </EditState>
     </main>
   );

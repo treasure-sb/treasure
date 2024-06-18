@@ -1,14 +1,12 @@
 "use client";
 
-import SelectEdit from "./SelectEdit";
+import LineTabs from "@/components/ui/custom/line-tabs";
 import { useState } from "react";
 
-export default function EditState({
-  children,
-}: {
-  children: React.ReactNode[];
-}) {
+export default function EditState({ children }: { children: React.ReactNode }) {
   const [active, setActive] = useState("Event Details");
+
+  const tabs = ["Event Details"];
 
   const handleSelect = (selected: string) => {
     setActive(selected);
@@ -16,11 +14,8 @@ export default function EditState({
 
   return (
     <div className="max-w-[1160px] mx-auto">
-      <SelectEdit active={active} onSelect={handleSelect} />
-      <div className="mt-8">
-        {active === "Event Details" && children[0]}
-        {active === "Vendors" && children[1]}
-      </div>
+      <LineTabs tabs={tabs} active={active} onSelect={handleSelect} />
+      <div className="mt-8">{active === "Event Details" && children}</div>
     </div>
   );
 }

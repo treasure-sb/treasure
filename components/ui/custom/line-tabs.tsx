@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
 
-const tabs = ["Event Details", "Vendors"];
-
 interface TabProps {
   text: string;
   selected: boolean;
@@ -33,9 +31,11 @@ const Tab = ({ text, selected, setSelected }: TabProps) => {
 };
 
 const LineTabs = ({
+  tabs,
   active,
   onSelect,
 }: {
+  tabs: string[];
   active: string;
   onSelect: (select: string) => void;
 }) => {
