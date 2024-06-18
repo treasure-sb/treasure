@@ -27,7 +27,7 @@ export default async function FeaturedEvents() {
           className="flex items-center space-x-1 group text-xs md:text-xl"
           href="/events"
         >
-          <p className="group-hover:text-foreground/80 transition duration-300 font-semibold">
+          <p className="group-hover:text-foreground/80 transition duration-300">
             See More
           </p>
           <LucideArrowUpRight
