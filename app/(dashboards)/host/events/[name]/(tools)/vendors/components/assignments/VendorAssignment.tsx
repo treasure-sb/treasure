@@ -96,9 +96,8 @@ export default async function VendorAssignment({
       : 50;
 
   return (
-    <div>
-      <h3 className="font-semibold text-2xl">Vendor Assignment</h3>
-      <div className="max-w-4xl mx-auto py-4 gap-4 items-center flex flex-col">
+    <div className="max-w-4xl mx-auto">
+      <div className="flex flex-col items-center">
         <Image
           className="rounded-xl mb-6 lg:mb-0"
           alt="venue map image"
@@ -111,6 +110,14 @@ export default async function VendorAssignment({
           vendors={tableData}
           numTables={numTables}
         />
+      </div>
+      <div>
+        <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
+          <h2 className="text-2xl font-semibold">
+            All Vendors{" "}
+            <span className="text-muted-foreground">{tableData.length}</span>
+          </h2>
+        </div>
         <DataTable columns={columns} data={tableData} eventData={eData} />
       </div>
     </div>

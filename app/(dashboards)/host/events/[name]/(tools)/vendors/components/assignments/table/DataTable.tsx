@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ColumnDef,
   flexRender,
@@ -24,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { EventDisplayData } from "@/types/event";
 import Filters from "./Filters";
 
@@ -72,8 +71,7 @@ export default function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="w-full p-4">
-      <h1 className="text-2xl mb-4 font-semibold">Event Vendors</h1>
+    <div>
       <Filters
         vendorTypeFilter={vendorTypeFilter}
         assignmentFilter={assignmentFilter}
@@ -110,7 +108,7 @@ export default function DataTable<TData, TValue>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell, i) => (
-                      <TableCell key={cell.id} className="py-8">
+                      <TableCell key={cell.id} className="py-4 md:py-6">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

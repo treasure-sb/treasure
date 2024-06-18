@@ -46,10 +46,10 @@ export default async function VerifiedVendors({
   return (
     <div>
       <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
-        <h1 className="text-2xl font-semibold">
+        <h2 className="text-2xl font-semibold">
           Verified Vendors{" "}
           <span className="text-muted-foreground">{eventVendors.length}</span>
-        </h1>
+        </h2>
       </div>
       <DataTable
         columns={columns}
