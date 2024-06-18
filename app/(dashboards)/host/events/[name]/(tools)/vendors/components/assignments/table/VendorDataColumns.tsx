@@ -2,8 +2,9 @@
 
 import { ColumnDef, CellContext } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import NotifyVendor from "./NotifyVendor";
 
 export type Vendor = {
   avatar_url: string | null;
@@ -11,6 +12,10 @@ export type Vendor = {
   section: string;
   type: string;
   assignment: number;
+  notificationPayload: {
+    eventName: string;
+    phone: string;
+  } | null;
 };
 
 const AvatarCell = ({ row }: CellContext<Vendor, any>) => {
@@ -74,6 +79,16 @@ export const columns: ColumnDef<Vendor>[] = [
     header: AssignmentHeader,
     filterFn: (row, id, value) => {
       return row.getValue(id) === value;
+    },
+  },
+  {
+    id: "notify",
+    header: "Notify",
+    cell: ({ row }) => {
+      const vendor = row.original;
+      return vendor.type === "Verified" ? (
+        <NotifyVendor vendor={vendor} />
+      ) : null;
     },
   },
 ];

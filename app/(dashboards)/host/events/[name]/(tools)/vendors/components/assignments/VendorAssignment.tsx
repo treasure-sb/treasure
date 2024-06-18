@@ -1,6 +1,6 @@
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
 import { eventDisplayData } from "@/lib/helpers/events";
-import { columns } from "./table/VendorDataColumns";
+import { Vendor, columns } from "./table/VendorDataColumns";
 import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
@@ -63,20 +63,26 @@ export default async function VendorAssignment({
 
   const eData = (await eventDisplayData([event]))[0];
 
-  const tableDataPromise = vendorsWithPublicUrls.map(async (eventVendor) => {
-    return {
-      avatar_url: eventVendor.vendorPublicUrl,
-      name: `${eventVendor.profiles.first_name} ${eventVendor.profiles.last_name}`,
-      section: eventVendor.tables.section_name,
-      type: "Verified",
-      assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
-      vendor_id: eventVendor.profiles.id,
-    };
-  });
+  const tableDataPromise: Promise<Vendor>[] = vendorsWithPublicUrls.map(
+    async (eventVendor) => {
+      return {
+        avatar_url: eventVendor.vendorPublicUrl,
+        name: `${eventVendor.profiles.first_name} ${eventVendor.profiles.last_name}`,
+        section: eventVendor.tables.section_name,
+        type: "Verified",
+        assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
+        vendor_id: eventVendor.profiles.id,
+        notificationPayload: {
+          eventName: event.name,
+          phone: eventVendor.application_phone,
+        },
+      };
+    }
+  );
   const vendorsTableData = await Promise.all(tableDataPromise);
 
-  const tableDataPromiseTempVendors = tempVendorsWithPublicUrls.map(
-    async (eventVendor) => {
+  const tableDataPromiseTempVendors: Promise<Vendor>[] =
+    tempVendorsWithPublicUrls.map(async (eventVendor) => {
       return {
         avatar_url: eventVendor.vendorPublicUrl,
         name: `${eventVendor.temporary_profiles.business_name}`,
@@ -84,9 +90,9 @@ export default async function VendorAssignment({
         type: "Temporary",
         assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
         vendor_id: eventVendor.temporary_profiles.id,
+        notificationPayload: null,
       };
-    }
-  );
+    });
   const tempVendorsTableData = await Promise.all(tableDataPromiseTempVendors);
 
   const tableData = [...vendorsTableData, ...tempVendorsTableData];

@@ -88,6 +88,17 @@ const sendVendorAppSubmittedSMS = async (
   );
 };
 
+const sendVendorNotificationSMS = async (
+  phone: string,
+  eventName: string,
+  message: string
+) => {
+  return await sendSMS(
+    phone,
+    `You received a message from ${eventName}:\n\n${message}`
+  );
+};
+
 const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
   const {
     phone,
@@ -162,5 +173,6 @@ export {
   sendReminderVendorAppAcceptedSMS,
   sendHostTicketSoldSMS,
   sendHostVendorAppReceievedSMS,
+  sendVendorNotificationSMS,
   type HostSoldPayload,
 };
