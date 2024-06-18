@@ -47,7 +47,7 @@ export default async function VerifiedVendors({
     <div>
       <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
         <h2 className="text-2xl font-semibold">
-          Verified Vendors{" "}
+          Vendor Applications{" "}
           <span className="text-muted-foreground">{eventVendors.length}</span>
         </h2>
       </div>

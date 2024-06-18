@@ -120,7 +120,7 @@ export default async function VendorAssignment({
       <div>
         <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
           <h2 className="text-2xl font-semibold">
-            All Vendors{" "}
+            Vendors{" "}
             <span className="text-muted-foreground">{tableData.length}</span>
           </h2>
         </div>

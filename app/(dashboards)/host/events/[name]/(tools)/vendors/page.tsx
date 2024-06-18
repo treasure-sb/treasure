@@ -2,7 +2,7 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TabState from "./components/TabState";
-import VerifiedVendors from "./components/verified_vendors/VerifiedVendors";
+import VendorApplications from "./components/vendor_applications/VendorApplications";
 import VendorAssignment from "./components/assignments/VendorAssignment";
 
 export default async function Page({
@@ -27,7 +27,7 @@ export default async function Page({
   return (
     <div className="max-w-7xl mx-auto">
       <TabState>
-        <VerifiedVendors event={displayData} />
+        <VendorApplications event={displayData} />
         <VendorAssignment event={displayData} />
       </TabState>
     </div>

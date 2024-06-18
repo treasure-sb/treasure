@@ -8,9 +8,9 @@ export default function TabState({
 }: {
   children: React.ReactNode[];
 }) {
-  const [active, setActive] = useState("Verified Vendors");
+  const [active, setActive] = useState("Applications");
 
-  const tabs = ["Verified Vendors", "Vendor Assignments"];
+  const tabs = ["Applications", "Assignments"];
 
   const handleSelect = (selected: string) => {
     setActive(selected);
@@ -20,8 +20,8 @@ export default function TabState({
     <div>
       <LineTabs tabs={tabs} active={active} onSelect={handleSelect} />
       <div className="mt-8">
-        {active === "Verified Vendors" && children[0]}
-        {active === "Vendor Assignments" && children[1]}
+        {active === "Applications" && children[0]}
+        {active === "Assignments" && children[1]}
       </div>
     </div>
   );
