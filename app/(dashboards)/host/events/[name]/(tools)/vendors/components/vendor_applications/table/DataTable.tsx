@@ -183,10 +183,10 @@ export default function DataTable<TData, TValue>({
         <Button
           onClick={exportFunction}
           variant={"outline"}
-          className="flex gap-2"
+          className="border-dotted border-[1px] rounded-sm flex items-center space-x-2"
         >
           <ExportIcon />
-          Export
+          <p>Export</p>
         </Button>
       </div>
       <div className="rounded-md border mt-2">

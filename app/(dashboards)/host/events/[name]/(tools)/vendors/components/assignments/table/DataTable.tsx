@@ -58,6 +58,11 @@ export default function DataTable<TData, TValue>({
       columnVisibility,
       columnFilters,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
   });
 
   const vendorTypeFilter = table.getColumn("type")?.getFilterValue();
@@ -108,7 +113,7 @@ export default function DataTable<TData, TValue>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell, i) => (
-                      <TableCell key={cell.id} className="py-4 md:py-6">
+                      <TableCell key={cell.id} className="py-2 md:py-4">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
