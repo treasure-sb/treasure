@@ -1,7 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import EditState from "./components/EditState";
-import EditVendors from "./components/vendors/EditVendors";
 import EditEventDetails from "./components/event_details/EditEventDetails";
 import { ArrowUpLeft } from "lucide-react";
 import { Tables } from "@/types/supabase";
