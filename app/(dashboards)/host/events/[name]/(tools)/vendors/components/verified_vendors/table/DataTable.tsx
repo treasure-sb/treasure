@@ -169,8 +169,17 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold">Event Vendors</h1>
+      <div className="flex justify-between items-center">
+        <Filters
+          paymentFilter={paymentFilter}
+          applicationFilter={applicationFilter}
+          tagFilter={tagFilter}
+          updateApplicationFilter={updateApplicationFilter}
+          updatePaymentFilter={updatePaymentFilter}
+          updateTagFilter={updateTagFilter}
+          resetTagFilter={resetTagFilter}
+          tags={tags}
+        />
         <Button
           onClick={exportFunction}
           variant={"outline"}
@@ -180,16 +189,6 @@ export default function DataTable<TData, TValue>({
           Export
         </Button>
       </div>
-      <Filters
-        paymentFilter={paymentFilter}
-        applicationFilter={applicationFilter}
-        tagFilter={tagFilter}
-        updateApplicationFilter={updateApplicationFilter}
-        updatePaymentFilter={updatePaymentFilter}
-        updateTagFilter={updateTagFilter}
-        resetTagFilter={resetTagFilter}
-        tags={tags}
-      />
       <div className="rounded-md border mt-2">
         <Table>
           <TableHeader>

@@ -49,7 +49,9 @@ const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
   return publicPosterUrl;
 };
 
-const getPublicVenueMapUrl = async (event: Tables<"events">) => {
+const getPublicVenueMapUrl = async (
+  event: Tables<"events"> | EventDisplayData
+) => {
   const supabase = await createSupabaseServerClient();
   let publicVenueMapUrl = "";
   if (event.venue_map_url) {

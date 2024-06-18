@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { createCheckoutSession } from "@/lib/actions/checkout";
 import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
-import { EventVendorData } from "../../types";
+import { EventVendorData } from "../../../types";
 import { EventDisplayData } from "@/types/event";
 import { sendReminderVendorAppAcceptedSMS } from "@/lib/sms";
 import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";

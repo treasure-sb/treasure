@@ -13,7 +13,7 @@ import {
   sendVendorAppWaitlistedEmail,
 } from "@/lib/actions/emails";
 import { useRouter } from "next/navigation";
-import { EventVendorData } from "../../types";
+import { EventVendorData } from "../../../types";
 import { EventDisplayData } from "@/types/event";
 import { sendSMS } from "@/lib/actions/twilio";
 import { VendorAppWaitlistedEmailProps } from "@/emails/VendorAppWaitlisted";
