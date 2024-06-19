@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import Cancel from "@/components/icons/Cancel";
 
 export default function DateFiltering() {
@@ -125,11 +126,12 @@ export default function DateFiltering() {
     <div className="flex space-x-1 items-center">
       <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
         <DropdownMenuTrigger asChild>
-          <Button className="px-5">
-            {hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}
+          <Button className="space-x-1">
+            <CalendarIcon className="h-4 w-4" />
+            <p>{hasDateQuery ? <>{dateDisplayed}</> : "Date"}</p>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" className="mt-1">
           <div className="flex justify-center p-2">
             <DropdownMenuItem onClick={handleClickThisWeek}>
               This Week

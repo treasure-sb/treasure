@@ -8,11 +8,8 @@ import DateFiltering from "./DateFiltering";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import Search from "@/components/icons/Search";
+import Location from "./Location";
 
-/**
- * FilteringButtons provides filtering options for events. It includes buttons for location filtering,
- * date filtering through a `DateFiltering` component, and a search input for event names.
- */
 export default function FilteringOptions() {
   const [clickedSearch, setClickedSearch] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -50,8 +47,8 @@ export default function FilteringOptions() {
       } flex space-x-2 mb-2`}
     >
       <div className="flex space-x-2">
-        {/* <Button>New York, NY</Button> */}
         <DateFiltering />
+        <Location />
       </div>
       <>
         {clickedSearch || searchParams.get("search") ? (
