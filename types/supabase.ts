@@ -1061,6 +1061,37 @@ export type Database = {
           venue_name: string
         }[]
       }
+      get_tagged_nearby_events: {
+        Args: {
+          user_lat: number
+          user_lon: number
+          radius: number
+          tagid: string
+        }
+        Returns: {
+          address: string
+          city: string
+          cleaned_name: string
+          created_at: string
+          date: string
+          description: string
+          end_time: string
+          featured: number
+          id: string
+          lat: number
+          lng: number
+          name: string
+          organizer_id: string
+          organizer_type: string
+          poster_url: string
+          sales_status: Database["public"]["Enums"]["Event Ticket Status"]
+          start_time: string
+          state: string
+          vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
+          venue_map_url: string | null
+          venue_name: string
+        }[]
+      }
       haversine_distance: {
         Args: {
           lat1: number

@@ -73,7 +73,6 @@ const buildEventsQuery = async (
       .from("events")
       .select("*, event_tags!inner(*)")
       .eq("event_tags.tag_id", tagId);
-    console.log("tagId", tagId);
   }
 
   if (city) {
@@ -314,6 +313,22 @@ const getEventsLiked = async (page: number, userId: string) => {
   return { data, error };
 };
 
+const getAllEventData = async (search: string, page: number) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .gte("date", today)
+    .ilike("name", `%${search}%`)
+    .order("featured", { ascending: false })
+    .order("date", { ascending: true })
+    .order("id", { ascending: true })
+    .range(startIndex, endIndex);
+  return { data, error };
+};
+
 export {
   getTagData,
   getUpcomingEventsAttending,
@@ -326,4 +341,5 @@ export {
   getEventsHosting,
   getEventsLiked,
   buildEventsQuery,
+  getAllEventData,
 };
