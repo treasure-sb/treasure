@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { parseLocalDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "../../query";
@@ -118,7 +118,9 @@ export default function Page({
           )}
         </div>
         <div className="mt-auto">
-          <SalesDateFiltering />
+          <Suspense>
+            <SalesDateFiltering />
+          </Suspense>
         </div>
       </div>
       {/* ------------------------------- Desktop Transactions ------------------------------- */}

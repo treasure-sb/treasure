@@ -6,6 +6,7 @@ import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventSearch from "./components/EventSearch";
 import FeatureEventDisplay from "./components/FeatureEventDisplay";
+import { Suspense } from "react";
 
 export default async function Page({
   searchParams,
@@ -45,7 +46,9 @@ export default async function Page({
   return (
     <main className="w-full max-w-xl m-auto">
       <h1 className="font-bold text-2xl w-full">Featured Events</h1>
-      <EventSearch />
+      <Suspense>
+        <EventSearch />
+      </Suspense>
       <div className="flex flex-col space-y-8 mt-6 items-center">
         {events.map((event) => (
           <FeatureEventDisplay key={event.id} event={event} />

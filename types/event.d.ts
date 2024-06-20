@@ -101,6 +101,8 @@ export interface SearchParams {
   from?: string;
   until?: string;
   search?: string;
+  city?: string;
+  distance?: string;
 }
 
 export type EventDisplayData = Tables<"events"> & {

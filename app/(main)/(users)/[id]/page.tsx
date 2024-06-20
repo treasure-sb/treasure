@@ -8,6 +8,7 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getProfileByUsername, getTempProfile } from "@/lib/helpers/profiles";
 import { validateUser } from "@/lib/actions/auth";
+import { Suspense } from "react";
 
 export default async function Page({
   params,
@@ -62,7 +63,9 @@ export default async function Page({
       <div className="mt-6 md:mt-0 text-lg w-full">
         {isProfile ? (
           <>
-            <UserOptions />
+            <Suspense>
+              <UserOptions />
+            </Suspense>
             {tab === "Photos" ? (
               <Photos user={user as Tables<"profiles">} />
             ) : (

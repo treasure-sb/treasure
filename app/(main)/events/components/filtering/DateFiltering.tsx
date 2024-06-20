@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import Cancel from "@/components/icons/Cancel";
 
 export default function DateFiltering() {
@@ -19,7 +20,7 @@ export default function DateFiltering() {
   const [isCalenderOpen, setIsCalenderOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace, refresh } = useRouter();
+  const { replace } = useRouter();
 
   const handleCalenderDateSelect = (date: Date | undefined) => {
     const params = new URLSearchParams(searchParams);
@@ -31,7 +32,6 @@ export default function DateFiltering() {
       setIsCalenderOpen(false);
     }
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   const handleClickThisWeek = () => {
@@ -47,7 +47,6 @@ export default function DateFiltering() {
     params.set("from", todaysDateFormatted);
     params.set("until", endOfWeekDateFormatted);
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   const handleClickThisMonth = () => {
@@ -61,7 +60,6 @@ export default function DateFiltering() {
     params.set("from", todaysDateFormatted);
     params.set("until", endOfMonthDateFormatted);
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   const handleClickNextMonth = () => {
@@ -87,7 +85,6 @@ export default function DateFiltering() {
     params.set("from", startOfNextMonthDateFormatted);
     params.set("until", endOfNextMonthDateFormatted);
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   const handleClearDate = () => {
@@ -95,7 +92,6 @@ export default function DateFiltering() {
     params.delete("from");
     params.delete("until");
     replace(`${pathname}?${params.toString()}`);
-    refresh();
   };
 
   // For displaying the date in the button
@@ -125,11 +121,12 @@ export default function DateFiltering() {
     <div className="flex space-x-1 items-center">
       <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
         <DropdownMenuTrigger asChild>
-          <Button className="px-5">
-            {hasDateQuery ? <>{dateDisplayed}</> : <>Date</>}
+          <Button className="space-x-1">
+            <CalendarIcon className="h-4 w-4" />
+            <p>{hasDateQuery ? <>{dateDisplayed}</> : "Date"}</p>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent align="start" className="mt-1">
           <div className="flex justify-center p-2">
             <DropdownMenuItem onClick={handleClickThisWeek}>
               This Week

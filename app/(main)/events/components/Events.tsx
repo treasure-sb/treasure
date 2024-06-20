@@ -3,9 +3,6 @@ import { validateUser } from "@/lib/actions/auth";
 import { SearchParams } from "@/types/event";
 import { getEventsDisplayData } from "@/lib/helpers/events";
 
-/**
- * Renders a list of events based on provided search parameters.
- */
 export default async function Events({
   searchParams,
 }: {
@@ -21,7 +18,7 @@ export default async function Events({
     <ListEvents user={user} events={events} searchParams={searchParams} />
   ) : (
     <div>
-      <h2 className="text-center">No Events</h2>
+      <p className="text-2xl text-muted-foreground">No events found</p>
     </div>
   );
 }
