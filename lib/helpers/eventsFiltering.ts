@@ -3,6 +3,7 @@
 import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
 import { cityMap } from "./cities";
+import { capitalize } from "../utils";
 
 const today = format(new Date(), "yyyy-MM-dd");
 const numEvents = 12;
@@ -93,21 +94,49 @@ const getEventDataByCity = async (
   search: string,
   city: string,
   page: number,
-  radius?: number
+  distance: number
 ) => {
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
 
+  let userLat = 0;
+  let userLon = 0;
+
   if (!cityMap[city]) {
-    return { data: [], error: null };
+    const splitCity = city.split("-");
+    const stateName = splitCity[splitCity.length - 1];
+    const cityName = splitCity
+      .slice(0, splitCity.length - 1)
+      .map((term) => capitalize(term))
+      .join(" ");
+
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      `${cityName}, ${stateName}`
+    )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status === "OK") {
+        const location = data.results[0].geometry.location;
+        userLat = location.lat;
+        userLon = location.lng;
+      }
+    } catch (error) {
+      console.error("Error fetching city coordinates", error);
+      return { data: [], error: "Error fetching city coordinates" };
+    }
+  } else {
+    userLat = cityMap[city].latitude;
+    userLon = cityMap[city].longitude;
   }
 
   const { data, error } = await supabase
     .rpc("get_nearby_events", {
-      radius: radius || 50,
-      user_lat: cityMap[city].latitude,
-      user_lon: cityMap[city].longitude,
+      radius: distance,
+      user_lat: userLat,
+      user_lon: userLon,
     })
     .gte("date", today)
     .ilike("name", `%${search}%`)

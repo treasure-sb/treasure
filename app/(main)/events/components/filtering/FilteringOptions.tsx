@@ -48,7 +48,7 @@ export default function FilteringOptions() {
     >
       <div className="flex space-x-2">
         <DateFiltering />
-        {/* <Location /> */}
+        <Location />
       </div>
       <>
         {clickedSearch || searchParams.get("search") ? (

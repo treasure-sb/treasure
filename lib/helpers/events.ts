@@ -117,14 +117,24 @@ const fetchTagEvents: FetchOperation = async (page, searchParams) => {
 };
 
 const fetchDefaultEvents: FetchOperation = async (page, searchParams) => {
-  const { search = "" } = searchParams || {};
-  const { data } = await getAllEventData(search, page);
+  const { search = "", distance } = searchParams || {};
+  const { data } = await getEventDataByCity(
+    search,
+    "new-york-ny",
+    page,
+    parseInt(distance || "50")
+  );
   return data || [];
 };
 
 const fetchCityEvents: FetchOperation = async (page, searchParams) => {
   const { city, distance, search = "" } = searchParams || {};
-  const { data } = await getEventDataByCity(search, city!, page);
+  const { data } = await getEventDataByCity(
+    search,
+    city!,
+    page,
+    parseInt(distance || "50")
+  );
   return data || [];
 };
 
