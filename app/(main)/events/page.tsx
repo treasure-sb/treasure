@@ -3,6 +3,8 @@ import FilteringOptions from "./components/filtering/FilteringOptions";
 import Events from "./components/Events";
 import { SearchParams } from "@/types/event";
 import { Metadata } from "next";
+import { cityMap } from "@/lib/helpers/cities";
+import { capitalize } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -15,6 +17,20 @@ export default function Page({
   searchParams?: SearchParams;
 }) {
   const tag = searchParams?.tag || null;
+  const city = searchParams?.city || "new-york-ny";
+
+  let location = "New York, NY";
+  if (!cityMap[city]) {
+    const splitCity = city.split("-");
+    const stateName = splitCity[splitCity.length - 1];
+    const cityName = splitCity
+      .slice(0, splitCity.length - 1)
+      .map((term) => capitalize(term))
+      .join(" ");
+    location = `${cityName}, ${stateName.toUpperCase()}`;
+  } else {
+    location = cityMap[city].label;
+  }
 
   return (
     <main className="max-w-full md:max-w-7xl m-auto">
@@ -26,7 +42,9 @@ export default function Page({
         ) : (
           <h1 className="font-semibold text-2xl">Popular Events</h1>
         )}
-        <h2 className="font-bold text-muted-foreground">Near New York, NY</h2>
+        <h3 className="font-semibold text-muted-foreground text-lg">
+          Near {location}
+        </h3>
       </div>
       <Events searchParams={searchParams} />
     </main>

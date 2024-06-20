@@ -410,6 +410,7 @@ export type Database = {
           application_phone: string
           application_status: Database["public"]["Enums"]["Application Status"]
           assignment: number | null
+          checked_in: boolean
           comments: string | null
           event_id: string
           inventory: string
@@ -424,6 +425,7 @@ export type Database = {
           application_phone: string
           application_status?: Database["public"]["Enums"]["Application Status"]
           assignment?: number | null
+          checked_in?: boolean
           comments?: string | null
           event_id: string
           inventory: string
@@ -438,6 +440,7 @@ export type Database = {
           application_phone?: string
           application_status?: Database["public"]["Enums"]["Application Status"]
           assignment?: number | null
+          checked_in?: boolean
           comments?: string | null
           event_id?: string
           inventory?: string
@@ -869,7 +872,6 @@ export type Database = {
         Row: {
           avatar_url: string
           business_name: string
-          created_at: string
           id: string
           instagram: string | null
           username: string
@@ -877,7 +879,6 @@ export type Database = {
         Insert: {
           avatar_url?: string
           business_name: string
-          created_at?: string
           id?: string
           instagram?: string | null
           username: string
@@ -885,7 +886,6 @@ export type Database = {
         Update: {
           avatar_url?: string
           business_name?: string
-          created_at?: string
           id?: string
           instagram?: string | null
           username?: string
@@ -1031,7 +1031,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_nearby_events: {
+        Args: {
+          user_lat: number
+          user_lon: number
+          radius: number
+        }
+        Returns: {
+          address: string
+          city: string
+          cleaned_name: string
+          created_at: string
+          date: string
+          description: string
+          end_time: string
+          featured: number
+          id: string
+          lat: number
+          lng: number
+          name: string
+          organizer_id: string
+          organizer_type: string
+          poster_url: string
+          sales_status: Database["public"]["Enums"]["Event Ticket Status"]
+          start_time: string
+          state: string
+          vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
+          venue_map_url: string | null
+          venue_name: string
+        }[]
+      }
+      haversine_distance: {
+        Args: {
+          lat1: number
+          lon1: number
+          lat2: number
+          lon2: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       "Application Status":

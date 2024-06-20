@@ -15,6 +15,7 @@ import {
   getPastEventsLiked,
   getUpcomingEventsHosting,
   getPastEventsHosting,
+  getEventDataByCity,
 } from "./eventsFiltering";
 import { formatDate } from "../utils";
 import createSupabaseServerClient from "../../utils/supabase/server";
@@ -121,14 +122,17 @@ const fetchDefaultEvents: FetchOperation = async (page, searchParams) => {
   return data || [];
 };
 
-/**
- * Determines which fetch operation to use based on the provided search parameters and executes it.
- */
+const fetchCityEvents: FetchOperation = async (page, searchParams) => {
+  const { city, distance, search = "" } = searchParams || {};
+  const { data } = await getEventDataByCity(search, city!, page);
+  return data || [];
+};
+
 const fetchEventsFromFilters = async (
   page: number,
   searchParams: SearchParams | undefined
 ): Promise<any[]> => {
-  const { tag, from, until } = searchParams || {};
+  const { tag, from, until, city } = searchParams || {};
 
   let operation: FetchOperation;
 
@@ -138,6 +142,8 @@ const fetchEventsFromFilters = async (
     operation = fetchDateEvents;
   } else if (tag) {
     operation = fetchTagEvents;
+  } else if (city) {
+    operation = fetchCityEvents;
   } else {
     operation = fetchDefaultEvents;
   }

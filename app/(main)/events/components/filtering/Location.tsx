@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { capitalize, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,141 +19,111 @@ import {
 import { useState } from "react";
 import { MapPinIcon, LocateFixedIcon } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { cityMap } from "@/lib/helpers/cities";
+import { useLoadScript } from "@react-google-maps/api";
+import type { Libraries } from "@react-google-maps/api";
+import { getGeocode } from "use-places-autocomplete";
+
+const libraries: Libraries = ["geocoding"];
 
 export default function Location() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
-  const cities = [
-    {
-      value: "new-york-ny",
-      label: "New York, NY",
-    },
-    {
-      value: "washington-dc",
-      label: "Washington, DC",
-    },
-    {
-      value: "boston-ma",
-      label: "Boston, MA",
-    },
-    {
-      value: "chicago-il",
-      label: "Chicago, IL",
-    },
-    {
-      value: "los-angeles-ca",
-      label: "Los Angeles, CA",
-    },
-    {
-      value: "san-francisco-ca",
-      label: "San Francisco, CA",
-    },
-    {
-      value: "seattle-wa",
-      label: "Seattle, WA",
-    },
-    {
-      value: "austin-tx",
-      label: "Austin, TX",
-    },
-    {
-      value: "denver-co",
-      label: "Denver, CO",
-    },
-    {
-      value: "dallas-tx",
-      label: "Dallas, TX",
-    },
-    {
-      value: "houston-tx",
-      label: "Houston, TX",
-    },
-    {
-      value: "miami-fl",
-      label: "Miami, FL",
-    },
-    {
-      value: "atlanta-ga",
-      label: "Atlanta, GA",
-    },
-    {
-      value: "philadelphia-pa",
-      label: "Philadelphia, PA",
-    },
-    {
-      value: "phoenix-az",
-      label: "Phoenix, AZ",
-    },
-    {
-      value: "san-diego-ca",
-      label: "San Diego, CA",
-    },
-    {
-      value: "minneapolis-mn",
-      label: "Minneapolis, MN",
-    },
-    {
-      value: "portland-or",
-      label: "Portland, OR",
-    },
-    {
-      value: "detroit-mi",
-      label: "Detroit, MI",
-    },
-    {
-      value: "salt-lake-city-ut",
-      label: "Salt Lake City, UT",
-    },
-    {
-      value: "las-vegas-nv",
-      label: "Las Vegas, NV",
-    },
-    {
-      value: "charlotte-nc",
-      label: "Charlotte, NC",
-    },
-    {
-      value: "raleigh-nc",
-      label: "Raleigh, NC",
-    },
-    {
-      value: "nashville-tn",
-      label: "Nashville, TN",
-    },
-    {
-      value: "new-orleans-la",
-      label: "New Orleans, LA",
-    },
-    {
-      value: "pittsburgh-pa",
-      label: "Pittsburgh, PA",
-    },
-    {
-      value: "indianapolis-in",
-      label: "Indianapolis, IN",
-    },
-    {
-      value: "columbus-oh",
-      label: "Columbus, OH",
-    },
-    {
-      value: "milwaukee-wi",
-      label: "Milwaukee, WI",
-    },
-    {
-      value: "st-louis-mo",
-      label: "St. Louis, MO",
-    },
-    {
-      value: "kansas-city-mo",
-      label: "Kansas City, MO",
-    },
-    {
-      value: "oklahoma-city-ok",
-      label: "Oklahoma City, OK",
-    },
-  ];
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(searchParams.get("city") || "new-york-ny");
+  const [sliderValue, setSliderValue] = useState<number[]>(
+    searchParams.get("distance")
+      ? [parseInt(searchParams.get("distance")!)]
+      : [50]
+  );
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries,
+  });
+
+  const handleSelectCity = (city: string) => {
+    setValue(city);
+    const params = new URLSearchParams(searchParams);
+    if (city === "new-york-ny") {
+      params.delete("city");
+    } else {
+      params.set("city", city);
+    }
+    replace(`${pathname}?${params.toString()}`);
+    setOpen(false);
+  };
+
+  const handleDistanceSlider = (distance: number[]) => {
+    setSliderValue(distance);
+    const params = new URLSearchParams(searchParams);
+    params.set("distance", distance[0].toString());
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  const useCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition(success, error);
+  };
+
+  const success = async (position: GeolocationPosition) => {
+    console.log(position);
+    const coords = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+    };
+
+    const geocoderRequest: google.maps.GeocoderRequest = {
+      location: coords,
+    };
+
+    const results = await getGeocode(geocoderRequest);
+    const address = results[0].address_components;
+    let city: string[] = [];
+    let state: string[] = [];
+    address.forEach((component) => {
+      if (component.types.includes("locality")) {
+        city = [component.short_name, component.long_name];
+      } else if (component.types.includes("administrative_area_level_1")) {
+        state = [component.short_name, component.long_name];
+      }
+    });
+
+    const cityParam = `${city[0]
+      .toLowerCase()
+      .replace(" ", "-")}-${state[0].toLowerCase()}`;
+
+    setValue(cityParam);
+    const params = new URLSearchParams(searchParams);
+    params.set("city", cityParam);
+    replace(`${pathname}?${params.toString()}`);
+    setOpen(false);
+  };
+
+  const error = (error: GeolocationPositionError) => {
+    console.log(error);
+  };
+
+  const cities = Object.keys(cityMap).map((key) => ({
+    value: key,
+    label: cityMap[key].label,
+  }));
+
+  const allowedSliderValues = [5, 25, 50, 75, 100];
+
+  let buttonLabel = "New York, NY";
+  if (cityMap[value]) {
+    buttonLabel = cityMap[value].label;
+  } else {
+    const splitCity = value.split("-");
+    const stateName = splitCity[splitCity.length - 1];
+    const cityName = splitCity
+      .slice(0, splitCity.length - 1)
+      .map((term) => capitalize(term))
+      .join(" ");
+    buttonLabel = `${cityName}, ${stateName.toUpperCase()}`;
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -164,11 +134,7 @@ export default function Location() {
           className="w-fit justify-between space-x-1"
         >
           <MapPinIcon className="h-4 w-4" />
-          <p>
-            {value
-              ? cities.find((city) => city.value === value)?.label
-              : "New York, NY"}
-          </p>
+          <p>{buttonLabel}</p>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[250px] p-0 mt-1" align="start">
@@ -182,8 +148,7 @@ export default function Location() {
                 key={city.value}
                 value={city.value}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
-                  setOpen(false);
+                  handleSelectCity(currentValue);
                 }}
               >
                 <Check
@@ -200,7 +165,9 @@ export default function Location() {
           <CommandGroup>
             <Button
               variant={"ghost"}
-              className="rounded-none w-full font-normal"
+              onClick={useCurrentLocation}
+              disabled={!cityMap[value]}
+              className="rounded-none w-full font-normal disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <LocateFixedIcon className="mr-2 h-4 w-4" />
               <p>Use My Current Location</p>
@@ -208,9 +175,22 @@ export default function Location() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup className="p-4">
-            <Slider max={100} step={25} />
+            <Slider
+              value={sliderValue}
+              min={5}
+              max={100}
+              step={undefined}
+              onValueChange={(value) => {
+                const closestValue = allowedSliderValues.reduce((prev, curr) =>
+                  Math.abs(curr - value[0]) < Math.abs(prev - value[0])
+                    ? curr
+                    : prev
+                );
+                handleDistanceSlider([closestValue]);
+              }}
+            />
             <div className="flex justify-between mt-2 text-[.62rem]">
-              <p>0 mi</p>
+              <p>5 mi</p>
               <p>25 mi</p>
               <p>50 mi</p>
               <p>75 mi</p>

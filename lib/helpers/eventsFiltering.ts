@@ -2,6 +2,7 @@
 
 import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
+import { cityMap } from "./cities";
 
 const today = format(new Date(), "yyyy-MM-dd");
 const numEvents = 12;
@@ -20,10 +21,6 @@ const getTagData = async (tagName: string) => {
   return { data, error };
 };
 
-/**
- * Fetches event data filtered by a specific tag, date range, and page number.
- * Designed for events that match both a tag and a date range.
- */
 const getDateTagEventData = async (
   search: string,
   tagId: string,
@@ -49,14 +46,6 @@ const getDateTagEventData = async (
   return { data, error };
 };
 
-/**
- * Fetches event data filtered by a date range and page number.
- * @param {string} search - Search term for event names.
- * @param {string} from - Start date for the range.
- * @param {string} until - End date for the range.
- * @param {number} page - Page number for pagination.
- * @returns An array of events or an error if occurred.
- */
 const getEventDataByDate = async (
   search: string,
   from: string,
@@ -79,9 +68,6 @@ const getEventDataByDate = async (
   return { data, error };
 };
 
-/**
- * Fetches event data filtered by a specific tag and page number.
- */
 const getEventDataByTag = async (
   search: string,
   tagId: string,
@@ -103,9 +89,36 @@ const getEventDataByTag = async (
   return { data, error };
 };
 
-/**
- * Fetches all event data based on a search term and page number.
- */
+const getEventDataByCity = async (
+  search: string,
+  city: string,
+  page: number,
+  radius?: number
+) => {
+  const startIndex = (page - 1) * numEvents;
+  const endIndex = startIndex + numEvents - 1;
+  const supabase = await createSupabaseServerClient();
+
+  if (!cityMap[city]) {
+    return { data: [], error: null };
+  }
+
+  const { data, error } = await supabase
+    .rpc("get_nearby_events", {
+      radius: radius || 50,
+      user_lat: cityMap[city].latitude,
+      user_lon: cityMap[city].longitude,
+    })
+    .gte("date", today)
+    .ilike("name", `%${search}%`)
+    .order("featured", { ascending: false })
+    .order("date", { ascending: true })
+    .order("id", { ascending: true })
+    .range(startIndex, endIndex);
+
+  return { data, error };
+};
+
 const getAllEventData = async (search: string, page: number) => {
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
@@ -360,4 +373,5 @@ export {
   getEventsApplied,
   getEventsHosting,
   getEventsLiked,
+  getEventDataByCity,
 };
