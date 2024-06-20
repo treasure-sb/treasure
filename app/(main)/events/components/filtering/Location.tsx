@@ -137,11 +137,15 @@ export default function Location() {
           <p>{buttonLabel}</p>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0 mt-1" align="start">
+      <PopoverContent
+        className="w-[250px] p-0 mt-1"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        align="start"
+      >
         <Command>
-          <CommandInput className="text-sm" placeholder="Search city..." />
+          <CommandInput placeholder="Search city..." />
           <CommandEmpty>No cities found.</CommandEmpty>
-          <CommandGroup className="overflow-scroll overflow-x-hidden h-72">
+          <CommandGroup className="overflow-auto max-h-72 h-auto">
             {cities.map((city) => (
               <CommandItem
                 className="py-2"
