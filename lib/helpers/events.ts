@@ -4,29 +4,17 @@ import { EventDisplayData, SearchParams } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   getTagData,
-  getAllEventData,
-  getEventDataByDate,
-  getDateTagEventData,
   getUpcomingEventsAttending,
   getPastEventsAttending,
-  getEventDataByTag,
   getEventsApplied,
   getUpcomingEventsLiked,
   getPastEventsLiked,
   getUpcomingEventsHosting,
   getPastEventsHosting,
-  getEventDataByCity,
+  buildEventsQuery,
 } from "./eventsFiltering";
 import { formatDate } from "../utils";
 import createSupabaseServerClient from "../../utils/supabase/server";
-
-/**
- * Type definition for the filter operations.
- */
-type FetchOperation = (
-  page: number,
-  searchParams: SearchParams | undefined
-) => Promise<any[]>;
 
 /**
  * Type definition for the filter functions.
@@ -90,75 +78,30 @@ const getEventFromId = async (id: string) => {
   return { event, eventError };
 };
 
-const fetchDateAndTagEvents: FetchOperation = async (page, searchParams) => {
-  const { tag, from, until, search = "" } = searchParams || {};
-  const { data: tagData } = await getTagData(tag!);
-  const { data } = await getDateTagEventData(
-    search,
-    tagData?.id!,
-    from!,
-    until!,
-    page
-  );
-  return data || [];
-};
-
-const fetchDateEvents: FetchOperation = async (page, searchParams) => {
-  const { from, until, search = "" } = searchParams || {};
-  const { data } = await getEventDataByDate(search, from!, until!, page);
-  return data || [];
-};
-
-const fetchTagEvents: FetchOperation = async (page, searchParams) => {
-  const { tag, search = "" } = searchParams || {};
-  const { data: tagData } = await getTagData(tag!);
-  const { data } = await getEventDataByTag(search, tagData?.id!, page);
-  return data || [];
-};
-
-const fetchDefaultEvents: FetchOperation = async (page, searchParams) => {
-  const { search = "", distance } = searchParams || {};
-  const { data } = await getEventDataByCity(
-    search,
-    "new-york-ny",
-    page,
-    parseInt(distance || "50")
-  );
-  return data || [];
-};
-
-const fetchCityEvents: FetchOperation = async (page, searchParams) => {
-  const { city, distance, search = "" } = searchParams || {};
-  const { data } = await getEventDataByCity(
-    search,
-    city!,
-    page,
-    parseInt(distance || "50")
-  );
-  return data || [];
-};
-
 const fetchEventsFromFilters = async (
   page: number,
   searchParams: SearchParams | undefined
 ): Promise<any[]> => {
-  const { tag, from, until, city } = searchParams || {};
+  const { tag, from, until, city, search, distance } = searchParams || {};
 
-  let operation: FetchOperation;
+  let tagId: string | undefined;
 
-  if (from && until && tag) {
-    operation = fetchDateAndTagEvents;
-  } else if (from && until) {
-    operation = fetchDateEvents;
-  } else if (tag) {
-    operation = fetchTagEvents;
-  } else if (city) {
-    operation = fetchCityEvents;
-  } else {
-    operation = fetchDefaultEvents;
+  if (tag) {
+    const { data: tagData } = await getTagData(tag);
+    tagId = tagData?.id;
   }
 
-  return await operation(page, searchParams);
+  const { data } = await buildEventsQuery(
+    page,
+    search,
+    tagId,
+    from,
+    until,
+    city || "new-york-ny",
+    parseInt(distance || "50")
+  );
+
+  return data || [];
 };
 
 const fetchHostingEvents = async (
@@ -212,9 +155,6 @@ const fetchLikedEvents = async (
   }
 };
 
-/**
- * Map of filter functions for different event types.
- */
 const filterFunctions: FilterFunctions = {
   Hosting: fetchHostingEvents,
   Applied: fetchAppliedEvents,

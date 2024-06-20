@@ -39,7 +39,7 @@ export default function FilteringOptions() {
   };
 
   return (
-    <div className="flex flex-wrap gap-1 w-full mb-2">
+    <div className="flex flex-wrap gap-1 md:gap-2 w-full mb-2">
       <DateFiltering />
       <Location />
       {clickedSearch || searchParams.get("search") ? (
