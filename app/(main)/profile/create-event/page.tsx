@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import { useState } from "react";
 import CreateEventName from "./components/CreateEventName";
 import CreateEventDate from "./components/CreateEventDate";
 import CreateEventTickets from "./components/CreateEventTickets";
@@ -13,7 +13,6 @@ import { useMemo } from "react";
 
 export default function Page() {
   const eventID = useSearchParams().get("data");
-  let eventData;
 
   const [step, setStep] = useState(1);
   const [eventForm, setEventForm] = useState<EventForm>({
@@ -61,30 +60,34 @@ export default function Page() {
 
   useMemo(() => {
     if (eventID) {
-      eventData = JSON.parse(eventID);
-      setEventForm({
-        ...eventForm,
-        name: eventData.name,
-        description: eventData.description,
-        venue_name: eventData.venue_name,
-        address: eventData.address,
-        lat: eventData.lat,
-        lng: eventData.lng,
-        city: eventData.city,
-        state: eventData.state,
-        start_time: eventData.start_time.slice(0, -3),
-        end_time: eventData.end_time.slice(0, -3),
-        tickets: eventData.tickets,
-        tables:
-          eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
-        tags: eventData.tags,
-        sales_status: eventData.sales_status,
-        vendor_exclusivity: eventData.vendor_exclusivity,
-        // poster_url: eventData.poster_url,
-        // venue_map_url: eventData.venue_map_url,
-      });
+      try {
+        const eventData = JSON.parse(eventID);
+        setEventForm({
+          ...eventForm,
+          name: eventData.name,
+          description: eventData.description,
+          venue_name: eventData.venue_name,
+          address: eventData.address,
+          lat: eventData.lat,
+          lng: eventData.lng,
+          city: eventData.city,
+          state: eventData.state,
+          start_time: eventData.start_time.slice(0, -3),
+          end_time: eventData.end_time.slice(0, -3),
+          tickets: eventData.tickets,
+          tables:
+            eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
+          tags: eventData.tags,
+          sales_status: eventData.sales_status,
+          vendor_exclusivity: eventData.vendor_exclusivity,
+          // poster_url: eventData.poster_url,
+          // venue_map_url: eventData.venue_map_url,
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }, []);
+  }, [eventID]);
 
   const progress = Array.from({ length: 7 }, (_, i) => (
     <div
