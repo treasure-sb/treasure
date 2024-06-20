@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import ListUpcomingEvents from "./ListUpcomingEvents";
 import ListPreviousEvents from "./ListPastEvents";
 import EventFilters from "../filtering/EventFilters";
+import { Suspense } from "react";
 
 export default async function Events({
   eventsFilter,
@@ -31,7 +32,9 @@ export default async function Events({
   );
   return (
     <div>
-      <EventFilters isHosting={isHosting} />
+      <Suspense>
+        <EventFilters isHosting={isHosting} />
+      </Suspense>
       <Separator className="block my-6 mt-2" />
       {upcomingEvents.length > 0 || pastEvents.length > 0 ? (
         <div className="space-y-10 md:mt-10">

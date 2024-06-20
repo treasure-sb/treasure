@@ -6,6 +6,7 @@ import { getProfileAvatar } from "@/lib/helpers/profiles";
 import { type CustomerData } from "./types";
 import DateRangeFilter from "./components/DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { Suspense } from "react";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
@@ -91,7 +92,9 @@ export default async function Page({
         <h2 className="text-2xl font-semibold">
           Orders <span className="text-muted-foreground">{orders.length}</span>
         </h2>
-        <DateRangeFilter />
+        <Suspense>
+          <DateRangeFilter />
+        </Suspense>
       </div>
       <DataTable columns={columns} data={tableData} event={event} />
     </div>

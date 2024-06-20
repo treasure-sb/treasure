@@ -6,16 +6,6 @@ import { CrownIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-/**
- * EventFilters is a React component for rendering a filter bar with different event-related options.
- *
- * It displays filter options such as 'Hosting', 'Attending', and 'Liked' as interactive icons.
- * Clicking on these icons allows users to filter events based on their participation or interest.
- * The active filter is highlighted, and clicking on a filter updates the URL's search parameters accordingly.
- *
- * It takes in an optional boolean prop 'isHosting' to determine whether to display the 'Hosting' filter option.
- *
- */
 export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();

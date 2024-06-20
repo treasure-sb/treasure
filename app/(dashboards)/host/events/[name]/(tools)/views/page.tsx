@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import ViewsChart from "./components/ViewsChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "./components/DateFilter";
+import { Suspense } from "react";
 
 const normalizeDate = (date: Date) => {
   date.setHours(0, 0, 0, 0);
@@ -116,7 +117,9 @@ export default async function Page({
             {isInfinity ? "∞" : Math.abs(viewCountChange).toFixed(0)}%
           </div>
         </div>
-        <DateFilter />
+        <Suspense>
+          <DateFilter />
+        </Suspense>
       </div>
       <ViewsChart data={viewsChartData} period={period} />
     </div>

@@ -5,6 +5,7 @@ import { SearchParams } from "@/types/event";
 import { Metadata } from "next";
 import { cityMap } from "@/lib/helpers/cities";
 import { capitalize } from "@/lib/utils";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -35,8 +36,10 @@ export default function Page({
 
   return (
     <main className="max-w-full md:max-w-7xl m-auto">
-      <FilteringOptions />
-      <TagFiltering />
+      <Suspense>
+        <FilteringOptions />
+        <TagFiltering />
+      </Suspense>
       <div className="my-4">
         {tag ? (
           <h1 className="font-semibold text-2xl">Popular {tag} Events</h1>

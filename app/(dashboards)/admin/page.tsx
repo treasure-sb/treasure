@@ -8,6 +8,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { Suspense } from "react";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
@@ -222,7 +223,9 @@ export default async function Page({
             All Orders{" "}
             <span className="text-muted-foreground">{orders.length}</span>
           </h1>
-          <DateRangeFilter />
+          <Suspense>
+            <DateRangeFilter />
+          </Suspense>
         </div>
         <DataTable columns={columns} data={tableData} />
       </div>
