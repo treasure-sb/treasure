@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import CreateEventName from "./components/CreateEventName";
 import CreateEventDate from "./components/CreateEventDate";
@@ -9,12 +10,11 @@ import CreateEventPoster from "./components/CreateEventPoster";
 import CreateEventVenueMap from "./components/CreateEventVenueMap";
 import { EventForm } from "@/types/event";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 export default function Page() {
-  const eventID = useSearchParams().get("data");
-
   const [step, setStep] = useState(1);
+  const [eventID, setEventID] = useState<string | null>(null);
   const [eventForm, setEventForm] = useState<EventForm>({
     name: "",
     description: "",
@@ -57,6 +57,11 @@ export default function Page() {
     poster_url: undefined,
     venue_map_url: undefined,
   });
+
+  useEffect(() => {
+    const eventID = useSearchParams().get("data");
+    setEventID(eventID);
+  }, []);
 
   useMemo(() => {
     if (eventID) {
