@@ -39,39 +39,29 @@ export default function FilteringOptions() {
   };
 
   return (
-    <div
-      className={`${
-        clickedSearch
-          ? "flex-col space-x-0 space-y-2 md:flex-row md:space-x-2 md:space-y-0"
-          : "flex-row"
-      } flex space-x-2 mb-2`}
-    >
-      <div className="flex space-x-2">
-        <DateFiltering />
-        <Location />
-      </div>
-      <>
-        {clickedSearch || searchParams.get("search") ? (
-          <div className="w-full flex space-x-1 items-center md:h-8">
-            <Input
-              defaultValue={searchParams.get("search")?.toString()}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="w-full md:w-[50%]"
-              placeholder="Search for Events"
-              ref={inputRef}
-            />
-            <Cancel handleCancel={handleCancel} />
-          </div>
-        ) : (
-          <Button
-            onClick={() => setClickedSearch(true)}
-            variant={"ghost"}
-            className="rounded-full px-2"
-          >
-            <Search fill="white" />
-          </Button>
-        )}
-      </>
+    <div className="flex flex-wrap gap-1 w-full mb-2">
+      <DateFiltering />
+      <Location />
+      {clickedSearch || searchParams.get("search") ? (
+        <div className="w-full flex space-x-1 items-center md:h-8">
+          <Input
+            defaultValue={searchParams.get("search")?.toString()}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full md:w-[50%]"
+            placeholder="Search for Events"
+            ref={inputRef}
+          />
+          <Cancel handleCancel={handleCancel} />
+        </div>
+      ) : (
+        <Button
+          onClick={() => setClickedSearch(true)}
+          variant={"ghost"}
+          className="rounded-full px-2"
+        >
+          <Search fill="white" />
+        </Button>
+      )}
     </div>
   );
 }
