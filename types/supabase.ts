@@ -117,6 +117,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          promo_id: string | null
           quantity: number
           ticket_id: string
           ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
@@ -126,6 +127,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          promo_id?: string | null
           quantity: number
           ticket_id?: string
           ticket_type: Database["public"]["Enums"]["Checkout Ticket Types"]
@@ -135,12 +137,20 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          promo_id?: string | null
           quantity?: number
           ticket_id?: string
           ticket_type?: Database["public"]["Enums"]["Checkout Ticket Types"]
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "checkout_sessions_promo_id_fkey"
+            columns: ["promo_id"]
+            isOneToOne: false
+            referencedRelation: "event_codes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "public_checkout_sessions_event_id_fkey"
             columns: ["event_id"]

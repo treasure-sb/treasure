@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { TicketIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/helpers/profiles";
+import PromoCode from "./components/PromoCode";
 
 interface CheckoutTicketInfo {
   name: string;
@@ -67,7 +68,8 @@ export default async function Page({
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const { event_id, ticket_id, ticket_type, quantity } = checkoutSession;
+  const { event_id, ticket_id, ticket_type, quantity, promo_id } =
+    checkoutSession;
   const { data: eventData } = await supabase
     .from("events")
     .select("*")
@@ -75,10 +77,23 @@ export default async function Page({
     .single();
   const event: Tables<"events"> = eventData;
   const eventDisplay = await getEventDisplayData(event);
-
   const { profile } = await getProfile(checkoutSession.user_id);
 
-  let totalPrice = 0;
+  let promoCode: Tables<"event_codes"> | null = null;
+  if (promo_id) {
+    const { data: promoCodeData, error: promoCodeError } = await supabase
+      .from("event_codes")
+      .select("*")
+      .eq("id", promo_id)
+      .single();
+
+    if (!promoCodeData || promoCodeError) {
+      throw new Error("Invalid promo code");
+    }
+    promoCode = promoCodeData;
+  }
+
+  let totalPrice: number;
   let ticket: CheckoutTicketInfo;
   switch (ticket_type) {
     case "TICKET":
@@ -93,6 +108,16 @@ export default async function Page({
 
   totalPrice = ticket.price * quantity;
 
+  let priceAfterPromo = totalPrice;
+
+  if (promoCode) {
+    if (promoCode.type === "PERCENT") {
+      priceAfterPromo = totalPrice - totalPrice * (promoCode.discount / 100);
+    } else {
+      priceAfterPromo = Math.max(totalPrice - promoCode.discount, 0);
+    }
+  }
+
   return (
     <main className="max-w-6xl m-auto">
       <div className="flex flex-col space-y-20 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
@@ -104,24 +129,53 @@ export default async function Page({
               event={eventDisplay}
             />
           </div>
-          <div>
-            <p className="text-lg">Order summary</p>
-            <Separator className="my-3" />
-            <div className="flex justify-between">
-              <div className="flex items-center space-x-4">
-                <TicketIcon className="text-tertiary stroke-1" size={24} />
-                <p>
-                  {ticket.name} {ticket_type === "TABLE" && <span>Table</span>}{" "}
-                  x {quantity}
-                </p>
+          <div className="space-y-8">
+            <div>
+              <p className="text-lg">Order summary</p>
+              <Separator className="my-3" />
+              <div>
+                <div className="flex justify-between">
+                  <div className="flex items-center space-x-4">
+                    <TicketIcon className="text-tertiary stroke-1" size={24} />
+                    <p>
+                      {ticket.name}{" "}
+                      {ticket_type === "TABLE" && <span>Table</span>} x{" "}
+                      {quantity}
+                    </p>
+                  </div>
+                  <p>{`$${totalPrice.toFixed(2)}`}</p>
+                </div>
+                {promoCode && (
+                  <div className="flex justify-between text-primary">
+                    <div className="flex items-center space-x-4">
+                      <p className="text-sm">Discount</p>
+                    </div>
+                    <p className="text-sm">{`-$${(
+                      totalPrice - priceAfterPromo
+                    ).toFixed(2)}`}</p>
+                  </div>
+                )}
+                <Separator className="my-3" />
+                <div>
+                  <div className="flex justify-between">
+                    <p className="font-semibold">Total</p>
+                    <p className="font-semibold">{`$${priceAfterPromo.toFixed(
+                      2
+                    )}`}</p>
+                  </div>
+                </div>
               </div>
-              <p>{`$${totalPrice.toFixed(2)}`}</p>
             </div>
+            <PromoCode
+              event={eventDisplay}
+              promoApplied={promoCode}
+              checkoutSessionId={checkoutSessionId}
+            />
           </div>
         </div>
         <InitializeCheckout
           checkoutSession={checkoutSession}
-          totalPrice={totalPrice}
+          totalPrice={priceAfterPromo}
           profile={profile}
         />
       </div>

@@ -6,6 +6,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -21,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { createClient } from "@/utils/supabase/client";
+import StripeInput from "./StripeInput";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -89,18 +91,17 @@ export default function CheckoutForm({
       <form
         id="payment-form"
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full md:w-96 space-y-8"
+        className="w-full md:w-96 space-y-4"
       >
-        <div>Attendee Name</div>
         <FormField
           control={form.control}
           name="first_name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-0">
+              <FormLabel>First Name</FormLabel>
               <FormControl>
-                <FloatingLabelInput label="First Name" {...field} />
+                <StripeInput placeholder="John" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -108,11 +109,11 @@ export default function CheckoutForm({
           control={form.control}
           name="last_name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-0">
+              <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <FloatingLabelInput label="Last Name" {...field} />
+                <StripeInput placeholder="Doe" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
