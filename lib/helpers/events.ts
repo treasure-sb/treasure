@@ -97,7 +97,7 @@ const fetchEventsFromFilters = async (
     tagId,
     from,
     until,
-    city || "new-york-ny",
+    city,
     parseInt(distance || "50")
   );
 

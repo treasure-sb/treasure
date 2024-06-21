@@ -41,7 +41,7 @@ export default function TagFiltering() {
   ];
 
   return (
-    <div className="flex space-x-1 md:space-x-2 overflow-scroll scrollbar-hidden mb-2">
+    <div className="flex space-x-2 overflow-scroll scrollbar-hidden mb-2">
       {tags?.map((tag, i) => (
         <Button
           key={i}

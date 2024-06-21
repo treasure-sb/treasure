@@ -27,13 +27,13 @@ import { getGeocode } from "use-places-autocomplete";
 
 const libraries: Libraries = ["geocoding"];
 
-export default function Location() {
+export default function LocationFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(searchParams.get("city") || "new-york-ny");
+  const [value, setValue] = useState(searchParams.get("city"));
   const [sliderValue, setSliderValue] = useState<number[]>(
     searchParams.get("distance")
       ? [parseInt(searchParams.get("distance")!)]
@@ -47,8 +47,10 @@ export default function Location() {
   const handleSelectCity = (city: string) => {
     setValue(city);
     const params = new URLSearchParams(searchParams);
-    if (city === "new-york-ny") {
+    if (city === value) {
       params.delete("city");
+      params.delete("distance");
+      setValue("");
     } else {
       params.set("city", city);
     }
@@ -68,7 +70,6 @@ export default function Location() {
   };
 
   const success = async (position: GeolocationPosition) => {
-    console.log(position);
     const coords = {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -105,17 +106,21 @@ export default function Location() {
     console.log(error);
   };
 
-  const cities = Object.keys(cityMap).map((key) => ({
-    value: key,
-    label: cityMap[key].label,
-  }));
+  const citiesToInclude = ["new-york-ny", "boston-ma", "philadelphia-pa"];
+
+  const cities = Object.keys(cityMap)
+    .filter((key) => citiesToInclude.includes(key))
+    .map((key) => ({
+      value: key,
+      label: cityMap[key].label,
+    }));
 
   const allowedSliderValues = [5, 25, 50, 75, 100];
 
-  let buttonLabel = "New York, NY";
-  if (cityMap[value]) {
+  let buttonLabel = "United States";
+  if (value && cityMap[value]) {
     buttonLabel = cityMap[value].label;
-  } else {
+  } else if (value) {
     const splitCity = value.split("-");
     const stateName = splitCity[splitCity.length - 1];
     const cityName = splitCity
@@ -170,37 +175,42 @@ export default function Location() {
             <Button
               variant={"ghost"}
               onClick={useCurrentLocation}
-              disabled={!cityMap[value]}
+              disabled={!!(value && !cityMap[value])}
               className="rounded-none w-full font-normal disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <LocateFixedIcon className="mr-2 h-4 w-4" />
               <p>Use My Current Location</p>
             </Button>
           </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup className="p-4">
-            <Slider
-              value={sliderValue}
-              min={5}
-              max={100}
-              step={undefined}
-              onValueChange={(value) => {
-                const closestValue = allowedSliderValues.reduce((prev, curr) =>
-                  Math.abs(curr - value[0]) < Math.abs(prev - value[0])
-                    ? curr
-                    : prev
-                );
-                handleDistanceSlider([closestValue]);
-              }}
-            />
-            <div className="flex justify-between mt-2 text-[.62rem]">
-              <p>5 mi</p>
-              <p>25 mi</p>
-              <p>50 mi</p>
-              <p>75 mi</p>
-              <p>100 mi</p>
-            </div>
-          </CommandGroup>
+          {value && (
+            <>
+              <CommandSeparator />
+              <CommandGroup className="p-4">
+                <Slider
+                  value={sliderValue}
+                  min={5}
+                  max={100}
+                  step={undefined}
+                  onValueChange={(value) => {
+                    const closestValue = allowedSliderValues.reduce(
+                      (prev, curr) =>
+                        Math.abs(curr - value[0]) < Math.abs(prev - value[0])
+                          ? curr
+                          : prev
+                    );
+                    handleDistanceSlider([closestValue]);
+                  }}
+                />
+                <div className="flex justify-between mt-2 text-[.62rem]">
+                  <p>5 mi</p>
+                  <p>25 mi</p>
+                  <p>50 mi</p>
+                  <p>75 mi</p>
+                  <p>100 mi</p>
+                </div>
+              </CommandGroup>
+            </>
+          )}
         </Command>
       </PopoverContent>
     </Popover>
