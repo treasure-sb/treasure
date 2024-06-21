@@ -15,7 +15,7 @@ export default async function Poster({
 
   return (
     <div className="relative md:sticky md:top-20 h-fit m-auto md:m-0">
-      <div className="absolute right-2 top-2 p-2 z-20 bg-black rounded-full hover:bg-black">
+      <div className="absolute right-2 top-2 p-2 z-20 bg-black bg-opacity-30 backdrop-blur-sm rounded-full hover:bg-black transition duration-500">
         <LikeButton event={event} user={user} />
       </div>
       <div className="mb-6 w-full max-w-xl relative z-10">
