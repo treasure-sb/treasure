@@ -34,7 +34,7 @@ export default function EventDisplay({
       )}
     >
       {showLikeButton && (
-        <div className="absolute right-2 top-2 p-2 bg-black rounded-full z-10">
+        <div className="absolute right-2 top-2 p-2 bg-black bg-opacity-30 backdrop-blur-sm rounded-full z-10 hover:bg-black transition duration-500">
           <LikeButton event={event} user={user} />
         </div>
       )}
