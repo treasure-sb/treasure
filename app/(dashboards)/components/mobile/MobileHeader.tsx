@@ -7,12 +7,16 @@ import { usePathname } from "next/navigation";
 
 export default function MobileHeader() {
   const pathname = usePathname();
-  const isVendor = pathname.startsWith("/vendor");
+  const type = pathname.startsWith("/vendor")
+    ? "vendor"
+    : pathname.startsWith("/host")
+    ? "host"
+    : "admin";
 
   return (
     <div className="z-50 block md:hidden relative">
       <HeaderMotion>
-        <Menu type={isVendor ? "vendor" : "host"} />
+        <Menu type={type} />
         <HeaderAvatar />
       </HeaderMotion>
     </div>
