@@ -14,6 +14,7 @@ import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
 import VendorSidebarOptions from "./VendorSidebarOptions";
+import AdminSidebarOptions from "./AdminSidebarOptions";
 
 export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   <div
@@ -25,8 +26,11 @@ export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const isVendor = pathname.startsWith("/vendor");
-  const type = isVendor ? "vendor" : "host";
+  const type = pathname.startsWith("/vendor")
+    ? "vendor"
+    : pathname.startsWith("/host")
+    ? "host"
+    : "admin";
 
   const [showSidebar, setShowSidebar] = useState(true);
 
@@ -66,7 +70,9 @@ export default function Sidebar() {
             <HostSidebarOptions showSidebar={showSidebar} />
           ) : type === "vendor" ? (
             <VendorSidebarOptions showSidebar={showSidebar} />
-          ) : null}
+          ) : (
+            <AdminSidebarOptions showSidebar={showSidebar} />
+          )}
         </div>
       </div>
       <div className="flex flex-col space-y-6">

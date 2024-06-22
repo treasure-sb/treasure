@@ -14,8 +14,9 @@ import HostMenuOptions from "./HostMenuOptions";
 import VendorMenuOptions from "./VendorMenuOptions";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
+import AdminMenuOptions from "./AdminMenuOptions";
 
-export default function Menu({ type }: { type: "host" | "vendor" }) {
+export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -45,8 +46,10 @@ export default function Menu({ type }: { type: "host" | "vendor" }) {
           <div className="flex flex-col space-y-4">
             {type === "host" ? (
               <HostMenuOptions setIsOpen={setIsOpen} />
-            ) : (
+            ) : type === "vendor" ? (
               <VendorMenuOptions setIsOpen={setIsOpen} />
+            ) : (
+              <AdminMenuOptions setIsOpen={setIsOpen} />
             )}
           </div>
           <Button

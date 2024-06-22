@@ -1,234 +1,37 @@
-import { DataTable } from "./components/DataTable";
-import { columns, Order } from "./components/OrderDataColumns";
-import { Tables } from "@/types/supabase";
-import { getProfileAvatar } from "@/lib/helpers/profiles";
-import { type CustomerData } from "./types";
-import DateRangeFilter from "./components/DateRangeFilter";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import SalesAnalytics from "./components/charts/SalesAnalytics";
-import Image from "next/image";
-import { formatDate } from "@/lib/utils";
-import { Suspense } from "react";
+import Link from "next/link";
+import {
+  UsersIcon,
+  BadgeDollarSign,
+  Star,
+  MessageCircle,
+  AppWindowIcon,
+} from "lucide-react";
 
-type OrderData = Tables<"orders"> & {
-  profile: Tables<"profiles">;
-} & {
-  line_items: Tables<"line_items">[];
-} & { event: Tables<"events"> };
-
-type invoice = {
-  host: string;
-  amount: number;
-  event: string;
-  date: string;
-  username: string;
-  contact: string;
-  event_date: string;
-  avatar_url: string;
-};
-
-export default async function Page({
-  searchParams: { from, to },
-}: {
-  searchParams: { from?: string; to?: string };
-}) {
-  const supabase = await createSupabaseServerClient();
-
-  let payouts: any[] = [];
-  let gmv = 0;
-
-  let orderQuery = supabase
-    .from("orders")
-    .select("*, profile:profiles(*), line_items(*), event:events(*)")
-    .order("created_at", { ascending: false });
-
-  if (from) {
-    orderQuery = orderQuery.gte("created_at", from);
-  }
-  if (to) {
-    orderQuery = orderQuery.lte("created_at", to);
-  }
-
-  const { data: orderData } = await orderQuery;
-  const orders: OrderData[] = orderData || [];
-
-  const tableDataPromise: Promise<Order>[] = orders.map(async (order) => {
-    const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
-    const customer: CustomerData = { ...order.profile, publicAvatarUrl };
-    const item = order.line_items[0];
-    let event = {};
-
-    let itemName = "";
-    if (item.item_type === "TICKET") {
-      const { data: ticketData } = await supabase
-        .from("tickets")
-        .select("name")
-        .eq("id", item.item_id)
-        .single();
-      itemName = ticketData?.name;
-    } else {
-      const { data: tableData } = await supabase
-        .from("tables")
-        .select("section_name")
-        .eq("id", item.item_id)
-        .single();
-      itemName = tableData?.section_name;
-    }
-
-    let index = -1;
-    payouts.map((payout, i) => {
-      if (
-        payout.event_id === order.event.id &&
-        payout.date === order.created_at.split("T")[0]
-      ) {
-        payouts[i].amount += order.amount_paid;
-        index = i;
-      }
-    });
-    if (index === -1) {
-      payouts.push({
-        host_id: order.event.organizer_id,
-        host_type: order.event.organizer_type,
-        amount: order.amount_paid,
-        event_name: order.event.name,
-        event_date: order.event.date,
-        event_id: order.event.id,
-        date: order.created_at.split("T")[0],
-        poster_url: order.event.poster_url,
-      });
-    }
-
-    gmv += order.amount_paid;
-
-    return {
-      orderID: order.id,
-      quantity: order.line_items[0].quantity,
-      amountPaid: order.amount_paid,
-      type: order.line_items[0].item_type,
-      purchaseDate: new Date(order.created_at),
-      itemName: itemName,
-      customer: customer,
-    };
-  });
-
-  const tableData = await Promise.all(tableDataPromise);
-
-  payouts.sort(
-    (a, b) =>
-      parseInt(b.date.split("-").join("")) -
-      parseInt(a.date.split("-").join(""))
-  );
-
-  const payoutsPromise: Promise<invoice>[] = payouts.map(async (payout) => {
-    let host = "";
-    let username = "";
-    let contact = "";
-    let publicAvatarUrl = "";
-
-    if (payout.host_type === "profile") {
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", payout.host_id)
-        .single();
-
-      host =
-        profileData.business_name === null
-          ? profileData.first_name + " " + profileData.last_name
-          : profileData.business_name;
-      username = profileData.username;
-      contact = profileData.email ? profileData.email : "";
-      contact = profileData.phone_number
-        ? contact + " " + profileData.phone_number
-        : contact;
-      publicAvatarUrl = await getProfileAvatar(profileData.avatar_url);
-    } else {
-      const { data: profileData } = await supabase
-        .from("temporary_profiles")
-        .select("*")
-        .eq("id", payout.host_id)
-        .single();
-
-      host = profileData.business_name;
-      username = profileData.username;
-      contact = profileData.instagram;
-      publicAvatarUrl = await getProfileAvatar(profileData.avatar_url);
-    }
-    return {
-      host: host,
-      amount: payout.amount,
-      event: payout.event_name,
-      date: formatDate(payout.date),
-      username: username,
-      contact: contact,
-      event_date: formatDate(payout.event_date),
-      avatar_url: publicAvatarUrl,
-    };
-  });
-
-  const invoices = (await Promise.all(payoutsPromise)).slice(0, 5);
-
+export default async function Page() {
   return (
-    <div className="max-w-7xl mx-auto py-10 flex flex-col gap-10">
-      <div>
-        <div className="text-2xl pl-4 font-semibold pb-4 flex w-full justify-between items-end">
-          <p>Last 5 Invoices</p>
-          <p className="text-base">
-            All Time GMV <span className="text-primary text-2xl">${gmv}</span>
-          </p>
+    <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
+      <Link
+        href={`/admin/invoices`}
+        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
+      >
+        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+            Invoices
+          </h3>
+          <UsersIcon size={28} className="flex-shrink-0" />
         </div>
-        <div className="border-2 rounded-md flex flex-col w-full">
-          {invoices?.map((invoice) => {
-            return (
-              <div className="flex overflow-auto sm:grid sm:grid-cols-6 w-full justify-between items-center border-b-2 p-4">
-                <div className="col-span-1 font-semibold">{invoice.date}</div>
-                <div className="text-left col-span-2">
-                  <p className="font-semibold">{invoice.event}</p>
-                  <p className="text-sm">{invoice.event_date}</p>
-                </div>
-                <div className="flex gap-4 items-center col-span-2">
-                  <div
-                    className="relative shrink-0"
-                    style={{
-                      width: "75px",
-                      height: "75px",
-                    }}
-                  >
-                    <Image
-                      className={`rounded-full group-hover:bg-black group-hover:opacity-50 transition duration-300`}
-                      alt="image"
-                      src={invoice.avatar_url}
-                      fill
-                      sizes="75px"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="text-base font-semibold">{invoice.host}</p>
-                    <p className="text-xs">@{invoice.username}</p>
-                    <p className="text-xs mt-2">{invoice.contact}</p>
-                  </div>
-                </div>
-                <div className="col-span-1 text-right font-semibold">
-                  ${invoice.amount}
-                </div>
-              </div>
-            );
-          })}
+      </Link>
+      <Link
+        href={`/admin/likes`}
+        className="bg-secondary rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-secondary/60 transition duration-300"
+      >
+        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+            Likes
+          </h3>
+          <BadgeDollarSign size={28} className="flex-shrink-0" />
         </div>
-      </div>
-      <SalesAnalytics />
-      <div>
-        <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
-          <h1 className="text-2xl font-semibold">
-            All Orders{" "}
-            <span className="text-muted-foreground">{orders.length}</span>
-          </h1>
-          <Suspense>
-            <DateRangeFilter />
-          </Suspense>
-        </div>
-        <DataTable columns={columns} data={tableData} />
-      </div>
+      </Link>
     </div>
   );
 }
