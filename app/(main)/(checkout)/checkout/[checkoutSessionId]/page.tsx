@@ -132,7 +132,7 @@ export default async function Page({
           <div className="space-y-8">
             <div>
               <p className="text-lg">Order summary</p>
-              <Separator className="my-3" />
+              <Separator className="my-2" />
               <div>
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-4">
@@ -155,7 +155,7 @@ export default async function Page({
                     ).toFixed(2)}`}</p>
                   </div>
                 )}
-                <Separator className="my-3" />
+                <Separator className="my-2" />
                 <div>
                   <div className="flex justify-between">
                     <p className="font-semibold">Total</p>
@@ -169,7 +169,8 @@ export default async function Page({
             <PromoCode
               event={eventDisplay}
               promoApplied={promoCode}
-              checkoutSessionId={checkoutSessionId}
+              checkoutSession={checkoutSession}
+              price={totalPrice}
             />
           </div>
         </div>

@@ -3,27 +3,30 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
-import StripeInput from "./StripeInput";
 import { Tables } from "@/types/supabase";
+import { updatePaymentIntent } from "@/lib/actions/stripe";
+import StripeInput from "./StripeInput";
 
 export default function PromoCode({
   event,
   promoApplied,
-  checkoutSessionId,
+  checkoutSession,
+  price,
 }: {
   event: EventDisplayData;
   promoApplied: Tables<"event_codes"> | null;
-  checkoutSessionId: string;
+  checkoutSession: Tables<"checkout_sessions">;
+  price: number;
 }) {
   const { refresh } = useRouter();
   const [promoCode, setPromoCode] = useState("");
 
   const supabase = createClient();
 
-  const handleApplyPromo = async (e: any) => {
+  const handleApplyPromo = async (e: FormEvent) => {
     e.preventDefault();
     toast.loading("Applying promo code...");
     const { data, error } = await supabase
@@ -50,10 +53,24 @@ export default function PromoCode({
       return;
     }
 
+    let newAmount = 0;
+    if (promoData.type === "DOLLAR") {
+      newAmount = Math.max(price - promoData.discount, 0);
+    } else {
+      newAmount = price - (price * promoData.discount) / 100;
+    }
+
+    console.log(checkoutSession);
+
+    if (checkoutSession.payment_intent_id) {
+      console.log(newAmount);
+      await updatePaymentIntent(checkoutSession.payment_intent_id, newAmount);
+    }
+
     await supabase
       .from("checkout_sessions")
       .update({ promo_id: promoData.id })
-      .eq("id", checkoutSessionId);
+      .eq("id", checkoutSession.id);
 
     toast.dismiss();
     toast.success("Promo code applied!");

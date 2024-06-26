@@ -6,6 +6,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useState, useEffect } from "react";
 import { Tables } from "@/types/supabase";
 import CheckoutForm from "./CheckoutForm";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
@@ -20,7 +22,9 @@ export default function InitializeCheckout({
   totalPrice: number;
   profile: Tables<"profiles">;
 }) {
+  const { refresh } = useRouter();
   const [clientSecret, setClientSecret] = useState("");
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchPaymentIntent = async () => {
@@ -29,10 +33,16 @@ export default function InitializeCheckout({
         checkoutSession.id
       );
       const secret = paymentIntent?.clientSecret || "";
+      const id = paymentIntent?.id || "";
       setClientSecret(secret);
+      const { data, error } = await supabase
+        .from("checkout_sessions")
+        .update({ payment_intent_id: id })
+        .eq("id", checkoutSession.id);
+      refresh();
     };
     fetchPaymentIntent();
-  }, []);
+  }, [totalPrice]);
 
   const appearance = {
     theme: "night" as const,

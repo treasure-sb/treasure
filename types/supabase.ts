@@ -117,6 +117,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          payment_intent_id: string | null
           promo_id: string | null
           quantity: number
           ticket_id: string
@@ -127,6 +128,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          payment_intent_id?: string | null
           promo_id?: string | null
           quantity: number
           ticket_id?: string
@@ -137,6 +139,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          payment_intent_id?: string | null
           promo_id?: string | null
           quantity?: number
           ticket_id?: string
