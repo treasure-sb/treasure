@@ -39,7 +39,7 @@ export default function EventDisplay({
         </div>
       )}
 
-      <Link href={redirect || `/events/${event.cleaned_name}`}>
+      <Link href={redirect || `/events/${event.cleaned_name}`} scroll={true}>
         <div className="relative aspect-w-1 aspect-h-1">
           <Image
             className={`object-cover h-full w-full rounded-md ${imageVisibility}`}
@@ -55,13 +55,13 @@ export default function EventDisplay({
             />
           )}
         </div>
-        <h1 className="text-xl mt-2 font-bold line-clamp-2">{event.name}</h1>
-        <h1 className="text-base font-normal">
+        <p className="text-xl mt-2 font-bold line-clamp-2">{event.name}</p>
+        <p className="text-base font-normal">
           <span className="text-primary text-base font-normal">
             {event.formattedDate}
           </span>{" "}
           {event.city + ", " + event.state}
-        </h1>
+        </p>
       </Link>
     </div>
   );
