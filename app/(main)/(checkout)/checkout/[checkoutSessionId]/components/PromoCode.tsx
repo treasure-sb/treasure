@@ -7,19 +7,21 @@ import { FormEvent, useState } from "react";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
 import { Tables } from "@/types/supabase";
-import { updatePaymentIntent } from "@/lib/actions/stripe";
+import { XIcon } from "lucide-react";
 import StripeInput from "./StripeInput";
 
 export default function PromoCode({
   event,
   promoApplied,
   checkoutSession,
-  price,
+  startingPrice,
+  updatePrice,
 }: {
   event: EventDisplayData;
   promoApplied: Tables<"event_codes"> | null;
   checkoutSession: Tables<"checkout_sessions">;
-  price: number;
+  startingPrice: number;
+  updatePrice: (newPrice: number) => void;
 }) {
   const { refresh } = useRouter();
   const [promoCode, setPromoCode] = useState("");
@@ -28,7 +30,9 @@ export default function PromoCode({
 
   const handleApplyPromo = async (e: FormEvent) => {
     e.preventDefault();
+
     toast.loading("Applying promo code...");
+
     const { data, error } = await supabase
       .from("event_codes")
       .select("*")
@@ -55,17 +59,12 @@ export default function PromoCode({
 
     let newAmount = 0;
     if (promoData.type === "DOLLAR") {
-      newAmount = Math.max(price - promoData.discount, 0);
+      newAmount = Math.max(startingPrice - promoData.discount, 0);
     } else {
-      newAmount = price - (price * promoData.discount) / 100;
+      newAmount = startingPrice - (startingPrice * promoData.discount) / 100;
     }
 
-    console.log(checkoutSession);
-
-    if (checkoutSession.payment_intent_id) {
-      console.log(newAmount);
-      await updatePaymentIntent(checkoutSession.payment_intent_id, newAmount);
-    }
+    newAmount = parseFloat(newAmount.toFixed(2));
 
     await supabase
       .from("checkout_sessions")
@@ -74,6 +73,17 @@ export default function PromoCode({
 
     toast.dismiss();
     toast.success("Promo code applied!");
+    updatePrice(newAmount);
+    refresh();
+  };
+
+  const handleRemovePromo = async () => {
+    await supabase
+      .from("checkout_sessions")
+      .update({ promo_id: null })
+      .eq("id", checkoutSession.id);
+
+    updatePrice(startingPrice);
     refresh();
   };
 
@@ -81,15 +91,22 @@ export default function PromoCode({
     <form onSubmit={(e) => handleApplyPromo(e)} className="space-y-1">
       <p className="text-sm">Promo Code</p>
       {promoApplied && (
-        <div>
-          <p className="font-bold">{promoApplied.code}</p>
-          <p className="text-xs text-muted-foreground">
-            You have applied a{" "}
-            {promoApplied.type === "DOLLAR"
-              ? `$${promoApplied.discount}`
-              : `${promoApplied.discount}%`}{" "}
-            off promo code
-          </p>
+        <div className="flex justify-between">
+          <div>
+            <p className="font-bold">{promoApplied.code}</p>
+            <p className="text-xs text-muted-foreground">
+              You have applied a{" "}
+              {promoApplied.type === "DOLLAR"
+                ? `$${promoApplied.discount}`
+                : `${promoApplied.discount}%`}{" "}
+              off promo code!
+            </p>
+          </div>
+          <XIcon
+            className="cursor-pointer text-muted-foreground hover:text-foreground transition duration-500"
+            size={14}
+            onClick={handleRemovePromo}
+          />
         </div>
       )}
       <div className="flex space-x-2">

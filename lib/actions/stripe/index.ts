@@ -14,7 +14,7 @@ const createPaymentIntent = async (
   checkoutSessionId: string
 ) => {
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalPrice * 100,
+    amount: Math.round(totalPrice * 100),
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,

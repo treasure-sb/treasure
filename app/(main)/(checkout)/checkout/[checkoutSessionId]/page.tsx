@@ -1,18 +1,11 @@
 import InitializeCheckout from "./components/InitializeCheckout";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import EventCard from "@/components/events/shared/EventCard";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";
-import { Separator } from "@/components/ui/separator";
-import { TicketIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/helpers/profiles";
-import PromoCode from "./components/PromoCode";
-
-interface CheckoutTicketInfo {
-  name: string;
-  price: number;
-}
+import { CheckoutTicketInfo } from "../../types";
+import OrderSummary from "./components/OrderSummary";
 
 const getTicketInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
@@ -29,6 +22,7 @@ const getTicketInfo = async (ticketId: string) => {
   return {
     name: ticketData.name,
     price: ticketData.price,
+    type: "TICKET" as const,
   };
 };
 
@@ -46,6 +40,7 @@ const getTableInfo = async (ticketId: string) => {
   return {
     name: tableData.section_name,
     price: tableData.price,
+    type: "TABLE" as const,
   };
 };
 
@@ -93,7 +88,7 @@ export default async function Page({
     promoCode = promoCodeData;
   }
 
-  let totalPrice: number;
+  let subtotal: number;
   let ticket: CheckoutTicketInfo;
   switch (ticket_type) {
     case "TICKET":
@@ -106,78 +101,36 @@ export default async function Page({
       throw new Error("Invalid Ticket Type");
   }
 
-  totalPrice = ticket.price * quantity;
+  subtotal = ticket.price * quantity;
 
-  let priceAfterPromo = totalPrice;
+  let priceAfterPromo = subtotal;
 
   if (promoCode) {
     if (promoCode.type === "PERCENT") {
-      priceAfterPromo = totalPrice - totalPrice * (promoCode.discount / 100);
+      priceAfterPromo = subtotal - subtotal * (promoCode.discount / 100);
     } else {
-      priceAfterPromo = Math.max(totalPrice - promoCode.discount, 0);
+      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0);
     }
   }
 
   return (
     <main className="max-w-6xl m-auto">
-      <div className="flex flex-col space-y-20 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
-        <div className="space-y-4 w-full md:w-96">
-          <div className="w-full">
-            <EventCard
-              clickable={false}
-              showLikeButton={false}
-              event={eventDisplay}
-            />
-          </div>
-          <div className="space-y-8">
-            <div>
-              <p className="text-lg">Order summary</p>
-              <Separator className="my-2" />
-              <div>
-                <div className="flex justify-between">
-                  <div className="flex items-center space-x-4">
-                    <TicketIcon className="text-tertiary stroke-1" size={24} />
-                    <p>
-                      {ticket.name}{" "}
-                      {ticket_type === "TABLE" && <span>Table</span>} x{" "}
-                      {quantity}
-                    </p>
-                  </div>
-                  <p>{`$${totalPrice.toFixed(2)}`}</p>
-                </div>
-                {promoCode && (
-                  <div className="flex justify-between text-primary">
-                    <div className="flex items-center space-x-4">
-                      <p className="text-sm">Discount</p>
-                    </div>
-                    <p className="text-sm">{`-$${(
-                      totalPrice - priceAfterPromo
-                    ).toFixed(2)}`}</p>
-                  </div>
-                )}
-                <Separator className="my-2" />
-                <div>
-                  <div className="flex justify-between">
-                    <p className="font-semibold">Total</p>
-                    <p className="font-semibold">{`$${priceAfterPromo.toFixed(
-                      2
-                    )}`}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <PromoCode
-              event={eventDisplay}
-              promoApplied={promoCode}
-              checkoutSession={checkoutSession}
-              price={totalPrice}
-            />
-          </div>
-        </div>
+      <div className="flex flex-col space-y-14 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
+        <OrderSummary
+          promoCode={promoCode}
+          event={eventDisplay}
+          ticket={ticket}
+          subtotal={subtotal}
+          priceAfterPromo={priceAfterPromo}
+          quantity={quantity}
+        />
         <InitializeCheckout
           checkoutSession={checkoutSession}
-          totalPrice={priceAfterPromo}
+          priceAfterPromo={priceAfterPromo}
+          subtotal={subtotal}
           profile={profile}
+          event={eventDisplay}
+          promoCode={promoCode}
         />
       </div>
     </main>

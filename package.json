@@ -49,6 +49,7 @@
     "color-thief-react": "^2.1.0",
     "copy-to-clipboard": "^3.3.3",
     "date-fns": "^2.30.0",
+    "decimal.js": "^10.4.3",
     "embla-carousel-react": "^8.0.0-rc22",
     "export-to-csv": "^1.3.0",
     "framer-motion": "^10.16.16",

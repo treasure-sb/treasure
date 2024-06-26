@@ -191,7 +191,7 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  if (!profile.email || profile.email !== "treasure20110@gmail.com") {
+  if (!profile.email || profile.role !== "admin") {
     await sendTicketPurchasedEmail(
       "treasure20110@gmail.com",
       purchasedTicket.id,
@@ -311,8 +311,6 @@ const handlePaymentIntentSucceeded = async (
   const { checkoutSessionId, amountPaid } = JSON.parse(
     JSON.stringify(session.metadata)
   );
-
-  console.log(amountPaid);
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
