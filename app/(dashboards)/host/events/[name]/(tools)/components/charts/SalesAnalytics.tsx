@@ -2,7 +2,7 @@ import { Tables } from "@/types/supabase";
 import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { formatDate } from "@/lib/utils";
-import DateRangeFilter from "../../sales/components/DateRangeFilter";
+import DateRangeFilter from "../../sales/components/orders/DateRangeFilter";
 import DateFilter from "../../views/components/DateFilter";
 
 type OrderQueryData = {
