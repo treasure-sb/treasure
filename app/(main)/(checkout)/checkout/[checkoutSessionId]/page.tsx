@@ -107,9 +107,12 @@ export default async function Page({
 
   if (promoCode) {
     if (promoCode.type === "PERCENT") {
-      priceAfterPromo = subtotal - subtotal * (promoCode.discount / 100);
+      priceAfterPromo = Math.max(
+        subtotal - subtotal * (promoCode.discount / 100),
+        0.5
+      );
     } else {
-      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0);
+      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0.5);
     }
   }
 
