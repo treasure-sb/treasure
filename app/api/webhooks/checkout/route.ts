@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
@@ -10,10 +9,6 @@ import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
-import moment from "moment";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import Cors from "micro-cors";
-import Stripe from "stripe";
 import {
   type HostSoldPayload,
   sendAttendeeTicketPurchasedSMS,
@@ -21,6 +16,11 @@ import {
   sendVendorTablePurchasedSMS,
   sendHostTableSoldSMS,
 } from "@/lib/sms";
+import { headers } from "next/headers";
+import moment from "moment";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import Cors from "micro-cors";
+import Stripe from "stripe";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -58,7 +58,7 @@ const createOrder = async (orderPayload: OrderPayload) => {
     .insert([
       {
         customer_id: userId,
-        amount_paid: quantity * price,
+        amount_paid: price,
         event_id: eventId,
       },
     ])
@@ -82,7 +82,7 @@ const createOrder = async (orderPayload: OrderPayload) => {
         item_type: itemType,
         item_id: itemId,
         quantity: quantity,
-        price: price,
+        price: price / quantity,
       },
     ]);
 
@@ -92,15 +92,15 @@ const createOrder = async (orderPayload: OrderPayload) => {
       ok: false,
     });
   }
-
   return null;
 };
 
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
+  amountPaid: number,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, ticket_id, user_id, quantity } = checkoutSessison;
+  const { event_id, ticket_id, user_id, quantity, promo_id } = checkoutSessison;
   const { data: ticketData } = await supabase
     .from("tickets")
     .select("*")
@@ -141,11 +141,34 @@ const handleTicketPurchase = async (
     userId: user_id,
     eventId: event_id,
     quantity: quantity,
-    price: ticket.price,
+    price: amountPaid,
     itemId: ticket.id,
     itemType: "TICKET" as const,
   };
-  const order = await createOrder(createOrderPayload);
+  await createOrder(createOrderPayload);
+
+  if (promo_id) {
+    const { data: promoData, error: promoError } = await supabase
+      .from("event_codes")
+      .select("num_used")
+      .eq("id", promo_id)
+      .single();
+
+    if (promoError || !promoData) {
+      throw new Error("Error fetching promo code data");
+    }
+
+    const newNumUsed = promoData.num_used + 1;
+
+    const { error: updatePromoError } = await supabase
+      .from("event_codes")
+      .update({ num_used: newNumUsed })
+      .eq("id", promo_id);
+
+    if (updatePromoError) {
+      throw new Error("Error updating promo code usage");
+    }
+  }
 
   const { profile } = await getProfile(user_id);
   const { event } = await getEventFromId(event_id);
@@ -191,7 +214,7 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  if (!profile.email || profile.email !== "treasure20110@gmail.com") {
+  if (!profile.email || profile.role !== "admin") {
     await sendTicketPurchasedEmail(
       "treasure20110@gmail.com",
       purchasedTicket.id,
@@ -308,7 +331,10 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId } = JSON.parse(JSON.stringify(session.metadata));
+  const { checkoutSessionId, amountPaid } = JSON.parse(
+    JSON.stringify(session.metadata)
+  );
+
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
@@ -323,7 +349,7 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, supabase);
+      await handleTicketPurchase(checkoutSession, amountPaid, supabase);
       break;
     case "TABLE":
       await handleTablePurchase(checkoutSession, supabase);
@@ -360,6 +386,11 @@ export async function POST(req: Request) {
           ok: false,
         });
       }
+    } else {
+      return NextResponse.json({
+        message: "Invalid Event Type",
+        ok: false,
+      });
     }
   } catch (err) {
     return NextResponse.json({

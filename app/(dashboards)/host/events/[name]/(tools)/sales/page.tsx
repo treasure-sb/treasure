@@ -1,18 +1,9 @@
-import { DataTable } from "./components/DataTable";
-import { columns, Order } from "./components/OrderDataColumns";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
-import { getProfileAvatar } from "@/lib/helpers/profiles";
-import { type CustomerData } from "./types";
-import DateRangeFilter from "./components/DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Suspense } from "react";
-
-type OrderData = Tables<"orders"> & {
-  profile: Tables<"profiles">;
-} & {
-  line_items: Tables<"line_items">[];
-};
+import TabState from "./components/TabState";
+import Orders from "./components/orders/Orders";
+import PromoCodes from "./components/promo/PromoCodes";
 
 export default async function Page({
   params: { name },
@@ -35,68 +26,12 @@ export default async function Page({
 
   const event: Tables<"events"> = eventData;
 
-  let orderQuery = supabase
-    .from("orders")
-    .select("*, profile:profiles(*), line_items(*)")
-    .eq("event_id", event.id)
-    .order("created_at", { ascending: false });
-
-  if (from) {
-    orderQuery = orderQuery.gte("created_at", from);
-  }
-  if (to) {
-    orderQuery = orderQuery.lte("created_at", to);
-  }
-
-  const { data: orderData } = await orderQuery;
-  const orders: OrderData[] = orderData || [];
-
-  const tableDataPromise: Promise<Order>[] = orders.map(async (order) => {
-    const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
-    const customer: CustomerData = { ...order.profile, publicAvatarUrl };
-    const item = order.line_items[0];
-
-    let itemName = "";
-    if (item.item_type === "TICKET") {
-      const { data: ticketData } = await supabase
-        .from("tickets")
-        .select("name")
-        .eq("id", item.item_id)
-        .single();
-      itemName = ticketData?.name;
-    } else {
-      const { data: tableData } = await supabase
-        .from("tables")
-        .select("section_name")
-        .eq("id", item.item_id)
-        .single();
-      itemName = tableData?.section_name;
-    }
-
-    return {
-      orderID: order.id,
-      quantity: order.line_items[0].quantity,
-      amountPaid: order.amount_paid,
-      type: order.line_items[0].item_type,
-      purchaseDate: new Date(order.created_at),
-      itemName: itemName,
-      customer: customer,
-    };
-  });
-
-  const tableData = await Promise.all(tableDataPromise);
-
   return (
-    <div className="max-w-7xl mx-auto py-10">
-      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
-        <h2 className="text-2xl font-semibold">
-          Orders <span className="text-muted-foreground">{orders.length}</span>
-        </h2>
-        <Suspense>
-          <DateRangeFilter />
-        </Suspense>
-      </div>
-      <DataTable columns={columns} data={tableData} event={event} />
+    <div className="max-w-7xl mx-auto">
+      <TabState>
+        <Orders event={event} from={from} to={to} />
+        <PromoCodes event={event} />
+      </TabState>
     </div>
   );
 }

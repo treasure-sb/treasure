@@ -14,16 +14,44 @@ const createPaymentIntent = async (
   checkoutSessionId: string
 ) => {
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalPrice * 100,
+    amount: Math.round(totalPrice * 100),
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,
     },
     metadata: {
       checkoutSessionId,
+      amountPaid: totalPrice,
     },
   });
-  return { clientSecret: paymentIntent.client_secret };
+
+  return { clientSecret: paymentIntent.client_secret, id: paymentIntent.id };
+};
+
+const updatePaymentIntent = async (
+  paymentIntentId: string,
+  newAmount: number
+) => {
+  try {
+    const updatedPaymentIntent = await stripe.paymentIntents.update(
+      paymentIntentId,
+      {
+        amount: newAmount * 100,
+        metadata: {
+          amountPaid: newAmount,
+        },
+      }
+    );
+
+    console.log(updatedPaymentIntent);
+    return {
+      clientSecret: updatedPaymentIntent.client_secret,
+      id: updatedPaymentIntent.id,
+    };
+  } catch (error) {
+    console.error("Error updating payment intent:", error);
+    throw error;
+  }
 };
 
 const createStripeProduct = async (ticket: Ticket) => {
@@ -39,4 +67,4 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-export { createPaymentIntent, createStripeProduct };
+export { createPaymentIntent, createStripeProduct, updatePaymentIntent };

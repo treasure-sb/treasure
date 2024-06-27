@@ -6,7 +6,7 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
 import {
   PaymentElement,
@@ -19,8 +19,9 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { createClient } from "@/utils/supabase/client";
+import StripeInput from "./StripeInput";
+import { createPaymentIntent } from "@/lib/actions/stripe";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -34,9 +35,11 @@ const nameSchema = z.object({
 export default function CheckoutForm({
   checkoutSession,
   profile,
+  totalPrice,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
+  totalPrice: number;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -50,10 +53,10 @@ export default function CheckoutForm({
     },
   });
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async () => {
     const supabase = createClient();
     const { first_name, last_name } = form.getValues();
-    const { error: updateNameError } = await supabase
+    await supabase
       .from("profiles")
       .update({ first_name, last_name })
       .eq("id", profile.id)
@@ -66,8 +69,22 @@ export default function CheckoutForm({
     setIsLoading(true);
     toast.loading("Processing payment...");
 
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      toast.dismiss();
+      toast.error(submitError.message);
+      return;
+    }
+
+    const paymentIntent = await createPaymentIntent(
+      totalPrice,
+      checkoutSession.id
+    );
+    const clientSecret = paymentIntent?.clientSecret || "";
+
     const { error } = await stripe.confirmPayment({
       elements,
+      clientSecret,
       confirmParams: {
         return_url: `${window.location.origin}/checkout/${checkoutSession.id}/success`,
       },
@@ -89,33 +106,34 @@ export default function CheckoutForm({
       <form
         id="payment-form"
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full md:w-96 space-y-8"
+        className="space-y-4"
       >
-        <div>Attendee Name</div>
-        <FormField
-          control={form.control}
-          name="first_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <FloatingLabelInput label="First Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="last_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <FloatingLabelInput label="Last Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-2">
+          <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <StripeInput placeholder="John" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <StripeInput placeholder="Doe" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <PaymentElement id="payment-element" />
         <div className="w-full flex items-center justify-center">
           <Button

@@ -38,11 +38,7 @@ export default function ExportButton({
   return (
     <>
       {salesData && salesData.length > 0 && (
-        <Button
-          onClick={exporting}
-          variant={"outline"}
-          className="border-dotted border-[1px] rounded-sm flex items-center space-x-2"
-        >
+        <Button onClick={exporting} variant={"dotted"}>
           <ExportIcon />
           <span>Export</span>
         </Button>
