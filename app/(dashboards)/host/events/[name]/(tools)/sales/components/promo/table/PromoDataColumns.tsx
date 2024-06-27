@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { PromoType, Status } from "../../types";
+import { PromoType, Status } from "../../../types";
 
 type Discount = {
   amount: number;
@@ -12,6 +12,7 @@ type Discount = {
 };
 
 export type PromoCode = {
+  id: string;
   code: string;
   discount: Discount;
   status: Status;
@@ -86,7 +87,9 @@ const usesCell = ({ row }: CellContext<PromoCode, any>) => {
   return (
     <div>
       <span>{numUsed}</span>
-      <span className="text-muted-foreground">/{usageLimit}</span>
+      <span className="text-muted-foreground">
+        /{usageLimit || <span>∞</span>}
+      </span>
     </div>
   );
 };

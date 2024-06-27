@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  Row,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -21,8 +22,11 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Tables } from "@/types/supabase";
+import { Dialog } from "@/components/ui/dialog";
 import Filters from "./Filters";
 import AddPromoButton from "./AddPromoButton";
+import EditPromoDialogContent from "../promo_dialog/EditPromoDialogContent";
+import { PromoCode } from "./PromoDataColumns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +40,8 @@ export function DataTable<TData, TValue>({
   event,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [promoClicked, setPromoClicked] = useState<PromoCode | null>(null);
+  const [open, setOpen] = useState(false);
 
   const table = useReactTable({
     data,
@@ -58,6 +64,11 @@ export function DataTable<TData, TValue>({
   const statusFilter = table.getColumn("status")?.getFilterValue();
   const updateStatusFilter = (status: string | undefined) => {
     table.getColumn("status")?.setFilterValue(status);
+  };
+
+  const showPromoInfo = (row: Row<TData>) => {
+    setPromoClicked(row.original as PromoCode);
+    setOpen(true);
   };
 
   return (
@@ -97,6 +108,9 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    showPromoInfo(row);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -121,6 +135,22 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setPromoClicked(null);
+          setOpen(isOpen);
+        }}
+      >
+        {promoClicked && (
+          <EditPromoDialogContent
+            eventId={event.id}
+            promoCode={promoClicked}
+            closeDialog={() => setOpen(false)}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }

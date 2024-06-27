@@ -1,6 +1,6 @@
 import { Tables } from "@/types/supabase";
-import { DataTable } from "./DataTable";
-import { PromoCode, promoColumns } from "./PromoDataColumns";
+import { DataTable } from "./table/DataTable";
+import { PromoCode, promoColumns } from "./table/PromoDataColumns";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function PromoCodes({
@@ -18,6 +18,7 @@ export default async function PromoCodes({
 
   const tableData: PromoCode[] = promoCodes.map((promoCode) => {
     return {
+      id: promoCode.id,
       code: promoCode.code,
       discount: {
         amount: promoCode.discount,
