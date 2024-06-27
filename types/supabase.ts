@@ -173,6 +173,7 @@ export type Database = {
       event_codes: {
         Row: {
           code: string
+          created_at: string
           discount: number
           event_id: string
           id: string
@@ -183,6 +184,7 @@ export type Database = {
         }
         Insert: {
           code?: string
+          created_at?: string
           discount?: number
           event_id?: string
           id?: string
@@ -193,6 +195,7 @@ export type Database = {
         }
         Update: {
           code?: string
+          created_at?: string
           discount?: number
           event_id?: string
           id?: string
@@ -275,14 +278,17 @@ export type Database = {
       event_likes: {
         Row: {
           event_id: string
+          liked_on: string
           user_id: string
         }
         Insert: {
           event_id: string
+          liked_on?: string
           user_id: string
         }
         Update: {
           event_id?: string
+          liked_on?: string
           user_id?: string
         }
         Relationships: [

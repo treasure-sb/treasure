@@ -20,11 +20,7 @@ export default function Filters({
     <div className="flex space-x-2 overflow-scroll scrollbar-hidden">
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant={"ghost"}
-            role="combobox"
-            className="border-dotted border-[1px] rounded-sm flex items-center"
-          >
+          <Button variant={"dotted"} role="combobox">
             <p>Item Type</p>
             <div
               className={cn(
@@ -75,6 +71,17 @@ export default function Filters({
           </Command>
         </PopoverContent>
       </Popover>
+      {typeFilter ? (
+        <Button
+          onClick={() => {
+            updateTypeFilter(undefined);
+          }}
+          className="rounded-sm"
+          variant={"secondary"}
+        >
+          Reset
+        </Button>
+      ) : null}
     </div>
   );
 }

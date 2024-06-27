@@ -3,6 +3,7 @@ import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TabState from "./components/TabState";
 import Orders from "./components/orders/Orders";
+import PromoCodes from "./components/promo/PromoCodes";
 
 export default async function Page({
   params: { name },
@@ -29,9 +30,7 @@ export default async function Page({
     <div className="max-w-7xl mx-auto">
       <TabState>
         <Orders event={event} from={from} to={to} />
-        <div>
-          <h3>Promo Codes</h3>
-        </div>
+        <PromoCodes event={event} />
       </TabState>
     </div>
   );

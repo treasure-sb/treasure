@@ -3,9 +3,9 @@ import { columns, Order } from "./OrderDataColumns";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import { type CustomerData } from "../../types";
+import { Suspense } from "react";
 import DateRangeFilter from "./DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Suspense } from "react";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
