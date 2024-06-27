@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
@@ -10,10 +9,6 @@ import { getEventFromId } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
-import moment from "moment";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import Cors from "micro-cors";
-import Stripe from "stripe";
 import {
   type HostSoldPayload,
   sendAttendeeTicketPurchasedSMS,
@@ -21,6 +16,11 @@ import {
   sendVendorTablePurchasedSMS,
   sendHostTableSoldSMS,
 } from "@/lib/sms";
+import { headers } from "next/headers";
+import moment from "moment";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import Cors from "micro-cors";
+import Stripe from "stripe";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -100,7 +100,7 @@ const handleTicketPurchase = async (
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, ticket_id, user_id, quantity } = checkoutSessison;
+  const { event_id, ticket_id, user_id, quantity, promo_id } = checkoutSessison;
   const { data: ticketData } = await supabase
     .from("tickets")
     .select("*")
@@ -146,6 +146,29 @@ const handleTicketPurchase = async (
     itemType: "TICKET" as const,
   };
   await createOrder(createOrderPayload);
+
+  if (promo_id) {
+    const { data: promoData, error: promoError } = await supabase
+      .from("event_codes")
+      .select("num_used")
+      .eq("id", promo_id)
+      .single();
+
+    if (promoError || !promoData) {
+      throw new Error("Error fetching promo code data");
+    }
+
+    const newNumUsed = promoData.num_used + 1;
+
+    const { error: updatePromoError } = await supabase
+      .from("event_codes")
+      .update({ num_used: newNumUsed })
+      .eq("id", promo_id);
+
+    if (updatePromoError) {
+      throw new Error("Error updating promo code usage");
+    }
+  }
 
   const { profile } = await getProfile(user_id);
   const { event } = await getEventFromId(event_id);
@@ -363,6 +386,11 @@ export async function POST(req: Request) {
           ok: false,
         });
       }
+    } else {
+      return NextResponse.json({
+        message: "Invalid Event Type",
+        ok: false,
+      });
     }
   } catch (err) {
     return NextResponse.json({
