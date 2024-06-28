@@ -11,10 +11,6 @@ import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import EventCard from "@/components/events/shared/EventCard";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 
-/**
- * List events with infinite scrolling functionality on mobile and standard pagination on desktop.
- * It fetches event data based on the provided search parameters.
- */
 export default function ListEvents({
   events,
   user,
