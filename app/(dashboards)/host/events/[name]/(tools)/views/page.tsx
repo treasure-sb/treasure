@@ -2,14 +2,21 @@ import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Suspense } from "react";
 import ViewsChart from "./components/ViewsChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "./components/DateFilter";
-import { Suspense } from "react";
+
+const subtractFourHours = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() - 4);
+  return newDate;
+};
 
 const normalizeDate = (date: Date) => {
-  date.setHours(0, 0, 0, 0);
-  return date.toISOString().slice(0, 10);
+  const adjustedDate = subtractFourHours(date);
+  adjustedDate.setHours(0, 0, 0, 0);
+  return adjustedDate.toISOString().slice(0, 10);
 };
 
 const percentageChange = (current: number, last: number) => {
@@ -68,8 +75,8 @@ export default async function Page({
   views.forEach((view) => {
     const viewDate = normalizeDate(new Date(view.visited_at));
     if (lastDaysMap.has(viewDate)) {
-      const itemMap = lastDaysMap.get(viewDate);
-      lastDaysMap.set(viewDate, itemMap + 1);
+      const views = lastDaysMap.get(viewDate);
+      lastDaysMap.set(viewDate, views + 1);
     }
   });
 

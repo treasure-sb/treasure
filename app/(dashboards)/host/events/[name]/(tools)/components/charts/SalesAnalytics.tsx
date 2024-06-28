@@ -24,9 +24,16 @@ export type SalesData = {
   tables: number;
 }[];
 
+const subtractFourHours = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() - 4);
+  return newDate;
+};
+
 const normalizeDate = (date: Date) => {
-  date.setHours(0, 0, 0, 0);
-  return date.toISOString().slice(0, 10);
+  const adjustedDate = subtractFourHours(date);
+  adjustedDate.setHours(0, 0, 0, 0);
+  return adjustedDate.toISOString().slice(0, 10);
 };
 
 export default async function SalesAnalytics({
