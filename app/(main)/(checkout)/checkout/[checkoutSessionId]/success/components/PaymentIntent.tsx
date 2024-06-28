@@ -58,7 +58,7 @@ export default function PaymentIntent({
     getPaymentIntent(clientSecret);
   }, [stripe]);
 
-  const { quantity, ticketName, email, type } = ticketInfo;
+  const { quantity, ticketName, type } = ticketInfo;
   const isTicket = type === "TICKET";
 
   return (
@@ -91,7 +91,7 @@ export default function PaymentIntent({
               : ticketInfo.quantity > 1
               ? "tables"
               : "table"}{" "}
-            sent to <span className="font-bold">{email}</span>
+            added to your account
           </p>
           <div className="w-52 md:w-80 mx-auto">
             <div className="aspect-w-1 aspect-h-1">

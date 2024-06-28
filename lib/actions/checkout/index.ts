@@ -7,6 +7,7 @@ interface CheckoutSession {
   ticket_type: string;
   user_id: string;
   quantity: number;
+  price_type?: string;
 }
 
 const createCheckoutSession = async (session: CheckoutSession) => {
@@ -14,7 +15,8 @@ const createCheckoutSession = async (session: CheckoutSession) => {
   const { data, error } = await supabase
     .from("checkout_sessions")
     .insert([session])
-    .select();
+    .select()
+    .single();
   return { data, error };
 };
 

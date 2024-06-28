@@ -8,9 +8,7 @@ import { createCheckoutSession } from "@/lib/actions/checkout";
 import { useRouter } from "next/navigation";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
-import { addEventAttendee } from "@/lib/actions/tickets";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
-import RSVPSuccess from "./RSVPSuccess";
 
 export default function TicketCounter({
   ticket,
@@ -21,10 +19,9 @@ export default function TicketCounter({
   user: User | null;
   eventDisplayData: EventDisplayData;
 }) {
-  const { push } = useRouter();
+  const { push, refresh } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
   const [creatingCheckout, setCreatingCheckout] = useState(false);
-  const [showRSVPSuccess, setShowRSVPSuccess] = useState(false);
   const isTicketFree = ticketCount * ticket.price === 0;
   const isSoldOut = ticket.quantity === 0;
   const minTickets = 1;
@@ -56,7 +53,7 @@ export default function TicketCounter({
     });
 
     if (data && !error) {
-      const checkoutSession: Tables<"checkout_sessions"> = data[0];
+      const checkoutSession: Tables<"checkout_sessions"> = data;
       push(`/checkout/${checkoutSession.id}`);
     } else {
       toast.error("Error creating checkout session");
@@ -70,21 +67,22 @@ export default function TicketCounter({
     }
     setCreatingCheckout(true);
 
-    const { error } = await addEventAttendee(
-      eventDisplayData.id,
-      user.id,
-      ticket.id,
-      ticketCount
-    );
+    const { data, error } = await createCheckoutSession({
+      event_id: eventDisplayData.id,
+      ticket_id: ticket.id,
+      ticket_type: "TICKET",
+      user_id: user.id,
+      quantity: ticketCount,
+      price_type: "RSVP",
+    });
 
-    setCreatingCheckout(false);
-
-    if (error) {
-      toast.error("Error adding your tickets");
-      return;
+    if (data && !error) {
+      const checkoutSession: Tables<"checkout_sessions"> = data;
+      push(`/checkout/${checkoutSession.id}`);
+    } else {
+      toast.error("Error creating checkout session");
+      setCreatingCheckout(false);
     }
-
-    setShowRSVPSuccess(true);
   };
 
   const checkoutButton = (
@@ -112,13 +110,6 @@ export default function TicketCounter({
 
   return (
     <div className="space-y-4 text-background">
-      {showRSVPSuccess && (
-        <RSVPSuccess
-          quantity={ticketCount}
-          eventDisplay={eventDisplayData}
-          ticketName={ticket.name}
-        />
-      )}
       <div className="flex space-x-6 justify-center">
         <Button
           disabled={ticketCount === minTickets}

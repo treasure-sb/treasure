@@ -3,10 +3,11 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Tables } from "@/types/supabase";
-import CheckoutForm from "./CheckoutForm";
-import PromoCode from "./PromoCode";
 import { EventDisplayData } from "@/types/event";
 import { useEffect, useState } from "react";
+import CheckoutForm from "./CheckoutForm";
+import PromoCode from "./PromoCode";
+import FreeCheckout from "./FreeCheckout";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
@@ -55,24 +56,36 @@ export default function InitializeCheckout({
     }));
   }, [price]);
 
+  const isFree = price === 0;
+
   return (
     <div className="w-full md:w-[28rem]">
       <div className="mb-2">
-        <PromoCode
-          event={event}
-          promoApplied={promoCode}
-          checkoutSession={checkoutSession}
-          startingPrice={subtotal}
-          updatePrice={updatePrice}
-        />
+        {checkoutSession.price_type === "REGULAR" && (
+          <PromoCode
+            event={event}
+            promoApplied={promoCode}
+            checkoutSession={checkoutSession}
+            startingPrice={subtotal}
+            updatePrice={updatePrice}
+          />
+        )}
       </div>
-      <Elements options={options} stripe={stripePromise}>
-        <CheckoutForm
+      {isFree ? (
+        <FreeCheckout
+          event={event}
           checkoutSession={checkoutSession}
           profile={profile}
-          totalPrice={price}
         />
-      </Elements>
+      ) : (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm
+            checkoutSession={checkoutSession}
+            profile={profile}
+            totalPrice={price}
+          />
+        </Elements>
+      )}
     </div>
   );
 }

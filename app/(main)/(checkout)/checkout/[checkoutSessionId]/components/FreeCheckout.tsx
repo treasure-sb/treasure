@@ -8,20 +8,17 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import {
-  PaymentElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { Tables } from "@/types/supabase";
 import { toast } from "sonner";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
+import * as z from "zod";
 import StripeInput from "./StripeInput";
-import { createPaymentIntent } from "@/lib/actions/stripe";
+import { addEventAttendee } from "@/lib/actions/tickets";
+import { EventDisplayData } from "@/types/event";
+import { useRouter } from "next/navigation";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -32,19 +29,18 @@ const nameSchema = z.object({
   }),
 });
 
-export default function CheckoutForm({
+export default function FreeCheckout({
+  event,
   checkoutSession,
   profile,
-  totalPrice,
 }: {
+  event: EventDisplayData;
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
-  totalPrice: number;
 }) {
   const supabase = createClient();
-  const stripe = useStripe();
-  const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
+  const { push } = useRouter();
 
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -61,43 +57,28 @@ export default function CheckoutForm({
       .update({ first_name, last_name })
       .eq("id", profile.id);
 
-    if (!stripe || !elements) {
-      return;
-    }
-
     setIsLoading(true);
-    toast.loading("Processing payment...");
+    toast.loading("Getting ticket...");
 
-    const { error: submitError } = await elements.submit();
-    if (submitError) {
-      toast.dismiss();
-      toast.error(submitError.message);
-      return;
-    }
-
-    const paymentIntent = await createPaymentIntent(
-      totalPrice,
-      checkoutSession.id
+    const { error } = await addEventAttendee(
+      event.id,
+      profile.id,
+      checkoutSession.ticket_id,
+      checkoutSession.quantity
     );
-    const clientSecret = paymentIntent?.clientSecret || "";
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      clientSecret,
-      confirmParams: {
-        return_url: `${window.location.origin}/checkout/${checkoutSession.id}/success`,
-      },
-    });
-
-    if (error.type === "card_error" || error.type === "validation_error") {
-      toast.dismiss();
-      toast.error(error.message);
-    } else {
-      toast.dismiss();
-      toast.error("An error occurred. Please try again.");
+    if (error) {
+      setIsLoading(false);
+      toast.error("Failed to get ticket");
+      return;
     }
 
     setIsLoading(false);
+    toast.dismiss();
+    toast.success(
+      `Ticket${checkoutSession.quantity > 1 && "s"} added successfully!`
+    );
+    push(`/checkout/${checkoutSession.id}/success`);
   };
 
   return (
@@ -133,15 +114,13 @@ export default function CheckoutForm({
             )}
           />
         </div>
-        <PaymentElement id="payment-element" />
         <div className="w-full flex items-center justify-center">
           <Button
             className={`rounded-sm ${isLoading && "bg-primary/60"}`}
-            disabled={isLoading || !stripe || !elements}
+            disabled={isLoading}
             id="submit"
           >
-            Purchase{" "}
-            {checkoutSession.ticket_type === "TABLE" ? "Table" : "Ticket"}
+            Get Ticket{checkoutSession.quantity > 1 && "s"}
           </Button>
         </div>
       </form>
