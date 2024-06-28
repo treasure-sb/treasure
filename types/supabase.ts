@@ -117,6 +117,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          price_type: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id: string | null
           quantity: number
           ticket_id: string
@@ -127,6 +128,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          price_type?: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id?: string | null
           quantity: number
           ticket_id?: string
@@ -137,6 +139,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          price_type?: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id?: string | null
           quantity?: number
           ticket_id?: string
@@ -1121,7 +1124,7 @@ export type Database = {
         Args: {
           promo_id: string
         }
-        Returns: undefined
+        Returns: number
       }
     }
     Enums: {
@@ -1131,6 +1134,7 @@ export type Database = {
         | "PENDING"
         | "ACCEPTED"
         | "WAITLISTED"
+      "Checkout Price Type": "RSVP" | "REGULAR"
       "Checkout Ticket Types": "TICKET" | "TABLE"
       "Event Ticket Status":
         | "NO_SALE"

@@ -16,14 +16,20 @@ interface TicketInfoProps {
   price: number;
 }
 
-const TicketInfo = ({ type, price }: TicketInfoProps) => (
-  <div className="flex space-x-4 text-background">
-    <TicketIcon className="stroke-2 text-background" />
-    <div className="flex">
-      <p>{type}</p> <p className="ml-2 font-bold">${price.toFixed(2)}</p>
+const TicketInfo = ({ type, price }: TicketInfoProps) => {
+  const isTicketFree = price === 0;
+  return (
+    <div className="flex space-x-4 text-background">
+      <TicketIcon className="stroke-2 text-background" />
+      <div className="flex">
+        <p>{type}</p>{" "}
+        <p className="ml-2 font-bold">
+          {isTicketFree ? "Free" : `$${price.toFixed(2)}`}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function AllTickets({
   eventDisplayData,

@@ -102,17 +102,16 @@ export default async function Page({
   }
 
   subtotal = ticket.price * quantity;
-
   let priceAfterPromo = subtotal;
 
   if (promoCode) {
     if (promoCode.type === "PERCENT") {
       priceAfterPromo = Math.max(
         subtotal - subtotal * (promoCode.discount / 100),
-        0.5
+        0
       );
     } else {
-      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0.5);
+      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0);
     }
   }
 
