@@ -76,15 +76,19 @@ export default async function Page({
     }
 
     let index = -1;
+
+    // check if payout already exists for the event and date
     payouts.map((payout, i) => {
       if (
         payout.event_id === order.event.id &&
-        payout.date === order.created_at.split("T")[0]
+        payout.date === new Date(order.created_at).toLocaleDateString()
       ) {
         payouts[i].amount += order.amount_paid;
         index = i;
       }
     });
+
+    // create new payout if it doesn't exist
     if (index === -1) {
       payouts.push({
         host_id: order.event.organizer_id,
@@ -93,7 +97,7 @@ export default async function Page({
         event_name: order.event.name,
         event_date: order.event.date,
         event_id: order.event.id,
-        date: order.created_at.split("T")[0],
+        date: new Date(order.created_at).toLocaleDateString(),
         poster_url: order.event.poster_url,
       });
     }
@@ -115,8 +119,8 @@ export default async function Page({
 
   payouts.sort(
     (a, b) =>
-      parseInt(b.date.split("-").join("")) -
-      parseInt(a.date.split("-").join(""))
+      parseInt(b.date.split("/").join("")) -
+      parseInt(a.date.split("/").join(""))
   );
 
   const payoutsPromise: Promise<invoice>[] = payouts.map(async (payout) => {
@@ -158,10 +162,18 @@ export default async function Page({
       host: host,
       amount: payout.amount,
       event: payout.event_name,
-      date: formatDate(payout.date),
+      date: new Date(payout.date).toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
       username: username,
       contact: contact,
-      event_date: formatDate(payout.event_date),
+      event_date: new Date(payout.date).toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
       avatar_url: publicAvatarUrl,
     };
   });
