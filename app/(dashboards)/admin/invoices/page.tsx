@@ -25,6 +25,8 @@ type invoice = {
   contact: string;
   event_date: string;
   avatar_url: string;
+  payout_location: string;
+  payout_info: string;
 };
 
 export default async function Page({
@@ -52,6 +54,11 @@ export default async function Page({
   const { data: orderData } = await orderQuery;
   const orders: OrderData[] = orderData || [];
 
+  const { data: invoice_location, error } = await supabase
+    .from("links")
+    .select("*")
+    .eq("type", "invoice");
+
   const tableDataPromise: Promise<Order>[] = orders.map(async (order) => {
     const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
     const customer: CustomerData = { ...order.profile, publicAvatarUrl };
@@ -76,16 +83,27 @@ export default async function Page({
     }
 
     let index = -1;
+
+    // check if payout already exists for the event and date
     payouts.map((payout, i) => {
       if (
         payout.event_id === order.event.id &&
-        payout.date === order.created_at.split("T")[0]
+        payout.date === new Date(order.created_at).toLocaleDateString()
       ) {
         payouts[i].amount += order.amount_paid;
         index = i;
       }
     });
+
+    // create new payout if it doesn't exist
     if (index === -1) {
+      let organizerInvoiceInfo: any[] =
+        invoice_location === null
+          ? []
+          : invoice_location?.filter(
+              (person) => person.user_id === order.event.organizer_id
+            );
+
       payouts.push({
         host_id: order.event.organizer_id,
         host_type: order.event.organizer_type,
@@ -93,8 +111,16 @@ export default async function Page({
         event_name: order.event.name,
         event_date: order.event.date,
         event_id: order.event.id,
-        date: order.created_at.split("T")[0],
+        date: new Date(order.created_at).toLocaleDateString(),
         poster_url: order.event.poster_url,
+        payout_location:
+          organizerInvoiceInfo.length > 0
+            ? organizerInvoiceInfo[0].application
+            : "N/A",
+        payout_info:
+          organizerInvoiceInfo.length > 0
+            ? organizerInvoiceInfo[0].username
+            : "N/A",
       });
     }
 
@@ -115,8 +141,8 @@ export default async function Page({
 
   payouts.sort(
     (a, b) =>
-      parseInt(b.date.split("-").join("")) -
-      parseInt(a.date.split("-").join(""))
+      parseInt(b.date.split("/").join("")) -
+      parseInt(a.date.split("/").join(""))
   );
 
   const payoutsPromise: Promise<invoice>[] = payouts.map(async (payout) => {
@@ -158,15 +184,25 @@ export default async function Page({
       host: host,
       amount: payout.amount,
       event: payout.event_name,
-      date: formatDate(payout.date),
+      date: new Date(payout.date).toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
       username: username,
       contact: contact,
-      event_date: formatDate(payout.event_date),
+      event_date: new Date(payout.date).toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
       avatar_url: publicAvatarUrl,
+      payout_location: payout.payout_location,
+      payout_info: payout.payout_info,
     };
   });
 
-  const invoices = (await Promise.all(payoutsPromise)).slice(0, 5);
+  const invoices = (await Promise.all(payoutsPromise)).slice(0, 15);
 
   return (
     <div className="max-w-7xl mx-auto py-10 flex flex-col gap-10">
@@ -205,6 +241,11 @@ export default async function Page({
                   <div className="flex flex-col">
                     <p className="text-base font-semibold">{invoice.host}</p>
                     <p className="text-xs">@{invoice.username}</p>
+                    <p className="text-xs mt-2">
+                      {invoice.payout_location === "N/A"
+                        ? "No Payout Method Recorded"
+                        : invoice.payout_location + ": " + invoice.payout_info}
+                    </p>
                     <p className="text-xs mt-2">{invoice.contact}</p>
                   </div>
                 </div>
