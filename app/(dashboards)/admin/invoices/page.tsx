@@ -25,6 +25,8 @@ type invoice = {
   contact: string;
   event_date: string;
   avatar_url: string;
+  payout_location: string;
+  payout_info: string;
 };
 
 export default async function Page({
@@ -51,6 +53,11 @@ export default async function Page({
 
   const { data: orderData } = await orderQuery;
   const orders: OrderData[] = orderData || [];
+
+  const { data: invoice_location, error } = await supabase
+    .from("links")
+    .select("*")
+    .eq("type", "invoice");
 
   const tableDataPromise: Promise<Order>[] = orders.map(async (order) => {
     const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
@@ -90,6 +97,13 @@ export default async function Page({
 
     // create new payout if it doesn't exist
     if (index === -1) {
+      let organizerInvoiceInfo: any[] =
+        invoice_location === null
+          ? []
+          : invoice_location?.filter(
+              (person) => person.user_id === order.event.organizer_id
+            );
+
       payouts.push({
         host_id: order.event.organizer_id,
         host_type: order.event.organizer_type,
@@ -99,6 +113,14 @@ export default async function Page({
         event_id: order.event.id,
         date: new Date(order.created_at).toLocaleDateString(),
         poster_url: order.event.poster_url,
+        payout_location:
+          organizerInvoiceInfo.length > 0
+            ? organizerInvoiceInfo[0].application
+            : "N/A",
+        payout_info:
+          organizerInvoiceInfo.length > 0
+            ? organizerInvoiceInfo[0].username
+            : "N/A",
       });
     }
 
@@ -175,10 +197,12 @@ export default async function Page({
         month: "short",
       }),
       avatar_url: publicAvatarUrl,
+      payout_location: payout.payout_location,
+      payout_info: payout.payout_info,
     };
   });
 
-  const invoices = (await Promise.all(payoutsPromise)).slice(0, 5);
+  const invoices = (await Promise.all(payoutsPromise)).slice(0, 15);
 
   return (
     <div className="max-w-7xl mx-auto py-10 flex flex-col gap-10">
@@ -217,6 +241,11 @@ export default async function Page({
                   <div className="flex flex-col">
                     <p className="text-base font-semibold">{invoice.host}</p>
                     <p className="text-xs">@{invoice.username}</p>
+                    <p className="text-xs mt-2">
+                      {invoice.payout_location === "N/A"
+                        ? "No Payout Method Recorded"
+                        : invoice.payout_location + ": " + invoice.payout_info}
+                    </p>
                     <p className="text-xs mt-2">{invoice.contact}</p>
                   </div>
                 </div>
