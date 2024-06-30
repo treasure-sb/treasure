@@ -202,7 +202,7 @@ export default async function Page({
     };
   });
 
-  const invoices = (await Promise.all(payoutsPromise)).slice(0, 15);
+  const invoices = (await Promise.all(payoutsPromise)).slice(0, 5);
 
   return (
     <div className="max-w-7xl mx-auto py-10 flex flex-col gap-10">
