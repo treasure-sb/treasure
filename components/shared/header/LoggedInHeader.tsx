@@ -46,6 +46,7 @@ export default async function LoggedInHeader({
             className="font-bold text-3xl flex items-center justify-start space-x-1"
           >
             <Image
+              loading="eager"
               src="/static/web_logo.png"
               alt="web logo"
               width={150}
