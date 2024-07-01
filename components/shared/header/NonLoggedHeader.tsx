@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import HeaderMotion from "./HeaderMotion";
 import HeaderStatic from "./HeaderStatic";
-import Logo from "@/components/icons/logo";
+import Logo from "@/components/icons/Logo";
 
 export default function NonLoggedHeader({
   useMotion = true,
