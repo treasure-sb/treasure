@@ -13,19 +13,23 @@ const saveVendorAssignment = async (
     assignment === "null" ? null : +assignment;
 
   if (type === "Verified") {
-    const { data, error } = await supabase
+    await supabase
       .from("event_vendors")
       .update({ assignment: fixedAssignment })
       .eq("event_id", event_id)
+      .eq("vendor_id", vendor_id);
+
+    await supabase
+      .from("event_vendors")
+      .update({ notified_of_assignment: false })
       .eq("vendor_id", vendor_id)
-      .select();
+      .eq("event_id", event_id);
   } else {
-    const { data, error } = await supabase
+    await supabase
       .from("temporary_vendors")
       .update({ assignment: fixedAssignment })
       .eq("event_id", event_id)
-      .eq("vendor_id", vendor_id)
-      .select();
+      .eq("vendor_id", vendor_id);
   }
 };
 export { saveVendorAssignment };

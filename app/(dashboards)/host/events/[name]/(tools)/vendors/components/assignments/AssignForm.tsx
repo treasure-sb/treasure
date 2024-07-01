@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { saveVendorAssignment } from "@/lib/actions/vendors/assignments";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   vendor: z.string({
@@ -43,18 +44,21 @@ export default function AssignForm({
 
   const { refresh } = useRouter();
 
-  function onSubmit() {
+  async function onSubmit() {
+    toast.loading("Saving assignment...");
     const type = vendors.find(
       (vendor: any) => vendor.vendor_id === form.getValues().vendor
     ).type;
 
-    saveVendorAssignment(
+    await saveVendorAssignment(
       event_id,
       form.getValues().vendor,
       type,
       form.getValues().assignment
     );
 
+    toast.dismiss();
+    toast.success("Assignment saved!");
     refresh();
   }
 
@@ -75,7 +79,7 @@ export default function AssignForm({
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <FormControl>
+                  <FormControl className="space-x-2">
                     <SelectTrigger>
                       <SelectValue placeholder="Vendor" />
                     </SelectTrigger>
@@ -105,7 +109,7 @@ export default function AssignForm({
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <FormControl>
+                  <FormControl className="space-x-2">
                     <SelectTrigger>
                       <SelectValue placeholder="Table Number" />
                     </SelectTrigger>

@@ -7,13 +7,16 @@ import { Button } from "@/components/ui/button";
 import NotifyVendor from "./NotifyVendor";
 
 export type Vendor = {
+  vendor_id: string;
   avatar_url: string | null;
   name: string;
   section: string;
   type: string;
   assignment: number;
+  notified: boolean;
   notificationPayload: {
     eventName: string;
+    eventId: string;
     phone: string;
   } | null;
 };
@@ -82,11 +85,18 @@ export const columns: ColumnDef<Vendor>[] = [
     },
   },
   {
+    accessorKey: "notified",
+    header: "Notified",
+    cell: ({ row }) => {
+      return row.getValue("notified") ? "Yes" : "No";
+    },
+  },
+  {
     id: "notify",
     header: "Notify",
     cell: ({ row }) => {
       const vendor = row.original;
-      return vendor.type === "Verified" ? (
+      return vendor.type === "Verified" && !vendor.notified ? (
         <NotifyVendor vendor={vendor} />
       ) : null;
     },

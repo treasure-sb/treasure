@@ -12,10 +12,14 @@ import { Vendor } from "./VendorDataColumns";
 import { useState } from "react";
 import { toast } from "sonner";
 import { sendVendorNotificationSMS } from "@/lib/sms";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function NotifyVendor({ vendor }: { vendor: Vendor }) {
+  const supabase = createClient();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { refresh } = useRouter();
 
   const sendMessage = async () => {
     setLoading(true);
@@ -33,9 +37,17 @@ export default function NotifyVendor({ vendor }: { vendor: Vendor }) {
       vendor.notificationPayload.eventName,
       message
     );
+
+    await supabase
+      .from("event_vendors")
+      .update({ notified_of_assignment: true })
+      .eq("vendor_id", vendor.vendor_id)
+      .eq("event_id", vendor.notificationPayload.eventId);
+
     toast.dismiss();
     toast.success("Message sent!");
     setLoading(false);
+    refresh();
   };
 
   return (

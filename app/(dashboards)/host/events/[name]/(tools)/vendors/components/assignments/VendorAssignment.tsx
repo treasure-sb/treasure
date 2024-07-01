@@ -71,9 +71,11 @@ export default async function VendorAssignment({
         section: eventVendor.tables.section_name,
         type: "Verified",
         assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
+        notified: eventVendor.notified_of_assignment || false,
         vendor_id: eventVendor.profiles.id,
         notificationPayload: {
           eventName: event.name,
+          eventId: event.id,
           phone: eventVendor.application_phone,
         },
       };
@@ -89,6 +91,7 @@ export default async function VendorAssignment({
         section: eventVendor.table_id ? eventVendor.table_id : "N/A",
         type: "Temporary",
         assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
+        notified: false,
         vendor_id: eventVendor.temporary_profiles.id,
         notificationPayload: null,
       };

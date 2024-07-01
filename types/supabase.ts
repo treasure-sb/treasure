@@ -433,6 +433,7 @@ export type Database = {
           comments: string | null
           event_id: string
           inventory: string
+          notified_of_assignment: boolean
           payment_status: Database["public"]["Enums"]["Payment Status"]
           table_id: string
           table_quantity: number
@@ -448,6 +449,7 @@ export type Database = {
           comments?: string | null
           event_id: string
           inventory: string
+          notified_of_assignment?: boolean
           payment_status?: Database["public"]["Enums"]["Payment Status"]
           table_id: string
           table_quantity: number
@@ -463,6 +465,7 @@ export type Database = {
           comments?: string | null
           event_id?: string
           inventory?: string
+          notified_of_assignment?: boolean
           payment_status?: Database["public"]["Enums"]["Payment Status"]
           table_id?: string
           table_quantity?: number
@@ -962,6 +965,7 @@ export type Database = {
           name: string
           price: number
           quantity: number
+          total_tickets: number
         }
         Insert: {
           created_at?: string
@@ -970,6 +974,7 @@ export type Database = {
           name?: string
           price: number
           quantity: number
+          total_tickets?: number
         }
         Update: {
           created_at?: string
@@ -978,6 +983,7 @@ export type Database = {
           name?: string
           price?: number
           quantity?: number
+          total_tickets?: number
         }
         Relationships: [
           {
