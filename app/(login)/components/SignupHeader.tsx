@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "@/components/icons/Logo";
+import Logo from "@/components/icons/TreasureLogo";
 
 export default function SignupHeader() {
   return (

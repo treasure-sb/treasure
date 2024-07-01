@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import HeaderStatic from "./HeaderStatic";
-import Logo from "@/components/icons/Logo";
+import Logo from "@/components/icons/TreasureLogo";
 
 export default async function LoggedInHeader({
   user,
