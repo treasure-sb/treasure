@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Logo from "@/components/icons/logo";
 
 export default function SignupHeader() {
   return (
@@ -8,12 +9,7 @@ export default function SignupHeader() {
         href="/home"
         className="font-bold text-3xl flex items-center justify-start space-x-1"
       >
-        <Image
-          src="/static/web_logo.png"
-          alt="web logo"
-          width={150}
-          height={100}
-        />
+        <Logo />
       </Link>
     </header>
   );

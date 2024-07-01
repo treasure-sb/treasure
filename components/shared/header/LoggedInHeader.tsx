@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import HeaderStatic from "./HeaderStatic";
+import Logo from "@/components/icons/logo";
 
 export default async function LoggedInHeader({
   user,
@@ -45,13 +46,7 @@ export default async function LoggedInHeader({
             href="/home"
             className="font-bold text-3xl flex items-center justify-start space-x-1"
           >
-            <Image
-              loading="eager"
-              src="/static/web_logo.png"
-              alt="web logo"
-              width={150}
-              height={100}
-            />
+            <Logo />
           </Link>
           {profile.role === "admin" && (
             <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
