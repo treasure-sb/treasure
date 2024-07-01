@@ -48,8 +48,8 @@ export default function Footer({
           <Image
             src="/static/web_logo.png"
             alt="web logo"
-            width={120}
-            height={100}
+            width={100}
+            height={80}
           />
         </Link>
         <p className="text-center text-sm text-gray-600 dark:text-gray-100 px-2 py-1">
