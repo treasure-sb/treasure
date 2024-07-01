@@ -3,12 +3,11 @@ import { columns, Order } from "./components/OrderDataColumns";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import type { CustomerData } from "./types";
+import { Suspense } from "react";
 import DateRangeFilter from "./components/DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import Image from "next/image";
-import { formatDate } from "@/lib/utils";
-import { Suspense } from "react";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;

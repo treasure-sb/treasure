@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
-import Logo from "@/components/icons/logo";
+import Logo from "@/components/icons/TreasureLogo";
 
 export default function SignupHeader() {
   return (
-    <header className="md:max-w-6xl xl:max-w-7xl m-auto w-full z-10">
+    <header className="md:max-w-6xl xl:max-w-7xl m-auto w-full z-20">
       <Link
         href="/home"
         className="font-bold text-3xl flex items-center justify-start space-x-1"
