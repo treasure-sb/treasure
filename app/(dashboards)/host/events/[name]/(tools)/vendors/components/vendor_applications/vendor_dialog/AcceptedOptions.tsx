@@ -48,12 +48,12 @@ export default function AcceptedOptions({
         quantity: table_quantity,
       });
 
-    if (checkoutSessionError || !checkoutSessionData?.length) {
+    if (checkoutSessionError || !checkoutSessionData) {
       handleError("Failed to create checkout session. Please try again.");
       return;
     }
 
-    const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData[0];
+    const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
     const successfullySentEmail = await handleSendRemindEmail(
       checkoutSession.id
     );
