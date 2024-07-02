@@ -1,4 +1,5 @@
 "use server";
+import { Tables } from "@/types/supabase";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
 interface CheckoutSession {
@@ -17,7 +18,14 @@ const createCheckoutSession = async (session: CheckoutSession) => {
     .insert([session])
     .select()
     .single();
-  return { data, error };
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  const checkoutSessionData: Tables<"checkout_sessions"> = data;
+
+  return { data: checkoutSessionData, error };
 };
 
 export { createCheckoutSession };

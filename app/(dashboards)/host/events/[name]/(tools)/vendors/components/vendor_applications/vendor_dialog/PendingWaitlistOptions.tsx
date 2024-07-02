@@ -15,7 +15,6 @@ import {
 import { useRouter } from "next/navigation";
 import { EventVendorData } from "../../../types";
 import { EventDisplayData } from "@/types/event";
-import { sendSMS } from "@/lib/actions/twilio";
 import { VendorAppWaitlistedEmailProps } from "@/emails/VendorAppWaitlisted";
 import {
   sendVendorAppAcceptedSMS,
@@ -61,12 +60,14 @@ export default function PendingWaitlistOptions({
         quantity: table_quantity,
       });
 
-    if (checkoutSessionError || !checkoutSessionData?.length) {
+    console.log(checkoutSessionData, checkoutSessionError);
+
+    if (checkoutSessionError || !checkoutSessionData) {
       handleError("Failed to create checkout session. Please try again.");
       return;
     }
 
-    const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData[0];
+    const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
     const successfullySentEmail = await handleSendAcceptedEmail(
       checkoutSession.id
     );
