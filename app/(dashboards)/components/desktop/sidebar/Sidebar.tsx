@@ -52,15 +52,17 @@ export default function Sidebar() {
       <div>
         <Link
           href="/home"
-          className="font-semibold text-3xl flex items-center justify-center mb-8"
+          className="font-semibold text-3xl flex items-left justify-center mb-8"
         >
           {showSidebar ? (
-            <Image
-              src="/static/web_logo.png"
-              alt="web logo"
-              width={160}
-              height={100}
-            />
+            <div className="w-full px-6 justify-start text-left">
+              <Image
+                src="/static/web_logo.png"
+                alt="web logo"
+                width={150}
+                height={120}
+              />
+            </div>
           ) : (
             <TreasureEmerald width={28} height={28} />
           )}
