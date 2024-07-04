@@ -36,6 +36,15 @@ export const ticketSchema = z.object({
       message: "Must be a valid ticket quantity",
     }
   ),
+  total_tickets: z.string().refine(
+    (num) => {
+      const number = Number(num);
+      return !isNaN(number) && Number.isInteger(number) && number > 0;
+    },
+    {
+      message: "Must be a valid total number of tickets available",
+    }
+  ),
   name: z.string().min(1, {
     message: "Ticket name is required",
   }),
@@ -62,6 +71,7 @@ export default function EditTicketsForm({
       price: ticket.price.toFixed(2),
       quantity: ticket.quantity.toString(),
       name: ticket.name,
+      total_tickets: ticket.total_tickets.toString(),
       status: "unchanged" as const,
     })
   );
@@ -83,6 +93,7 @@ export default function EditTicketsForm({
       price: "",
       quantity: "",
       name: "",
+      total_tickets: "",
       status: "added",
     });
   };
@@ -102,6 +113,7 @@ export default function EditTicketsForm({
         quantity: ticket.quantity,
         name: ticket.name,
         event_id: eventId,
+        total_tickets: ticket.total_tickets
       }));
 
     const updatedTickets = formTickets
@@ -113,7 +125,7 @@ export default function EditTicketsForm({
           originalTicket &&
           (ticket.name !== originalTicket.name ||
             Number(ticket.price) !== originalTicket.price ||
-            Number(ticket.quantity) !== originalTicket.quantity)
+            Number(ticket.quantity) !== originalTicket.quantity || Number(ticket.total_tickets) !== originalTicket.total_tickets)
         );
       })
       .map((ticket) => ({
@@ -121,6 +133,7 @@ export default function EditTicketsForm({
         quantity: ticket.quantity,
         name: ticket.name,
         id: ticket.db_id,
+        total_tickets: ticket.total_tickets
       }));
 
     const [createResult, updateResult] = await Promise.allSettled([
@@ -236,7 +249,25 @@ export default function EditTicketsForm({
                   <FormItem>
                     <FormControl>
                       <FloatingLabelInput
-                        label="Quantity"
+                        label="Tickets On Sale"
+                        {...field}
+                        className="border-none"
+                      />
+                    </FormControl>
+                    <div className="h-1">
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`tickets.${index}.total_tickets`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FloatingLabelInput
+                        label="Total Tickets Available"
                         {...field}
                         className="border-none"
                       />

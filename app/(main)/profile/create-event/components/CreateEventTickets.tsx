@@ -43,6 +43,9 @@ const ticketSchema = z.object({
   ticket_name: z.string().min(1, {
     message: "Ticket name is required",
   }),
+  total_tickets: z.string().min(1, {
+    message: "Must be a valid number of total tickets",
+  })
 });
 
 const stepTwoSchema = z.object({
@@ -78,7 +81,7 @@ export default function EventTickets({
   };
 
   const addTicketTier = () => {
-    append({ ticket_price: "", ticket_quantity: "", ticket_name: "" });
+    append({ ticket_price: "", ticket_quantity: "", ticket_name: "", total_tickets: ""});
     setNumTickets(numTickets + 1);
   };
 
@@ -145,6 +148,23 @@ export default function EventTickets({
                       <FormItem>
                         <FormControl>
                           <Input placeholder="Ticket Quantity" {...field} />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tickets.${index}.total_tickets`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Total Tickets Available"
+                            {...field}
+                          />
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />
