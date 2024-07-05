@@ -172,7 +172,6 @@ export default function EditProfileForm({
 
   return (
     <div>
-      <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
       <div className="space-y-4 flex flex-col md:flex-row-reverse">
         <div className="w-fit mx-auto">
           {profile.avatar_url && (
