@@ -2,6 +2,7 @@
 
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { TempVendorCreateProps } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/components/temp_vendors/add_temp_vendor/CreateTempVendor";
+import { Tables } from "@/types/supabase";
 
 const createTemporaryVendor = async (
   vendorForm: TempVendorCreateProps,
@@ -15,10 +16,16 @@ const createTemporaryVendor = async (
     .insert([
       { business_name, avatar_url, instagram, email, creator_id: creatorId },
     ])
-    .select();
+    .select()
+    .single();
 
-  console.log(data, error);
-  return { data, error };
+  if (error) {
+    return { data: null, error };
+  }
+
+  const tempVendorData: Tables<"temporary_profiles_vendors"> = data;
+
+  return { data: tempVendorData, error };
 };
 
 const fetchTemporaryVendors = async (search: string) => {

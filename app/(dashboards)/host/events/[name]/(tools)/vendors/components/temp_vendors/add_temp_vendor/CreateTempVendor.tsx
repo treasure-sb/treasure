@@ -27,6 +27,7 @@ import { createTemporaryVendor } from "@/lib/actions/vendors/temporary";
 import { validateUser } from "@/lib/actions/auth";
 import { createClient } from "@/utils/supabase/client";
 import AvatarEdit from "@/app/(main)/profile/edit-profile/components/AvatarEdit";
+import { Tables } from "@/types/supabase";
 
 const TempVendorSchema = z.object({
   business_name: z.string().min(1, {
@@ -55,10 +56,14 @@ export default function CreateTempVendor({
   openCreate,
   setOpenCreate,
   goBackToSearch,
+  eventId,
+  tags,
 }: {
   openCreate: boolean;
   setOpenCreate: (open: boolean) => void;
   goBackToSearch: () => void;
+  eventId: string;
+  tags: Tables<"tags">[];
 }) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const supabase = createClient();
@@ -101,7 +106,7 @@ export default function CreateTempVendor({
       avatar_url: avatarSupabaseUrl,
     };
 
-    const { error } = await createTemporaryVendor(createValues, user.id);
+    const { data, error } = await createTemporaryVendor(createValues, user.id);
 
     if (error) {
       toast.dismiss();
@@ -109,15 +114,32 @@ export default function CreateTempVendor({
       return;
     }
 
+    const { error: assignError } = await supabase
+      .from("temporary_vendors")
+      .insert([
+        {
+          vendor_id: data.id,
+          event_id: eventId,
+          tag_id: tags ? tags[0].id : null,
+        },
+      ]);
+
+    if (assignError) {
+      toast.dismiss();
+      toast.error(
+        "Failed to assign temporary vendor to event, please try by searching"
+      );
+      return;
+    }
+
     toast.dismiss();
-    toast.success("Temporary vendor created!");
+    toast.success("Temporary vendor created and assigned!");
     refresh();
     reset({
       business_name: "",
       email: "",
       instagram: "",
     });
-    setOpenCreate(false);
   };
 
   return (

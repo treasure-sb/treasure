@@ -63,15 +63,13 @@ export default function AddTempVendorSearch({
     setIsAdding(true);
     toast.loading("Adding vendor...");
 
-    const { error } = await supabase
-      .from("temporary_vendors")
-      .insert([
-        {
-          vendor_id: profileId,
-          event_id: eventId,
-          tag_id: tags ? tags[0].id : null,
-        },
-      ]);
+    const { error } = await supabase.from("temporary_vendors").insert([
+      {
+        vendor_id: profileId,
+        event_id: eventId,
+        tag_id: tags ? tags[0].id : null,
+      },
+    ]);
 
     setIsAdding(false);
     toast.dismiss();
@@ -216,6 +214,8 @@ export default function AddTempVendorSearch({
         openCreate={openCreate}
         setOpenCreate={setOpenCreate}
         goBackToSearch={handleGoBackToSearch}
+        eventId={eventId}
+        tags={tags}
       />
     </>
   );
