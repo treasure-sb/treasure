@@ -121,6 +121,13 @@ const moveVendors = async (
     .eq("table_id", oldTableId)
     .select();
 
+  const { data: tags, error: errTags } = await supabase
+    .from("event_vendor_tags")
+    .update({ event_id: newEventId })
+    .eq("event_id", oldEventId)
+    .eq("vendor_id", vendorId)
+    .select();
+
   return error;
 };
 
