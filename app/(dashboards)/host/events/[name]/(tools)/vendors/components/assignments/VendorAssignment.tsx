@@ -55,8 +55,6 @@ export default async function VendorAssignment({
     .select("temporary_profiles_vendors(*), *")
     .eq("event_id", event.id);
 
-  console.log(tempVendorData);
-
   let vendors = vendorsData ? vendorsData : [];
   let tempVendors = tempVendorData ? tempVendorData : [];
 

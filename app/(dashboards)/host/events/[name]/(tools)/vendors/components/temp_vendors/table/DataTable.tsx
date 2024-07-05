@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/table";
 import AddTempVendorSearch from "../add_temp_vendor/AddTempVendorSearch";
 import { EventDisplayData } from "@/types/event";
+import { Tables } from "@/types/supabase";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  tags: Tables<"tags">[];
   event: EventDisplayData;
 }
 
@@ -28,6 +30,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   event,
+  tags,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -38,7 +41,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex justify-end items-center">
-        <AddTempVendorSearch eventId={event.id} />
+        <AddTempVendorSearch eventId={event.id} tags={tags} />
       </div>
       <div className="rounded-md border mt-2">
         <Table>

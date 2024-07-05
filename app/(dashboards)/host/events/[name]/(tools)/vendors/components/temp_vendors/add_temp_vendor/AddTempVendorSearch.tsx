@@ -29,7 +29,13 @@ type TemporaryVendor = Tables<"temporary_profiles_vendors"> & {
   }[];
 };
 
-export default function AddTempVendorSearch({ eventId }: { eventId: string }) {
+export default function AddTempVendorSearch({
+  eventId,
+  tags,
+}: {
+  eventId: string;
+  tags: Tables<"tags">[];
+}) {
   const [openSearch, setOpenSearch] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -59,7 +65,13 @@ export default function AddTempVendorSearch({ eventId }: { eventId: string }) {
 
     const { error } = await supabase
       .from("temporary_vendors")
-      .insert([{ vendor_id: profileId, event_id: eventId }]);
+      .insert([
+        {
+          vendor_id: profileId,
+          event_id: eventId,
+          tag_id: tags ? tags[0].id : null,
+        },
+      ]);
 
     setIsAdding(false);
     toast.dismiss();

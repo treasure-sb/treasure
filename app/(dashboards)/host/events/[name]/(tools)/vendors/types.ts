@@ -1,6 +1,6 @@
 import { Tables } from "@/types/supabase";
 
-type TagData = {
+type TagNameData = {
   tags: { name: string };
 };
 
@@ -26,4 +26,4 @@ type EventVendorData = Tables<"event_vendors"> & {
   }[];
 };
 
-export type { EventVendorData, EventVendorTableInfo, TagData };
+export type { EventVendorData, EventVendorTableInfo, TagNameData };

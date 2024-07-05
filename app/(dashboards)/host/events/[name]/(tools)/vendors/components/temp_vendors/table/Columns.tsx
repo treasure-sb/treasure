@@ -1,25 +1,48 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 
 export type TempVendor = {
   id: string;
-  username: string;
+  business_name: string;
   avatar_url: string;
-  email: string;
+  tag: string;
+  instagram: string | null;
+  email: string | null;
+};
+
+const AvatarCell = ({ row }: CellContext<TempVendor, any>) => {
+  const avatar = row.getValue("avatar_url") as string;
+
+  return (
+    <Avatar className="m-auto">
+      <AvatarImage src={avatar} />
+      <AvatarFallback />
+    </Avatar>
+  );
 };
 
 export const columns: ColumnDef<TempVendor, any>[] = [
   {
-    accessorKey: "username",
-    header: "Username",
+    accessorKey: "avatar_url",
+    header: "",
+    cell: AvatarCell,
   },
   {
-    accessorKey: "avatar_url",
-    header: "Avatar",
+    accessorKey: "business_name",
+    header: "Business Name",
+  },
+  {
+    accessorKey: "tag",
+    header: "Tag",
   },
   {
     accessorKey: "email",
     header: "Email",
+  },
+  {
+    accessorKey: "instagram",
+    header: "Instagram",
   },
 ];
