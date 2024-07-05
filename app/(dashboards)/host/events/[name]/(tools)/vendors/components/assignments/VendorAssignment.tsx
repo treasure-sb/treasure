@@ -30,7 +30,7 @@ const getTempVendorPublicUrl = async (vendors: any[]) => {
         data: { publicUrl },
       } = await supabase.storage
         .from("avatars")
-        .getPublicUrl(vendor.temporary_profiles.avatar_url);
+        .getPublicUrl(vendor.temporary_profiles_vendors.avatar_url);
       return { ...vendor, vendorPublicUrl: publicUrl };
     })
   );
@@ -52,8 +52,10 @@ export default async function VendorAssignment({
 
   const { data: tempVendorData } = await supabase
     .from("temporary_vendors")
-    .select("temporary_profiles(*),*")
+    .select("temporary_profiles_vendors(*), *")
     .eq("event_id", event.id);
+
+  console.log(tempVendorData);
 
   let vendors = vendorsData ? vendorsData : [];
   let tempVendors = tempVendorData ? tempVendorData : [];
@@ -87,12 +89,12 @@ export default async function VendorAssignment({
     tempVendorsWithPublicUrls.map(async (eventVendor) => {
       return {
         avatar_url: eventVendor.vendorPublicUrl,
-        name: `${eventVendor.temporary_profiles.business_name}`,
+        name: `${eventVendor.temporary_profiles_vendors.business_name}`,
         section: eventVendor.table_id ? eventVendor.table_id : "N/A",
         type: "Temporary",
         assignment: eventVendor.assignment ? eventVendor.assignment : "N/A",
         notified: false,
-        vendor_id: eventVendor.temporary_profiles.id,
+        vendor_id: eventVendor.temporary_profiles_vendors.id,
         notificationPayload: null,
       };
     });
