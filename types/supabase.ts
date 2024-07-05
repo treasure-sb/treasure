@@ -843,7 +843,6 @@ export type Database = {
           section_name: string
           space_allocated: number
           table_provided: boolean
-          total_tables: number
         }
         Insert: {
           additional_information?: string | null
@@ -856,7 +855,6 @@ export type Database = {
           section_name: string
           space_allocated?: number
           table_provided?: boolean
-          total_tables?: number
         }
         Update: {
           additional_information?: string | null
@@ -869,7 +867,6 @@ export type Database = {
           section_name?: string
           space_allocated?: number
           table_provided?: boolean
-          total_tables?: number
         }
         Relationships: [
           {
