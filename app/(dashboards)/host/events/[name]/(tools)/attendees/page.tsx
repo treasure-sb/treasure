@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import ExportButton from "./ExportButton";
+import { Ticket } from "@/lib/actions/tickets";
 
 export default async function Page({
   params: { name },
@@ -43,7 +44,7 @@ export default async function Page({
           <div className="w-1/5 text-center">Price</div>
           <div className="w-1/5 text-right">Sold</div>
         </div>
-        {ticketsData?.map((ticket: any) => (
+        {ticketsData?.map((ticket: Ticket) => (
           <div className="w-full flex p-4 border-t">
             <div className="w-2/5">{ticket.name}</div>
 
@@ -56,7 +57,7 @@ export default async function Page({
 
             <div className="w-1/5 text-center">${ticket.price}</div>
             <div className="w-1/5 text-right">
-              {soldTicketsData?.length + "/" + ticket.quantity}
+              {soldTicketsData?.length + "/" + ticket.total_tickets}
             </div>
           </div>
         ))}

@@ -7,6 +7,7 @@ type Ticket = {
   name: string;
   price: string;
   quantity: string;
+  total_tickets: string,
   event_id?: string;
   id?: string;
 };
@@ -47,6 +48,7 @@ const updateTickets = async (tickets: Ticket[]) => {
         price: roundPrice(ticket.price),
         quantity: ticket.quantity,
         name: ticket.name,
+        total_tickets: ticket.total_tickets
       })
       .eq("id", ticket.id);
 

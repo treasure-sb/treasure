@@ -839,6 +839,7 @@ export type Database = {
           number_vendors_allowed: number
           price: number
           quantity: number
+          total_tables: number
           section_name: string
           space_allocated: number
           table_provided: boolean
@@ -850,6 +851,7 @@ export type Database = {
           number_vendors_allowed?: number
           price: number
           quantity: number
+          total_tables: number
           section_name: string
           space_allocated?: number
           table_provided?: boolean
@@ -861,6 +863,7 @@ export type Database = {
           number_vendors_allowed?: number
           price?: number
           quantity?: number
+          total_tables?: number
           section_name?: string
           space_allocated?: number
           table_provided?: boolean

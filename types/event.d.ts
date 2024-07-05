@@ -3,6 +3,7 @@ import { Tables } from "./supabase";
 export interface EventFormTicket {
   ticket_price: string;
   ticket_quantity: string;
+  ticket_total_tickets: string;
   ticket_name: string;
 }
 
@@ -10,6 +11,7 @@ export interface EventFormTable {
   section_name: string;
   table_price: string;
   table_quantity: string;
+  table_total_tables: string;
   table_provided: boolean;
   space_allocated: string;
   number_vendors_allowed: string;
