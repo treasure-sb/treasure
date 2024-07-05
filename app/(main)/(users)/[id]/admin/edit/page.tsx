@@ -2,7 +2,6 @@ import { validateUser } from "@/lib/actions/auth";
 import { getProfile, getProfileByUsername } from "@/lib/helpers/profiles";
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
-import EditForm from "./components/EditForm";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import EditProfileForm from "@/app/(main)/profile/edit-profile/components/EditProfileForm";
