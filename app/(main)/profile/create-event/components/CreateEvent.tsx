@@ -32,6 +32,7 @@ export default function CreateEvent() {
       {
         ticket_price: "",
         ticket_quantity: "",
+        ticket_total_tickets: "",
         ticket_name: "",
       },
     ],
@@ -40,6 +41,7 @@ export default function CreateEvent() {
         section_name: "",
         table_price: "",
         table_quantity: "",
+        table_total_tables: "",
         table_provided: false,
         space_allocated: "",
         number_vendors_allowed: "",
