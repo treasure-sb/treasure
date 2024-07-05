@@ -1,7 +1,7 @@
-import { type TagData } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/types";
+import { type TagNameData } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/types";
 import { Button } from "@/components/ui/button";
 
-export default function VendorFilter({ tags }: { tags: TagData[] }) {
+export default function VendorFilter({ tags }: { tags: TagNameData[] }) {
   return (
     <div className="flex flex-wrap gap-1">
       <Button
