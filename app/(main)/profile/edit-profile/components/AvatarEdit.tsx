@@ -26,10 +26,10 @@ export default function AvatarEdit({
             <AvatarFallback></AvatarFallback>
           </Avatar>
         ) : (
-          <div className="h-32 w-32 m-auto rounded-full bg-gray-200" />
+          <div className="h-32 w-32 m-auto rounded-full bg-secondary" />
         )}
-        <div className="absolute bottom-0 right-0 border-2 border-background rounded-full bg-foreground p-2 group-hover:bg-tertiary transition duration-500">
-          <Edit2Icon className="text-background" />
+        <div className="absolute bottom-1 right-1 border-2 border-background rounded-full bg-foreground p-1 w-8 h-8 flex items-center justify-center group-hover:bg-gray-400 duration-300 transition">
+          <Edit2Icon size={18} className="text-background" />
         </div>
       </label>
       <Input

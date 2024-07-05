@@ -10,7 +10,7 @@ export default function TabState({
 }) {
   const [active, setActive] = useState("Applications");
 
-  const tabs = ["Applications", "Assignments"];
+  const tabs = ["Applications", "Temporary Vendors", "Assignments"];
 
   const handleSelect = (selected: string) => {
     setActive(selected);
@@ -21,7 +21,8 @@ export default function TabState({
       <LineTabs tabs={tabs} active={active} onSelect={handleSelect} />
       <div className="mt-8">
         {active === "Applications" && children[0]}
-        {active === "Assignments" && children[1]}
+        {active === "Temporary Vendors" && children[1]}
+        {active === "Assignments" && children[2]}
       </div>
     </div>
   );
