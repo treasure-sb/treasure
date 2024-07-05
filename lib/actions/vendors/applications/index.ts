@@ -97,4 +97,31 @@ const sendVendorReceivedEmail = async (
   return { error: null };
 };
 
-export { submitVendorApplication, createVendorTags };
+const moveVendors = async (
+  vendorId: string,
+  oldEventId: string,
+  oldTableId: string,
+  newEventId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+
+  const { data: newTableData } = await supabase
+    .from("tables")
+    .select("id")
+    .eq("event_id", newEventId)
+    .single();
+
+  const newTableId = newTableData?.id;
+
+  const { data, error } = await supabase
+    .from("event_vendors")
+    .update({ table_id: newTableId, event_id: newEventId })
+    .eq("event_id", oldEventId)
+    .eq("vendor_id", vendorId)
+    .eq("table_id", oldTableId)
+    .select();
+
+  return error;
+};
+
+export { submitVendorApplication, createVendorTags, moveVendors };
