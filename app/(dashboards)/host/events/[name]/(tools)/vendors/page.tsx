@@ -4,6 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import TabState from "./components/TabState";
 import VendorApplications from "./components/vendor_applications/VendorApplications";
 import VendorAssignment from "./components/assignments/VendorAssignment";
+import TempVendors from "./components/temp_vendors/TempVendors";
 
 export default async function Page({
   params: { name },
@@ -28,6 +29,7 @@ export default async function Page({
     <div className="max-w-7xl mx-auto">
       <TabState>
         <VendorApplications event={displayData} />
+        <TempVendors event={displayData} />
         <VendorAssignment event={displayData} />
       </TabState>
     </div>

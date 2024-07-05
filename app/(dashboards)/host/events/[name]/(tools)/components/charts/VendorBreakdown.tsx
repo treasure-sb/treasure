@@ -1,7 +1,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { Tables } from "@/types/supabase";
 import VendorsChart from "./VendorsChart";
-import { TagData } from "../../vendors/types";
+import { Tables } from "@/types/supabase";
+import { TagNameData } from "../../vendors/types";
 
 export type VendorBreakdownData = {
   name: string;
@@ -24,8 +24,8 @@ export default async function VendorBreakdown({
     .select("tags(name)")
     .eq("event_id", event.id);
 
-  const eventTags = tagsData as unknown as TagData[];
-  const eventVendorTags = vendorTagData as unknown as TagData[];
+  const eventTags = tagsData as unknown as TagNameData[];
+  const eventVendorTags = vendorTagData as unknown as TagNameData[];
 
   const vendorDataMap = new Map<string, number>();
   eventTags.map((tag) => {

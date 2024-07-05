@@ -1,6 +1,6 @@
 import { columns } from "./table/VendorDataColumns";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
-import { EventVendorData, TagData } from "../../types";
+import { EventVendorData, TagNameData } from "../../types";
 import { EventDisplayData } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DataTable from "./table/DataTable";
@@ -17,7 +17,7 @@ export default async function VerifiedVendors({
     .select("tags(name)")
     .eq("event_id", event.id);
 
-  const eventTagsData = tagsData as unknown as TagData[];
+  const eventTagsData = tagsData as unknown as TagNameData[];
   const eventTags = eventTagsData.map((tag) => tag.tags.name);
 
   const { data: eventVendorData } = await supabase

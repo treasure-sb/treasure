@@ -10,7 +10,7 @@ export enum VendorTypes {
 }
 
 export type Vendor = {
-  username: string;
+  username: string | null;
   avatarUrl: string;
   publicUrl: string;
   type: VendorTypes;
@@ -32,7 +32,7 @@ type ProfileVendor = {
 };
 
 type TempProfileVendor = {
-  profile: Tables<"temporary_profiles">;
+  profile: Tables<"temporary_profiles_vendors">;
   tags: Tables<"tags">;
 };
 
@@ -63,8 +63,9 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
   const instagramLink = vendorProfile.instagram
     ? [{ username: vendorProfile.instagram, application: "Instagram" }]
     : [];
+
   return {
-    username: vendorProfile.username,
+    username: null,
     avatarUrl: vendorProfile.avatar_url,
     publicUrl: "",
     type: VendorTypes.TEMP_PROFILE,
@@ -111,7 +112,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
 
   const { data: tempVendorData } = await supabase
     .from("temporary_vendors")
-    .select("profile:temporary_profiles(*), tags(*)")
+    .select("profile:temporary_profiles_vendors(*), tags(*)")
     .eq("event_id", event.id)
     .returns<TempProfileVendor[]>();
 
