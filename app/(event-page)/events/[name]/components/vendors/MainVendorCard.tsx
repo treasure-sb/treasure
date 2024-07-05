@@ -29,6 +29,8 @@ import VendorCardTrigger from "./VendorCardTrigger";
 export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  console.log(vendor);
+
   if (isDesktop) {
     return (
       <Dialog>
