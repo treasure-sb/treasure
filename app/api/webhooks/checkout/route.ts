@@ -98,7 +98,8 @@ const createOrder = async (orderPayload: OrderPayload) => {
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
   amountPaid: number,
-  supabase: SupabaseClient<any, "public", any>
+  supabase: SupabaseClient<any, "public", any>,
+  email: string
 ) => {
   const { event_id, ticket_id, user_id, quantity, promo_id } = checkoutSessison;
   const { data: ticketData } = await supabase
@@ -123,7 +124,7 @@ const handleTicketPurchase = async (
   }
 
   const ticketsToInsert = Array.from({ length: quantity }).map(() => {
-    return { attendee_id: user_id, event_id, ticket_id };
+    return { attendee_id: user_id, event_id, ticket_id, email };
   });
   const { data: purchasedTicketData, error: purchasedTicketError } =
     await supabase.from("event_tickets").insert(ticketsToInsert).select();
@@ -331,7 +332,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, amountPaid } = JSON.parse(
+  const { checkoutSessionId, amountPaid, email } = JSON.parse(
     JSON.stringify(session.metadata)
   );
 
@@ -349,7 +350,7 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, amountPaid, supabase);
+      await handleTicketPurchase(checkoutSession, amountPaid, supabase, email);
       break;
     case "TABLE":
       await handleTablePurchase(checkoutSession, supabase);
