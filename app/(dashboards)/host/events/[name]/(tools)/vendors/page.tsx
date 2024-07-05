@@ -29,7 +29,7 @@ export default async function Page({
     <div className="max-w-7xl mx-auto">
       <TabState>
         <VendorApplications event={displayData} />
-        <TempVendors />
+        <TempVendors event={displayData} />
         <VendorAssignment event={displayData} />
       </TabState>
     </div>

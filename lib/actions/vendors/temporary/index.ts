@@ -25,11 +25,9 @@ const fetchTemporaryVendors = async (search: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: profilesData } = await supabase
     .from("temporary_profiles_vendors")
-    .select("*")
+    .select("*, temporary_vendors(event_id)")
     .or(`business_name.ilike.%${search}%`)
     .limit(8);
-
-  console.log(profilesData, search);
 
   if (profilesData) {
     const profilesWithAvatar = await Promise.all(

@@ -2,7 +2,6 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -24,11 +23,16 @@ import CreateTempVendor from "./CreateTempVendor";
 
 lineSpinner.register();
 
-type TemporaryVendor = Tables<"temporary_profiles">;
+type TemporaryVendor = Tables<"temporary_profiles_vendors"> & {
+  temporary_vendors: {
+    event_id: string;
+  }[];
+};
 
-export default function AddTempVendorSearch() {
+export default function AddTempVendorSearch({ eventId }: { eventId: string }) {
   const [openSearch, setOpenSearch] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [search, setSearch] = useState("");
 
   const { refresh } = useRouter();
@@ -50,6 +54,42 @@ export default function AddTempVendorSearch() {
   }, 300);
 
   const handleAddVendor = async (profileId: string) => {
+    setIsAdding(true);
+    toast.loading("Adding vendor...");
+
+    const { error } = await supabase
+      .from("temporary_vendors")
+      .insert([{ vendor_id: profileId, event_id: eventId }]);
+
+    setIsAdding(false);
+    toast.dismiss();
+
+    if (error) {
+      toast.error("Error adding vendor");
+      return;
+    }
+
+    toast.success("Vendor added successfully");
+    refetch();
+    refresh();
+  };
+
+  const handleRemoveVendor = async (profileId: string) => {
+    toast.loading("Removing vendor...");
+
+    const { error } = await supabase
+      .from("temporary_vendors")
+      .delete()
+      .eq("event_id", eventId)
+      .eq("vendor_id", profileId);
+
+    toast.dismiss();
+    if (error) {
+      toast.error("Error removing vendor");
+      return;
+    }
+
+    toast.success("Vendor removed successfully");
     refetch();
     refresh();
   };
@@ -64,9 +104,16 @@ export default function AddTempVendorSearch() {
     setOpenSearch(true);
   };
 
+  const handleCloseSearchDialog = (open: boolean) => {
+    setOpenSearch(open);
+    if (!open) {
+      setSearch("");
+    }
+  };
+
   return (
     <>
-      <Dialog open={openSearch} onOpenChange={setOpenSearch}>
+      <Dialog open={openSearch} onOpenChange={handleCloseSearchDialog}>
         <DialogTrigger asChild>
           <Button variant={"dotted"}>
             <PlusIcon size={14} />
@@ -91,19 +138,43 @@ export default function AddTempVendorSearch() {
           </DialogHeader>
           {temporaryVendors &&
             search.trim().length > 0 &&
-            temporaryVendors.map((profile) => (
-              <div key={profile.id} className="flex flex-col">
-                <div className="flex justify-between items-center">
-                  <div className="flex space-x-2 items-center hover:bg-secondary/20 w-full rounded-md p-2 hover:cursor-pointer">
-                    <Avatar className="h-12 w-12">
-                      <AvatarFallback />
-                      <AvatarImage src={profile.avatar_url} />
-                    </Avatar>
-                    <p className="text-base">{profile.business_name}</p>
-                  </div>
+            temporaryVendors.map((profile) => {
+              const isVendorAdded = profile.temporary_vendors
+                .map((event) => event.event_id)
+                .includes(eventId);
+              return (
+                <div key={profile.id} className="flex space-x-2">
+                  <Button
+                    variant={"ghost"}
+                    className="rounded-md h-10 p-2 py-8 justify-start text-left w-full"
+                    onClick={() => handleAddVendor(profile.id)}
+                    disabled={isAdding || isVendorAdded}
+                  >
+                    <div className="flex space-x-4 items-center w-full rounded-md p-2">
+                      <Avatar className="h-12 w-12">
+                        <AvatarFallback />
+                        <AvatarImage src={profile.avatar_url} />
+                      </Avatar>
+                      <div>
+                        <p className="text-base">{profile.business_name}</p>
+                        <p className="text-xs text-muted-foreground font-normal">
+                          {profile.email}
+                        </p>
+                      </div>
+                    </div>
+                  </Button>
+                  {isVendorAdded && (
+                    <Button
+                      variant={"destructive"}
+                      onClick={() => handleRemoveVendor(profile.id)}
+                      className="h-10 my-auto rounded-sm"
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           {isLoading && (
             <div className="flex justify-center">
               <l-line-spinner

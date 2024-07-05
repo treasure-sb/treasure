@@ -842,6 +842,7 @@ export type Database = {
           section_name: string
           space_allocated: number
           table_provided: boolean
+          total_tables: number
         }
         Insert: {
           additional_information?: string | null
@@ -853,6 +854,7 @@ export type Database = {
           section_name: string
           space_allocated?: number
           table_provided?: boolean
+          total_tables?: number
         }
         Update: {
           additional_information?: string | null
@@ -864,6 +866,7 @@ export type Database = {
           section_name?: string
           space_allocated?: number
           table_provided?: boolean
+          total_tables?: number
         }
         Relationships: [
           {
@@ -913,6 +916,41 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      temporary_profiles_vendors: {
+        Row: {
+          avatar_url: string
+          business_name: string
+          creator_id: string
+          email: string | null
+          id: string
+          instagram: string | null
+        }
+        Insert: {
+          avatar_url: string
+          business_name: string
+          creator_id?: string
+          email?: string | null
+          id?: string
+          instagram?: string | null
+        }
+        Update: {
+          avatar_url?: string
+          business_name?: string
+          creator_id?: string
+          email?: string | null
+          id?: string
+          instagram?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temporary_profiles_vendors_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       temporary_vendors: {
         Row: {
