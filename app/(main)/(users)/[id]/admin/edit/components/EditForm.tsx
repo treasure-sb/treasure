@@ -22,9 +22,9 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
 import { UpdateProfile } from "@/lib/actions/profile";
-import PaymentLinks from "./PaymentLinks";
-import AvatarEdit from "./AvatarEdit";
-import SocialLinks from "./SocialLinks";
+import AvatarEdit from "@/app/(main)/profile/edit-profile/components/AvatarEdit";
+import SocialLinks from "@/app/(main)/profile/edit-profile/components/SocialLinks";
+import PaymentLinks from "@/app/(main)/profile/edit-profile/components/PaymentLinks";
 
 const LinkSchema = z.object({
   username: z.string().min(1, {
@@ -58,7 +58,7 @@ interface EventFormProps {
   userLinks: Partial<Tables<"links">>[] | undefined;
 }
 
-export default function EditProfileForm({
+export default function EditForm({
   profile,
   avatarUrl,
   userLinks,
