@@ -12,9 +12,9 @@ import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import HostMenuOptions from "./HostMenuOptions";
 import VendorMenuOptions from "./VendorMenuOptions";
-import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import AdminMenuOptions from "./AdminMenuOptions";
+import Image from "next/image";
 
 export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,8 +37,12 @@ export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
               href="/home"
               className="font-semibold text-3xl space-x-1 flex items-center justify-center mr-6"
             >
-              <TreasureEmerald width={28} height={28} />
-              <h1>Treasure</h1>
+              <Image
+                src="/static/web_logo.png"
+                alt="web logo"
+                width={150}
+                height={120}
+              />
             </Link>
           </SheetTitle>
         </SheetHeader>
