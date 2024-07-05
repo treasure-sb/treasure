@@ -13,7 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { socialLinkData } from "@/lib/helpers/links";
 import { Dialog } from "@radix-ui/react-dialog";
@@ -28,8 +27,6 @@ import VendorCardTrigger from "./VendorCardTrigger";
 
 export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  console.log(vendor);
 
   if (isDesktop) {
     return (
@@ -48,22 +45,22 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
               {vendor.businessName
                 ? vendor.businessName
                 : vendor.firstName + " " + vendor.lastName}{" "}
-              <span className="text-gray-500 text-xs font-normal">
-                @{vendor.username}
-              </span>
+              {vendor.type === VendorTypes.PROFILE && (
+                <span className="text-gray-500 text-xs font-normal">
+                  @{vendor.username}
+                </span>
+              )}
             </DialogTitle>
             <DialogDescription>{vendor.bio}</DialogDescription>
-            <Link
-              href={
-                vendor.type === VendorTypes.PROFILE
-                  ? `/${vendor.username}`
-                  : `/${vendor.username}?type=t`
-              }
-              className="text-xs flex items-center space-x-1 ml-auto"
-            >
-              <p>Full Profile</p>
-              <ArrowUpRight size={12} />
-            </Link>
+            {vendor.type === VendorTypes.PROFILE && (
+              <Link
+                href={`/${vendor.username}`}
+                className="text-xs flex items-center space-x-1 ml-auto"
+              >
+                <p>Full Profile</p>
+                <ArrowUpRight size={12} />
+              </Link>
+            )}
           </DialogHeader>
           <div className="flex space-x-4">
             <Avatar className="h-32 w-32">
@@ -130,24 +127,24 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
         }}
       >
         <DrawerHeader className="text-left">
-          <Link
-            href={
-              vendor.type === VendorTypes.PROFILE
-                ? `/${vendor.username}`
-                : `/${vendor.username}?type=t`
-            }
-            className="text-xs flex items-center space-x-1 ml-auto"
-          >
-            <p>Full Profile</p>
-            <ArrowUpRight size={12} />
-          </Link>
+          {vendor.type === VendorTypes.PROFILE && (
+            <Link
+              href={`/${vendor.username}`}
+              className="text-xs flex items-center space-x-1 ml-auto"
+            >
+              <p>Full Profile</p>
+              <ArrowUpRight size={12} />
+            </Link>
+          )}
           <DrawerTitle>
             {vendor.businessName
               ? vendor.businessName
               : vendor.firstName + " " + vendor.lastName}{" "}
-            <span className="text-gray-500 text-xs font-normal">
-              @{vendor.username}
-            </span>
+            {vendor.type === VendorTypes.PROFILE && (
+              <span className="text-gray-500 text-xs font-normal">
+                @{vendor.username}
+              </span>
+            )}
           </DrawerTitle>
 
           <DrawerDescription>{vendor.bio}</DrawerDescription>

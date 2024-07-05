@@ -64,7 +64,6 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
     ? [{ username: vendorProfile.instagram, application: "Instagram" }]
     : [];
 
-  console.log(instagramLink);
   return {
     username: null,
     avatarUrl: vendorProfile.avatar_url,

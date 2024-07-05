@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Vendor } from "./Vendors";
+import { Vendor, VendorTypes } from "./Vendors";
 import { getTagIcon } from "@/lib/helpers/TagIcons";
 import { ArrowUpRight } from "lucide-react";
 
@@ -36,7 +36,11 @@ export default function VendorCardTrigger({ vendor }: { vendor: Vendor }) {
               ? vendor.businessName
               : vendor.firstName + " " + vendor.lastName}
           </p>
-          <p className="text-xs md:text-xs text-gray-500">@{vendor.username}</p>
+          {vendor.type === VendorTypes.PROFILE && (
+            <span className="text-gray-500 text-xs font-normal">
+              @{vendor.username}
+            </span>
+          )}
           <p className="text-muted-foreground text-sm line-clamp-1">
             {vendor.bio}
           </p>
@@ -47,10 +51,12 @@ export default function VendorCardTrigger({ vendor }: { vendor: Vendor }) {
           ))}
         </motion.div>
       </motion.div>
-      <ArrowUpRight
-        size={18}
-        className="stroke-2 absolute right-3 top-3 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
-      />
+      {vendor.type === VendorTypes.PROFILE && (
+        <ArrowUpRight
+          size={18}
+          className="stroke-2 absolute right-3 top-3 text-foreground/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition duration-300 group-hover:text-foreground"
+        />
+      )}
     </div>
   );
 }
