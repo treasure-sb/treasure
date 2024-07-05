@@ -1,23 +1,23 @@
 "use server";
 
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { z } from "zod";
-import { TempVendorSchema } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/components/temp_vendors/add_temp_vendor/AddTempVendor";
+import { TempVendorCreateProps } from "@/app/(dashboards)/host/events/[name]/(tools)/vendors/components/temp_vendors/add_temp_vendor/CreateTempVendor";
 
 const createTemporaryVendor = async (
-  vendorForm: z.infer<typeof TempVendorSchema>,
+  vendorForm: TempVendorCreateProps,
   creatorId: string
 ) => {
   const supabase = await createSupabaseServerClient();
-  const { business_name, instagram } = vendorForm;
+  const { business_name, instagram, avatar_url, email } = vendorForm;
 
   const { data, error } = await supabase
     .from("temporary_profiles_vendors")
     .insert([
-      { business_name, avatar_url: "", instagram, creator_id: creatorId },
+      { business_name, avatar_url, instagram, email, creator_id: creatorId },
     ])
     .select();
 
+  console.log(data, error);
   return { data, error };
 };
 

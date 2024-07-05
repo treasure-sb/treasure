@@ -28,18 +28,28 @@ import { validateUser } from "@/lib/actions/auth";
 import { createClient } from "@/utils/supabase/client";
 import AvatarEdit from "@/app/(main)/profile/edit-profile/components/AvatarEdit";
 
-export const TempVendorSchema = z.object({
+const TempVendorSchema = z.object({
   business_name: z.string().min(1, {
     message: "Business name is required",
   }),
-  email: z
-    .string()
-    .email({
-      message: "Invalid email address",
-    })
-    .optional(),
+  email: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z
+      .string()
+      .email({
+        message: "Invalid email address",
+      })
+      .optional()
+  ),
   instagram: z.string().optional(),
 });
+
+export type TempVendorCreateProps = {
+  business_name: string;
+  avatar_url: string;
+  email?: string;
+  instagram?: string;
+};
 
 export default function CreateTempVendor({
   openCreate,
@@ -56,12 +66,13 @@ export default function CreateTempVendor({
     resolver: zodResolver(TempVendorSchema),
     defaultValues: {
       business_name: "",
-      email: undefined,
+      email: "",
       instagram: "",
     },
   });
 
   const { refresh } = useRouter();
+  const { reset } = form;
 
   const onSubmit = async (values: z.infer<typeof TempVendorSchema>) => {
     toast.loading("Creating temporary vendor...");
@@ -85,7 +96,12 @@ export default function CreateTempVendor({
         .upload(avatarSupabaseUrl, avatarFile);
     }
 
-    const { error } = await createTemporaryVendor(values, user.id);
+    const createValues: TempVendorCreateProps = {
+      ...values,
+      avatar_url: avatarSupabaseUrl,
+    };
+
+    const { error } = await createTemporaryVendor(createValues, user.id);
 
     if (error) {
       toast.dismiss();
@@ -96,6 +112,11 @@ export default function CreateTempVendor({
     toast.dismiss();
     toast.success("Temporary vendor created!");
     refresh();
+    reset({
+      business_name: "",
+      email: "",
+      instagram: "",
+    });
     setOpenCreate(false);
   };
 
@@ -154,17 +175,19 @@ export default function CreateTempVendor({
                 </FormItem>
               )}
             />
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-2">
+              <Button
+                className="rounded-sm"
+                onClick={goBackToSearch}
+                variant={"secondary"}
+                type="button"
+              >
+                Search Temporary Vendors
+              </Button>
               <Button className="rounded-sm w-24">Create</Button>
             </div>
           </form>
         </Form>
-        <div className="absolute -bottom-[52px] w-full flex items-center justify-center space-x-2">
-          <p className="text-muted-foreground">or</p>
-          <Button className="rounded-sm" onClick={goBackToSearch}>
-            Search Temporary Vendors
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
