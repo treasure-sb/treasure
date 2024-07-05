@@ -59,6 +59,11 @@ export default function AddTempVendorSearch() {
     setOpenSearch(false);
   };
 
+  const handleGoBackToSearch = () => {
+    setOpenCreate(false);
+    setOpenSearch(true);
+  };
+
   return (
     <>
       <Dialog open={openSearch} onOpenChange={setOpenSearch}>
@@ -124,7 +129,11 @@ export default function AddTempVendorSearch() {
           )}
         </DialogContent>
       </Dialog>
-      <CreateTempVendor openCreate={openCreate} setOpenCreate={setOpenCreate} />
+      <CreateTempVendor
+        openCreate={openCreate}
+        setOpenCreate={setOpenCreate}
+        goBackToSearch={handleGoBackToSearch}
+      />
     </>
   );
 }

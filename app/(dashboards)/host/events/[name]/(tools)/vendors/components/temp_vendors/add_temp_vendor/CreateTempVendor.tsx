@@ -44,9 +44,11 @@ export const TempVendorSchema = z.object({
 export default function CreateTempVendor({
   openCreate,
   setOpenCreate,
+  goBackToSearch,
 }: {
   openCreate: boolean;
   setOpenCreate: (open: boolean) => void;
+  goBackToSearch: () => void;
 }) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const supabase = createClient();
@@ -157,6 +159,12 @@ export default function CreateTempVendor({
             </div>
           </form>
         </Form>
+        <div className="absolute -bottom-[52px] w-full flex items-center justify-center space-x-2">
+          <p className="text-muted-foreground">or</p>
+          <Button className="rounded-sm" onClick={goBackToSearch}>
+            Search Temporary Vendors
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
