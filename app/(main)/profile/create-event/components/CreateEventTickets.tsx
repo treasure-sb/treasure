@@ -37,7 +37,15 @@ const ticketSchema = z.object({
       return !isNaN(Number(num)) && Number(num) > 0;
     },
     {
-      message: "Must be a valid ticket quantity",
+      message: "Must be a valid number of tickets for sale",
+    }
+  ),
+  ticket_total_tickets: z.string().refine(
+    (num) => {
+      return !isNaN(Number(num)) && Number(num) > 0;
+    },
+    {
+      message: "Must be a valid number of tickets available",
     }
   ),
   ticket_name: z.string().min(1, {
@@ -81,7 +89,7 @@ export default function EventTickets({
   };
 
   const addTicketTier = () => {
-    append({ ticket_price: "", ticket_quantity: "", ticket_name: "", total_tickets: ""});
+    append({ ticket_price: "", ticket_quantity: "", ticket_total_tickets: "", ticket_name: "", total_tickets: ""});
     setNumTickets(numTickets + 1);
   };
 
@@ -147,7 +155,9 @@ export default function EventTickets({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Ticket Quantity" {...field} />
+                          <Input placeholder="Total Tickets For Sale"
+                            {...field} 
+                          />
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />

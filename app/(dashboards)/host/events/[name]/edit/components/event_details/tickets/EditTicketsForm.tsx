@@ -70,8 +70,8 @@ export default function EditTicketsForm({
       db_id: ticket.id,
       price: ticket.price.toFixed(2),
       quantity: ticket.quantity.toString(),
-      name: ticket.name,
       total_tickets: ticket.total_tickets.toString(),
+      name: ticket.name,
       status: "unchanged" as const,
     })
   );
@@ -111,9 +111,9 @@ export default function EditTicketsForm({
       .map((ticket) => ({
         price: ticket.price,
         quantity: ticket.quantity,
+        total_tickets: ticket.total_tickets,
         name: ticket.name,
-        event_id: eventId,
-        total_tickets: ticket.total_tickets
+        event_id: eventId
       }));
 
     const updatedTickets = formTickets
@@ -131,9 +131,9 @@ export default function EditTicketsForm({
       .map((ticket) => ({
         price: ticket.price,
         quantity: ticket.quantity,
+        total_tickets: ticket.total_tickets,
         name: ticket.name,
-        id: ticket.db_id,
-        total_tickets: ticket.total_tickets
+        id: ticket.db_id
       }));
 
     const [createResult, updateResult] = await Promise.allSettled([

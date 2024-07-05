@@ -42,6 +42,14 @@ const tableSchema = z.object({
       message: "Must be a number",
     }
   ),
+  table_total_tables: z.string().refine(
+    (num) => {
+      return !isNaN(Number(num)) && Number(num) > 0;
+    },
+    {
+      message: "Must be a number",
+    }
+  ),
   table_provided: z.boolean().default(false),
   space_allocated: z.string().refine(
     (num) => {
@@ -100,6 +108,7 @@ export default function EventTables({
       section_name: "",
       table_price: "",
       table_quantity: "",
+      table_total_tables: "",
       table_provided: false,
       space_allocated: "",
       number_vendors_allowed: "",
@@ -170,7 +179,21 @@ export default function EventTables({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Table Quantity" {...field} />
+                          <Input placeholder="Total Tables For Sale" {...field} />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.table_total_tables`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Total Tables Available" {...field} />
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />

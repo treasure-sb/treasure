@@ -7,6 +7,7 @@ type FormTable = {
   section_name: string;
   price: string;
   quantity: string;
+  total_tables: string;
   table_provided: boolean;
   space_allocated: string;
   event_id?: string;
@@ -31,6 +32,7 @@ const updateTables = async (tables: FormTable[]) => {
       .update({
         price: roundPrice(table.price),
         quantity: table.quantity,
+        total_tables: table.total_tables,
         section_name: table.section_name,
         space_allocated: table.space_allocated,
         table_provided: table.table_provided,

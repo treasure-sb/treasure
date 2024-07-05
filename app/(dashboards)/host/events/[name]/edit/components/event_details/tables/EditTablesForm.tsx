@@ -39,7 +39,16 @@ export const tableSchema = z.object({
       return !isNaN(number) && Number.isInteger(number) && number > 0;
     },
     {
-      message: "Must be a valid table quantity",
+      message: "Must be a valid number of tables for sale",
+    }
+  ),
+  total_tables: z.string().refine(
+    (num) => {
+      const number = Number(num);
+      return !isNaN(number) && Number.isInteger(number) && number > 0;
+    },
+    {
+      message: "Must be a valid number of total tables available",
     }
   ),
   section_name: z.string().min(1, {
@@ -76,6 +85,7 @@ export default function EditTablesForm({
     db_id: table.id,
     price: table.price.toFixed(2),
     quantity: table.quantity.toString(),
+    total_tables: table.total_tables.toString(),
     section_name: table.section_name,
     table_provided: table.table_provided,
     space_allocated: table.space_allocated.toString(),
@@ -98,6 +108,7 @@ export default function EditTablesForm({
     append({
       price: "",
       quantity: "",
+      total_tables: "",
       section_name: "",
       table_provided: false,
       space_allocated: "",
@@ -118,6 +129,7 @@ export default function EditTablesForm({
       .map((table) => ({
         price: table.price,
         quantity: table.quantity,
+        total_tables: table.total_tables,
         section_name: table.section_name,
         event_id: eventId,
         space_allocated: table.space_allocated,
@@ -133,7 +145,7 @@ export default function EditTablesForm({
           originalTable &&
           (table.section_name !== originalTable.section_name ||
             Number(table.price) !== originalTable.price ||
-            Number(table.quantity) !== originalTable.quantity ||
+            Number(table.quantity) !== originalTable.quantity || Number(table.total_tables) !== originalTable.total_tables ||
             Number(table.space_allocated) !== originalTable.space_allocated ||
             table.table_provided !== originalTable.table_provided)
         );
@@ -141,6 +153,7 @@ export default function EditTablesForm({
       .map((table) => ({
         price: table.price,
         quantity: table.quantity,
+        total_tables: table.total_tables,
         section_name: table.section_name,
         table_provided: table.table_provided,
         event_id: eventId,
@@ -266,7 +279,25 @@ export default function EditTablesForm({
                       <FormItem>
                         <FormControl>
                           <FloatingLabelInput
-                            label="Quantity"
+                            label="Total Tables For Sale"
+                            {...field}
+                            className="border-none"
+                          />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.total_tables`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <FloatingLabelInput
+                            label="Total Tables Available"
                             {...field}
                             className="border-none"
                           />

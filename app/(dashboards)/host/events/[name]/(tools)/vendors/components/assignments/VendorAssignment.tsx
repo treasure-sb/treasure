@@ -101,7 +101,7 @@ export default async function VendorAssignment({
   const tableData = [...vendorsTableData, ...tempVendorsTableData];
   const numTables =
     vendorsWithPublicUrls.length > 0
-      ? vendorsWithPublicUrls[0]?.tables.quantity
+      ? vendorsWithPublicUrls[0]?.tables.total_tables
       : 50;
 
   return (
