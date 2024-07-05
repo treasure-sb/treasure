@@ -7,7 +7,7 @@ type Ticket = {
   name: string;
   price: string;
   quantity: string;
-  total_tickets: string,
+  total_tickets: string;
   event_id?: string;
   id?: string;
 };
@@ -16,11 +16,12 @@ const addEventAttendee = async (
   event_id: string,
   attendee_id: string,
   ticket_id: string,
-  quantity: number
+  quantity: number,
+  email: string
 ) => {
   const supabase = await createSupabaseServerClient();
   const ticketsToInsert = Array.from({ length: quantity }).map(() => {
-    return { attendee_id, event_id, ticket_id };
+    return { attendee_id, event_id, ticket_id, email };
   });
   const { data, error } = await supabase
     .from("event_tickets")
@@ -48,7 +49,7 @@ const updateTickets = async (tickets: Ticket[]) => {
         price: roundPrice(ticket.price),
         quantity: ticket.quantity,
         name: ticket.name,
-        total_tickets: ticket.total_tickets
+        total_tickets: ticket.total_tickets,
       })
       .eq("id", ticket.id);
 

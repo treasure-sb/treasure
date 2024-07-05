@@ -83,7 +83,9 @@ export default async function Page({
             <div className="w-1/6 text-center">${ticket.ticket_info.price}</div>
             <div className="w-1/6 flex flex-col text-center">
               <div className="text-sm">{ticket.user_info.phone}</div>
-              <div className="text-sm">{ticket.user_info.email}</div>
+              <div className="text-sm">
+                {ticket.user_info.email || ticket.email}
+              </div>
             </div>
             <div className="w-1/6 text-right flex flex-col">
               <div>
