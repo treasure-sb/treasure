@@ -102,10 +102,11 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   const { data: vendorsData } = await supabase
     .from("event_vendors")
     .select(
-      "inventory, profile:profiles(*, links(username, application)), tags:event_vendor_tags(tags(*))"
+      "inventory, profile:profiles(*, links(username, application, type)), tags:event_vendor_tags(tags(*))"
     )
     .eq("event_id", event.id)
     .eq("payment_status", "PAID")
+    .eq("profile.links.type", "social")
     .returns<ProfileVendor[]>();
 
   const { data: tempVendorData } = await supabase

@@ -10,6 +10,14 @@ import { EventDisplayData } from "@/types/event";
 import { sendReminderVendorAppAcceptedSMS } from "@/lib/sms";
 import { VendorAppAcceptedEmailProps } from "@/emails/VendorAppAccepted";
 import { sendReminderVendorAppAcceptedEmail } from "@/lib/actions/emails";
+import MoveVendor from "./MoveVendor";
+
+export type EventsInfo = {
+  name: string;
+  id: string;
+  date: string;
+  tables: { id: string; section_name: string }[];
+};
 
 export default function AcceptedOptions({
   vendorData,
@@ -21,8 +29,22 @@ export default function AcceptedOptions({
   closeDialog: () => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const [viewMoveVender, setViewMoveVender] = useState(false);
   const supabase = createClient();
   const { refresh } = useRouter();
+  const [events, setEvents] = useState<EventsInfo[]>([
+    {
+      name: eventData.name,
+      id: eventData.id,
+      date: eventData.date,
+      tables: [
+        {
+          section_name: vendorData.table.section_name,
+          id: vendorData.table_id,
+        },
+      ],
+    },
+  ]);
 
   const {
     table_quantity,
@@ -120,23 +142,52 @@ export default function AcceptedOptions({
     setLoading(false);
   };
 
+  const moveVendors = async () => {
+    const { data: eventsData, error } = await supabase
+      .from("events")
+      .select("id, name, date, tables(id, section_name)")
+      .eq("organizer_id", eventData.organizer_id);
+
+    setEvents(eventsData as EventsInfo[]);
+    setViewMoveVender(true);
+  };
+
   return (
-    <div className="flex space-x-2">
-      <Button
-        onClick={async () => remindVendorToPay()}
-        disabled={loading}
-        className="w-full text-black"
-      >
-        Remind to Pay
-      </Button>
-      <Button
-        onClick={async () => markAsPaid()}
-        variant={"secondary"}
-        disabled={loading || vendorData.payment_status === "PAID"}
-        className="w-full"
-      >
-        Mark as Paid
-      </Button>
+    <div className="flex gap-2">
+      {vendorData.payment_status === "PAID" ? (
+        <>
+          <Button onClick={moveVendors} className="w-full">
+            Move Vendor
+          </Button>
+          {viewMoveVender && (
+            <MoveVendor
+              vendorData={vendorData}
+              eventData={eventData}
+              events={events}
+              closeDialog={closeDialog}
+              closeMoveVendor={() => setViewMoveVender(false)}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <Button
+            onClick={async () => remindVendorToPay()}
+            disabled={loading}
+            className="w-full text-black"
+          >
+            Remind to Pay
+          </Button>
+          <Button
+            onClick={async () => markAsPaid()}
+            variant={"secondary"}
+            disabled={loading}
+            className="w-full"
+          >
+            Mark as Paid
+          </Button>
+        </>
+      )}
     </div>
   );
 }
