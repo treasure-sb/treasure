@@ -28,7 +28,11 @@ export default function SeeTickets({
             className={isTicketFree ? "" : "flex flex-col sm:flex-row sm:gap-1"}
           >
             <p className="text-lg">
-              {isTicketFree ? "Tickets FREE" : "Tickets from"}
+              {isTicketFree
+                ? "Tickets FREE"
+                : eventDisplayData.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3"
+                ? "Tickets "
+                : "Tickets from"}
             </p>
             {!isTicketFree && (
               <p className="text-lg">${minimumTicketPrice.toFixed(2)}</p>
