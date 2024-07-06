@@ -9,6 +9,7 @@ interface CheckoutSession {
   user_id: string;
   quantity: number;
   price_type?: string;
+  metadata?: any;
 }
 
 const createCheckoutSession = async (session: CheckoutSession) => {

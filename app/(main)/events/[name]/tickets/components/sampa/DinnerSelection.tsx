@@ -10,9 +10,14 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { createCheckoutSession } from "@/lib/actions/checkout";
+import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
+import { User } from "@supabase/supabase-js";
 import { TicketIcon } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const dinnerOptions = {
   rest: [
@@ -34,16 +39,23 @@ export default function DinnerSelection({
   goBackToTickets,
   ticket,
   quantity,
+  user,
+  event,
 }: {
   goBackToTickets: () => void;
   ticket: Tables<"tickets">;
   quantity: number;
+  user: User | null;
+  event: EventDisplayData;
 }) {
+  const [creatingCheckout, setCreatingCheckout] = useState(false);
   const [dinnerSelections, setDinnerSelections] = useState<string[]>(
     Array(quantity).fill("")
   );
   const subtotal = ticket.price * quantity;
   const arrayOfTickets = Array.from({ length: quantity });
+
+  const { push } = useRouter();
 
   const handleDinnerSelection = (index: number, value: string) => {
     setDinnerSelections((prev) => {
@@ -62,6 +74,31 @@ export default function DinnerSelection({
   const selectOptions = dinnerOptionsList.map((option) => (
     <SelectItem value={option.value}>{option.label}</SelectItem>
   ));
+
+  const handleCheckout = async () => {
+    if (!user) {
+      return;
+    }
+
+    setCreatingCheckout(true);
+
+    const { data, error } = await createCheckoutSession({
+      event_id: event.id,
+      ticket_id: ticket.id,
+      ticket_type: "TICKET",
+      user_id: user.id,
+      quantity: quantity,
+      metadata: { dinnerSelections },
+    });
+
+    if (data && !error) {
+      const checkoutSession: Tables<"checkout_sessions"> = data;
+      push(`/checkout/${checkoutSession.id}`);
+    } else {
+      toast.error("Error creating checkout session");
+      setCreatingCheckout(false);
+    }
+  };
 
   return (
     <div>
@@ -104,9 +141,9 @@ export default function DinnerSelection({
         </div>
       </div>
       <Button
-        disabled={dinnerSelections.includes("")}
+        disabled={dinnerSelections.includes("") || creatingCheckout}
         className="w-full mt-10 p-6"
-        onClick={() => console.log(dinnerSelections)}
+        onClick={handleCheckout}
       >
         Checkout - ${subtotal.toFixed(2)}
       </Button>

@@ -100,6 +100,8 @@ export default function AllTicketsSampa({
             ticket={ticketSelected!}
             quantity={quantity}
             goBackToTickets={handleGoBackToTickets}
+            user={user}
+            event={event}
           />
         </motion.div>
       )}
