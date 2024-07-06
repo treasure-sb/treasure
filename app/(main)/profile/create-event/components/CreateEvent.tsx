@@ -32,7 +32,7 @@ export default function CreateEvent() {
       {
         ticket_price: "",
         ticket_quantity: "",
-        ticket_total_tickets: "",
+        total_tickets: "",
         ticket_name: "",
       },
     ],
