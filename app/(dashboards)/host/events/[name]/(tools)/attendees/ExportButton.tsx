@@ -17,7 +17,13 @@ export default function ExportButton({
     });
 
     let exportData = [
-      { name: "", ticket: "", number_of_tickets: "", contact: "" },
+      {
+        name: "",
+        ticket: "",
+        number_of_tickets: "",
+        contact: "",
+        amount_paid: 0,
+      },
     ];
 
     let userArr: string[][] = [];
@@ -33,18 +39,21 @@ export default function ExportButton({
               : ticket.user_info.phone.toString()) +
             " " +
             (ticket.user_info.email === null ? "" : ticket.user_info.email),
+          amount_paid: ticket.ticket_info.price,
         };
         userArr.push([ticket.user_info.id, ticket.ticket_info.id]);
       } else {
-        let user = userArr.findIndex((item) => {
+        let existingRow = userArr.findIndex((item) => {
           return (
             item[0] === ticket.user_info.id && item[1] === ticket.ticket_info.id
           );
         });
-        if (user >= 0) {
-          exportData[user].number_of_tickets = (
-            parseInt(exportData[user].number_of_tickets) + 1
+        if (existingRow >= 0) {
+          exportData[existingRow].number_of_tickets = (
+            parseInt(exportData[existingRow].number_of_tickets) + 1
           ).toString();
+          exportData[existingRow].amount_paid =
+            exportData[existingRow].amount_paid + ticket.ticket_info.price;
         } else {
           exportData.push({
             name:
@@ -57,6 +66,7 @@ export default function ExportButton({
                 : ticket.user_info.phone.toString()) +
               " " +
               (ticket.user_info.email === null ? "" : ticket.user_info.email),
+            amount_paid: ticket.ticket_info.price,
           });
           userArr.push([ticket.user_info.id, ticket.ticket_info.id]);
         }
