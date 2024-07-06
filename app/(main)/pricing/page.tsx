@@ -7,7 +7,10 @@ export default function Page() {
       <main className="">
         <div className="flex flex-col items-center">
           <div className="mb-2 mt-0 text-center">
-            <h1 className="mb-8 text-[2.5rem] font-bold text-white">Start supercharging your<br/> event management & growth today</h1>
+            <div className="w-full flex justify-center">
+              <h1 className="sm:mb-8 text-[2.5rem] font-bold text-white">Start <span className="text-[#73D08D]">supercharging</span> your<br className="hidden sm:block"/> event management & growth today</h1> 
+            </div>
+            
             <div className="flex sm:flex-row p-10 flex-col">
               <PlanCard
                 color="black"
