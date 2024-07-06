@@ -24,7 +24,7 @@ export default function PlanCard({
     return (
     <div style ={{backgroundColor: color }}className="flex min-h-[428px] w-[320px] flex-col rounded-3xl p-8">
       <div className="ml-4">
-          {recommended && <div className="self-center h-7"><Button className="rounded-3xl absolute right-6 top-4" size="sm" style={{backgroundColor: "black", color: "black" }}>
+          {recommended && <div className="self-center h-7"><Button className="rounded-3xl relative -right-20 -top-4" size="sm" style={{backgroundColor: "black", color: "black" }}>
               <text className="text-xs text-[#73D08D] font-bold">MOST POPULAR</text>
           </Button></div>}
           <h2 className='mb-5 text-4xl font-bold text-left'  style={{color:backgroundColor === "black" ? "#73D08D" : "black"}}>
@@ -45,7 +45,7 @@ export default function PlanCard({
               ))}
           </ul>
           <p className="text-left mb-8" style={{color:backgroundColor === "black" ? "white" : "black"}}>4% Transaction Fees**</p>
-          <Button className="rounded-3xl relative" size="lg" style={{backgroundColor:backgroundColor === "black" ? "73D08D" : "black", color: backgroundColor === "black" ? "black" : "white", top:length }}>
+          <Button className="rounded-3xl sm:relative top-36" size="lg" style={{backgroundColor:backgroundColor === "black" ? "73D08D" : "black", color: backgroundColor === "black" ? "black" : "white", top:length }}>
               <text className="px-4">{btnText}</text>
           </Button>
       </div>

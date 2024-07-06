@@ -8,7 +8,7 @@ export default function Page() {
         <div className="flex flex-col items-center scale-75">
           <div className="mb-2 mt-0 text-center">
             <h1 className="mb-8 text-[2.5rem] font-bold text-white">Start supercharging your<br/> event management & growth today</h1>
-            <div className="flex flex-row p-10">
+            <div className="flex sm:flex-row p-10 flex-col">
               <PlanCard
                 color="black"
                 name="Basic"
@@ -16,7 +16,7 @@ export default function Page() {
                 features={["Unlimited Events", "Unlimited Applications", "Mobile Check-In App"]}
               />
               
-              <div className="relative bottom-8 shadow-2xl shadow-[#78df95] rounded-3xl">
+              <div className="sm:relative sm:bottom-8 sm:shadow-2xl shadow-[#78df95] rounded-3xl">
                   <PlanCard
                     color="#73D08D"
                     name="Starter"
@@ -39,9 +39,9 @@ export default function Page() {
             </div>
               
           </div>
-          <p className="text-white italic text-xs relative right-72">**Standard credit card and ACH fees not included.</p>
+          <p className="text-white italic text-xs sm:relative right-72 text-center">**Standard credit card and ACH fees not included.</p>
         </div>
-        <div className="hidden min-[1165px]:block">
+        <div className="hidden min-[1165px]:block scale-90">
           <div className="items-center flex w-[100%]">
             <h1 className="mb-8 text-[2.5rem] font-bold text-white text-center w-[100%]">Compare Features by Plan.</h1>
           </div>
