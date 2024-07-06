@@ -208,7 +208,7 @@ const handleTicketPurchase = async (
     await sendAttendeeTicketPurchasedSMS(profile.phone, event.name, event.date);
   }
 
-  if (host.profile.phone) {
+  if (host.profile && host.profile.phone) {
     const hostSMSPayload: HostSoldPayload = {
       phone: host.profile.phone,
       businessName: profile.business_name,
@@ -386,6 +386,7 @@ export async function POST(req: Request) {
           ok: true,
         });
       } catch (err) {
+        console.log(err);
         await stripe.refunds.create({ payment_intent: event.data.object.id });
         console.error("Failed to process post-payment actions:", err);
         return NextResponse.json({

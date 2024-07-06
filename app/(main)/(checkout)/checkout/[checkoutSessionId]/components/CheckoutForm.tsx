@@ -39,10 +39,12 @@ export default function CheckoutForm({
   checkoutSession,
   profile,
   totalPrice,
+  subtotal,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
   totalPrice: number;
+  subtotal: number;
 }) {
   const supabase = createClient();
   const stripe = useStripe();
@@ -81,6 +83,7 @@ export default function CheckoutForm({
 
     const paymentIntent = await createPaymentIntent(
       totalPrice,
+      subtotal,
       checkoutSession.id,
       email
     );

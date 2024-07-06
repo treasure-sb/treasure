@@ -4,35 +4,29 @@ import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { TicketIcon, UtensilsIcon } from "lucide-react";
 import { CheckoutTicketInfo } from "../../../types";
-
-type SampaMetadata = {
-  dinnerSelections: string[];
-  isSampa: boolean;
-};
+import { SampaMetadata } from "../page";
 
 export default function OrderSummary({
   promoCode,
   event,
   ticket,
   subtotal,
-  priceAfterPromo,
+  totalPrice,
   checkoutSession,
+  metadata,
 }: {
   promoCode: Tables<"event_codes"> | null;
   event: EventDisplayData;
   ticket: CheckoutTicketInfo;
   subtotal: number;
-  priceAfterPromo: number;
+  totalPrice: number;
   checkoutSession: Tables<"checkout_sessions">;
+  metadata: SampaMetadata;
 }) {
-  const { quantity, metadata } = checkoutSession;
-  const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
-    dinnerSelections: [],
-    isSampa: false,
-  };
+  const { quantity } = checkoutSession;
 
-  const isSampa = sampaMetadata.isSampa;
-  const sampaDinnerSelections = sampaMetadata.dinnerSelections.join(", ");
+  const isSampa = metadata.isSampa;
+  const sampaDinnerSelections = metadata.dinnerSelections.join(", ");
 
   return (
     <div className="space-y-4 w-full md:w-96">
@@ -75,18 +69,26 @@ export default function OrderSummary({
                   <p className="text-sm italic">Discount {promoCode.code}</p>
                 </div>
                 <p className="text-sm italic">{`-$${(
-                  subtotal - priceAfterPromo
+                  subtotal - totalPrice
                 ).toFixed(2)}`}</p>
               </div>
             )}
           </div>
+          {isSampa && (
+            <div className="flex justify-between text-muted-foreground my-1">
+              <div className="flex items-center space-x-4">
+                <p className="text-sm italic">Processing Fee 3%</p>
+              </div>
+              <p className="text-sm italic">{`+$${(subtotal * 0.03).toFixed(
+                2
+              )}`}</p>
+            </div>
+          )}
           <Separator className="my-2" />
           <div>
             <div className="flex justify-between">
               <p className="font-semibold">Total</p>
-              <p className="font-semibold">{`$${priceAfterPromo.toFixed(
-                2
-              )}`}</p>
+              <p className="font-semibold">{`$${totalPrice.toFixed(2)}`}</p>
             </div>
           </div>
         </div>
