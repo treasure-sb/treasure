@@ -15,20 +15,20 @@ const stripePromise = loadStripe(
 
 export default function InitializeCheckout({
   checkoutSession,
-  priceAfterPromo,
+  totalPrice,
   subtotal,
   event,
   profile,
   promoCode,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
-  priceAfterPromo: number;
+  totalPrice: number;
   subtotal: number;
   event: EventDisplayData;
   profile: Tables<"profiles">;
   promoCode: Tables<"event_codes"> | null;
 }) {
-  const [price, setPrice] = useState(priceAfterPromo);
+  const [price, setPrice] = useState(totalPrice);
   const [options, setOptions] = useState({
     mode: "payment" as const,
     amount: Math.round(price * 100),
@@ -83,6 +83,7 @@ export default function InitializeCheckout({
             checkoutSession={checkoutSession}
             profile={profile}
             totalPrice={price}
+            subtotal={subtotal}
           />
         </Elements>
       )}

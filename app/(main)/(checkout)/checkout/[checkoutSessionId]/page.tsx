@@ -7,6 +7,11 @@ import { getProfile } from "@/lib/helpers/profiles";
 import { CheckoutTicketInfo } from "../../types";
 import OrderSummary from "./components/OrderSummary";
 
+export type SampaMetadata = {
+  dinnerSelections: string[];
+  isSampa: boolean;
+};
+
 const getTicketInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: ticketData, error: ticketError } = await supabase
@@ -63,7 +68,7 @@ export default async function Page({
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const { event_id, ticket_id, ticket_type, quantity, promo_id } =
+  const { event_id, ticket_id, ticket_type, quantity, promo_id, metadata } =
     checkoutSession;
 
   const { data: eventData } = await supabase
@@ -103,17 +108,27 @@ export default async function Page({
   }
 
   subtotal = ticket.price * quantity;
-  let priceAfterPromo = subtotal;
+  let totalPrice = subtotal;
 
   if (promoCode) {
     if (promoCode.type === "PERCENT") {
-      priceAfterPromo = Math.max(
+      totalPrice = Math.max(
         subtotal - subtotal * (promoCode.discount / 100),
         0
       );
     } else {
-      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0);
+      totalPrice = Math.max(subtotal - promoCode.discount, 0);
     }
+  }
+
+  const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
+    dinnerSelections: [],
+    isSampa: false,
+  };
+
+  if (sampaMetadata.isSampa) {
+    const fee = subtotal * 0.03;
+    totalPrice += fee;
   }
 
   return (
@@ -124,12 +139,13 @@ export default async function Page({
           event={eventDisplay}
           ticket={ticket}
           subtotal={subtotal}
-          priceAfterPromo={priceAfterPromo}
+          totalPrice={totalPrice}
           checkoutSession={checkoutSession}
+          metadata={sampaMetadata}
         />
         <InitializeCheckout
           checkoutSession={checkoutSession}
-          priceAfterPromo={priceAfterPromo}
+          totalPrice={totalPrice}
           subtotal={subtotal}
           profile={profile}
           event={eventDisplay}
