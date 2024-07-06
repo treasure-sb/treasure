@@ -4,8 +4,8 @@ import ComparisonRow from "./components/ComparisonRow";
 
 export default function Page() {
     return (
-      <main className="-translate-y-36">
-        <div className="flex flex-col items-center scale-75">
+      <main className="">
+        <div className="flex flex-col items-center">
           <div className="mb-2 mt-0 text-center">
             <h1 className="mb-8 text-[2.5rem] font-bold text-white">Start supercharging your<br/> event management & growth today</h1>
             <div className="flex sm:flex-row p-10 flex-col">
