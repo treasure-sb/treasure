@@ -65,6 +65,7 @@ export default async function Page({
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   const { event_id, ticket_id, ticket_type, quantity, promo_id } =
     checkoutSession;
+
   const { data: eventData } = await supabase
     .from("events")
     .select("*")
@@ -124,7 +125,7 @@ export default async function Page({
           ticket={ticket}
           subtotal={subtotal}
           priceAfterPromo={priceAfterPromo}
-          quantity={quantity}
+          checkoutSession={checkoutSession}
         />
         <InitializeCheckout
           checkoutSession={checkoutSession}

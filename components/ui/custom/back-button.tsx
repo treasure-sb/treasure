@@ -1,4 +1,5 @@
 import { MoveLeftIcon } from "lucide-react";
+import { ArrowUpLeftIcon } from "lucide-react";
 
 export default function BackButton({
   onClick,
@@ -10,9 +11,9 @@ export default function BackButton({
   return (
     <div
       onClick={onClick}
-      className="flex space-x-2 mb-4 hover:cursor-pointer w-fit"
+      className="flex space-x-1 mb-4 hover:cursor-pointer w-fit group"
     >
-      <MoveLeftIcon className="stroke-1" />
+      <ArrowUpLeftIcon className="stroke-1 group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] transition duration-300" />
       <span>{label || "Back"}</span>
     </div>
   );

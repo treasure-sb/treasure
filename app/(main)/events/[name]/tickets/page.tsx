@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import AllTickets from "./components/AllTickets";
+import AllTickets from "./components/regular/AllTickets";
+import AllTicketsSampa from "./components/sampa/AllTicketsSampa";
 
 export async function generateMetadata({
   params,
@@ -62,13 +63,20 @@ export default async function Page({
     .order("price", { ascending: true });
   const tickets: Tables<"tickets">[] = ticketData || [];
 
+  const isSampa =
+    eventDisplayData.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3";
+
   return (
     <main className="max-w-lg m-auto">
-      <AllTickets
-        eventDisplayData={eventDisplayData}
-        tickets={tickets}
-        user={user}
-      />
+      {isSampa ? (
+        <AllTicketsSampa
+          event={eventDisplayData}
+          tickets={tickets}
+          user={user}
+        />
+      ) : (
+        <AllTickets event={eventDisplayData} tickets={tickets} user={user} />
+      )}
     </main>
   );
 }
