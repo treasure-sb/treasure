@@ -42,6 +42,7 @@ type OrderPayload = {
   price: number;
   itemId: string;
   itemType: "TICKET" | "TABLE";
+  metadata?: any;
 };
 
 type EventVendorQueryData = Tables<"event_vendors"> & {
@@ -52,7 +53,8 @@ type EventVendorQueryData = Tables<"event_vendors"> & {
 
 const createOrder = async (orderPayload: OrderPayload) => {
   const supabase = await createSupabaseServerClient();
-  const { userId, eventId, quantity, price, itemId, itemType } = orderPayload;
+  const { userId, eventId, quantity, price, itemId, itemType, metadata } =
+    orderPayload;
   const { data: createOrderData, error: createOrderError } = await supabase
     .from("orders")
     .insert([
@@ -60,6 +62,7 @@ const createOrder = async (orderPayload: OrderPayload) => {
         customer_id: userId,
         amount_paid: price,
         event_id: eventId,
+        metadata,
       },
     ])
     .select()
@@ -101,7 +104,9 @@ const handleTicketPurchase = async (
   supabase: SupabaseClient<any, "public", any>,
   email: string
 ) => {
-  const { event_id, ticket_id, user_id, quantity, promo_id } = checkoutSessison;
+  const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
+    checkoutSessison;
+
   const { data: ticketData } = await supabase
     .from("tickets")
     .select("*")
@@ -145,6 +150,7 @@ const handleTicketPurchase = async (
     price: amountPaid,
     itemId: ticket.id,
     itemType: "TICKET" as const,
+    metadata,
   };
   await createOrder(createOrderPayload);
 

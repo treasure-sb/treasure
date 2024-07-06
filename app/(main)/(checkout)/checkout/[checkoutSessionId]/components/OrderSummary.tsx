@@ -59,7 +59,7 @@ export default function OrderSummary({
 
             {isSampa && (
               <div className="flex items-center space-x-4">
-                <UtensilsIcon className="text-primary stroke-1" size={29} />
+                <UtensilsIcon className="text-primary stroke-1" size={24} />
                 <p>
                   Dinner Selections{" "}
                   <span className="text-muted-foreground text-[0.7rem]">
