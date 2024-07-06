@@ -57,6 +57,7 @@ export default function AllTicketsSampa({
         <TicketInfo type={ticket.name} price={ticket.price} />
       </AccordionTrigger>
       <AccordionContent className="px-6 py-2">
+      {ticket.description !== null && <p className="text-black text-center flex mb-4">{ticket.description}</p>}
         <TicketCounterSampa
           ticket={ticket}
           user={user}
