@@ -50,9 +50,6 @@ const ticketSchema = z.object({
   ),
   ticket_name: z.string().min(1, {
     message: "Ticket name is required",
-  }),
-  total_tickets: z.string().min(1, {
-    message: "Must be a valid number of total tickets",
   })
 });
 
@@ -89,7 +86,7 @@ export default function EventTickets({
   };
 
   const addTicketTier = () => {
-    append({ ticket_price: "", ticket_quantity: "", ticket_total_tickets: "", ticket_name: "", total_tickets: ""});
+    append({ ticket_price: "", ticket_quantity: "", ticket_total_tickets: "", ticket_name: "", });
     setNumTickets(numTickets + 1);
   };
 
@@ -167,7 +164,7 @@ export default function EventTickets({
                   />
                   <FormField
                     control={form.control}
-                    name={`tickets.${index}.total_tickets`}
+                    name={`tickets.${index}.ticket_total_tickets`}
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
