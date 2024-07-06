@@ -684,6 +684,7 @@ export type Database = {
           customer_id: string
           event_id: string
           id: number
+          metadata: Json | null
         }
         Insert: {
           amount_paid: number
@@ -691,6 +692,7 @@ export type Database = {
           customer_id: string
           event_id: string
           id?: number
+          metadata?: Json | null
         }
         Update: {
           amount_paid?: number
@@ -698,6 +700,7 @@ export type Database = {
           customer_id?: string
           event_id?: string
           id?: number
+          metadata?: Json | null
         }
         Relationships: [
           {

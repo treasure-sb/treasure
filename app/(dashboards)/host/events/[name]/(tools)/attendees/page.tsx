@@ -32,6 +32,7 @@ export default async function Page({
     .order("created_at", { ascending: false });
 
   const ticketsArr: any[] = soldTicketsData ? soldTicketsData : [];
+  console.log(ticketsArr);
 
   return (
     <div className="flex flex-col gap-4 overflow-visible ">
@@ -57,11 +58,16 @@ export default async function Page({
 
             <div className="w-1/5 text-center">${ticket.price}</div>
             <div className="w-1/5 text-right">
-              {soldTicketsData?.length + "/" + ticket.total_tickets}
+              {(
+                Number(ticket.total_tickets) - Number(ticket.quantity)
+              ).toString() +
+                "/" +
+                ticket.total_tickets}
             </div>
           </div>
         ))}
       </div>
+
       <ExportButton soldTicketsData={ticketsArr} eventName={name} />
       <div className="sm:flex flex-col hidden w-full text-lg border border-secondary rounded-sm">
         <div className="flex p-4">

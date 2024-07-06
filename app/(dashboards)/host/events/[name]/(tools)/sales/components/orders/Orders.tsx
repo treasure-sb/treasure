@@ -6,6 +6,7 @@ import { type CustomerData } from "../../types";
 import { Suspense } from "react";
 import DateRangeFilter from "./DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import AdamsMom from "./AdamsMom";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
@@ -77,6 +78,9 @@ export default async function Orders({
 
   return (
     <>
+      {event.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3" && (
+        <AdamsMom eventId={event.id} />
+      )}
       <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
         <h2 className="text-2xl font-semibold">
           Orders <span className="text-muted-foreground">{orders.length}</span>

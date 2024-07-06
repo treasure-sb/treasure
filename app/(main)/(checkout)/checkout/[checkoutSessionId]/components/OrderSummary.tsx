@@ -43,7 +43,7 @@ export default function OrderSummary({
         <div>
           <p className="text-lg">Order summary</p>
           <Separator className="my-2" />
-          <div>
+          <div className="flex flex-col gap-2">
             <div className="flex justify-between">
               <div className="flex items-center space-x-4">
                 <TicketIcon className="text-tertiary stroke-1" size={24} />
@@ -60,12 +60,12 @@ export default function OrderSummary({
             {isSampa && (
               <div className="flex items-center space-x-4">
                 <UtensilsIcon className="text-primary stroke-1" size={24} />
-                <p>
-                  Dinner Selections{" "}
-                  <span className="text-muted-foreground text-[0.7rem]">
+                <div className="flex flex-col">
+                  <p>Dinner Selections </p>
+                  <p className="text-muted-foreground text-[0.7rem]">
                     {sampaDinnerSelections}
-                  </span>
-                </p>
+                  </p>
+                </div>
               </div>
             )}
 
