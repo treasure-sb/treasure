@@ -13,13 +13,13 @@ import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 export default function TicketCounter({
   ticket,
   user,
-  eventDisplayData,
+  event,
 }: {
   ticket: Tables<"tickets">;
   user: User | null;
-  eventDisplayData: EventDisplayData;
+  event: EventDisplayData;
 }) {
-  const { push, refresh } = useRouter();
+  const { push } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
   const [creatingCheckout, setCreatingCheckout] = useState(false);
   const isTicketFree = ticketCount * ticket.price === 0;
@@ -45,7 +45,7 @@ export default function TicketCounter({
     }
     setCreatingCheckout(true);
     const { data, error } = await createCheckoutSession({
-      event_id: eventDisplayData.id,
+      event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
       user_id: user.id,
@@ -68,7 +68,7 @@ export default function TicketCounter({
     setCreatingCheckout(true);
 
     const { data, error } = await createCheckoutSession({
-      event_id: eventDisplayData.id,
+      event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
       user_id: user.id,

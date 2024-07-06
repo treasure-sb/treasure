@@ -30,6 +30,9 @@ const nameSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
+  email: z.string().email({
+    message: "Invalid email address",
+  }),
 });
 
 export default function CheckoutForm({
@@ -51,11 +54,12 @@ export default function CheckoutForm({
     defaultValues: {
       first_name: profile.first_name === "Anonymous" ? "" : profile.first_name,
       last_name: profile.first_name === "Anonymous" ? "" : profile.last_name,
+      email: profile.email || "",
     },
   });
 
   const onSubmit = async () => {
-    const { first_name, last_name } = form.getValues();
+    const { first_name, last_name, email } = form.getValues();
     await supabase
       .from("profiles")
       .update({ first_name, last_name })
@@ -77,7 +81,8 @@ export default function CheckoutForm({
 
     const paymentIntent = await createPaymentIntent(
       totalPrice,
-      checkoutSession.id
+      checkoutSession.id,
+      email
     );
     const clientSecret = paymentIntent?.clientSecret || "";
 
@@ -128,6 +133,18 @@ export default function CheckoutForm({
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
                   <StripeInput placeholder="Doe" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <StripeInput placeholder="john@gmail.com" {...field} />
                 </FormControl>
               </FormItem>
             )}

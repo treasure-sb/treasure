@@ -42,6 +42,7 @@ type OrderPayload = {
   price: number;
   itemId: string;
   itemType: "TICKET" | "TABLE";
+  metadata?: any;
 };
 
 type EventVendorQueryData = Tables<"event_vendors"> & {
@@ -52,7 +53,8 @@ type EventVendorQueryData = Tables<"event_vendors"> & {
 
 const createOrder = async (orderPayload: OrderPayload) => {
   const supabase = await createSupabaseServerClient();
-  const { userId, eventId, quantity, price, itemId, itemType } = orderPayload;
+  const { userId, eventId, quantity, price, itemId, itemType, metadata } =
+    orderPayload;
   const { data: createOrderData, error: createOrderError } = await supabase
     .from("orders")
     .insert([
@@ -60,6 +62,7 @@ const createOrder = async (orderPayload: OrderPayload) => {
         customer_id: userId,
         amount_paid: price,
         event_id: eventId,
+        metadata,
       },
     ])
     .select()
@@ -98,9 +101,12 @@ const createOrder = async (orderPayload: OrderPayload) => {
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
   amountPaid: number,
-  supabase: SupabaseClient<any, "public", any>
+  supabase: SupabaseClient<any, "public", any>,
+  email: string
 ) => {
-  const { event_id, ticket_id, user_id, quantity, promo_id } = checkoutSessison;
+  const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
+    checkoutSessison;
+
   const { data: ticketData } = await supabase
     .from("tickets")
     .select("*")
@@ -123,7 +129,7 @@ const handleTicketPurchase = async (
   }
 
   const ticketsToInsert = Array.from({ length: quantity }).map(() => {
-    return { attendee_id: user_id, event_id, ticket_id };
+    return { attendee_id: user_id, event_id, ticket_id, email };
   });
   const { data: purchasedTicketData, error: purchasedTicketError } =
     await supabase.from("event_tickets").insert(ticketsToInsert).select();
@@ -144,6 +150,7 @@ const handleTicketPurchase = async (
     price: amountPaid,
     itemId: ticket.id,
     itemType: "TICKET" as const,
+    metadata,
   };
   await createOrder(createOrderPayload);
 
@@ -331,7 +338,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, amountPaid } = JSON.parse(
+  const { checkoutSessionId, amountPaid, email } = JSON.parse(
     JSON.stringify(session.metadata)
   );
 
@@ -349,7 +356,7 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, amountPaid, supabase);
+      await handleTicketPurchase(checkoutSession, amountPaid, supabase, email);
       break;
     case "TABLE":
       await handleTablePurchase(checkoutSession, supabase);

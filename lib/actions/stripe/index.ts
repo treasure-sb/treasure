@@ -11,7 +11,8 @@ interface Ticket {
 
 const createPaymentIntent = async (
   totalPrice: number,
-  checkoutSessionId: string
+  checkoutSessionId: string,
+  email: string
 ) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalPrice * 100),
@@ -22,6 +23,7 @@ const createPaymentIntent = async (
     metadata: {
       checkoutSessionId,
       amountPaid: totalPrice,
+      email,
     },
   });
 

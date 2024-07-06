@@ -6,9 +6,14 @@ import Events from "./components/events/Events";
 import { getEventsHosting } from "@/lib/helpers/eventsFiltering";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
-import { getProfileByUsername, getTempProfile } from "@/lib/helpers/profiles";
+import {
+  getProfile,
+  getProfileByUsername,
+  getTempProfile,
+} from "@/lib/helpers/profiles";
 import { validateUser } from "@/lib/actions/auth";
 import { Suspense } from "react";
+import AdminEditButton from "./components/admin/AdminEditButton";
 
 export default async function Page({
   params,
@@ -55,7 +60,11 @@ export default async function Page({
 
   const userOnOwnProfile =
     (loggedInUser && loggedInUser.id === user.id) || false;
+
+  const { profile: loggedInProfile } = await getProfile(loggedInUser?.id);
+
   const isProfile = "bio" in user;
+  const isAdmin = loggedInProfile?.role === "admin" || false;
 
   return (
     <main className="m-auto max-w-lg md:max-w-6xl md:flex md:space-x-8 relative min-h-[calc(100vh-220px)]">
@@ -81,6 +90,7 @@ export default async function Page({
           <ListEventsHosting user={user as Tables<"temporary_profiles">} />
         )}
       </div>
+      {isAdmin && !userOnOwnProfile && <AdminEditButton username={username} />}
     </main>
   );
 }

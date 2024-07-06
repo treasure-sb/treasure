@@ -25,12 +25,15 @@ export default async function Page() {
   const linksData: Partial<Tables<"links">>[] = data || [];
 
   return (
-    <main className="max-w-lg md:max-w-6xl mx-auto space-y-12">
-      <EditProfileForm
-        profile={profile}
-        avatarUrl={publicUrl}
-        userLinks={linksData}
-      />
+    <main className="max-w-lg md:max-w-4xl mx-auto space-y-12">
+      <div>
+        <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
+        <EditProfileForm
+          profile={profile}
+          avatarUrl={publicUrl}
+          userLinks={linksData}
+        />
+      </div>
       <Phone profile={profile} />
       <Email profile={profile} />
     </main>
