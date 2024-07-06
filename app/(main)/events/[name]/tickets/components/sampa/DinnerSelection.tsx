@@ -19,22 +19,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const dinnerOptions = {
-  rest: [
-    { value: "steak", label: "Steak" },
-    { value: "chicken", label: "Chicken" },
-    { value: "salmon", label: "Salmon" },
-  ],
-  benefactor: [
-    { value: "2-steak", label: "2 Steak Dinners" },
-    { value: "2-chicken", label: "2 Chicken Dinners" },
-    { value: "2-salmon", label: "2 Salmon Dinners" },
-    { value: "1-steak-1-chicken", label: "1 Steak, 1 Chicken" },
-    { value: "1-steak-1-salmon", label: "1 Steak, 1 Salmon" },
-    { value: "1-chicken-1-salmon", label: "1 Chicken, 1 Salmon" },
-  ],
-};
-
 export default function DinnerSelection({
   goBackToTickets,
   ticket,
@@ -49,37 +33,40 @@ export default function DinnerSelection({
   event: EventDisplayData;
 }) {
   const [creatingCheckout, setCreatingCheckout] = useState(false);
-  const [dinnerSelections, setDinnerSelections] = useState<string[]>(
-    Array(quantity).fill("")
-  );
   const subtotal = ticket.price * quantity;
-  const arrayOfTickets = Array.from({ length: quantity });
+
+  const numDinners =
+    ticket.id === "45c89043-d102-4335-9a91-5a1c00636ef2"
+      ? 2 * quantity
+      : quantity;
+
+  const [dinnerSelections, setDinnerSelections] = useState<string[]>(
+    Array(numDinners).fill("")
+  );
+
+  const arrayOfTickets = Array.from({ length: numDinners });
 
   const { push } = useRouter();
 
   const handleDinnerSelection = (index: number, value: string) => {
     setDinnerSelections((prev) => {
       const newSelections = [...prev];
-      newSelections[index] =
-        dinnerOptionsList.find((option) => option.value === value)?.label || "";
+      newSelections[index] = value;
       return newSelections;
     });
   };
-
-  const dinnerOptionsList =
-    ticket.id === "45c89043-d102-4335-9a91-5a1c00636ef2"
-      ? dinnerOptions.benefactor
-      : dinnerOptions.rest;
-
-  const selectOptions = dinnerOptionsList.map((option) => (
-    <SelectItem value={option.value}>{option.label}</SelectItem>
-  ));
 
   const handleCheckout = async () => {
     if (!user) {
       return;
     }
+    const dinnerMap = new Map();
+    dinnerSelections.forEach((selection) => {
+      dinnerMap.set(selection, (dinnerMap.get(selection) || 0) + 1);
+    });
 
+    let dinnerArr = Array.from(dinnerMap.entries());
+    const formatted = dinnerArr.map((dinner) => `${dinner[1]} ${dinner[0]}`);
     setCreatingCheckout(true);
 
     const { data, error } = await createCheckoutSession({
@@ -88,7 +75,7 @@ export default function DinnerSelection({
       ticket_type: "TICKET",
       user_id: user.id,
       quantity: quantity,
-      metadata: { dinnerSelections, isSampa: true },
+      metadata: { dinnerSelections: formatted, isSampa: true },
     });
 
     if (data && !error) {
@@ -120,7 +107,9 @@ export default function DinnerSelection({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Dinner Options</SelectLabel>
-                  {selectOptions}
+                  <SelectItem value="Steak">Steak</SelectItem>
+                  <SelectItem value="Chicken">Chicken</SelectItem>
+                  <SelectItem value="Salmon">Salmon</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
