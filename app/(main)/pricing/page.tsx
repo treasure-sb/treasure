@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button";
 import PlanCard from "./components/PlanCard";
+import ComparisonRow from "./components/ComparisonRow";
 
 export default function Page() {
     return (
@@ -39,8 +41,58 @@ export default function Page() {
           </div>
           <p className="text-white italic text-xs relative right-72">**Standard credit card and ACH fees not included.</p>
         </div>
-        <div className="items-center flex w-[100%]">
-          <h1 className="mb-8 text-[2.5rem] font-bold text-white text-center w-[100%]">Compare Features by Plan.</h1>
+        <div className="hidden min-[1165px]:block">
+          <div className="items-center flex w-[100%]">
+            <h1 className="mb-8 text-[2.5rem] font-bold text-white text-center w-[100%]">Compare Features by Plan.</h1>
+          </div>
+          <div className=" w-[100%]">
+            <div className="flex flex-row w-[100%] border-b-2 border-[#73D08D] pb-4">
+              {/*Column Titles*/}
+              <div className="items-center w-[25%] mr-8 mt-3">
+                <span className="text-2xl font-bold mr-8 text-[#73D08D] ml-8">Compare Plans</span>
+                <div className="mt-10 ml-8">
+                <span className=" text-white text-sm ">Choose your Treasure plan according to your eventing needs</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-center w-1/4 mx-1">
+                <div className="text-4xl font-bold text-[#73D08D] text-center">
+                  Basic <span className="text-[#858BA0] text-xs">free</span>
+                </div>
+                <div className="mt-8">
+                  <Button size="lg" className="mt-2 px-16"><span className="mx-2">Choose This Plan</span></Button>
+                </div>
+              </div>
+              <div className="flex flex-col items-center w-1/4 mx-1">
+                <div className="text-4xl font-bold text-[#73D08D] text-center">
+                  Starter <span className="text-[#858BA0] text-xs">$20/month</span>
+                </div>
+                <div className="mt-8">
+                  <Button size="lg" className="mt-2 px-16"><span className="mx-2">Choose This Plan</span></Button>
+                </div>
+              </div>
+              <div className="flex flex-col items-center w-1/4 mx-1">
+                <div className="text-4xl font-bold text-[#73D08D] text-center">
+                  Pro <span className="text-[#858BA0] text-xs">$40/month</span>
+                </div>
+                <div className="mt-8">
+                  <Button size="lg" className="mt-2 px-16"><span className="mx-2">Choose This Plan</span></Button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          {/*Rows*/}
+          <ComparisonRow name="Unlimited Events" col1={true} col2={true} col3={true} />
+          <ComparisonRow name="Mobile Check-In App" col1={true} col2={true} col3={true} isGreen={true}/>
+          <ComparisonRow name="Full Vendor CRM Suite" col3={true} />
+          <ComparisonRow name="Dedicated URL per event" col1={true} col2={true} col3={true} isGreen={true}/>
+          <ComparisonRow name="Social Media Sharing" col2={true} col3={true} />
+          <ComparisonRow name="Event Highlights" col2={true} col3={true} isGreen={true}/>
+          <ComparisonRow name="Unlimited Vendor Applications" col2={true} col3={true} />
+          <ComparisonRow name="Unlimited Attendees" col2={true} col3={true} isGreen={true}/>
+          <ComparisonRow name="24/7 Customer Support" col1={true} col2={true} col3={true} />
+          <ComparisonRow name="Event Page Analytics" col3={true} isGreen={true}/>
+          <ComparisonRow name="Unlimited SMS blasts" col1={true} col2={true} col3={true} />
         </div>
         
       </main>
