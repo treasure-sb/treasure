@@ -2,8 +2,13 @@ import EventCard from "@/components/events/shared/EventCard";
 import { Separator } from "@/components/ui/separator";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { TicketIcon } from "lucide-react";
+import { TicketIcon, UtensilsIcon } from "lucide-react";
 import { CheckoutTicketInfo } from "../../../types";
+
+type SampaMetadata = {
+  dinnerSelections: string[];
+  isSampa: boolean;
+};
 
 export default function OrderSummary({
   promoCode,
@@ -11,15 +16,24 @@ export default function OrderSummary({
   ticket,
   subtotal,
   priceAfterPromo,
-  quantity,
+  checkoutSession,
 }: {
   promoCode: Tables<"event_codes"> | null;
   event: EventDisplayData;
   ticket: CheckoutTicketInfo;
   subtotal: number;
   priceAfterPromo: number;
-  quantity: number;
+  checkoutSession: Tables<"checkout_sessions">;
 }) {
+  const { quantity, metadata } = checkoutSession;
+  const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
+    dinnerSelections: [],
+    isSampa: false,
+  };
+
+  const isSampa = sampaMetadata.isSampa;
+  const sampaDinnerSelections = sampaMetadata.dinnerSelections.join(", ");
+
   return (
     <div className="space-y-4 w-full md:w-96">
       <div className="w-full">
@@ -42,6 +56,19 @@ export default function OrderSummary({
               </div>
               <p>{`$${subtotal.toFixed(2)}`}</p>
             </div>
+
+            {isSampa && (
+              <div className="flex items-center space-x-4">
+                <UtensilsIcon className="text-primary stroke-1" size={29} />
+                <p>
+                  Dinner Selections{" "}
+                  <span className="text-muted-foreground text-[0.7rem]">
+                    {sampaDinnerSelections}
+                  </span>
+                </p>
+              </div>
+            )}
+
             {promoCode && (
               <div className="flex justify-between text-primary my-1">
                 <div className="flex items-center space-x-4">

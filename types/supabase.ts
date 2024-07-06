@@ -117,6 +117,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          metadata: Json | null
           price_type: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id: string | null
           quantity: number
@@ -128,6 +129,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          metadata?: Json | null
           price_type?: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id?: string | null
           quantity: number
@@ -139,6 +141,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          metadata?: Json | null
           price_type?: Database["public"]["Enums"]["Checkout Price Type"]
           promo_id?: string | null
           quantity?: number
@@ -345,6 +348,7 @@ export type Database = {
         Row: {
           attendee_id: string
           created_at: string
+          email: string | null
           event_id: string
           id: string
           ticket_id: string
@@ -353,6 +357,7 @@ export type Database = {
         Insert: {
           attendee_id: string
           created_at?: string
+          email?: string | null
           event_id: string
           id?: string
           ticket_id: string
@@ -361,6 +366,7 @@ export type Database = {
         Update: {
           attendee_id?: string
           created_at?: string
+          email?: string | null
           event_id?: string
           id?: string
           ticket_id?: string
@@ -839,10 +845,10 @@ export type Database = {
           number_vendors_allowed: number
           price: number
           quantity: number
-          total_tables: number
           section_name: string
           space_allocated: number
           table_provided: boolean
+          total_tables: number
         }
         Insert: {
           additional_information?: string | null
@@ -851,10 +857,10 @@ export type Database = {
           number_vendors_allowed?: number
           price: number
           quantity: number
-          total_tables: number
           section_name: string
           space_allocated?: number
           table_provided?: boolean
+          total_tables?: number
         }
         Update: {
           additional_information?: string | null
@@ -863,10 +869,10 @@ export type Database = {
           number_vendors_allowed?: number
           price?: number
           quantity?: number
-          total_tables?: number
           section_name?: string
           space_allocated?: number
           table_provided?: boolean
+          total_tables?: number
         }
         Relationships: [
           {
@@ -990,7 +996,7 @@ export type Database = {
             foreignKeyName: "temporary_vendors_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
-            referencedRelation: "temporary_profiles"
+            referencedRelation: "temporary_profiles_vendors"
             referencedColumns: ["id"]
           },
         ]

@@ -88,7 +88,7 @@ export default function DinnerSelection({
       ticket_type: "TICKET",
       user_id: user.id,
       quantity: quantity,
-      metadata: { dinnerSelections },
+      metadata: { dinnerSelections, isSampa: true },
     });
 
     if (data && !error) {
