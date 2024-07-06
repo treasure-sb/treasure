@@ -6,37 +6,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Tables } from "@/types/supabase";
-import { TicketIcon } from "lucide-react";
+import { TicketInfo } from "../TicketInfo";
 import { User } from "@supabase/supabase-js";
 import EventCard from "@/components/events/shared/EventCard";
 import TicketCounter from "./TicketCounter";
 
-interface TicketInfoProps {
-  type: string;
-  price: number;
-}
-
-const TicketInfo = ({ type, price }: TicketInfoProps) => {
-  const isTicketFree = price === 0;
-  return (
-    <div className="flex space-x-4 text-background">
-      <TicketIcon className="stroke-2 text-background" />
-      <div className="flex">
-        <p>{type}</p>{" "}
-        <p className="ml-2 font-bold">
-          {isTicketFree ? "Free" : `$${price.toFixed(2)}`}
-        </p>
-      </div>
-    </div>
-  );
-};
-
 export default function AllTickets({
-  eventDisplayData,
+  event,
   tickets,
   user,
 }: {
-  eventDisplayData: EventDisplayData;
+  event: EventDisplayData;
   tickets: Tables<"tickets">[];
   user: User | null;
 }) {
@@ -46,22 +26,14 @@ export default function AllTickets({
         <TicketInfo type={ticket.name} price={ticket.price} />
       </AccordionTrigger>
       <AccordionContent className="px-6 py-2">
-        <TicketCounter
-          ticket={ticket}
-          user={user}
-          eventDisplayData={eventDisplayData}
-        />
+        <TicketCounter ticket={ticket} user={user} event={event} />
       </AccordionContent>
     </AccordionItem>
   ));
 
   return (
     <div className="mt-10">
-      <EventCard
-        event={eventDisplayData}
-        clickable={false}
-        showLikeButton={false}
-      />
+      <EventCard event={event} clickable={false} showLikeButton={false} />
       <Accordion
         className="mt-10 mb-4 bg-foreground rounded-md"
         type="single"
