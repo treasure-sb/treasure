@@ -66,13 +66,17 @@ const buildEventsQuery = async (
   const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
 
-  let query = supabase.from("events").select("*");
+  let query = supabase
+    .from("events")
+    .select("*")
+    .neq("id", "a6ce6fdb-4ff3-4272-a358-6873e896b3e3");
 
   if (tagId) {
     query = supabase
       .from("events")
       .select("*, event_tags!inner(*)")
-      .eq("event_tags.tag_id", tagId);
+      .eq("event_tags.tag_id", tagId)
+      .neq("id", "a6ce6fdb-4ff3-4272-a358-6873e896b3e3");
   }
 
   if (city) {
