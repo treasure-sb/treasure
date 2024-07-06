@@ -60,50 +60,50 @@ export default function ListEvents({
     fetchPage();
   }, [entry, desktopEntry]);
 
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  return isDesktop ? (
-    <div className="flex flex-col">
-      <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
-        {allEvents?.map((event, i) => (
+  return (
+    <>
+      <div className="space-y-8 md:hidden block">
+        <EventDisplay event={events[0]} user={user} />
+        {allEvents?.slice(1).map((event, i) => (
           <div
-            className="hover:translate-y-[-.35rem] transition duration-500"
-            ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
-            key={event.id + "display"}
+            key={event.id + "card"}
+            ref={allEvents.length - 1 === i + 1 ? ref : null}
           >
-            <EventDisplay event={event} user={user} />
+            <EventCard
+              user={user}
+              redirectTo={`/events/${event.cleaned_name}`}
+              event={event}
+            />
           </div>
         ))}
+        {fetchingPage && (
+          <div className="flex flex-row items-center justify-center">
+            <TreasureEmerald bounce={true} width={24} height={24} delay={0} />
+            <TreasureEmerald bounce={true} width={24} height={24} delay={0.1} />
+            <TreasureEmerald bounce={true} width={24} height={24} delay={0.2} />
+          </div>
+        )}
       </div>
-      {fetchingPage && (
-        <div className="flex flex-row items-center justify-center mt-16">
-          <TreasureEmerald bounce={true} width={36} height={36} delay={0} />
-          <TreasureEmerald bounce={true} width={36} height={36} delay={0.1} />
-          <TreasureEmerald bounce={true} width={36} height={36} delay={0.2} />
+      <div className="md:flex flex-col hidden">
+        <div className="md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-16">
+          {allEvents?.map((event, i) => (
+            <div
+              className="hover:translate-y-[-.35rem] transition duration-500"
+              ref={allEvents.length - 1 === i + 1 ? desktopRef : null}
+              key={event.id + "display"}
+            >
+              <EventDisplay event={event} user={user} />
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  ) : (
-    <div className="space-y-6 mt-6">
-      {allEvents?.map((event, i) => (
-        <div
-          key={event.id + "card"}
-          ref={allEvents.length - 1 === i + 1 ? ref : null}
-        >
-          <EventCard
-            user={user}
-            redirectTo={`/events/${event.cleaned_name}`}
-            event={event}
-          />
-        </div>
-      ))}
-      {fetchingPage && (
-        <div className="flex flex-row items-center justify-center">
-          <TreasureEmerald bounce={true} width={24} height={24} delay={0} />
-          <TreasureEmerald bounce={true} width={24} height={24} delay={0.1} />
-          <TreasureEmerald bounce={true} width={24} height={24} delay={0.2} />
-        </div>
-      )}
-    </div>
+        {fetchingPage && (
+          <div className="flex flex-row items-center justify-center mt-16">
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0} />
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0.1} />
+            <TreasureEmerald bounce={true} width={36} height={36} delay={0.2} />
+          </div>
+        )}
+      </div>
+    </>
   );
 }
