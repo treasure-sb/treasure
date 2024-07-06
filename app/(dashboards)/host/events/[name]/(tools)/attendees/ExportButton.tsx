@@ -20,7 +20,7 @@ export default function ExportButton({
       { name: "", ticket: "", number_of_tickets: "", contact: "" },
     ];
 
-    let userArr: string[] = [];
+    let userArr: string[][] = [];
     soldTicketsData.map((ticket: any, i: number) => {
       if (i === 0) {
         exportData[0] = {
@@ -34,9 +34,13 @@ export default function ExportButton({
             " " +
             (ticket.user_info.email === null ? "" : ticket.user_info.email),
         };
-        userArr.push(ticket.user_info.id);
+        userArr.push([ticket.user_info.id, ticket.ticket_info.id]);
       } else {
-        let user = userArr.indexOf(ticket.user_info.id);
+        let user = userArr.findIndex((item) => {
+          return (
+            item[0] === ticket.user_info.id && item[1] === ticket.ticket_info.id
+          );
+        });
         if (user >= 0) {
           exportData[user].number_of_tickets = (
             parseInt(exportData[user].number_of_tickets) + 1
@@ -54,10 +58,12 @@ export default function ExportButton({
               " " +
               (ticket.user_info.email === null ? "" : ticket.user_info.email),
           });
-          userArr.push(ticket.user_info.id);
+          userArr.push([ticket.user_info.id, ticket.ticket_info.id]);
         }
       }
     });
+
+    console.log(userArr);
 
     const csv = generateCsv(csvConfig)(exportData);
     download(csvConfig)(csv);

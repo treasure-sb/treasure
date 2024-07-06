@@ -32,7 +32,6 @@ export default async function Page({
     .order("created_at", { ascending: false });
 
   const ticketsArr: any[] = soldTicketsData ? soldTicketsData : [];
-  console.log(ticketsArr);
 
   return (
     <div className="flex flex-col gap-4 overflow-visible ">
