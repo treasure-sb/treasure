@@ -17,6 +17,8 @@ import {
 } from "@react-email/components";
 import BodySection from "./components/Section";
 import NeedHelp from "./components/NeedHelp";
+import LineBreak from "./components/LineBreak";
+import ColumnLabel from "./components/ColumnLabel";
 
 export interface VendorAppSubmittedEmailProps {
   eventName: string;
@@ -65,7 +67,7 @@ export default function VendorAppSubmitted({
             </Section>
             <BodySection>
               <Img
-                className="m-auto rounded-[2.5rem]"
+                className="m-auto rounded-[.8rem]"
                 src={posterUrl}
                 alt="event-poster"
                 width="400"
@@ -89,68 +91,52 @@ export default function VendorAppSubmitted({
             </BodySection>
 
             <BodySection>
-              <Heading as="h2" className="font-normal text-left">
+              <Heading as="h3" className="text-left font-bold">
                 Vendor Registration Details
               </Heading>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Vendor Name
-                </Column>
+                <ColumnLabel>Vendor Name</ColumnLabel>
                 <Column className="text-right">{guestName}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Business Name
-                </Column>
+                <ColumnLabel>Business Name</ColumnLabel>
                 <Column className="text-right">{businessName || "N/A"}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Table Type
-                </Column>
+                <ColumnLabel>Table Type</ColumnLabel>
                 <Column className="text-right">{tableType}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Quantity
-                </Column>
+                <ColumnLabel>Quantity</ColumnLabel>
                 <Column className="text-right">{quantity}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Item Inventory
-                </Column>
+                <ColumnLabel>Item Inventory</ColumnLabel>
                 <Column className="text-right">{itemInventory}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Number of Vendors
-                </Column>
+                <ColumnLabel>Number of Vendors</ColumnLabel>
                 <Column className="text-right">{numberOfVendors}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Location
-                </Column>
+                <ColumnLabel>Location</ColumnLabel>
                 <Column className="text-right w-60">{location}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">Date</Column>
+                <ColumnLabel>Date</ColumnLabel>
                 <Column className="text-right">{date}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
-              <Row className="mb-6">
-                <Column className="text-left text-foreground/80">
-                  Total Due on Approval
-                </Column>
+              <LineBreak />
+              <Row>
+                <ColumnLabel>Total Due on Approval</ColumnLabel>
                 <Column className="text-right">
                   <Text className="font-bold text-tertiary">{totalPrice}</Text>
                 </Column>

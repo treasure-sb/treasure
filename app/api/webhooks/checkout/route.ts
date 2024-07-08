@@ -6,7 +6,7 @@ import {
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
-import { Tables } from "@/types/supabase";
+import { Database, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
@@ -45,11 +45,8 @@ type OrderPayload = {
   metadata?: any;
 };
 
-type EventVendorQueryData = Tables<"event_vendors"> & {
-  event: Tables<"events">;
-  profile: Tables<"profiles">;
-  table: Tables<"tables">;
-};
+type PurchaseTableResult =
+  Database["public"]["Functions"]["purchase_table"]["Returns"][number];
 
 const createOrder = async (orderPayload: OrderPayload) => {
   const supabase = await createSupabaseServerClient();
@@ -233,99 +230,97 @@ const handleTicketPurchase = async (
 
 const handleTablePurchase = async (
   checkoutSession: Tables<"checkout_sessions">,
+  amountPaid: number,
   supabase: SupabaseClient<any, "public", any>
 ) => {
   const { event_id, user_id, quantity, ticket_id } = checkoutSession;
 
-  const { data: tableData } = await supabase
-    .from("tables")
-    .select("*")
-    .eq("id", ticket_id)
-    .single();
+  const { data, error } = await supabase
+    .rpc("purchase_table", {
+      table_id: ticket_id,
+      event_id,
+      user_id,
+      purchase_quantity: quantity,
+    })
+    .returns<PurchaseTableResult[]>();
 
-  const table: Tables<"tables"> = tableData;
-
-  if (table.quantity < quantity) {
-    throw new Error("Not enough tables available");
+  if (error) {
+    throw new Error("Error purchasing table");
   }
 
-  const { error: updateTableError } = await supabase
-    .from("tables")
-    .update({ quantity: table.quantity - quantity })
-    .eq("id", table.id);
+  const {
+    organizer_id,
+    event_name,
+    event_address,
+    event_cleaned_name,
+    event_date,
+    event_description,
+    event_poster_url,
+    table_price,
+    table_section_name,
+    vendor_table_quantity,
+    vendor_first_name,
+    vendor_last_name,
+    vendor_inventory,
+    vendor_vendors_at_table,
+    vendor_business_name,
+    vendor_application_email,
+    vendor_application_phone,
+  } = data[0];
 
-  if (updateTableError) {
-    throw new Error("Error updating table quantity");
-  }
+  const host = await getProfile(organizer_id);
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
+    transform: {
+      width: 400,
+      height: 400,
+    },
+  });
 
-  const { data: updateVendorData, error: updateVendorError } = await supabase
-    .from("event_vendors")
-    .update({ payment_status: "PAID" })
-    .eq("event_id", event_id)
-    .eq("vendor_id", user_id)
-    .select("*, event:events(*), profile:profiles(*), table:tables(*)")
-    .single();
-
-  if (updateVendorError) {
-    throw new Error("Error updating vendor data");
-  }
-
-  const eventVendorData: EventVendorQueryData = updateVendorData;
-  const vendorProfile = eventVendorData.profile;
-  const event = eventVendorData.event;
-
-  const createOrderPayload = {
-    userId: user_id,
-    eventId: event_id,
-    quantity: quantity,
-    price: table.price,
-    itemId: table.id,
-    itemType: "TABLE" as const,
-  };
-  const order = await createOrder(createOrderPayload);
-
-  const host = await getProfile(event.organizer_id);
-  const posterUrl = await getPublicPosterUrl(event);
   const tablePurchasedEmailPayload: TablePurchasedProps = {
-    eventName: event.name,
-    posterUrl: posterUrl,
-    tableType: table.section_name,
-    quantity: updateVendorData.table_quantity,
-    location: event.address,
-    date: moment(event.date).format("dddd, MMM Do"),
-    guestName: `${vendorProfile.first_name} ${vendorProfile.last_name}`,
-    businessName: vendorProfile.business_name,
-    itemInventory: updateVendorData.inventory,
-    totalPrice: `$${updateVendorData.table_quantity * table.price}`,
-    numberOfVendors: updateVendorData.vendors_at_table,
-    eventInfo: event.description,
+    eventName: event_name,
+    posterUrl: publicUrl,
+    tableType: table_section_name,
+    quantity: vendor_table_quantity,
+    location: event_address,
+    date: moment(event_date).format("dddd, MMM Do"),
+    guestName: `${vendor_first_name} ${vendor_last_name}`,
+    businessName: vendor_business_name,
+    itemInventory: vendor_inventory,
+    totalPrice: `$${quantity * table_price}`,
+    numberOfVendors: vendor_vendors_at_table,
+    eventInfo: event_description,
   };
 
   await sendTablePurchasedEmail(
-    updateVendorData.application_email,
+    vendor_application_email,
     tablePurchasedEmailPayload
   );
 
   await sendVendorTablePurchasedSMS(
-    eventVendorData.application_phone,
-    event.name,
-    event.date
+    vendor_application_phone,
+    event_name,
+    event_date
   );
 
-  if (host.profile.phone) {
+  if (host.profile && host.profile.phone) {
     const hostSMSPayload: HostSoldPayload = {
       phone: host.profile.phone,
-      businessName: vendorProfile.business_name,
-      firstName: vendorProfile.first_name,
-      lastName: vendorProfile.last_name,
-      eventName: event.name,
-      eventDate: event.date,
-      eventCleanedName: event.cleaned_name,
+      businessName: vendor_business_name,
+      firstName: vendor_first_name,
+      lastName: vendor_last_name,
+      eventName: event_name,
+      eventDate: event_date,
+      eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  if (updateVendorData.application_email !== "treasure20110@gmail.com") {
+  if (
+    vendor_application_email !== "treasure20110@gmail.com" ||
+    (host.profile && host.profile.role !== "admin")
+  ) {
     await sendTablePurchasedEmail(
       "treasure20110@gmail.com",
       tablePurchasedEmailPayload
@@ -359,7 +354,7 @@ const handlePaymentIntentSucceeded = async (
       await handleTicketPurchase(checkoutSession, amountPaid, supabase, email);
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, supabase);
+      await handleTablePurchase(checkoutSession, amountPaid, supabase);
       break;
     default:
       throw new Error("Invalid Ticket Type");

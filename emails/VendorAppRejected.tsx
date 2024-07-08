@@ -39,7 +39,7 @@ export default function VendorAppRejected({
             </Section>
             <BodySection>
               <Img
-                className="m-auto rounded-[2.5rem]"
+                className="m-auto rounded-[.8rem]"
                 src={posterUrl}
                 alt="event-poster"
                 width="400"

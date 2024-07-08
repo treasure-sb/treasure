@@ -38,6 +38,14 @@ const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
   return publicPosterUrl;
 };
 
+const getPublicPosterUrlFromPosterUrl = async (posterUrl: string) => {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(posterUrl);
+  return publicUrl;
+};
+
 const getPublicVenueMapUrl = async (
   event: Tables<"events"> | EventDisplayData
 ) => {
@@ -229,6 +237,7 @@ const getEventDisplayData = async (
 
 export {
   getPublicPosterUrl,
+  getPublicPosterUrlFromPosterUrl,
   getPublicVenueMapUrl,
   eventDisplayData,
   getEventFromCleanedName,

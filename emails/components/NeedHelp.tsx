@@ -1,13 +1,15 @@
-import BodySection from "./Section";
-import { Heading, Hr, Text, Link } from "@react-email/components";
+import LineBreak from "./LineBreak";
+import { Heading, Text, Link, Section } from "@react-email/components";
 
 export default function NeedHelp() {
   return (
-    <BodySection>
-      <Heading as="h2" className="font-normal text-left">
+    <Section
+      className={`rounded-[1rem] border-foreground/80 p-4 w-full text-center mb-6 bg-foreground/10`}
+    >
+      <Heading as="h3" className="text-left font-bold">
         Need Help?
       </Heading>
-      <Hr className="border-foreground/40 my-6" />
+      <LineBreak />
       <Text className="text-left text-foreground/80">
         Visit our{" "}
         <Link
@@ -22,6 +24,6 @@ export default function NeedHelp() {
         </span>
         .
       </Text>
-    </BodySection>
+    </Section>
   );
 }
