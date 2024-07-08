@@ -245,13 +245,12 @@ const handleTablePurchase = async (
       user_id,
       purchase_quantity: quantity,
     })
-    .returns<PurchaseTableResult>();
+    .returns<PurchaseTableResult[]>();
 
   if (error) {
     throw new Error("Error purchasing table");
   }
 
-  const tableData = data;
   const {
     organizer_id,
     event_name,
@@ -270,7 +269,7 @@ const handleTablePurchase = async (
     vendor_business_name,
     vendor_application_email,
     vendor_application_phone,
-  } = tableData;
+  } = data[0];
 
   const host = await getProfile(organizer_id);
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
@@ -289,10 +288,12 @@ const handleTablePurchase = async (
     eventInfo: event_description,
   };
 
-  await sendTablePurchasedEmail(
+  const { data: emailData, error: emailError } = await sendTablePurchasedEmail(
     vendor_application_email,
     tablePurchasedEmailPayload
   );
+
+  console.log(data, emailData, emailError);
 
   await sendVendorTablePurchasedSMS(
     vendor_application_phone,
