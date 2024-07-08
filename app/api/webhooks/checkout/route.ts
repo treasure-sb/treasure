@@ -3,10 +3,7 @@ import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
 } from "@/lib/actions/emails";
-import {
-  getPublicPosterUrl,
-  getPublicPosterUrlFromPosterUrl,
-} from "@/lib/helpers/events";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
 import { Database, Tables } from "@/types/supabase";
@@ -276,8 +273,8 @@ const handleTablePurchase = async (
     data: { publicUrl },
   } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
     transform: {
-      width: 300,
-      height: 300,
+      width: 400,
+      height: 400,
     },
   });
 
@@ -307,7 +304,7 @@ const handleTablePurchase = async (
     event_date
   );
 
-  if (host.profile.phone) {
+  if (host.profile && host.profile.phone) {
     const hostSMSPayload: HostSoldPayload = {
       phone: host.profile.phone,
       businessName: vendor_business_name,
@@ -320,15 +317,15 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  // if (
-  //   vendor_application_email !== "treasure20110@gmail.com" ||
-  //   host.profile.role !== "admin"
-  // ) {
-  //   await sendTablePurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     tablePurchasedEmailPayload
-  //   );
-  // }
+  if (
+    vendor_application_email !== "treasure20110@gmail.com" ||
+    (host.profile && host.profile.role !== "admin")
+  ) {
+    await sendTablePurchasedEmail(
+      "treasure20110@gmail.com",
+      tablePurchasedEmailPayload
+    );
+  }
 };
 
 const handlePaymentIntentSucceeded = async (
