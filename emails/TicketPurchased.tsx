@@ -1,5 +1,7 @@
+import ColumnLabel from "./components/ColumnLabel";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import LineBreak from "./components/LineBreak";
 import NeedHelp from "./components/NeedHelp";
 import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
@@ -15,7 +17,6 @@ import {
   Button,
   Row,
   Column,
-  Link,
 } from "@react-email/components";
 
 export interface TicketPurchasedProps {
@@ -58,7 +59,7 @@ export default function TicketPurchased({
 
             <BodySection>
               <Img
-                className="m-auto rounded-[2.5rem]"
+                className="m-auto rounded-[.8rem]"
                 src={posterUrl}
                 alt="event-poster"
                 width="400"
@@ -68,7 +69,7 @@ export default function TicketPurchased({
                 {eventName}
               </Heading>
               <Button
-                className="bg-primary text-foreground font-normal rounded-lg px-6 py-4"
+                className="bg-primary text-foreground font-normal rounded-full px-6 py-4"
                 href="https://www.ontreasure.xyz/profile/tickets"
               >
                 View Tickets
@@ -79,49 +80,41 @@ export default function TicketPurchased({
             </BodySection>
 
             <BodySection>
-              <Heading as="h2" className="font-normal text-left">
+              <Heading as="h3" className="text-left font-bold">
                 Ticket Details
               </Heading>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Ticket Type
-                </Column>
+                <ColumnLabel>Ticket Type</ColumnLabel>
                 <Column className="text-right">{ticketType}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Quantity
-                </Column>
+                <ColumnLabel>Quantity</ColumnLabel>
                 <Column className="text-right">{quantity}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">
-                  Location
-                </Column>
+                <ColumnLabel>Location</ColumnLabel>
                 <Column className="text-right w-60">{location}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row>
-                <Column className="text-left text-foreground/80">Date</Column>
+                <ColumnLabel>Date</ColumnLabel>
                 <Column className="text-right">{date}</Column>
               </Row>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Row className="mb-6">
-                <Column className="text-left text-foreground/80">
-                  Total Price
-                </Column>
+                <ColumnLabel>Total Price</ColumnLabel>
                 <Column className="text-right">{totalPrice}</Column>
               </Row>
             </BodySection>
 
             <BodySection>
-              <Heading as="h2" className="font-normal text-left">
+              <Heading as="h3" className="text-left font-bold">
                 Event Information
               </Heading>
-              <Hr className="border-foreground/40 my-6" />
+              <LineBreak />
               <Text className="text-left text-foreground/80">{eventInfo}</Text>
             </BodySection>
 

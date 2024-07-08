@@ -272,10 +272,18 @@ const handleTablePurchase = async (
   } = data[0];
 
   const host = await getProfile(organizer_id);
-  const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+  const {
+    data: { publicUrl },
+  } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
+    transform: {
+      width: 300,
+      height: 300,
+    },
+  });
+
   const tablePurchasedEmailPayload: TablePurchasedProps = {
     eventName: event_name,
-    posterUrl: posterUrl,
+    posterUrl: publicUrl,
     tableType: table_section_name,
     quantity: vendor_table_quantity,
     location: event_address,
@@ -288,12 +296,10 @@ const handleTablePurchase = async (
     eventInfo: event_description,
   };
 
-  const { data: emailData, error: emailError } = await sendTablePurchasedEmail(
+  await sendTablePurchasedEmail(
     vendor_application_email,
     tablePurchasedEmailPayload
   );
-
-  console.log(data, emailData, emailError);
 
   await sendVendorTablePurchasedSMS(
     vendor_application_phone,

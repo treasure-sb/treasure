@@ -46,7 +46,7 @@ export default function VendorAppAccepted({
             </Section>
             <BodySection>
               <Img
-                className="m-auto rounded-[2.5rem]"
+                className="m-auto rounded-[.8rem]"
                 src={posterUrl}
                 alt="event-poster"
                 width="400"
@@ -57,7 +57,7 @@ export default function VendorAppAccepted({
               </Heading>
               <Button
                 href={`https://www.ontreasure.xyz/checkout/${checkoutSessionId}`}
-                className="bg-primary ml-auto p-4 rounded-lg text-foreground"
+                className="bg-primary ml-auto p-4 px-6 rounded-full text-foreground"
               >
                 Pay Now for Table
               </Button>

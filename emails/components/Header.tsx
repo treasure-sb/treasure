@@ -7,7 +7,7 @@ export default function Header() {
         className="mx-auto"
         src="https://www.ontreasure.xyz/static/logo.png"
         alt="logo"
-        width="220"
+        width="180"
         height="auto"
       />
     </Section>

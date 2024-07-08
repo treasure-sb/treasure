@@ -43,7 +43,7 @@ export default function VendorAppReceived({
             </Section>
             <BodySection>
               <Img
-                className="m-auto rounded-[2.5rem]"
+                className="m-auto rounded-[.8rem]"
                 src={posterUrl}
                 alt="event-poster"
                 width="400"
@@ -53,7 +53,7 @@ export default function VendorAppReceived({
                 {eventName}
               </Heading>
               <Button
-                className="bg-primary ml-auto p-4 rounded-lg text-foreground"
+                className="bg-primary ml-auto p-4 px-6 rounded-full text-foreground"
                 href={`https://ontreasure.xyz/host/events/${cleanedEventName}/vendors`}
               >
                 View Application
