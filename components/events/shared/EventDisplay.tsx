@@ -42,7 +42,7 @@ export default function EventDisplay({
       <Link href={redirect || `/events/${event.cleaned_name}`} scroll={true}>
         <div className="relative aspect-w-1 aspect-h-1">
           <Image
-            className={`object-cover h-full w-full rounded-md ${imageVisibility}`}
+            className={`object-cover object-top h-full w-full rounded-md ${imageVisibility}`}
             alt="image"
             src={event.publicPosterUrl}
             width={200}
