@@ -60,6 +60,9 @@ const createVendorFromProfile = (profile: ProfileVendor) => {
 
 const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
   const { profile: vendorProfile, tags } = tempProfile;
+  if (!vendorProfile) {
+    return [];
+  }
   const instagramLink = vendorProfile.instagram
     ? [{ username: vendorProfile.instagram, application: "Instagram" }]
     : [];
