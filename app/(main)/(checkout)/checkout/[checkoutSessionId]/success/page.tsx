@@ -91,6 +91,7 @@ export default async function Page({
   return (
     <main className="max-w-6xl m-auto">
       <InitializePaymentIntent
+        checkoutSessionId={checkoutSessionId}
         eventDisplay={eventDisplay}
         ticketInfo={ticketInfo}
       />

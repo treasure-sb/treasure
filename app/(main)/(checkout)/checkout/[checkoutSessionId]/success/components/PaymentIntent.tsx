@@ -19,9 +19,11 @@ import BlurredRed from "./BlurredRed";
 export default function PaymentIntent({
   eventDisplay,
   ticketInfo,
+  checkoutSessionId,
 }: {
   eventDisplay: EventDisplayData;
   ticketInfo: TicketSuccessInformation;
+  checkoutSessionId: string;
 }) {
   const [status, setStatus] = useState<"loading" | "success" | "failure">(
     "loading"
@@ -109,6 +111,16 @@ export default function PaymentIntent({
                     {moment(eventDisplay.date).format("dddd, MMM Do")}
                   </p>
                 </div>
+                {status === "failure" && (
+                  <Link href={`/checkout/${checkoutSessionId}`}>
+                    <Button
+                      className="rounded-lg w-32 md:w-40 mt-6 text-background font-semibold underline"
+                      variant={"link"}
+                    >
+                      Try Again
+                    </Button>
+                  </Link>
+                )}
               </div>
               {status === "success" && (
                 <div className="border-[1px] border-foreground/20 rounded-lg w-80 h-80 md:w-[30rem] md:h-[30rem] m-auto flex flex-col justify-between p-3 md:p-6">
