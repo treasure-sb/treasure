@@ -17,6 +17,7 @@ export default function InitializeCheckout({
   checkoutSession,
   totalPrice,
   subtotal,
+  priceAfterPromo,
   event,
   profile,
   promoCode,
@@ -24,6 +25,7 @@ export default function InitializeCheckout({
   checkoutSession: Tables<"checkout_sessions">;
   totalPrice: number;
   subtotal: number;
+  priceAfterPromo: number;
   event: EventDisplayData;
   profile: Tables<"profiles">;
   promoCode: Tables<"event_codes"> | null;
@@ -83,7 +85,7 @@ export default function InitializeCheckout({
             checkoutSession={checkoutSession}
             profile={profile}
             totalPrice={price}
-            subtotal={subtotal}
+            priceAfterPromo={priceAfterPromo}
           />
         </Elements>
       )}
