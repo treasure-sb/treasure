@@ -38,68 +38,11 @@ if (!stripeSecret || !webhookSecret) {
 
 const stripe = new Stripe(stripeSecret);
 
-type OrderPayload = {
-  userId: string;
-  eventId: string;
-  quantity: number;
-  price: number;
-  itemId: string;
-  itemType: "TICKET" | "TABLE";
-  metadata?: any;
-};
-
 type PurchaseTableResult =
   Database["public"]["Functions"]["purchase_table"]["Returns"][number];
 
 type PurchaseTicketResult =
   Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
-
-const createOrder = async (orderPayload: OrderPayload) => {
-  const supabase = await createSupabaseServerClient();
-  const { userId, eventId, quantity, price, itemId, itemType, metadata } =
-    orderPayload;
-  const { data: createOrderData, error: createOrderError } = await supabase
-    .from("orders")
-    .insert([
-      {
-        customer_id: userId,
-        amount_paid: price,
-        event_id: eventId,
-        metadata,
-      },
-    ])
-    .select()
-    .single();
-
-  const order: Tables<"orders"> = createOrderData;
-
-  if (createOrderError) {
-    return NextResponse.json({
-      message: "Error",
-      ok: false,
-    });
-  }
-
-  const { error: createLineItemsError } = await supabase
-    .from("line_items")
-    .insert([
-      {
-        order_id: order.id,
-        item_type: itemType,
-        item_id: itemId,
-        quantity: quantity,
-        price: price / quantity,
-      },
-    ]);
-
-  if (createLineItemsError) {
-    return NextResponse.json({
-      message: "Error",
-      ok: false,
-    });
-  }
-  return null;
-};
 
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
