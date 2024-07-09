@@ -13,13 +13,19 @@ const stripePromise = loadStripe(
 export default function InitializePaymentIntent({
   eventDisplay,
   ticketInfo,
+  checkoutSessionId,
 }: {
   eventDisplay: EventDisplayData;
   ticketInfo: TicketSuccessInformation;
+  checkoutSessionId: string;
 }) {
   return (
     <Elements stripe={stripePromise}>
-      <PaymentIntent eventDisplay={eventDisplay} ticketInfo={ticketInfo} />
+      <PaymentIntent
+        eventDisplay={eventDisplay}
+        ticketInfo={ticketInfo}
+        checkoutSessionId={checkoutSessionId}
+      />
     </Elements>
   );
 }

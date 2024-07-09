@@ -48,7 +48,7 @@ export default function EventCard({
             }}
           >
             <Image
-              className={`rounded-xl group-hover:bg-black group-hover:opacity-50 transition duration-300 ${imageVisibility}`}
+              className={`rounded-xl group-hover:bg-black object-cover object-top group-hover:opacity-50 transition duration-300 ${imageVisibility}`}
               alt="image"
               src={publicPosterUrl}
               fill
