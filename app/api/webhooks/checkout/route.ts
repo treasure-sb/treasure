@@ -3,7 +3,10 @@ import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
 } from "@/lib/actions/emails";
-import { getPublicPosterUrl } from "@/lib/helpers/events";
+import {
+  getPublicPosterUrl,
+  getPublicPosterUrlFromPosterUrl,
+} from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
 import { Database, Tables } from "@/types/supabase";
@@ -47,6 +50,9 @@ type OrderPayload = {
 
 type PurchaseTableResult =
   Database["public"]["Functions"]["purchase_table"]["Returns"][number];
+
+type PurchaseTicketResult =
+  Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
 
 const createOrder = async (orderPayload: OrderPayload) => {
   const supabase = await createSupabaseServerClient();
@@ -104,105 +110,64 @@ const handleTicketPurchase = async (
   const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
     checkoutSessison;
 
-  const { data: ticketData } = await supabase
-    .from("tickets")
-    .select("*")
-    .eq("id", ticket_id)
-    .single();
+  const { data, error } = await supabase
+    .rpc("purchase_tickets", {
+      ticket_id,
+      event_id,
+      user_id,
+      purchase_quantity: quantity,
+      email,
+      amount_paid: amountPaid,
+      metadata,
+      promo_id,
+    })
+    .returns<PurchaseTicketResult[]>();
 
-  const ticket: Tables<"tickets"> = ticketData;
-
-  if (ticket.quantity < quantity) {
-    throw new Error("Not enough tickets available");
+  if (error) {
+    throw new Error("Error purchasing tickets");
   }
 
-  const { error: updatedTicketError } = await supabase
-    .from("tickets")
-    .update({ quantity: ticket.quantity - quantity })
-    .eq("id", ticket_id);
-
-  if (updatedTicketError) {
-    throw new Error("Error updating ticket quantity");
-  }
-
-  const ticketsToInsert = Array.from({ length: quantity }).map(() => {
-    return { attendee_id: user_id, event_id, ticket_id, email };
-  });
-  const { data: purchasedTicketData, error: purchasedTicketError } =
-    await supabase.from("event_tickets").insert(ticketsToInsert).select();
-
-  if (!purchasedTicketData || purchasedTicketError) {
-    await supabase
-      .from("tickets")
-      .update({ quantity: ticket.quantity })
-      .eq("id", ticket_id);
-
-    throw new Error("Error inserting purchased tickets");
-  }
-
-  const createOrderPayload = {
-    userId: user_id,
-    eventId: event_id,
-    quantity: quantity,
-    price: amountPaid,
-    itemId: ticket.id,
-    itemType: "TICKET" as const,
-    metadata,
-  };
-  await createOrder(createOrderPayload);
-
-  if (promo_id) {
-    const { data: promoData, error: promoError } = await supabase
-      .from("event_codes")
-      .select("num_used")
-      .eq("id", promo_id)
-      .single();
-
-    if (promoError || !promoData) {
-      throw new Error("Error fetching promo code data");
-    }
-
-    const newNumUsed = promoData.num_used + 1;
-
-    const { error: updatePromoError } = await supabase
-      .from("event_codes")
-      .update({ num_used: newNumUsed })
-      .eq("id", promo_id);
-
-    if (updatePromoError) {
-      throw new Error("Error updating promo code usage");
-    }
-  }
+  const {
+    event_address,
+    event_cleaned_name,
+    event_organizer_id,
+    event_date,
+    event_description,
+    event_name,
+    event_poster_url,
+    event_ticket_ids,
+    ticket_name,
+    ticket_price,
+  } = data[0];
 
   const { profile } = await getProfile(user_id);
-  const { event } = await getEventFromId(event_id);
-  const purchasedTicket: Tables<"event_tickets"> = purchasedTicketData[0];
-  const host = await getProfile(event.organizer_id);
-  const posterUrl = await getPublicPosterUrl(event);
+  const purchasedTicketId = event_ticket_ids[0];
+  const host = await getProfile(event_organizer_id);
+  const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
 
   const ticketPurchaseEmailProps = {
-    eventName: event.name,
+    eventName: event_name,
     posterUrl,
-    ticketType: ticket.name,
+    ticketType: ticket_name,
     quantity: quantity,
-    location: event.address,
-    date: moment(event.date).format("dddd, MMM Do"),
+    location: event_address,
+    date: moment(event_date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${ticket.price * quantity}`,
-    eventInfo: event.description,
+    totalPrice: `$${ticket_price * quantity}`,
+    eventInfo: event_description,
   };
 
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
-      purchasedTicket.id,
+      purchasedTicketId,
       event_id,
       ticketPurchaseEmailProps
     );
   }
 
   if (profile.phone) {
-    await sendAttendeeTicketPurchasedSMS(profile.phone, event.name, event.date);
+    await sendAttendeeTicketPurchasedSMS(profile.phone, event_name, event_date);
   }
 
   if (host.profile && host.profile.phone) {
@@ -211,9 +176,9 @@ const handleTicketPurchase = async (
       businessName: profile.business_name,
       firstName: profile.first_name,
       lastName: profile.last_name,
-      eventName: event.name,
-      eventDate: event.date,
-      eventCleanedName: event.cleaned_name,
+      eventName: event_name,
+      eventDate: event_date,
+      eventCleanedName: event_cleaned_name,
     };
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
@@ -221,7 +186,7 @@ const handleTicketPurchase = async (
   if (!profile.email || profile.role !== "admin") {
     await sendTicketPurchasedEmail(
       "treasure20110@gmail.com",
-      purchasedTicket.id,
+      purchasedTicketId,
       event_id,
       ticketPurchaseEmailProps
     );

@@ -1221,6 +1221,38 @@ export type Database = {
           vendor_vendors_at_table: number
         }[]
       }
+      purchase_tickets: {
+        Args: {
+          ticket_id: string
+          event_id: string
+          user_id: string
+          purchase_quantity: number
+          email: string
+          amount_paid: number
+          metadata?: Json
+          promo_id?: string
+        }
+        Returns: {
+          order_id: number
+          event_ticket_ids: string[]
+          event_name: string
+          event_date: string
+          event_address: string
+          event_description: string
+          event_cleaned_name: string
+          event_poster_url: string
+          event_organizer_id: string
+          ticket_name: string
+          ticket_price: number
+          attendee_first_name: string
+          attendee_last_name: string
+          attendee_business_name: string
+          attendee_email: string
+          attendee_phone: string
+          organizer_id: string
+          organizer_phone: string
+        }[]
+      }
     }
     Enums: {
       "Application Status":

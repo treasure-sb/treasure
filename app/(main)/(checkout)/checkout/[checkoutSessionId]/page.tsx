@@ -121,6 +121,8 @@ export default async function Page({
     }
   }
 
+  const priceAfterPromo = totalPrice;
+
   const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
     dinnerSelections: [],
     isSampa: false,
@@ -147,6 +149,7 @@ export default async function Page({
           checkoutSession={checkoutSession}
           totalPrice={totalPrice}
           subtotal={subtotal}
+          priceAfterPromo={priceAfterPromo}
           profile={profile}
           event={eventDisplay}
           promoCode={promoCode}
