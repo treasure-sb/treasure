@@ -97,7 +97,10 @@ export default function CheckoutForm({
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
+    if (
+      error &&
+      (error.type === "card_error" || error.type === "validation_error")
+    ) {
       toast.dismiss();
       toast.error(error.message);
     } else {
