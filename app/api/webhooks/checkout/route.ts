@@ -126,14 +126,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  // if (!profile.email || profile.role !== "admin") {
-  //   await sendTicketPurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     purchasedTicketId,
-  //     event_id,
-  //     ticketPurchaseEmailProps
-  //   );
-  // }
+  if (!profile.email || profile.role !== "admin") {
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
+  }
 };
 
 const handleTablePurchase = async (
