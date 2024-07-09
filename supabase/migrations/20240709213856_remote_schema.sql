@@ -469,7 +469,6 @@ BEGIN
   INSERT INTO orders (customer_id, amount_paid, event_id) 
   VALUES (user_id, amount_paid, event_id)
   RETURNING id INTO new_order_id;
-
     -- Create line items
   INSERT INTO line_items (order_id, item_type, item_id, quantity, price) 
   VALUES (new_order_id, 'TABLE'::"Checkout Ticket Types", table_id, purchase_quantity, amount_paid / purchase_quantity);
