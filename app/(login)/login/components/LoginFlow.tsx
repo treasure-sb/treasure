@@ -59,6 +59,8 @@ export default function LoginFlow({
       phone: formattedPhoneNumber,
       signupInviteToken,
     });
+
+    console.log(signUpUserResult);
     signupCheck(signUpUserResult, SubmitMethod.PHONE);
   };
 

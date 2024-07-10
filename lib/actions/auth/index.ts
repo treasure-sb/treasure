@@ -89,6 +89,9 @@ const signUpUser = async ({ phone, email, signupInviteToken }: SignUpProps) => {
   }
 
   const { error } = await supabase.auth.signInWithOtp(signInPayload);
+
+  console.log(error);
+
   if (error) {
     return {
       success: false,
