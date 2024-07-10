@@ -25,7 +25,7 @@ const generateTicketReceipt = async (
     `${ticketProps.ticketType}`,
     `Quantity: ${ticketProps.quantity}`,
   ];
-
+  if(ticketProps.dinnerSelection) details.push(`Dinner Selection: ${ticketProps.dinnerSelection}`)
   details.forEach((detail, index) => {
     page.drawText(detail, {
       x: textStartX,

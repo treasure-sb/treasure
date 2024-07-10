@@ -8,8 +8,7 @@ import {
   getPublicPosterUrlFromPosterUrl,
 } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
-import { getEventFromId } from "@/lib/helpers/events";
-import { Database, Tables } from "@/types/supabase";
+import { Database, Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
@@ -43,6 +42,22 @@ type PurchaseTableResult =
 
 type PurchaseTicketResult =
   Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
+
+
+  type DinnerSelections = {
+  dinnerSelections: string[];
+  isSampa: boolean;
+};
+
+function formatDinnerSelections(metadata: { [key: string]: Json | undefined; }): string {
+  if (metadata && metadata.dinnerSelections) {
+    const json: DinnerSelections = metadata as DinnerSelections;
+    return json.dinnerSelections.join(', ');
+  } else {
+    return "";
+  }
+}
+
 
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
@@ -98,8 +113,8 @@ const handleTicketPurchase = async (
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${ticket_price * quantity}`,
     eventInfo: event_description,
+    dinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
   };
-
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
