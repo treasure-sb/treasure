@@ -110,11 +110,12 @@ export default function TicketPurchased({
                 <ColumnLabel>Total Price</ColumnLabel>
                 <Column className="text-right">{totalPrice}</Column>
               </Row>
-              {eventName == "Sampaguita Soirée" && <LineBreak /> &&
-              (<Row className="mb-6">
+              {eventName === "Sampaguita Soirée" && 
+              (<><LineBreak />
+                <Row className="mb-6">
                 <ColumnLabel>Dinner Selection</ColumnLabel>
                 <Column className="text-right">{dinnerSelection}</Column>
-              </Row>)}
+              </Row></>)}
             </BodySection>
 
             <BodySection>

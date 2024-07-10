@@ -115,9 +115,8 @@ const handleTicketPurchase = async (
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${ticket_price * quantity}`,
     eventInfo: event_description,
-    DinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
+    dinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
   };
-
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
