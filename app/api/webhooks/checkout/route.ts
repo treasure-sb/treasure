@@ -9,7 +9,7 @@ import {
 } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getEventFromId } from "@/lib/helpers/events";
-import { Database, Tables } from "@/types/supabase";
+import { Database, Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
@@ -24,6 +24,7 @@ import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
+import DinnerSelection from "@/app/(main)/events/[name]/tickets/components/sampa/DinnerSelection";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -43,6 +44,22 @@ type PurchaseTableResult =
 
 type PurchaseTicketResult =
   Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
+
+
+  type DinnerSelections = {
+  dinnerSelections: string[];
+  isSampa: boolean;
+};
+
+function formatDinnerSelections(metadata: { [key: string]: Json | undefined; }): string {
+  if (metadata && metadata.dinnerSelections) {
+    const json: DinnerSelections = metadata as DinnerSelections;
+    return json.dinnerSelections.join(', ');
+  } else {
+    return "";
+  }
+}
+
 
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
@@ -98,6 +115,7 @@ const handleTicketPurchase = async (
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${ticket_price * quantity}`,
     eventInfo: event_description,
+    DinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
   };
 
   if (profile.email) {
