@@ -8,7 +8,6 @@ import {
   getPublicPosterUrlFromPosterUrl,
 } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
-import { getEventFromId } from "@/lib/helpers/events";
 import { Database, Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
@@ -24,7 +23,6 @@ import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import DinnerSelection from "@/app/(main)/events/[name]/tickets/components/sampa/DinnerSelection";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
