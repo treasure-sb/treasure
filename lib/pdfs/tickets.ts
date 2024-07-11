@@ -92,13 +92,6 @@ const generateTicketReceipt = async (
       // ticket details text block position
       const textStartX = margin;
       let textStartY = height - margin - fontSize;
-
-      const details = [
-        `${ticketProps.eventName}`,
-        `${ticketProps.guestName}`,
-        `${ticketProps.ticketType}`,
-      ];
-      if(ticketProps.dinnerSelection) details.push(`Dinner Selection: ${ticketProps.dinnerSelection}`)
       details.forEach((detail, index) => {
         page.drawText(detail, {
           x: textStartX,
