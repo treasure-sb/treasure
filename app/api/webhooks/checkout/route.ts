@@ -100,7 +100,6 @@ const handleTicketPurchase = async (
 
   const { profile } = await getProfile(user_id);
   const purchasedTicketId = event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
-  console.log(purchasedTicketId)
   const host = await getProfile(event_organizer_id);
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
 
@@ -116,7 +115,6 @@ const handleTicketPurchase = async (
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
   };
-  console.log(profile)
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
@@ -124,7 +122,6 @@ const handleTicketPurchase = async (
       event_id,
       ticketPurchaseEmailProps
     );
-    console.log("Entered Ticket Purchase")
   }
 
   if (profile.phone) {
@@ -307,7 +304,6 @@ export async function POST(req: Request) {
           ok: true,
         });
       } catch (err) {
-        console.log(err);
         await stripe.refunds.create({ payment_intent: event.data.object.id });
         console.error("Failed to process post-payment actions:", err);
         return NextResponse.json({

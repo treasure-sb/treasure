@@ -118,7 +118,6 @@ const sendTablePurchasedEmail = async (
   email: string,
   emailProps: TablePurchasedProps
 ) => {
-  console.log(email, emailProps);
   const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
@@ -170,7 +169,6 @@ const sendTicketPurchasedEmail = async (
       eventId,
       emailProps
     );
-    console.log("Receipt Madee : ", ticketReceipt)
     const ticketReceiptBuffer = Buffer.from(ticketReceipt);
     await resend.emails.send({
       from: "Treasure <noreply@ontreasure.xyz>",
@@ -185,7 +183,6 @@ const sendTicketPurchasedEmail = async (
       react: TicketPurchased(emailProps),
     });
   } catch (error) {
-    console.log("This is the error:", error)
     console.error(error);
   }
 };

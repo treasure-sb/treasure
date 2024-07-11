@@ -1,7 +1,29 @@
 import { PDFDocument, rgb } from "pdf-lib";
 import { TicketPurchasedProps } from "@/emails/TicketPurchased";
 import QRCode from "qrcode";
+function parseProteinCounts(input: string): number[] {
+  // Initialize a map with the required proteins and default counts of 0
+  const proteinMap: { [key: string]: number } = {
+      "Chicken": 0,
+      "Salmon": 0,
+      "Steak": 0
+  };
 
+  // Split the input string by commas to get each protein count part
+  const parts = input.split(',');
+
+  // Iterate through each part to extract the protein and its count
+  for (const part of parts) {
+      const [count, protein] = part.trim().split(' ');
+      if (proteinMap.hasOwnProperty(protein)) {
+          proteinMap[protein] = parseInt(count);
+      }
+  }
+
+  // Return the counts in the order: Chicken, Salmon, Steak
+  return [proteinMap["Chicken"], proteinMap["Steak"], proteinMap["Salmon"]];
+}
+const proteins = ["Chicken", "Steak", "Salmon"]
 const generateTicketReceipt = async (
   ticketId: string | string[],
   eventId: string,
@@ -23,9 +45,21 @@ const generateTicketReceipt = async (
     `${ticketProps.eventName}`,
     `${ticketProps.guestName}`,
     `${ticketProps.ticketType}`,
-    `Quantity: ${ticketProps.quantity}`,
   ];
-  if(ticketProps.dinnerSelection) details.push(`Dinner Selection: ${ticketProps.dinnerSelection}`)
+  let dinnerCount = undefined;
+  if(ticketProps.dinnerSelection) {
+    dinnerCount = parseProteinCounts(ticketProps.dinnerSelection)
+    let count = 0;
+    while(count <3){
+      if(dinnerCount[count] !== 0){
+        details.push(`Dinner Selection: ${proteins[count]}`)
+        dinnerCount[count] -= 1
+        break
+      }
+      count++
+    }
+
+  }
   details.forEach((detail, index) => {
     page.drawText(detail, {
       x: textStartX,
@@ -33,7 +67,7 @@ const generateTicketReceipt = async (
       size: index === 0 ? fontSize : fontSize * 0.6,
     });
   });
-
+  if(details.length == 4) details.pop()
   const textBlockHeight = details.length * fontSize * 1.5;
   const qrCodeX = width - qrCodeSize - margin;
   const qrCodeY = height - qrCodeSize - margin - fontSize;
@@ -73,14 +107,19 @@ const generateTicketReceipt = async (
   });
   if(typeof ticketId  !== "string"){
     let j = 1
-    if(details.length === 4){
-      details.pop()
-    }
-    else if(details.length === 5){
-      details.pop()
-      details.pop()
-    }
     while(j < ticketId.length){
+      if(details.length == 4) details.pop()
+      if(ticketProps.dinnerSelection && dinnerCount !== undefined) {
+      let count = 0;
+      while(count < 3){
+        if(dinnerCount[count] !== 0){
+          details.push(`Dinner Selection: ${proteins[count]}`)
+          dinnerCount[count] -= 1
+          break
+        }
+        count++
+      }
+    }
       const page = doc.addPage();
       
       const { width, height } = page.getSize();
