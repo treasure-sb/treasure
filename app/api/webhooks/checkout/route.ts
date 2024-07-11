@@ -126,14 +126,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  if (!profile.email || profile.role !== "admin") {
-    await sendTicketPurchasedEmail(
-      "treasure20110@gmail.com",
-      purchasedTicketId,
-      event_id,
-      ticketPurchaseEmailProps
-    );
-  }
+  // if (!profile.email || profile.role !== "admin") {
+  //   await sendTicketPurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     purchasedTicketId,
+  //     event_id,
+  //     ticketPurchaseEmailProps
+  //   );
+  // }
 };
 
 const handleTablePurchase = async (
@@ -252,6 +252,8 @@ const handlePaymentIntentSucceeded = async (
       .eq("id", checkoutSessionId)
       .single();
 
+  console.log(checkoutSessionData, checkoutSessionError);
+
   if (checkoutSessionError || !checkoutSessionData) {
     throw new Error("Invalid Checkout Session");
   }
@@ -284,12 +286,14 @@ export async function POST(req: Request) {
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
+
+        console.log("Payment Intent Succeeded");
+
         return NextResponse.json({
           message: "Payment Intent Succeeded",
           ok: true,
         });
       } catch (err) {
-        console.log(err);
         await stripe.refunds.create({ payment_intent: event.data.object.id });
         console.error("Failed to process post-payment actions:", err);
         return NextResponse.json({

@@ -1,4 +1,6 @@
-SET session_replication_role = replica;
+DROP EXTENSION IF EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 --
 -- PostgreSQL database dump
@@ -30,11 +32,322 @@ INSERT INTO "storage"."buckets" ("id", "name", "owner", "created_at", "updated_a
 	('event_highlights', 'event_highlights', NULL, '2024-05-05 04:42:15.390642+00', '2024-05-05 04:42:15.390642+00', true, false, NULL, NULL, NULL),
 	('guest_images', 'guest_images', NULL, '2024-05-06 04:10:35.812723+00', '2024-05-06 04:10:35.812723+00', true, false, NULL, NULL, NULL);
 
+-- create test users
+INSERT INTO
+    auth.users (
+        instance_id,
+        id,
+        aud,
+        role,
+        email,
+        encrypted_password,
+        email_confirmed_at,
+        recovery_sent_at,
+        last_sign_in_at,
+        raw_app_meta_data,
+        raw_user_meta_data,
+        created_at,
+        updated_at,
+        confirmation_token,
+        email_change,
+        email_change_token_new,
+        recovery_token
+    ) (
+        select
+            '00000000-0000-0000-0000-000000000000',
+            gen_random_uuid(),
+            'authenticated',
+            'authenticated',
+            'user' || (ROW_NUMBER() OVER ()) || '@example.com',
+            md5('password123' || gen_random_uuid()::text),
+            current_timestamp,
+            current_timestamp,
+            current_timestamp,
+            '{"provider":"email","providers":["email"]}',
+            '{}',
+            current_timestamp,
+            current_timestamp,
+            '',
+            '',
+            '',
+            ''
+        FROM
+            generate_series(1, 20)
+    );
 
+-- test user email identities
+INSERT INTO
+    auth.identities (
+        id,
+        user_id,
+        provider_id,
+        identity_data,
+        provider,
+        last_sign_in_at,
+        created_at,
+        updated_at
+    ) (
+        select
+            gen_random_uuid(),
+            id,
+            id,
+            format('{"sub":"%s","email":"%s"}', id :: text, email) :: jsonb,
+            'email',
+            current_timestamp,
+            current_timestamp,
+            current_timestamp
+        from
+            auth.users
+    );
 
+-- create users in public.profiles table
+WITH names AS (
+    SELECT ARRAY[
+        'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles',
+        'Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Margaret', 'Susan', 'Dorothy', 'Lisa', 'Karen', 'George', 
+				'Edward', 'Daniel', 'Brian', 'Ronald', 'Anthony', 'Kevin', 'Jason', 'Matthew', 'Gary', 'Timothy', 'Jose', 'Larry', 'Jeffrey', 
+				'Frank', 'Scott', 'Eric', 'Stephen', 'Andrew', 'Raymond', 'Gregory', 'Joshua', 'Jerry', 'Dennis', 'Walter', 'Patrick', 'Peter'
+    ] AS first_names,
+    ARRAY[
+        'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+        'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson'
+    ] AS last_names
+),
+random_names AS (
+    SELECT 
+        id,
+        email,
+        first_names[floor(random() * array_length(first_names, 1) + 1)] AS random_first_name,
+        last_names[floor(random() * array_length(last_names, 1) + 1)] AS random_last_name
+    FROM auth.users, names
+)
+INSERT INTO
+    public.profiles (
+        id,
+        username,
+        avatar_url,
+        created_at,
+        first_name,    
+        last_name,
+        business_name,
+        email
+    ) (
+        SELECT
+            rn.id,
+            lower(rn.random_first_name || '.' || rn.random_last_name) || (ROW_NUMBER() OVER ()),
+            'avatar' || (floor(random() * 10 + 1)::int)::text || '.jpg',
+            current_timestamp,
+            rn.random_first_name,
+            rn.random_last_name,
+            rn.random_first_name || '''s Business',
+            rn.email
+        FROM random_names rn
+    );
 
---
--- PostgreSQL database dump complete
---
+-- create tags
+INSERT INTO public.tags(id, name) VALUES 
+	(gen_random_uuid(), 'One-Piece'), 
+	(gen_random_uuid(), 'TCG'),
+	(gen_random_uuid(), 'Sports'),
+	(gen_random_uuid(), 'Non-Sports'),
+	(gen_random_uuid(), 'Anime'),
+	(gen_random_uuid(), 'Collectibles'),
+	(gen_random_uuid(), 'Toys'),
+	(gen_random_uuid(), 'Pokemon'),
+	(gen_random_uuid(), 'Comics'),
+	(gen_random_uuid(), 'Memorabilia'),
+	(gen_random_uuid(), 'Plushies'),
+	(gen_random_uuid(), 'Authographs'),
+	(gen_random_uuid(), 'Cosplay');
+
+-- create events
+DO $$
+DECLARE
+    profile_ids UUID[];
+    tag_ids UUID[];
+    random_profile_id UUID;
+    e_event_id UUID;
+    i INTEGER;
+    j INTEGER;
+    event_lat FLOAT := 40.7128;  -- Latitude for New York City
+    event_lng FLOAT := -74.0060; -- Longitude for New York City
+    days_to_add INTEGER;
+    future_date DATE;
+    num_tags INTEGER;
+    random_tag_id UUID;
+BEGIN
+    -- Fetch all profile IDs
+    SELECT ARRAY(SELECT id FROM public.profiles) INTO profile_ids;
+    
+    -- Fetch all tag IDs
+    SELECT ARRAY(SELECT id FROM public.tags) INTO tag_ids;
+
+    -- Create 20 events
+    FOR i IN 1..20 LOOP
+        -- Select a random profile ID
+        random_profile_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+
+        -- Generate a random future weekend date within the next 6 months
+        days_to_add := floor(random() * 180)::integer;
+        future_date := current_date + (days_to_add || ' days')::interval;
+        
+        -- Adjust to the next Saturday if it's not already a weekend
+        IF EXTRACT(DOW FROM future_date) < 6 THEN
+            future_date := future_date + ((6 - EXTRACT(DOW FROM future_date)) || ' days')::interval;
+        END IF;
+
+        -- Insert event
+        INSERT INTO public.events (
+            id,
+            created_at,
+            name,
+            description,
+            start_time,
+            end_time,
+            poster_url,
+            organizer_id,
+            date,
+            address,
+            lng,
+            lat,
+            venue_name,
+            cleaned_name,
+            organizer_type,
+            city,
+            state,
+						sales_status,
+						vendor_exclusivity
+        ) VALUES (
+            gen_random_uuid(),
+            current_timestamp,
+            'Sports Card Event ' || i,
+            'Welcome to the Card Extravaganza! 🏆🏀🏈⚾️
+
+						Join us for a thrilling weekend celebration of sports memorabilia and card collecting. Whether you''re a seasoned collector or new to the hobby, this event is your gateway to the exciting world of sports cards.
+
+						What to Expect:
+						- Vast Selection: Browse through thousands of vintage and modern sports cards from all major sports.
+						- Meet the Pros: Get autographs and photo ops with legendary athletes (schedule TBA).
+						- Trading Floor: Connect with fellow collectors and trade your prized possessions.
+						- Grading Services: On-site professional grading by PSA and BGS.
+
+						Grab your tickets now and be part of this unforgettable celebration of sports history and collectibles!',
+            '10:00:00'::time + (random() * interval '8 hours'),
+            '18:00:00'::time + (random() * interval '6 hours'),
+            'poster' || (floor(random() * 4 + 1)::int)::text || '.jpg',
+            random_profile_id,
+            future_date,
+            'NYC Address ' || i,
+            event_lng,
+            event_lat,
+            'NYC Venue ' || i,
+            'nyc-event-' || i || '-' || to_char(current_date, 'MMDDYYYY'),
+            'profile',
+            'New York City',
+            'NY',
+						'SELLING_ALL',
+						'APPLICATIONS'
+        ) RETURNING id INTO e_event_id;
+
+        -- Assign random number of tags (between 1 and 8) to this event
+        num_tags := floor(random() * 8 + 1)::int;
+        FOR j IN 1..num_tags LOOP
+            -- Select a random tag ID
+            random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
+            
+            -- Insert into event_tags if this combination doesn't already exist
+            INSERT INTO public.event_tags(event_id, tag_id)
+            SELECT e_event_id, random_tag_id
+            WHERE NOT EXISTS (
+                SELECT 1 FROM public.event_tags et
+                WHERE et.event_id = e_event_id AND et.tag_id = random_tag_id
+            );
+        END LOOP;
+
+				-- Create three ticket types for this event
+        -- RSVP Ticket
+        INSERT INTO public.tickets(
+            id,
+            event_id,
+            created_at,
+            price,
+            quantity,
+            total_tickets,
+            name
+        ) VALUES (
+            gen_random_uuid(),
+            e_event_id,
+            current_timestamp,
+            0,
+            200,
+            200,
+            'RSVP'
+        );
+
+        -- General Admission Ticket
+        INSERT INTO public.tickets(
+            id,
+            event_id,
+            created_at,
+            price,
+            quantity,
+            total_tickets,
+            name
+        ) VALUES (
+            gen_random_uuid(),
+            e_event_id,
+            current_timestamp,
+            5,
+            100,
+            100,
+            'General Admission'
+        );
+
+        -- VIP Ticket
+        INSERT INTO public.tickets(
+            id,
+            event_id,
+            created_at,
+            price,
+            quantity,
+            total_tickets,
+            name,
+            description
+        ) VALUES (
+            gen_random_uuid(),
+            e_event_id,
+            current_timestamp,
+            20,
+            50,
+            50,
+            'VIP',
+            'VIP entry ticket with special perks, including early access and a gift bag.'
+        );
+
+				-- create tables
+				INSERT INTO public.tables(
+						id,
+						event_id,
+						price,
+						quantity,
+						total_tables,
+						section_name,
+						table_provided,
+						space_allocated,
+						number_vendors_allowed
+				) VALUES (
+						gen_random_uuid(),
+						e_event_id,
+						100, 
+						125,
+						125,
+						'Ballroom',
+						true,
+						20,
+						2
+				);
+    END LOOP;
+END $$;
+
 
 RESET ALL;
