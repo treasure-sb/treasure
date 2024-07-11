@@ -118,7 +118,6 @@ const sendTablePurchasedEmail = async (
   email: string,
   emailProps: TablePurchasedProps
 ) => {
-  console.log(email, emailProps);
   const sendEmailPromise = resend.emails.send({
     from: "Treasure <noreply@ontreasure.xyz>",
     to: email,
@@ -160,7 +159,7 @@ const sendHostMessageEmail = async (
 
 const sendTicketPurchasedEmail = async (
   email: string,
-  ticketId: string,
+  ticketId: string | string[],
   eventId: string,
   emailProps: TicketPurchasedProps
 ) => {
