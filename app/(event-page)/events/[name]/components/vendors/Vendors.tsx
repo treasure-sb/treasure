@@ -21,10 +21,12 @@ export type Vendor = {
   tags: string[];
   links: Link[];
   inventory: string | null;
+  assignment: string | null;
 };
 
 type ProfileVendor = {
   inventory: string;
+  assignment: string | null;
   profile: Tables<"profiles"> & {
     links: Link[];
   };
@@ -32,6 +34,7 @@ type ProfileVendor = {
 };
 
 type TempProfileVendor = {
+  assignment: string | null,
   profile: Tables<"temporary_profiles_vendors">;
   tags: Tables<"tags">;
 };
@@ -55,6 +58,7 @@ const createVendorFromProfile = (profile: ProfileVendor) => {
     tags: tags.map((tag) => tag.tags.name),
     links: vendorProfile.links,
     inventory: profile.inventory,
+    assignment: profile.assignment
   };
 };
 
@@ -79,6 +83,7 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
     tags: [tags && tags.name],
     links: instagramLink,
     inventory: null,
+    assignment: null
   };
 };
 
@@ -106,7 +111,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
   const { data: vendorsData } = await supabase
     .from("event_vendors")
     .select(
-      "inventory, profile:profiles(*, links(username, application, type)), tags:event_vendor_tags(tags(*))"
+      "inventory, assignment, profile:profiles(*, links(username, application, type)), tags:event_vendor_tags(tags(*))"
     )
     .eq("event_id", event.id)
     .eq("payment_status", "PAID")
@@ -115,7 +120,7 @@ export default async function Vendors({ event }: { event: Tables<"events"> }) {
 
   const { data: tempVendorData } = await supabase
     .from("temporary_vendors")
-    .select("profile:temporary_profiles_vendors(*), tags(*)")
+    .select("assignment, profile:temporary_profiles_vendors(*), tags(*)")
     .eq("event_id", event.id)
     .returns<TempProfileVendor[]>();
 

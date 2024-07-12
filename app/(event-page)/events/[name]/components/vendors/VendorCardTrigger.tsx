@@ -36,9 +36,9 @@ export default function VendorCardTrigger({ vendor }: { vendor: Vendor }) {
               ? vendor.businessName
               : vendor.firstName + " " + vendor.lastName}
           </p>
-          {vendor.type === VendorTypes.PROFILE && (
+          {(vendor.type === VendorTypes.PROFILE && vendor.assignment)&& (
             <span className="text-gray-500 text-xs font-normal">
-              @{vendor.username}
+              Table: {vendor.assignment}
             </span>
           )}
           <p className="text-muted-foreground text-sm line-clamp-1">
