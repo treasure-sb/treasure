@@ -45,9 +45,9 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
               {vendor.businessName
                 ? vendor.businessName
                 : vendor.firstName + " " + vendor.lastName}{" "}
-              {(vendor.type === VendorTypes.PROFILE && vendor.assignment) && (
+              {vendor.type === VendorTypes.PROFILE && (
                 <span className="text-gray-500 text-xs font-normal">
-                  Table: {vendor.assignment}
+                  @{vendor.username}
                 </span>
               )}
             </DialogTitle>
