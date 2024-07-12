@@ -281,32 +281,33 @@ export async function POST(req: Request) {
       webhookSecret
     );
 
-    if (event.type === "payment_intent.succeeded") {
-      try {
-        await handlePaymentIntentSucceeded(
-          event as Stripe.PaymentIntentSucceededEvent
-        );
+    // if (event.type === "payment_intent.succeeded") {
+    //   try {
+    //     await handlePaymentIntentSucceeded(
+    //       event as Stripe.PaymentIntentSucceededEvent
+    //     );
 
-        console.log("Payment Intent Succeeded");
+    //     console.log("Payment Intent Succeeded");
 
-        return NextResponse.json({
-          message: "Payment Intent Succeeded",
-          ok: true,
-        });
-      } catch (err) {
-        await stripe.refunds.create({ payment_intent: event.data.object.id });
-        console.error("Failed to process post-payment actions:", err);
-        return NextResponse.json({
-          message: "An error has occurred",
-          ok: false,
-        });
-      }
-    } else {
-      return NextResponse.json({
-        message: "Invalid Event Type",
-        ok: false,
-      });
-    }
+    //     return NextResponse.json({
+    //       message: "Payment Intent Succeeded",
+    //       ok: true,
+    //     });
+    //   } catch (err) {
+    //     await stripe.refunds.create({ payment_intent: event.data.object.id });
+    //     console.error("Failed to process post-payment actions:", err);
+
+    //     return NextResponse.json({
+    //       message: "An error has occurred",
+    //       ok: false,
+    //     });
+    //   }
+    // } else {
+    //   return NextResponse.json({
+    //     message: "Invalid Event Type",
+    //     ok: false,
+    //   });
+    // }
   } catch (err) {
     return NextResponse.json({
       message: "An error has occurred",
