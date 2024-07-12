@@ -72,7 +72,7 @@ export default function PlanCard({
               ))}
           </div>
           <p className="text-left mb-8 text-black" >{percentFee}% Transaction Fees</p>
-          <Button className={`rounded-3xl relative bottom-3 bg-black text-white`} size="lg">
+          <Button className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`} size="lg">
               <text className="px-4">{btnText}</text>
           </Button>
       </div>
