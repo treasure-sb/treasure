@@ -285,7 +285,7 @@ export default function EditEventForm({
         </div>
         <div className="md:max-w-[1160px] max-w-xl mx-auto flex justify-end">
           <Button type="submit" className="w-40">
-            Edit Basic Info
+            Save Edits
           </Button>
         </div>
       </form>
