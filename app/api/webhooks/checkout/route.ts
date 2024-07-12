@@ -299,6 +299,7 @@ export async function POST(req: Request) {
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
+
         return NextResponse.json({
           message: "Payment Intent Succeeded",
           ok: true,
