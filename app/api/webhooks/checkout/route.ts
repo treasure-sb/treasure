@@ -126,14 +126,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  // if (!profile.email || profile.role !== "admin") {
-  //   await sendTicketPurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     purchasedTicketId,
-  //     event_id,
-  //     ticketPurchaseEmailProps
-  //   );
-  // }
+  if (!profile.email || profile.role !== "admin") {
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
+  }
 };
 
 const handleTablePurchase = async (
@@ -252,8 +252,6 @@ const handlePaymentIntentSucceeded = async (
       .eq("id", checkoutSessionId)
       .single();
 
-  console.log(checkoutSessionData, checkoutSessionError);
-
   if (checkoutSessionError || !checkoutSessionData) {
     throw new Error("Invalid Checkout Session");
   }
@@ -281,33 +279,30 @@ export async function POST(req: Request) {
       webhookSecret
     );
 
-    // if (event.type === "payment_intent.succeeded") {
-    //   try {
-    //     await handlePaymentIntentSucceeded(
-    //       event as Stripe.PaymentIntentSucceededEvent
-    //     );
+    if (event.type === "payment_intent.succeeded") {
+      try {
+        await handlePaymentIntentSucceeded(
+          event as Stripe.PaymentIntentSucceededEvent
+        );
 
-    //     console.log("Payment Intent Succeeded");
-
-    //     return NextResponse.json({
-    //       message: "Payment Intent Succeeded",
-    //       ok: true,
-    //     });
-    //   } catch (err) {
-    //     await stripe.refunds.create({ payment_intent: event.data.object.id });
-    //     console.error("Failed to process post-payment actions:", err);
-
-    //     return NextResponse.json({
-    //       message: "An error has occurred",
-    //       ok: false,
-    //     });
-    //   }
-    // } else {
-    //   return NextResponse.json({
-    //     message: "Invalid Event Type",
-    //     ok: false,
-    //   });
-    // }
+        return NextResponse.json({
+          message: "Payment Intent Succeeded",
+          ok: true,
+        });
+      } catch (err) {
+        await stripe.refunds.create({ payment_intent: event.data.object.id });
+        console.error("Failed to process post-payment actions:", err);
+        return NextResponse.json({
+          message: "An error has occurred",
+          ok: false,
+        });
+      }
+    } else {
+      return NextResponse.json({
+        message: "Invalid Event Type",
+        ok: false,
+      });
+    }
   } catch (err) {
     return NextResponse.json({
       message: "An error has occurred",
