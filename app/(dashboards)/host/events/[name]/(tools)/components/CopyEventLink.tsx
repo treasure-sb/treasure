@@ -9,9 +9,15 @@ export default function CopyEventLink({
   cleaned_event_name: string;
 }) {
   const handleCopy = async () => {
+    const cleanLink = (link: string) => {
+      if(link.startsWith("https://")){
+        return link.substring(8)
+      }
+      return link
+    }
     const navigatorCopy = async () => {
       try {
-        const inviteLink = `${window.location.origin}/events/${cleaned_event_name}`;
+        const inviteLink = `${cleanLink(window.location.origin)}/events/${cleaned_event_name}`;
         setTimeout(() => {
           navigator.clipboard.writeText(inviteLink);
         }, 0);
