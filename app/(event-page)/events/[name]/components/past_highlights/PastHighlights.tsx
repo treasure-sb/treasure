@@ -50,7 +50,7 @@ export default async function PastHighlights({
           <h3 className="font-semibold text-lg mb-2">
             {event.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3"
               ? "Event Brochure"
-              : "Past Event Highlights"}
+              : "Event Gallery"}
           </h3>
           <ListHighlights highlights={highlightPictures} />
         </section>

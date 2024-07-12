@@ -271,7 +271,7 @@ export default function EditProfileForm({
                 disabled={saving}
                 className="py-6 rounded-md w-60"
               >
-                Update Profile
+                Save Profile Changes
               </Button>
             </form>
           </Form>

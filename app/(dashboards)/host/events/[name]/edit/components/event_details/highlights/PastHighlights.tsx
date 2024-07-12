@@ -70,7 +70,7 @@ export default function PastHighlights({
   return (
     <>
       <Separator />
-      <h3 className="font-semibold text-lg mb-4">Edit Past Event Highlights</h3>
+      <h3 className="font-semibold text-lg mb-4">Edit Event Gallery</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
         {previousHighlights.map((picture, index) => (
           <AspectRatio
