@@ -164,6 +164,9 @@ INSERT INTO public.tags(id, name) VALUES
 	(gen_random_uuid(), 'Plushies'),
 	(gen_random_uuid(), 'Authographs'),
 	(gen_random_uuid(), 'Cosplay');
+    
+ALTER TABLE public.orders
+ALTER COLUMN id RESTART WITH 100000;
 
 -- create events
 DO $$
@@ -372,6 +375,7 @@ BEGIN
                 attempt_count INT := 0;
                 inserted_row_count INT;
                 inserted_vendor_id UUID;
+                inserted_order_id INT;
                 tag_ids UUID[];
             BEGIN
                 -- Fetch all tag IDs
@@ -445,9 +449,38 @@ BEGIN
                     END IF;
 
                     attempt_count := attempt_count + 1;
-                    
-                END LOOP;
 
+                    -- Create order and line item
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) 
+                    SELECT 
+                        first_event_id,
+                        inserted_vendor_id,
+                        price 
+                    FROM public.tables 
+                    WHERE id = e_table_id 
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) 
+                    SELECT
+                        inserted_order_id,
+                        1,
+                        price,
+                        e_table_id,
+                        'TABLE'
+                    FROM public.tables 
+                    WHERE id = e_table_id;
+
+                END LOOP;
                 IF inserted_count < 75 THEN
                     RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
                 END IF;
