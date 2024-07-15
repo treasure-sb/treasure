@@ -49,5 +49,10 @@ export default async function VendorBreakdown({
     });
   });
 
-  return <VendorsChart vendorData={vendorBreakdownData} />;
+  return (
+    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md px-6 p-4 border-[1px] border-secondary">
+      <h3 className="text-2xl font-semibold mb-4">Vendor Breakdown</h3>
+      <VendorsChart vendorData={vendorBreakdownData} />
+    </div>
+  );
 }

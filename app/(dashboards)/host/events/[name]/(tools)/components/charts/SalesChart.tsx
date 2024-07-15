@@ -9,6 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
+  AreaChart,
+  Area,
 } from "recharts";
 import {
   ValueType,
@@ -29,6 +31,22 @@ export default function SalesChart({
     0
   );
 
+  const getTickInterval = (max: number) => {
+    if (max <= 5) return 1;
+    if (max <= 10) return 2;
+    if (max <= 100) return 20;
+    if (max <= 1000) return 200;
+    return Math.pow(10, Math.floor(Math.log10(max)) - 1);
+  };
+
+  const tickInterval = getTickInterval(maxValue);
+  const maxYValue = Math.ceil(maxValue / tickInterval) * tickInterval;
+
+  const yAxisTicks = Array.from(
+    { length: maxYValue / tickInterval + 1 },
+    (_, i) => i * tickInterval
+  );
+
   const formatYTick = (value: string) => {
     return `$${value}`;
   };
@@ -39,13 +57,23 @@ export default function SalesChart({
 
   return (
     <ResponsiveContainer width="100%" height="90%">
-      <LineChart width={500} height={300} data={salesData}>
+      <AreaChart width={500} height={300} data={salesData}>
         <CartesianGrid
           strokeDasharray="4 1"
           stroke="#27272a"
           vertical={false}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip cursor={false} content={<CustomTooltip />} />
+        <defs>
+          <linearGradient id="tablesGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#71d08c" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#71d08c" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id="ticketsGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#eac362" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#eac362" stopOpacity={0.1} />
+          </linearGradient>
+        </defs>
         <XAxis
           dataKey="normalizedDate"
           axisLine={false}
@@ -60,11 +88,28 @@ export default function SalesChart({
           tickSize={0}
           tickMargin={16}
           tickFormatter={formatYTick}
-          ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
+          ticks={yAxisTicks}
+          domain={[0, maxYValue]}
         />
-        <Line type="monotone" dataKey="tables" stroke="#71d08c" dot={false} />
-        <Line type="monotone" dataKey="tickets" stroke="#eac362" dot={false} />
-      </LineChart>
+        <Area
+          type="monotone"
+          dataKey="tables"
+          fill="url(#tablesGradient)"
+          stroke="#71d08c"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"a"}
+        />
+        <Area
+          type="monotone"
+          dataKey="tickets"
+          fill="url(#ticketsGradient)"
+          stroke="#eac362"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"b"}
+        />
+      </AreaChart>
     </ResponsiveContainer>
   );
 }
