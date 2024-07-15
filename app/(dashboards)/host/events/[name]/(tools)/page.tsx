@@ -10,6 +10,7 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
+import Applications from "./components/charts/Applications";
 
 export default async function Page({
   params: { name },

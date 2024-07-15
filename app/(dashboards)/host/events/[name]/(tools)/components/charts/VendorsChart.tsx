@@ -5,18 +5,17 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
-  Rectangle,
 } from "recharts";
 import {
   ValueType,
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { VendorBreakdownData } from "./VendorBreakdown";
-import { getTagColor } from "@/lib/helpers/TagIcons";
+
+const COLORS = ["#eac362", "#71d08c"];
 
 export default function VendorsChart({
   vendorData,
@@ -29,10 +28,10 @@ export default function VendorsChart({
   );
 
   const CustomBar = (props: any) => {
-    const { x, y, width, height, name } = props;
-    const color = getTagColor(name);
+    const { x, y, width, height, name, index } = props;
+    const color = COLORS[index % COLORS.length];
     const radius = 8;
-    const opacity = 0.8;
+    const opacity = 1;
 
     return (
       <g>

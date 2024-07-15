@@ -64,16 +64,6 @@ export default function SalesChart({
           vertical={false}
         />
         <Tooltip cursor={false} content={<CustomTooltip />} />
-        <defs>
-          <linearGradient id="tablesGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#71d08c" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#71d08c" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id="ticketsGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#eac362" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#eac362" stopOpacity={0.1} />
-          </linearGradient>
-        </defs>
         <XAxis
           dataKey="normalizedDate"
           axisLine={false}
@@ -94,7 +84,7 @@ export default function SalesChart({
         <Area
           type="monotone"
           dataKey="tables"
-          fill="url(#tablesGradient)"
+          fill="#71d08c"
           stroke="#71d08c"
           dot={false}
           fillOpacity={0.4}
@@ -103,7 +93,7 @@ export default function SalesChart({
         <Area
           type="monotone"
           dataKey="tickets"
-          fill="url(#ticketsGradient)"
+          fill="#eac362"
           stroke="#eac362"
           dot={false}
           fillOpacity={0.4}
