@@ -9,7 +9,7 @@ type HostSoldPayload = {
   eventName: string;
   eventDate: string;
   eventCleanedName: string;
-  quantity: number;
+  quantity?: number;
 };
 
 const sendAttendeeTicketPurchasedSMS = async (
@@ -115,7 +115,7 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
     phone,
     `🎉 ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } just bought ${quantity>1 ? `${quantity} tickets` : `a ticket`} to ${eventName} on ${moment(eventDate).format(
+    } just bought ${( quantity && quantity>1) ? `${quantity} tickets` : `a ticket`} to ${eventName} on ${moment(eventDate).format(
       "dddd, MMM Do"
     )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
@@ -129,14 +129,13 @@ const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
     lastName,
     eventName,
     eventDate,
-    eventCleanedName,
-    quantity
+    eventCleanedName
   } = tableSMSPayload;
   await sendSMS(
     phone,
     `💰Congrats! You received payment from ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } Their ${quantity} table(s) are confirmed for ${eventName} on ${moment(
+    } Their table(s) are confirmed for ${eventName} on ${moment(
       eventDate
     ).format(
       "dddd, MMM Do"

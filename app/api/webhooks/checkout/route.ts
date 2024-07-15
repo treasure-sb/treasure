@@ -236,8 +236,7 @@ const handleTablePurchase = async (
       lastName: vendor_last_name,
       eventName: event_name,
       eventDate: event_date,
-      eventCleanedName: event_cleaned_name,
-      quantity: vendor_table_quantity
+      eventCleanedName: event_cleaned_name
     };
     await sendHostTableSoldSMS(hostSMSPayload);
   }
