@@ -174,6 +174,7 @@ DECLARE
     random_profile_id UUID;
     e_event_id UUID;
     e_table_id UUID;
+    first_event_id UUID;
     i INTEGER;
     j INTEGER;
     event_lat FLOAT := 40.7128;  -- Latitude for New York City
@@ -358,6 +359,11 @@ BEGIN
                 2
         ) RETURNING id into e_table_id;
 
+        -- Store the ID of the first event for later use
+        IF i = 1 THEN
+            first_event_id := e_event_id;
+        END IF;
+
         -- create 75 event vendors only for event 1
         IF i = 1 THEN 
             DECLARE
@@ -365,7 +371,12 @@ BEGIN
                 max_attempts INT := 1000;  -- Prevent infinite loop
                 attempt_count INT := 0;
                 inserted_row_count INT;
+                inserted_vendor_id UUID;
+                tag_ids UUID[];
             BEGIN
+                -- Fetch all tag IDs
+                SELECT ARRAY(SELECT tag_id FROM public.event_tags WHERE event_id = first_event_id) INTO tag_ids;
+
                 WHILE inserted_count < 75 AND attempt_count < max_attempts LOOP
                     WITH available_profiles AS (
                         SELECT p.id, p.email
@@ -407,11 +418,34 @@ BEGIN
                         'Sports Cards, Memorabilia, Autographs',
                         '555-555-5555',
                         sp.email
-                    FROM selected_profile sp;
+                    FROM selected_profile sp
+                    RETURNING vendor_id INTO inserted_vendor_id;
 
                     GET DIAGNOSTICS inserted_row_count = ROW_COUNT;
-                    inserted_count := inserted_count + inserted_row_count;
+
+                    IF inserted_row_count > 0 AND inserted_vendor_id IS NOT NULL THEN
+                        -- Assign random number of tags (between 1 and 3) to this vendor
+                        num_tags := floor(random() * 3 + 1)::int;
+                        FOR j IN 1..num_tags LOOP
+                            -- Select a random tag ID
+                            random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
+                            
+                            -- Insert into vendor_tags if this combination doesn't already exist
+                            INSERT INTO public.event_vendor_tags(event_id, vendor_id, tag_id)
+                            SELECT first_event_id, inserted_vendor_id, random_tag_id
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM public.event_vendor_tags vt
+                                WHERE vt.event_id = first_event_id 
+                                AND vt.vendor_id = inserted_vendor_id 
+                                AND vt.tag_id = random_tag_id
+                            );
+                        END LOOP;
+
+                        inserted_count := inserted_count + 1;
+                    END IF;
+
                     attempt_count := attempt_count + 1;
+                    
                 END LOOP;
 
                 IF inserted_count < 75 THEN
