@@ -190,7 +190,7 @@ BEGIN
     -- Fetch 5 host profile IDs
     SELECT ARRAY(SELECT id FROM public.profiles order by random() limit 5) INTO host_profile_ids;
 
-    -- Fetch all profile IDs for vendor creation
+    -- Fetch all profile IDs
     SELECT ARRAY(SELECT id FROM public.profiles) INTO profile_ids;
     
     -- Fetch all tag IDs
@@ -246,8 +246,8 @@ BEGIN
 						- Grading Services: On-site professional grading by PSA and BGS.
 
 						Grab your tickets now and be part of this unforgettable celebration of sports history and collectibles!',
-            '10:00:00'::time + (random() * interval '8 hours'),
-            '18:00:00'::time + (random() * interval '6 hours'),
+            '10:00:00',
+            '18:00:00',
             'poster' || (floor(random() * 4 + 1)::int)::text || '.jpg',
             random_profile_id,
             future_date,
@@ -361,7 +361,7 @@ BEGIN
                 2
         ) RETURNING id into e_table_id;
 
-        -- create 75 event vendors
+        -- create 75 event vendors with orders and line items
         DECLARE
             inserted_count INT := 0;
             max_attempts INT := 1000;  -- Prevent infinite loop
@@ -500,8 +500,160 @@ BEGIN
                 RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
             END IF;
         END;
+
+        -- Add 100 tickets to Event 1
+        IF i = 1 THEN
+            DECLARE
+                attendee_id UUID;
+                ticket_ids UUID[];
+                inserted_ticket_id UUID;
+                inserted_order_id INT;
+            BEGIN
+                -- Create 50 1 quantity tickets in event_tickets
+                FOR j IN 1..50 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        1,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+
+                -- Create 25 2 quantity tickets in event_tickets
+                FOR j IN 1..25 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price * 2
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        2,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+
+                -- Create 25 3 quantity tickets in event_tickets
+                FOR j IN 1..25 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price * 3
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        3,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+            END;
+        END IF;
     END LOOP;
 END $$;
-
-
 RESET ALL;
