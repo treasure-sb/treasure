@@ -46,7 +46,10 @@ async function insertAvatars() {
 
   const imagePath = path.join(process.cwd(), "supabase", "images", "avatars");
   const files = fs.readdirSync(imagePath);
-  for (const file of files) {
+  const filterDefaultAvatar = files.filter(
+    (file) => file !== "default_avatar.png"
+  );
+  for (const file of filterDefaultAvatar) {
     const fileContent = readFileSync(path.join(imagePath, file));
 
     const { error } = await supabase.storage
@@ -58,6 +61,19 @@ async function insertAvatars() {
     if (error) {
       console.error("Error uploading image", error);
     }
+  }
+
+  const defaultAvatarFileContent = readFileSync(
+    path.join(imagePath, "default_avatar.png")
+  );
+  const { error } = await supabase.storage
+    .from("avatars")
+    .upload("default_avatar", defaultAvatarFileContent, {
+      contentType: "image/png",
+    });
+
+  if (error) {
+    console.error("Error uploading image", error);
   }
 }
 
