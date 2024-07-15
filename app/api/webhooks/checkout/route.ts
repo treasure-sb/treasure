@@ -43,21 +43,21 @@ type PurchaseTableResult =
 type PurchaseTicketResult =
   Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
 
-
-  type DinnerSelections = {
+type DinnerSelections = {
   dinnerSelections: string[];
   isSampa: boolean;
 };
 
-function formatDinnerSelections(metadata: { [key: string]: Json | undefined; }): string {
+function formatDinnerSelections(metadata: {
+  [key: string]: Json | undefined;
+}): string {
   if (metadata && metadata.dinnerSelections) {
     const json: DinnerSelections = metadata as DinnerSelections;
-    return json.dinnerSelections.join(', ');
+    return json.dinnerSelections.join(", ");
   } else {
     return "";
   }
 }
-
 
 const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
@@ -99,7 +99,8 @@ const handleTicketPurchase = async (
   } = data[0];
 
   const { profile } = await getProfile(user_id);
-  const purchasedTicketId = event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
+  const purchasedTicketId =
+    event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
   const host = await getProfile(event_organizer_id);
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
 
@@ -113,7 +114,9 @@ const handleTicketPurchase = async (
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${ticket_price * quantity}`,
     eventInfo: event_description,
-    dinnerSelection: formatDinnerSelections(metadata as { [key: string]: Json | undefined; })
+    dinnerSelection: formatDinnerSelections(
+      metadata as { [key: string]: Json | undefined }
+    ),
   };
   if (profile.email) {
     await sendTicketPurchasedEmail(

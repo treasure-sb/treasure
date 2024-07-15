@@ -72,7 +72,7 @@ INSERT INTO
             '',
             ''
         FROM
-            generate_series(1, 20)
+            generate_series(1, 100)
     );
 
 -- test user email identities
@@ -100,7 +100,7 @@ INSERT INTO
             auth.users
     );
 
--- create users in public.profiles table
+-- create users in public.profiles table (user1@example.com is admin)
 WITH names AS (
     SELECT ARRAY[
         'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles',
@@ -130,7 +130,8 @@ INSERT INTO
         first_name,    
         last_name,
         business_name,
-        email
+        email,
+        role
     ) (
         SELECT
             rn.id,
@@ -140,7 +141,11 @@ INSERT INTO
             rn.random_first_name,
             rn.random_last_name,
             rn.random_first_name || '''s Business',
-            rn.email
+            rn.email,
+            CASE 
+                WHEN ROW_NUMBER() OVER () = 1 THEN 'admin'
+                ELSE 'user'
+            END as role
         FROM random_names rn
     );
 
@@ -160,13 +165,18 @@ INSERT INTO public.tags(id, name) VALUES
 	(gen_random_uuid(), 'Authographs'),
 	(gen_random_uuid(), 'Cosplay');
 
+ALTER TABLE public.orders
+ALTER COLUMN id RESTART WITH 100000;
+
 -- create events
 DO $$
 DECLARE
+    host_profile_ids UUID[];
     profile_ids UUID[];
     tag_ids UUID[];
     random_profile_id UUID;
     e_event_id UUID;
+    e_table_id UUID;
     i INTEGER;
     j INTEGER;
     event_lat FLOAT := 40.7128;  -- Latitude for New York City
@@ -175,7 +185,11 @@ DECLARE
     future_date DATE;
     num_tags INTEGER;
     random_tag_id UUID;
+    total_days INTEGER := 180;
 BEGIN
+    -- Fetch 5 host profile IDs
+    SELECT ARRAY(SELECT id FROM public.profiles order by random() limit 5) INTO host_profile_ids;
+
     -- Fetch all profile IDs
     SELECT ARRAY(SELECT id FROM public.profiles) INTO profile_ids;
     
@@ -183,18 +197,18 @@ BEGIN
     SELECT ARRAY(SELECT id FROM public.tags) INTO tag_ids;
 
     -- Create 20 events
-    FOR i IN 1..20 LOOP
+    FOR i IN 1..10 LOOP
         -- Select a random profile ID
-        random_profile_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+        random_profile_id := host_profile_ids[floor(random() * array_length(host_profile_ids, 1) + 1)];
 
         -- Generate a random future weekend date within the next 6 months
-        days_to_add := floor(random() * 180)::integer;
+        days_to_add := (i - 1) * (total_days / 9);
         future_date := current_date + (days_to_add || ' days')::interval;
         
         -- Adjust to the next Saturday if it's not already a weekend
-        IF EXTRACT(DOW FROM future_date) < 6 THEN
-            future_date := future_date + ((6 - EXTRACT(DOW FROM future_date)) || ' days')::interval;
-        END IF;
+        WHILE EXTRACT(DOW FROM future_date) != 6 LOOP
+            future_date := future_date + interval '1 day';
+        END LOOP;
 
         -- Insert event
         INSERT INTO public.events (
@@ -215,12 +229,12 @@ BEGIN
             organizer_type,
             city,
             state,
-						sales_status,
-						vendor_exclusivity
+            sales_status,
+            vendor_exclusivity
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
-            'Sports Card Event ' || i,
+            'Event ' || i,
             'Welcome to the Card Extravaganza! 🏆🏀🏈⚾️
 
 						Join us for a thrilling weekend celebration of sports memorabilia and card collecting. Whether you''re a seasoned collector or new to the hobby, this event is your gateway to the exciting world of sports cards.
@@ -232,8 +246,8 @@ BEGIN
 						- Grading Services: On-site professional grading by PSA and BGS.
 
 						Grab your tickets now and be part of this unforgettable celebration of sports history and collectibles!',
-            '10:00:00'::time + (random() * interval '8 hours'),
-            '18:00:00'::time + (random() * interval '6 hours'),
+            '10:00:00',
+            '18:00:00',
             'poster' || (floor(random() * 4 + 1)::int)::text || '.jpg',
             random_profile_id,
             future_date,
@@ -245,12 +259,12 @@ BEGIN
             'profile',
             'New York City',
             'NY',
-						'SELLING_ALL',
-						'APPLICATIONS'
+            'SELLING_ALL',
+            'APPLICATIONS'
         ) RETURNING id INTO e_event_id;
 
-        -- Assign random number of tags (between 1 and 8) to this event
-        num_tags := floor(random() * 8 + 1)::int;
+        -- Assign random number of tags (between 3 and 8) to this event
+        num_tags := floor(random() * 6 + 3)::int;
         FOR j IN 1..num_tags LOOP
             -- Select a random tag ID
             random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
@@ -264,7 +278,7 @@ BEGIN
             );
         END LOOP;
 
-				-- Create three ticket types for this event
+	    -- Create three ticket types for this event
         -- RSVP Ticket
         INSERT INTO public.tickets(
             id,
@@ -324,30 +338,322 @@ BEGIN
             'VIP entry ticket with special perks, including early access and a gift bag.'
         );
 
-				-- create tables
-				INSERT INTO public.tables(
-						id,
-						event_id,
-						price,
-						quantity,
-						total_tables,
-						section_name,
-						table_provided,
-						space_allocated,
-						number_vendors_allowed
-				) VALUES (
-						gen_random_uuid(),
-						e_event_id,
-						100, 
-						125,
-						125,
-						'Ballroom',
-						true,
-						20,
-						2
-				);
+        -- create table
+        INSERT INTO public.tables(
+                id,
+                event_id,
+                price,
+                quantity,
+                total_tables,
+                section_name,
+                table_provided,
+                space_allocated,
+                number_vendors_allowed
+        ) VALUES (
+                gen_random_uuid(),
+                e_event_id,
+                100, 
+                125,
+                125,
+                'Ballroom',
+                true,
+                20,
+                2
+        ) RETURNING id into e_table_id;
+
+        -- create 75 event vendors with orders and line items
+        DECLARE
+            inserted_count INT := 0;
+            max_attempts INT := 1000;  -- Prevent infinite loop
+            attempt_count INT := 0;
+            inserted_row_count INT;
+            inserted_vendor_id UUID;
+            inserted_order_id INT;
+            tag_ids UUID[];
+            vendor_status TEXT[];
+            payment_status TEXT[];
+            vendor_payment_status public."Payment Status";
+        BEGIN
+            -- Fetch all tag IDs
+            SELECT ARRAY(SELECT tag_id FROM public.event_tags WHERE event_id = e_event_id) INTO tag_ids;
+
+            -- Vendor application status options
+            vendor_status := ARRAY['ACCEPTED', 'PENDING', 'REJECTED'];
+
+            -- Payment status options for ACCEPTED vendors
+            payment_status := ARRAY['PAID', 'UNPAID'];
+
+            WHILE inserted_count < 75 AND attempt_count < max_attempts LOOP
+                WITH available_profiles AS (
+                    SELECT p.id, p.email
+                    FROM public.profiles p
+                    WHERE p.id = ANY(profile_ids)
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM public.event_vendors ev
+                        WHERE ev.event_id = e_event_id
+                        AND ev.vendor_id = p.id
+                    )
+                ),
+                selected_profile AS (
+                    SELECT id, email
+                    FROM available_profiles
+                    ORDER BY random()
+                    LIMIT 1
+                ),
+                vendor_application_status AS (
+                    SELECT vendor_status[floor(random() * array_length(vendor_status, 1) + 1)] AS status
+                )
+                INSERT INTO public.event_vendors(
+                    event_id, 
+                    vendor_id,
+                    table_id,
+                    application_status,
+                    payment_status,
+                    table_quantity,
+                    vendors_at_table,
+                    inventory,
+                    application_phone,
+                    application_email
+                )
+                SELECT
+                    e_event_id,
+                    sp.id,
+                    e_table_id,
+                    CASE 
+                        WHEN i = 1 THEN 'ACCEPTED'::public."Application Status"
+                        ELSE vas.status::public."Application Status"
+                    END,
+                    CASE 
+                        WHEN i = 1 THEN 'PAID'::public."Payment Status"
+                        WHEN vas.status = 'ACCEPTED' THEN 
+                            payment_status[floor(random() * array_length(payment_status, 1) + 1)]::public."Payment Status"
+                        ELSE 'UNPAID'
+                    END,
+                    1,
+                    2,
+                    'Sports Cards, Memorabilia, Autographs',
+                    '555-555-5555',
+                    sp.email
+                FROM selected_profile sp, vendor_application_status vas
+                RETURNING vendor_id INTO inserted_vendor_id;
+
+                GET DIAGNOSTICS inserted_row_count = ROW_COUNT;
+
+                IF inserted_row_count > 0 AND inserted_vendor_id IS NOT NULL THEN
+                    -- Assign random number of tags (between 1 and 3) to this vendor
+                    num_tags := floor(random() * 3 + 1)::int;
+                    FOR j IN 1..num_tags LOOP
+                        -- Select a random tag ID
+                        random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
+                        
+                        -- Insert into vendor_tags if this combination doesn't already exist
+                        INSERT INTO public.event_vendor_tags(event_id, vendor_id, tag_id)
+                        SELECT e_event_id, inserted_vendor_id, random_tag_id
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM public.event_vendor_tags vt
+                            WHERE vt.event_id = e_event_id 
+                            AND vt.vendor_id = inserted_vendor_id 
+                            AND vt.tag_id = random_tag_id
+                        );
+                    END LOOP;
+
+                    -- Create order and line item if vendor is PAID
+                    SELECT ev.payment_status INTO vendor_payment_status FROM public.event_vendors ev
+                    WHERE vendor_id = inserted_vendor_id AND event_id = e_event_id;
+
+                    IF vendor_payment_status = 'PAID' THEN
+                        INSERT INTO public.orders(
+                            event_id,
+                            customer_id,
+                            amount_paid
+                        ) 
+                        SELECT 
+                            e_event_id,
+                            inserted_vendor_id,
+                            price 
+                        FROM public.tables 
+                        WHERE id = e_table_id 
+                        RETURNING id INTO inserted_order_id;
+
+                        INSERT INTO public.line_items(
+                            order_id,
+                            quantity,
+                            price,
+                            item_id,
+                            item_type
+                        ) 
+                        SELECT
+                            inserted_order_id,
+                            1,
+                            price,
+                            e_table_id,
+                            'TABLE'
+                        FROM public.tables 
+                        WHERE id = e_table_id;
+                    END IF;
+                    inserted_count := inserted_count + 1;
+                END IF;
+                attempt_count := attempt_count + 1;
+            END LOOP;
+            IF inserted_count < 75 THEN
+                RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
+            END IF;
+        END;
+
+        -- Add 100 tickets to Event 1
+        IF i = 1 THEN
+            DECLARE
+                attendee_id UUID;
+                ticket_ids UUID[];
+                inserted_ticket_id UUID;
+                inserted_order_id INT;
+            BEGIN
+                -- Create 50 1 quantity tickets in event_tickets
+                FOR j IN 1..50 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        1,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+
+                -- Create 25 2 quantity tickets in event_tickets
+                FOR j IN 1..25 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price * 2
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        2,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+
+                -- Create 25 3 quantity tickets in event_tickets
+                FOR j IN 1..25 LOOP
+                    attendee_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+                    ticket_ids := ARRAY(SELECT id FROM public.tickets WHERE event_id = e_event_id);
+                    inserted_ticket_id := ticket_ids[floor(random() * array_length(ticket_ids, 1) + 1)];
+
+                    INSERT INTO public.event_tickets(
+                        event_id,
+                        attendee_id,
+                        ticket_id,
+                        email
+                    ) SELECT 
+                        e_event_id,
+                        attendee_id,
+                        inserted_ticket_id,
+                        p.email
+                    FROM public.profiles p
+                    WHERE id = attendee_id;
+
+                    -- Create orders and line items
+                    INSERT INTO public.orders(
+                        event_id,
+                        customer_id,
+                        amount_paid
+                    ) SELECT
+                        e_event_id,
+                        attendee_id,
+                        t.price * 3
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id
+                    RETURNING id INTO inserted_order_id;
+
+                    INSERT INTO public.line_items(
+                        order_id,
+                        quantity,
+                        price,
+                        item_id,
+                        item_type
+                    ) SELECT
+                        inserted_order_id,
+                        3,
+                        t.price,
+                        inserted_ticket_id,
+                        'TICKET'
+                    FROM public.tickets t
+                    WHERE id = inserted_ticket_id;
+                END LOOP;
+            END;
+        END IF;
     END LOOP;
 END $$;
-
-
 RESET ALL;
