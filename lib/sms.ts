@@ -130,12 +130,13 @@ const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
     eventName,
     eventDate,
     eventCleanedName,
+    quantity
   } = tableSMSPayload;
   await sendSMS(
     phone,
     `💰Congrats! You received payment from ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } Their table(s) are confirmed for ${eventName} on ${moment(
+    } Their ${quantity} table(s) are confirmed for ${eventName} on ${moment(
       eventDate
     ).format(
       "dddd, MMM Do"
