@@ -72,7 +72,7 @@ INSERT INTO
             '',
             ''
         FROM
-            generate_series(1, 20)
+            generate_series(1, 100)
     );
 
 -- test user email identities
@@ -100,7 +100,7 @@ INSERT INTO
             auth.users
     );
 
--- create users in public.profiles table
+-- create users in public.profiles table (user1@example.com is admin)
 WITH names AS (
     SELECT ARRAY[
         'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles',
@@ -130,7 +130,8 @@ INSERT INTO
         first_name,    
         last_name,
         business_name,
-        email
+        email,
+        role
     ) (
         SELECT
             rn.id,
@@ -140,7 +141,11 @@ INSERT INTO
             rn.random_first_name,
             rn.random_last_name,
             rn.random_first_name || '''s Business',
-            rn.email
+            rn.email,
+            CASE 
+                WHEN ROW_NUMBER() OVER () = 1 THEN 'admin'
+                ELSE 'user'
+            END as role
         FROM random_names rn
     );
 
@@ -163,10 +168,12 @@ INSERT INTO public.tags(id, name) VALUES
 -- create events
 DO $$
 DECLARE
+    host_profile_ids UUID[];
     profile_ids UUID[];
     tag_ids UUID[];
     random_profile_id UUID;
     e_event_id UUID;
+    e_table_id UUID;
     i INTEGER;
     j INTEGER;
     event_lat FLOAT := 40.7128;  -- Latitude for New York City
@@ -175,26 +182,30 @@ DECLARE
     future_date DATE;
     num_tags INTEGER;
     random_tag_id UUID;
+    total_days INTEGER := 180;
 BEGIN
-    -- Fetch all profile IDs
+    -- Fetch 5 host profile IDs
+    SELECT ARRAY(SELECT id FROM public.profiles order by random() limit 5) INTO host_profile_ids;
+
+    -- Fetch all profile IDs for vendor creation
     SELECT ARRAY(SELECT id FROM public.profiles) INTO profile_ids;
     
     -- Fetch all tag IDs
     SELECT ARRAY(SELECT id FROM public.tags) INTO tag_ids;
 
     -- Create 20 events
-    FOR i IN 1..20 LOOP
+    FOR i IN 1..10 LOOP
         -- Select a random profile ID
-        random_profile_id := profile_ids[floor(random() * array_length(profile_ids, 1) + 1)];
+        random_profile_id := host_profile_ids[floor(random() * array_length(host_profile_ids, 1) + 1)];
 
         -- Generate a random future weekend date within the next 6 months
-        days_to_add := floor(random() * 180)::integer;
+        days_to_add := (i - 1) * (total_days / 9);
         future_date := current_date + (days_to_add || ' days')::interval;
         
         -- Adjust to the next Saturday if it's not already a weekend
-        IF EXTRACT(DOW FROM future_date) < 6 THEN
-            future_date := future_date + ((6 - EXTRACT(DOW FROM future_date)) || ' days')::interval;
-        END IF;
+        WHILE EXTRACT(DOW FROM future_date) != 6 LOOP
+            future_date := future_date + interval '1 day';
+        END LOOP;
 
         -- Insert event
         INSERT INTO public.events (
@@ -215,12 +226,12 @@ BEGIN
             organizer_type,
             city,
             state,
-						sales_status,
-						vendor_exclusivity
+            sales_status,
+            vendor_exclusivity
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
-            'Sports Card Event ' || i,
+            'Event ' || i,
             'Welcome to the Card Extravaganza! 🏆🏀🏈⚾️
 
 						Join us for a thrilling weekend celebration of sports memorabilia and card collecting. Whether you''re a seasoned collector or new to the hobby, this event is your gateway to the exciting world of sports cards.
@@ -245,12 +256,12 @@ BEGIN
             'profile',
             'New York City',
             'NY',
-						'SELLING_ALL',
-						'APPLICATIONS'
+            'SELLING_ALL',
+            'APPLICATIONS'
         ) RETURNING id INTO e_event_id;
 
-        -- Assign random number of tags (between 1 and 8) to this event
-        num_tags := floor(random() * 8 + 1)::int;
+        -- Assign random number of tags (between 3 and 8) to this event
+        num_tags := floor(random() * 6 + 3)::int;
         FOR j IN 1..num_tags LOOP
             -- Select a random tag ID
             random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
@@ -264,7 +275,7 @@ BEGIN
             );
         END LOOP;
 
-				-- Create three ticket types for this event
+	    -- Create three ticket types for this event
         -- RSVP Ticket
         INSERT INTO public.tickets(
             id,
@@ -324,28 +335,90 @@ BEGIN
             'VIP entry ticket with special perks, including early access and a gift bag.'
         );
 
-				-- create tables
-				INSERT INTO public.tables(
-						id,
-						event_id,
-						price,
-						quantity,
-						total_tables,
-						section_name,
-						table_provided,
-						space_allocated,
-						number_vendors_allowed
-				) VALUES (
-						gen_random_uuid(),
-						e_event_id,
-						100, 
-						125,
-						125,
-						'Ballroom',
-						true,
-						20,
-						2
-				);
+        -- create table
+        INSERT INTO public.tables(
+                id,
+                event_id,
+                price,
+                quantity,
+                total_tables,
+                section_name,
+                table_provided,
+                space_allocated,
+                number_vendors_allowed
+        ) VALUES (
+                gen_random_uuid(),
+                e_event_id,
+                100, 
+                125,
+                125,
+                'Ballroom',
+                true,
+                20,
+                2
+        ) RETURNING id into e_table_id;
+
+        -- create 75 event vendors only for event 1
+        IF i = 1 THEN 
+            DECLARE
+                inserted_count INT := 0;
+                max_attempts INT := 1000;  -- Prevent infinite loop
+                attempt_count INT := 0;
+                inserted_row_count INT;
+            BEGIN
+                WHILE inserted_count < 75 AND attempt_count < max_attempts LOOP
+                    WITH available_profiles AS (
+                        SELECT p.id, p.email
+                        FROM public.profiles p
+                        WHERE p.id = ANY(profile_ids)
+                        AND NOT EXISTS (
+                            SELECT 1 
+                            FROM public.event_vendors ev
+                            WHERE ev.event_id = e_event_id
+                            AND ev.vendor_id = p.id
+                        )
+                    ),
+                    selected_profile AS (
+                        SELECT id, email
+                        FROM available_profiles
+                        ORDER BY random()
+                        LIMIT 1
+                    )
+                    INSERT INTO public.event_vendors(
+                        event_id, 
+                        vendor_id,
+                        table_id,
+                        application_status,
+                        payment_status,
+                        table_quantity,
+                        vendors_at_table,
+                        inventory,
+                        application_phone,
+                        application_email
+                    )
+                    SELECT
+                        e_event_id,
+                        sp.id,
+                        e_table_id,
+                        'ACCEPTED',
+                        'PAID',
+                        1,
+                        2,
+                        'Sports Cards, Memorabilia, Autographs',
+                        '555-555-5555',
+                        sp.email
+                    FROM selected_profile sp;
+
+                    GET DIAGNOSTICS inserted_row_count = ROW_COUNT;
+                    inserted_count := inserted_count + inserted_row_count;
+                    attempt_count := attempt_count + 1;
+                END LOOP;
+
+                IF inserted_count < 75 THEN
+                    RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
+                END IF;
+            END;
+        END IF;
     END LOOP;
 END $$;
 
