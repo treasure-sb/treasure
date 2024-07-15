@@ -137,6 +137,7 @@ const handleTicketPurchase = async (
       eventName: event_name,
       eventDate: event_date,
       eventCleanedName: event_cleaned_name,
+      quantity:quantity
     };
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
@@ -236,6 +237,7 @@ const handleTablePurchase = async (
       eventName: event_name,
       eventDate: event_date,
       eventCleanedName: event_cleaned_name,
+      quantity: quantity
     };
     await sendHostTableSoldSMS(hostSMSPayload);
   }

@@ -9,6 +9,7 @@ type HostSoldPayload = {
   eventName: string;
   eventDate: string;
   eventCleanedName: string;
+  quantity: number;
 };
 
 const sendAttendeeTicketPurchasedSMS = async (
@@ -108,12 +109,13 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
     eventName,
     eventDate,
     eventCleanedName,
+    quantity
   } = ticketSMSPayload;
   return await sendSMS(
     phone,
     `🎉 ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } just bought a ticket to ${eventName} on ${moment(eventDate).format(
+    } just bought ${quantity>1 ? `${quantity} tickets` : `a ticket`} to ${eventName} on ${moment(eventDate).format(
       "dddd, MMM Do"
     )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
