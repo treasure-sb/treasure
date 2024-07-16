@@ -2,9 +2,27 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import VendorsChart from "./VendorsChart";
 import { Tables } from "@/types/supabase";
 import { TagNameData } from "../../vendors/types";
+import ApplicationsChart from "./ApplicationsChart";
 
 export type VendorBreakdownData = {
   name: string;
+  vendors: number;
+}[];
+
+const VENDOR_STATUSES = [
+  "PENDING",
+  "ACCEPTED",
+  "REJECTED",
+  "WAITLISTED",
+] as const;
+type VendorStatus = (typeof VENDOR_STATUSES)[number];
+
+type ApplicationFetchData = {
+  application_status: VendorStatus;
+};
+
+export type ApplicationData = {
+  status: VendorStatus;
   vendors: number;
 }[];
 
@@ -49,5 +67,45 @@ export default async function VendorBreakdown({
     });
   });
 
-  return <VendorsChart vendorData={vendorBreakdownData} />;
+  const { data: vendorData } = await supabase
+    .from("event_vendors")
+    .select("application_status")
+    .eq("event_id", event.id);
+
+  const eventVendors: ApplicationFetchData[] = vendorData || [];
+
+  const applicationDataMap = new Map<VendorStatus, number>(
+    VENDOR_STATUSES.map((status) => [status, 0])
+  );
+
+  eventVendors.map((vendor) => {
+    applicationDataMap.set(
+      vendor.application_status,
+      applicationDataMap.has(vendor.application_status)
+        ? applicationDataMap.get(vendor.application_status)! + 1
+        : 0
+    );
+  });
+
+  const applicationData: ApplicationData = [];
+  applicationDataMap.forEach((value, key) => {
+    applicationData.push({
+      status: key,
+      vendors: value,
+    });
+  });
+
+  return (
+    <div className="h-80 md:h-[29rem] col-span-3 bg-[#0d0d0c] rounded-md px-6 p-4 border-[1px] border-secondary">
+      <h3 className="text-2xl font-semibold mb-4">Vendor Breakdown</h3>
+      <div className="flex flex-col md:flex-row h-[calc(100%-2rem)]">
+        <div className="w-full md:w-[60%] h-full">
+          <VendorsChart vendorData={vendorBreakdownData} />
+        </div>
+        <div className="w-full md:w-[40%] h-full">
+          <ApplicationsChart applicationData={applicationData} />
+        </div>
+      </div>
+    </div>
+  );
 }

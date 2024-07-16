@@ -21,6 +21,7 @@ module.exports = {
       md: "768px",
       lg: "1024px",
       "2xl": "1280px",
+      "3xl": "1536px",
     },
     extend: {
       fontSize: {

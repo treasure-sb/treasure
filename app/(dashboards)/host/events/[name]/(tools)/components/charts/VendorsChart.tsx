@@ -5,7 +5,6 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
@@ -16,50 +15,87 @@ import {
 } from "recharts/types/component/DefaultTooltipContent";
 import { VendorBreakdownData } from "./VendorBreakdown";
 
+const COLORS = ["#eac362", "#71d08c"];
+
 export default function VendorsChart({
   vendorData,
 }: {
   vendorData: VendorBreakdownData;
 }) {
-  const maxValue = vendorData.reduce(
-    (max, item) => Math.max(max, item.vendors),
-    0
-  );
+  const CustomBar = (props: any) => {
+    const { x, y, width, height, name, index } = props;
+    const color = COLORS[index % COLORS.length];
+    const radius = 8;
+    const opacity = 1;
+
+    return (
+      <g>
+        <defs>
+          <clipPath id={`clip-${name}`}>
+            <rect
+              x={x}
+              y={y}
+              width={width}
+              height={height}
+              rx={radius}
+              ry={radius}
+            />
+          </clipPath>
+        </defs>
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill={color}
+          fillOpacity={opacity}
+          clipPath={`url(#clip-${name})`}
+        />
+      </g>
+    );
+  };
+
+  const CustomYAxisTick = (props: any) => {
+    const { x, y, payload } = props;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={-10}
+          y={0}
+          dy={4}
+          textAnchor="end"
+          fill="#666"
+          className="truncate text-sm"
+        >
+          {payload.value}
+        </text>
+      </g>
+    );
+  };
 
   return (
-    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
-      <h3 className="text-2xl font-semibold mb-4">Vendor Breakdown</h3>
-      <ResponsiveContainer width="100%" height="90%">
-        <BarChart width={400} height={300} data={vendorData}>
-          <CartesianGrid
-            strokeDasharray="4 1"
-            stroke="#27272a"
-            vertical={false}
-          />
-          <Tooltip content={<CustomTooltip />} cursor={false} />
-          <XAxis
-            dataKey="name"
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            padding={{ left: 40 }}
-          />
-          <YAxis
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
-          />
-          <Bar
-            type="monotone"
-            dataKey="vendors"
-            fill="#71d08c"
-            barSize={100}
-            radius={[10, 10, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height="90%">
+      <BarChart data={vendorData} layout="vertical">
+        <Tooltip content={<CustomTooltip />} cursor={false} />
+        <XAxis hide dataKey="vendors" type="number" />
+        <YAxis
+          dataKey="name"
+          type="category"
+          axisLine={false}
+          tickLine={false}
+          tickSize={0}
+          tickMargin={10}
+          width={110}
+          tick={<CustomYAxisTick />}
+        />
+        <Bar
+          dataKey="vendors"
+          layout="vertical"
+          radius={5}
+          shape={<CustomBar />}
+        />
+      </BarChart>
+    </ResponsiveContainer>
   );
 }
 
@@ -70,11 +106,13 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
-        <p className="text-medium text-lg">{label}</p>
-        <p className="text-sm text-primary">
-          Vendors:
-          <span className="ml-2">{payload[0].value}</span>
+      <div className="p-3 bg-background flex flex-col space-y-2 rounded-md border-[1px]">
+        <p className="text-medium text-base">{label}</p>
+        <p className="text-sm text-muted-foreground">
+          Vendors
+          <span className="ml-2 bg-secondary p-1 rounded-[3px] text-foreground">
+            {payload[0].value}
+          </span>
         </p>
       </div>
     );
