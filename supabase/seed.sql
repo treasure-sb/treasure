@@ -466,12 +466,14 @@ BEGIN
                         INSERT INTO public.orders(
                             event_id,
                             customer_id,
-                            amount_paid
+                            amount_paid,
+                            created_at
                         ) 
                         SELECT 
                             e_event_id,
                             inserted_vendor_id,
-                            price 
+                            price,
+                            current_timestamp - (random() * interval '30 days')
                         FROM public.tables 
                         WHERE id = e_table_id 
                         RETURNING id INTO inserted_order_id;
@@ -532,11 +534,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price
+                        t.price,
+                        current_timestamp - (random() * interval '20 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;
@@ -580,11 +584,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price * 2
+                        t.price * 2,
+                        current_timestamp - (random() * interval '40 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;
@@ -628,11 +634,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price * 3
+                        t.price * 3,
+                        current_timestamp - (random() * interval '20 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;

@@ -35,6 +35,8 @@ export default function SalesChart({
     if (max <= 5) return 1;
     if (max <= 10) return 2;
     if (max <= 100) return 20;
+    if (max <= 300) return 50;
+    if (max <= 500) return 100;
     if (max <= 1000) return 200;
     return Math.pow(10, Math.floor(Math.log10(max)) - 1);
   };
