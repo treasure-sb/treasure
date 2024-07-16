@@ -22,11 +22,6 @@ export default function VendorsChart({
 }: {
   vendorData: VendorBreakdownData;
 }) {
-  const maxValue = vendorData.reduce(
-    (max, item) => Math.max(max, item.vendors),
-    0
-  );
-
   const CustomBar = (props: any) => {
     const { x, y, width, height, name, index } = props;
     const color = COLORS[index % COLORS.length];
