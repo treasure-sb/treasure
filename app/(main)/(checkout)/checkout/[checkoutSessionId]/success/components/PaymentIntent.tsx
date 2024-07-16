@@ -26,7 +26,7 @@ export default function PaymentIntent({
   checkoutSessionId: string;
 }) {
   const [status, setStatus] = useState<"loading" | "success" | "failure">(
-    "loading"
+    ticketInfo.priceType === "RSVP" ? "success" : "loading"
   );
   const stripe = useStripe();
 

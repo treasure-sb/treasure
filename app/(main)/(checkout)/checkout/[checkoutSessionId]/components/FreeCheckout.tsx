@@ -55,34 +55,35 @@ export default function FreeCheckout({
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const { first_name, last_name, email } = form.getValues();
+    const { ticket_id, quantity, user_id, event_id } = checkoutSession;
     await supabase
       .from("profiles")
       .update({ first_name, last_name })
       .eq("id", profile.id);
 
-    setIsLoading(true);
-    toast.loading("Getting ticket...");
+    toast.loading(`Getting ticket${quantity > 1 ? "s" : ""}...`);
 
-    const { error } = await addEventAttendee(
-      event.id,
-      profile.id,
-      checkoutSession.ticket_id,
-      checkoutSession.quantity,
-      email
-    );
+    const { data, error } = await supabase.rpc("purchase_tickets", {
+      ticket_id,
+      event_id,
+      user_id,
+      purchase_quantity: quantity,
+      email,
+      amount_paid: 0,
+    });
 
     if (error) {
       setIsLoading(false);
-      toast.error("Failed to get ticket");
+      toast.dismiss();
+      toast.error("Failed to complete order");
       return;
     }
 
     setIsLoading(false);
     toast.dismiss();
-    toast.success(
-      `Ticket${checkoutSession.quantity > 1 && "s"} added successfully!`
-    );
+    toast.success(`Ticket${quantity > 1 ? "s" : ""} added successfully!`);
     push(`/checkout/${checkoutSession.id}/success`);
   };
 
