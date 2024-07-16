@@ -34,6 +34,8 @@ export default function ApplicationsChart({
     0
   );
 
+  const isDataEmpty = totalApplications === 0;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -56,24 +58,30 @@ export default function ApplicationsChart({
     <div ref={containerRef} className="w-full h-full">
       <ResponsiveContainer width="100%" height="90%">
         <PieChart width={730} height={250}>
-          <ChartTooltip cursor={false} content={<CustomTooltip />} />
+          {!isDataEmpty && (
+            <ChartTooltip cursor={false} content={<CustomTooltip />} />
+          )}
           <Pie
-            data={applicationData}
+            data={isDataEmpty ? [{ vendors: 1 }] : applicationData}
             dataKey="vendors"
             nameKey="status"
             innerRadius={innerRadius}
             strokeWidth={0}
-            fill="#8884d8"
+            fill={isDataEmpty ? "#27272a" : "#8884d8"}
           >
-            {applicationData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={
-                  STATUS_COLORS[entry.status as keyof typeof STATUS_COLORS] ||
-                  "#8884d8"
-                }
-              />
-            ))}
+            {isDataEmpty ? (
+              <Cell fill="#27272a" opacity={0.8} />
+            ) : (
+              applicationData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    STATUS_COLORS[entry.status as keyof typeof STATUS_COLORS] ||
+                    "#8884d8"
+                  }
+                />
+              ))
+            )}
             <Label
               content={({ viewBox }) => {
                 if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -87,16 +95,21 @@ export default function ApplicationsChart({
                       <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-3xl font-bold"
+                        className={cn(
+                          "fill-foreground",
+                          isDataEmpty
+                            ? "text-base font-normal hidden 3xl:block"
+                            : "text-3xl font-bold"
+                        )}
                       >
-                        {totalApplications}
+                        {isDataEmpty ? "No Applications" : totalApplications}
                       </tspan>
                       <tspan
                         x={viewBox.cx}
                         y={(viewBox.cy || 0) + 24}
                         className="fill-muted-foreground text-sm hidden 3xl:block"
                       >
-                        Applications
+                        {isDataEmpty ? "" : "Applications"}
                       </tspan>
                     </text>
                   );

@@ -32,6 +32,7 @@ export default function SalesChart({
   );
 
   const getTickInterval = (max: number) => {
+    if (max <= 1) return 0.25;
     if (max <= 5) return 1;
     if (max <= 10) return 2;
     if (max <= 100) return 20;
@@ -42,11 +43,14 @@ export default function SalesChart({
   };
 
   const tickInterval = getTickInterval(maxValue);
-  const maxYValue = Math.ceil(maxValue / tickInterval) * tickInterval;
+  const maxYValue =
+    maxValue < 1
+      ? Math.ceil(maxValue / 0.25) * 0.25
+      : Math.ceil(maxValue / tickInterval) * tickInterval;
 
   const yAxisTicks = Array.from(
-    { length: maxYValue / tickInterval + 1 },
-    (_, i) => i * tickInterval
+    { length: Math.max(Math.floor(maxYValue / tickInterval) + 1, 4) },
+    (_, i) => Number((i * tickInterval).toFixed(2))
   );
 
   const formatYTick = (value: string) => {
@@ -81,7 +85,7 @@ export default function SalesChart({
           tickMargin={16}
           tickFormatter={formatYTick}
           ticks={yAxisTicks}
-          domain={[0, maxYValue]}
+          domain={[0, Math.max(maxYValue, 1)]}
         />
         <Area
           type="monotone"
