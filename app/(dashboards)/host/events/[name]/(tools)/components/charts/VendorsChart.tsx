@@ -106,11 +106,13 @@ const CustomTooltip = ({
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
-      <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
-        <p className="text-medium text-lg">{label}</p>
-        <p className="text-sm text-primary">
-          Vendors:
-          <span className="ml-2">{payload[0].value}</span>
+      <div className="p-3 bg-background flex flex-col space-y-2 rounded-md border-[1px]">
+        <p className="text-medium text-base">{label}</p>
+        <p className="text-sm text-muted-foreground">
+          Vendors
+          <span className="ml-2 bg-secondary p-1 rounded-[3px] text-foreground">
+            {payload[0].value}
+          </span>
         </p>
       </div>
     );

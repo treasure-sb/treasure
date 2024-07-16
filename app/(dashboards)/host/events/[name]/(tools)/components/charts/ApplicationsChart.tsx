@@ -2,9 +2,20 @@
 
 import { ChartTooltip } from "@/components/ui/chart";
 import { ApplicationData } from "./VendorBreakdown";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  TooltipProps,
+} from "recharts";
 import { Label } from "recharts";
 import { useEffect, useRef, useState } from "react";
+import {
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
+import { capitalize, cn } from "@/lib/utils";
 
 const STATUS_COLORS = {
   PENDING: "#ffd65b",
@@ -45,7 +56,7 @@ export default function ApplicationsChart({
     <div ref={containerRef} className="w-full h-full">
       <ResponsiveContainer width="100%" height="90%">
         <PieChart width={730} height={250}>
-          <ChartTooltip cursor={false} />
+          <ChartTooltip cursor={false} content={<CustomTooltip />} />
           <Pie
             data={applicationData}
             dataKey="vendors"
@@ -98,3 +109,33 @@ export default function ApplicationsChart({
     </div>
   );
 }
+
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) => {
+  console.log(payload, label, active);
+  const name = payload?.[0]?.name;
+  if (active && payload && payload.length) {
+    return (
+      <div className="p-2 bg-background flex flex-col space-y-2 rounded-md border-[1px]">
+        <p className="text-sm">
+          {capitalize(name?.toString().toLowerCase() || "")}
+          <span
+            className={cn(
+              "ml-2 p-1 rounded-[3px] text-foreground",
+              name === "PENDING"
+                ? "bg-tertiary/10 text-yellow-500"
+                : name === "ACCEPTED"
+                ? "bg-primary/10 text-green-500"
+                : "bg-red-600/10 text-red-500"
+            )}
+          >
+            {payload[0].value}
+          </span>
+        </p>
+      </div>
+    );
+  }
+};
