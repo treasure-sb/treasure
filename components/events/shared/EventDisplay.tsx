@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import LikeButton from "@/components/events/shared/LikeButton";
+import { Ticket } from "lucide-react";
 
 export default function EventDisplay({
   event,
@@ -63,6 +64,13 @@ export default function EventDisplay({
           {event.city + ", " + event.state}
         </p>
       </Link>
+      {event.sales_status !== "NO_SALE" && (
+        <Ticket
+          fill="black"
+          className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg]"
+          size={32}
+        />
+      )}
     </div>
   );
 }
