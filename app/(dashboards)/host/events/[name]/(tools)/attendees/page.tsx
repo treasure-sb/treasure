@@ -9,6 +9,10 @@ import { CustomerData } from "./types";
 type AttendeeData =
   Database["public"]["Functions"]["get_attendee_data"]["Returns"][number];
 
+type Ticket = {
+  name: string;
+};
+
 export default async function Page({
   params: { name },
 }: {
@@ -58,6 +62,14 @@ export default async function Page({
   );
   const attendeeTableData = await Promise.all(attendeeTableDataPromise);
 
+  const { data: ticketData } = await supabase
+    .from("tickets")
+    .select("name")
+    .eq("event_id", event.id)
+    .returns<Ticket[]>();
+
+  const ticketNames = ticketData ? ticketData.map((ticket) => ticket.name) : [];
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4 mt-8">
@@ -68,7 +80,12 @@ export default async function Page({
           </span>
         </h2>
       </div>
-      <DataTable columns={columns} data={attendeeTableData} event={event} />
+      <DataTable
+        columns={columns}
+        data={attendeeTableData}
+        event={event}
+        tickets={ticketNames}
+      />
     </div>
   );
 }

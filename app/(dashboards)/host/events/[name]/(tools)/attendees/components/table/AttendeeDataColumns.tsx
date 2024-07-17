@@ -114,6 +114,10 @@ export const columns: ColumnDef<Attendee>[] = [
     accessorKey: "ticketNames",
     header: "Tickets",
     cell: TicketCell,
+    filterFn: (row, id, value) => {
+      const ticketNames = row.getValue(id) as string[];
+      return ticketNames.includes(value);
+    },
   },
   {
     accessorKey: "quantity",

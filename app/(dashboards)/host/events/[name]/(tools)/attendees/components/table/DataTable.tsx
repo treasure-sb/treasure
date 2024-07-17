@@ -24,17 +24,20 @@ import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import AttendeeDialogContent from "../attendee_dialog/AttendeeDialogContent";
+import Filters from "./Filters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   event: Tables<"events">;
+  tickets: string[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   event,
+  tickets,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
@@ -60,9 +63,20 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const ticketFilter = table.getColumn("ticketNames")?.getFilterValue();
+  const updateTicketFilter = (type: string | undefined) => {
+    table.getColumn("ticketNames")?.setFilterValue(type);
+  };
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-4"></div>
+      <div className="flex justify-between items-center mb-4">
+        <Filters
+          ticketNames={tickets}
+          ticketFilter={ticketFilter}
+          updateTicketFilter={updateTicketFilter}
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
