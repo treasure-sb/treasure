@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { CustomerData } from "../../types";
 import { ArrowUpDown, TicketIcon } from "lucide-react";
-import TableIcon from "@/components/icons/TableIcon";
 import { Button } from "@/components/ui/button";
+import TableIcon from "@/components/icons/TableIcon";
 
 export type Order = {
   orderID: number;
