@@ -1,6 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Attendee, columns } from "./components/table/AttendeeDataColumns";
-import { DataTable } from "../sales/components/orders/DataTable";
+import { DataTable } from "./components/table/DataTable";
 import { redirect } from "next/navigation";
 import { Database, Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
@@ -46,6 +46,7 @@ export default async function Page({
         avatar_url: avatar,
       };
       return {
+        id: attendee.attendee_id,
         avatar_url: avatar,
         quantity: attendee.number_tickets_purchased,
         ticketsScanned: attendee.number_tickets_scanned,

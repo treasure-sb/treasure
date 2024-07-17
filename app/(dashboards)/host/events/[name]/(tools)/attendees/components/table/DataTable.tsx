@@ -9,6 +9,7 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
+  Row,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -21,6 +22,8 @@ import {
 import { Attendee } from "./AttendeeDataColumns";
 import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+import AttendeeDialogContent from "../attendee_dialog/AttendeeDialogContent";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +37,16 @@ export function DataTable<TData, TValue>({
   event,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
+    null
+  );
+  const [open, setOpen] = useState(false);
+
+  const showAttendeeDialog = (row: Row<TData>) => {
+    setSelectedAttendee(row.original as Attendee);
+    setOpen(true);
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -46,11 +59,6 @@ export function DataTable<TData, TValue>({
       sorting,
     },
   });
-
-  const typeFilter = table.getColumn("type")?.getFilterValue();
-  const updateTypeFilter = (type: string | undefined) => {
-    table.getColumn("type")?.setFilterValue(type);
-  };
 
   return (
     <div>
@@ -81,6 +89,9 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    showAttendeeDialog(row);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -123,6 +134,21 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setSelectedAttendee(null);
+          setOpen(isOpen);
+        }}
+      >
+        {selectedAttendee && (
+          <AttendeeDialogContent
+            attendeeData={selectedAttendee}
+            event={event}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }

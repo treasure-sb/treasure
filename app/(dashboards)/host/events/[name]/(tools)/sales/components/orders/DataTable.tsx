@@ -87,8 +87,10 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className="relative"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {}}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

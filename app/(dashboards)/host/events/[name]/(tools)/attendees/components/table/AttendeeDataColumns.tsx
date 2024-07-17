@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, TicketIcon } from "lucide-react";
 
 export type Attendee = {
+  id: string;
   quantity: number;
   ticketsScanned: number;
   ticketNames: string[];
