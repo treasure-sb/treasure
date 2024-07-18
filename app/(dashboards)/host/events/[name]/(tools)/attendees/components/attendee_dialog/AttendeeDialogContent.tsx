@@ -36,7 +36,7 @@ export default function AttendeeDialogContent({
     attendeeData.customer;
 
   const { data, isLoading } = useQuery({
-    queryKey: [attendeeData.customer.email + "tickets"],
+    queryKey: [attendeeData.id + "tickets"],
     queryFn: async () => {
       const { data } = await supabase
         .from("event_tickets")
