@@ -1,12 +1,17 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import ExportButton from "./ExportButton";
-import { Ticket } from "@/lib/actions/tickets";
+import { Attendee, columns } from "./components/table/AttendeeDataColumns";
+import { DataTable } from "./components/table/DataTable";
+import { redirect } from "next/navigation";
+import { Database, Tables } from "@/types/supabase";
+import { getProfileAvatar } from "@/lib/helpers/profiles";
+import { CustomerData } from "./types";
+
+type AttendeeData =
+  Database["public"]["Functions"]["get_attendee_data"]["Returns"][number];
+
+type Ticket = {
+  name: string;
+};
 
 export default async function Page({
   params: { name },
@@ -14,152 +19,73 @@ export default async function Page({
   params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
+
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("cleaned_name", name)
     .single();
 
-  const { data: ticketsData, error: ticketsError } = await supabase
+  if (eventError) {
+    redirect("/host/events");
+  }
+
+  const event: Tables<"events"> = eventData;
+
+  const { data } = await supabase.rpc("get_attendee_data", {
+    event_id: event.id,
+  });
+
+  const attendeeData: AttendeeData[] = data || [];
+
+  const attendeeTableDataPromise: Promise<Attendee>[] = attendeeData.map(
+    async (attendee) => {
+      const { first_name, last_name, email, phone, avatar_url } = attendee;
+      const avatar = await getProfileAvatar(avatar_url);
+      const customer: CustomerData = {
+        first_name,
+        last_name,
+        email,
+        phone,
+        avatar_url: avatar,
+      };
+      return {
+        id: attendee.attendee_id,
+        avatar_url: avatar,
+        quantity: attendee.number_tickets_purchased,
+        ticketsScanned: attendee.number_tickets_scanned,
+        ticketNames: attendee.ticket_names,
+        customer,
+        lastPurchaseDate: new Date(attendee.date_of_last_purchase),
+      };
+    }
+  );
+  const attendeeTableData = await Promise.all(attendeeTableDataPromise);
+
+  const { data: ticketData } = await supabase
     .from("tickets")
-    .select("*")
-    .eq("event_id", eventData.id);
+    .select("name")
+    .eq("event_id", event.id)
+    .returns<Ticket[]>();
 
-  const { data: soldTicketsData, error: soldTicketsError } = await supabase
-    .from("event_tickets")
-    .select("*, ticket_info:tickets(*), user_info:profiles(*)")
-    .eq("event_id", eventData.id)
-    .order("created_at", { ascending: false });
-
-  const ticketsArr: any[] = soldTicketsData ? soldTicketsData : [];
+  const ticketNames = ticketData ? ticketData.map((ticket) => ticket.name) : [];
 
   return (
-    <div className="flex flex-col gap-4 overflow-visible ">
-      <h1 className="font-semibold text-4xl text-tertiary">Sales</h1>
-      <h1 className="text-2xl font-semibold mt-4">Ticket Types</h1>
-      <div className="flex flex-col gap-2 min-w-fit sm:w-full text-sm sm:text-lg border border-secondary rounded-sm">
-        <div className="w-full flex p-4">
-          <div className="w-2/5">Name</div>
-          <div className="w-1/5 text-center">Status</div>
-          <div className="w-1/5 text-center">Price</div>
-          <div className="w-1/5 text-right">Sold</div>
-        </div>
-        {ticketsData?.map((ticket: Ticket) => (
-          <div className="w-full flex p-4 border-t">
-            <div className="w-2/5">{ticket.name}</div>
-
-            {eventData.sales_status === "SELLING_ALL" ||
-            eventData.sales_status === "ATTENDEES_ONLY" ? (
-              <div className="w-1/5 text-center text-tertiary">On Sale</div>
-            ) : (
-              <div className="w-1/5 text-center text-red-600">Not Selling</div>
-            )}
-
-            <div className="w-1/5 text-center">${ticket.price}</div>
-            <div className="w-1/5 text-right">
-              {(
-                Number(ticket.total_tickets) - Number(ticket.quantity)
-              ).toString() +
-                "/" +
-                ticket.total_tickets}
-            </div>
-          </div>
-        ))}
+    <div className="max-w-7xl mx-auto">
+      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4 mt-8">
+        <h2 className="text-2xl font-semibold">
+          Attendees{" "}
+          <span className="text-muted-foreground">
+            {attendeeTableData.length}
+          </span>
+        </h2>
       </div>
-
-      <ExportButton soldTicketsData={ticketsArr} eventName={name} />
-      <div className="sm:flex flex-col hidden w-full text-lg border border-secondary rounded-sm">
-        <div className="flex p-4">
-          <div className="w-2/6">Name</div>
-          <div className="w-1/6 text-center">Tickets</div>
-          <div className="w-1/6 text-center">Total Spend</div>
-          <div className="w-1/6 text-center">Contact</div>
-          <div className="w-1/6 text-right">Purchase Date</div>
-        </div>
-        {soldTicketsData?.map((ticket: any) => (
-          <div className="w-full flex p-4 border-t">
-            <div className="w-2/6 flex flex-col">
-              <div>
-                {ticket.user_info.first_name + " " + ticket.user_info.last_name}
-              </div>
-              <div className="text-xs">@{ticket.user_info.username}</div>
-            </div>
-            <div className="w-1/6 text-center">{ticket.ticket_info.name}</div>
-            <div className="w-1/6 text-center">${ticket.ticket_info.price}</div>
-            <div className="w-1/6 flex flex-col text-center">
-              <div className="text-sm">{ticket.user_info.phone}</div>
-              <div className="text-sm">
-                {ticket.user_info.email || ticket.email}
-              </div>
-            </div>
-            <div className="w-1/6 text-right flex flex-col">
-              <div>
-                {new Date(ticket.created_at).toLocaleDateString(undefined, {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                })}
-              </div>
-              <div className="text-xs">
-                {
-                  new Date(ticket.created_at)
-                    .toLocaleDateString(undefined, {
-                      hour: "numeric",
-                      minute: "numeric",
-                    })
-                    .split(",")[1]
-                }
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      {/* ------------------------------- Mobile Transactions  ------------------------------- */}
-
-      <Accordion
-        type="single"
-        collapsible
-        className="flex flex-col border border-secondary sm:hidden gap-4 w-full mb-4 rounded-sm"
-      >
-        {soldTicketsData?.map((ticket: any, i: number) => (
-          <AccordionItem key={i} value={i.toString()} className="w-full px-2">
-            <AccordionTrigger className="flex text-lg text-left w-full hover:no-underline">
-              <div className="flex flex-col">
-                <div>{ticket.user_info.first_name}</div>
-                <div className="text-xs">{ticket.user_info.last_name}</div>
-              </div>
-              <div className="flex flex-col text-center">
-                <div>${ticket.ticket_info.price}</div>
-                <div className="text-xs">{ticket.ticket_info.name}</div>
-              </div>
-              <div className="text-right flex flex-col">
-                <div>
-                  {new Date(ticket.created_at).toLocaleDateString(undefined, {
-                    day: "numeric",
-                    month: "numeric",
-                    year: "numeric",
-                  })}
-                </div>
-                <div className="text-xs">
-                  {
-                    new Date(ticket.created_at)
-                      .toLocaleDateString(undefined, {
-                        hour: "numeric",
-                        minute: "numeric",
-                      })
-                      .split(",")[1]
-                  }
-                </div>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="flex flex-col text-lg text-left w-full hover:no-underline gap-2">
-              <div className="text-base font-semibold">Contact Info</div>
-              <div className="text-sm">{ticket.user_info.phone}</div>
-              <div className="text-sm">{ticket.user_info.email}</div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <DataTable
+        columns={columns}
+        data={attendeeTableData}
+        event={event}
+        tickets={ticketNames}
+      />
     </div>
   );
 }

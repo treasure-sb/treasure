@@ -2,7 +2,7 @@ import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import VendorBreakdown from "./components/charts/VendorBreakdown";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
-import { Tables } from "@/types/supabase";
+import { Database, Tables } from "@/types/supabase";
 import {
   UsersIcon,
   BadgeDollarSign,
@@ -10,6 +10,9 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
+
+type AttendeeCountData =
+  Database["public"]["Functions"]["get_attendee_count"]["Returns"];
 
 export default async function Page({
   params: { name },
@@ -29,22 +32,12 @@ export default async function Page({
 
   const event: Tables<"events"> = eventData;
 
-  const { data: ticketsData } = await supabase
-    .from("event_tickets")
-    .select("*, ticket_info:tickets(*)")
-    .eq("event_id", event.id);
-
   const { data: tablesData } = await supabase
     .from("event_vendors")
     .select("*, table_info:tables(*)")
     .eq("event_id", event.id);
 
-  let ticketsSold = 0;
   let tablesSold = 0;
-
-  ticketsData?.map((ticket) => {
-    ticketsSold += 1;
-  });
 
   tablesData?.map((table) => {
     if (table.payment_status === "PAID") {
@@ -72,6 +65,12 @@ export default async function Page({
 
   const viewCount = lastPeriodViewsCount || 0;
 
+  const { data } = await supabase.rpc("get_attendee_count", {
+    event_id: eventData.id,
+  });
+
+  const attendeeCount: AttendeeCountData = data || 0;
+
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
@@ -85,7 +84,7 @@ export default async function Page({
           <UsersIcon size={28} className="flex-shrink-0" />
         </div>
         <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-          {ticketsSold}
+          {attendeeCount}
         </p>
       </Link>
       <Link
