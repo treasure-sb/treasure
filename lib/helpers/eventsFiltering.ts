@@ -32,7 +32,7 @@ const getCityCoordinates = async (city: string) => {
       .join(" ");
 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      `${cityName}, ${stateName}`
+      `${cityName}, ${stateName}`,
     )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
     try {
@@ -60,7 +60,7 @@ const buildEventsQuery = async (
   from?: string,
   until?: string,
   city?: string,
-  distance?: number
+  distance?: number,
 ) => {
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
@@ -68,15 +68,17 @@ const buildEventsQuery = async (
 
   let query = supabase
     .from("events")
-    .select("*")
-    .neq("id", "a6ce6fdb-4ff3-4272-a358-6873e896b3e3");
+    .select("*, event_categories!inner(categories!inner(name), *)")
+    .eq("event_categories.categories.name", "collectables");
 
   if (tagId) {
     query = supabase
       .from("events")
-      .select("*, event_tags!inner(*)")
-      .eq("event_tags.tag_id", tagId)
-      .neq("id", "a6ce6fdb-4ff3-4272-a358-6873e896b3e3");
+      .select(
+        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)",
+      )
+      .eq("event_categories.categories.name", "collectables")
+      .eq("event_tags.tag_id", tagId);
   }
 
   if (city) {
@@ -322,13 +324,18 @@ const getAllEventData = async (search: string, page: number) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
-    .select("*")
-    .gte("date", today)
-    .ilike("name", `%${search}%`)
-    .order("featured", { ascending: false })
-    .order("date", { ascending: true })
-    .order("id", { ascending: true })
+    .select(
+      `
+    *, event_categories!inner(categories!inner(name), *)`,
+    )
+    .eq("event_categories.categories.name", "collectables")
+    .gte("events.date", today)
+    .ilike("events.name", `%${search}%`)
+    .order("events.featured", { ascending: false })
+    .order("events.date", { ascending: true })
+    .order("events.id", { ascending: true })
     .range(startIndex, endIndex);
+
   return { data, error };
 };
 
