@@ -91,7 +91,6 @@ const buildEventsQuery = async (
       user_lat: lat,
       user_lon: lng,
     });
-
     if (tagId) {
       query = supabase.rpc("get_tagged_nearby_events", {
         radius: distance,
