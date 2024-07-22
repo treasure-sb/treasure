@@ -69,6 +69,7 @@ const buildEventsQuery = async (
   let query = supabase
     .from("events")
     .select("*, event_categories!inner(categories!inner(name), *)")
+    .eq("event_status", "LIVE")
     .eq("event_categories.categories.name", "collectables");
 
   if (tagId) {
@@ -78,6 +79,7 @@ const buildEventsQuery = async (
         "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)",
       )
       .eq("event_categories.categories.name", "collectables")
+      .eq("event_status", "LIVE")
       .eq("event_tags.tag_id", tagId);
   }
 
@@ -126,6 +128,7 @@ const buildEventsQuery = async (
     .range(startIndex, endIndex);
 
   const { data, error } = await query;
+  console.log(data, error);
   return { data, error };
 };
 
@@ -329,11 +332,12 @@ const getAllEventData = async (search: string, page: number) => {
     *, event_categories!inner(categories!inner(name), *)`,
     )
     .eq("event_categories.categories.name", "collectables")
-    .gte("events.date", today)
-    .ilike("events.name", `%${search}%`)
-    .order("events.featured", { ascending: false })
-    .order("events.date", { ascending: true })
-    .order("events.id", { ascending: true })
+    .eq("event_status", "LIVE")
+    .gte("date", today)
+    .ilike("name", `%${search}%`)
+    .order("featured", { ascending: false })
+    .order("date", { ascending: true })
+    .order("id", { ascending: true })
     .range(startIndex, endIndex);
 
   return { data, error };
