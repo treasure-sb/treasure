@@ -33,7 +33,6 @@ export default function ListEvents({
     },
     initialData: { pages: [events], pageParams: [1] },
   });
-
   const allEvents = data?.pages.flat();
   const lastEventRef = useRef<HTMLElement>(null);
   const lastEventRefDesktop = useRef<HTMLElement>(null);
@@ -59,15 +58,14 @@ export default function ListEvents({
     };
     fetchPage();
   }, [entry, desktopEntry]);
-
+  console.log(events);
   return (
     <>
       <div className="space-y-8 md:hidden block">
-        <EventDisplay event={events[0]} user={user} />
-        {allEvents?.slice(1).map((event, i) => (
+        {allEvents?.map((event, i) => (
           <div
             key={event.id + "card"}
-            ref={allEvents.length - 1 === i + 1 ? ref : null}
+            ref={allEvents.length - 1 === i ? ref : null}
           >
             <EventCard
               user={user}

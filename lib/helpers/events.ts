@@ -47,7 +47,7 @@ const getPublicPosterUrlFromPosterUrl = async (posterUrl: string) => {
 };
 
 const getPublicVenueMapUrl = async (
-  event: Tables<"events"> | EventDisplayData
+  event: Tables<"events"> | EventDisplayData,
 ) => {
   const supabase = await createSupabaseServerClient();
   let publicVenueMapUrl = "";
@@ -88,7 +88,7 @@ const getEventFromId = async (id: string) => {
 
 const fetchEventsFromFilters = async (
   page: number,
-  searchParams: SearchParams | undefined
+  searchParams: SearchParams | undefined,
 ): Promise<any[]> => {
   const { tag, from, until, city, search, distance } = searchParams || {};
 
@@ -106,7 +106,7 @@ const fetchEventsFromFilters = async (
     from,
     until,
     city,
-    parseInt(distance || "50")
+    parseInt(distance || "50"),
   );
 
   return data || [];
@@ -115,7 +115,7 @@ const fetchEventsFromFilters = async (
 const fetchHostingEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean
+  upcoming: boolean,
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsHosting(page, userId);
@@ -129,7 +129,7 @@ const fetchHostingEvents = async (
 const fetchAppliedEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean
+  upcoming: boolean,
 ) => {
   const { data } = await getEventsApplied(page, userId);
   return data?.map((event) => event.events) || [];
@@ -138,7 +138,7 @@ const fetchAppliedEvents = async (
 const fetchAttendingEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean
+  upcoming: boolean,
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsAttending(page, userId);
@@ -152,7 +152,7 @@ const fetchAttendingEvents = async (
 const fetchLikedEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean
+  upcoming: boolean,
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsLiked(page, userId);
@@ -178,7 +178,7 @@ const fetchUserEventsFromFilter = async (
   page: number,
   filter: string | null,
   user: Tables<"profiles"> | Tables<"temporary_profiles">,
-  upcoming: boolean
+  upcoming: boolean,
 ) => {
   const fetchFunction =
     filter && filter in filterFunctions
@@ -193,11 +193,11 @@ const fetchUserEventsFromFilter = async (
  */
 const getEventsDisplayData = async (
   page: number,
-  searchParams: SearchParams | undefined
+  searchParams: SearchParams | undefined,
 ) => {
   const events: Tables<"events">[] = await fetchEventsFromFilters(
     page,
-    searchParams
+    searchParams,
   );
   return await eventDisplayData(events);
 };
@@ -210,7 +210,7 @@ const getUserEventsDisplayData = async (
   page: number,
   filter: string | null,
   upcoming: boolean,
-  user: Tables<"profiles"> | Tables<"temporary_profiles">
+  user: Tables<"profiles"> | Tables<"temporary_profiles">,
 ) => {
   const events = await fetchUserEventsFromFilter(page, filter, user, upcoming);
   return await eventDisplayData(events);
@@ -219,13 +219,13 @@ const getUserEventsDisplayData = async (
 const eventDisplayData = async (events: any[]) => {
   return Promise.all(
     events.map(
-      async (event: Tables<"events">) => await getEventDisplayData(event)
-    )
+      async (event: Tables<"events">) => await getEventDisplayData(event),
+    ),
   );
 };
 
 const getEventDisplayData = async (
-  event: Tables<"events">
+  event: Tables<"events">,
 ): Promise<EventDisplayData> => {
   const publicPosterUrl = await getPublicPosterUrl(event);
   return {

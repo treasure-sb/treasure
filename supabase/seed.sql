@@ -162,7 +162,7 @@ INSERT INTO public.tags(id, name) VALUES
 	(gen_random_uuid(), 'Comics'),
 	(gen_random_uuid(), 'Memorabilia'),
 	(gen_random_uuid(), 'Plushies'),
-	(gen_random_uuid(), 'Authographs'),
+	(gen_random_uuid(), 'Autographs'),
 	(gen_random_uuid(), 'Cosplay');
 
 ALTER TABLE public.orders
