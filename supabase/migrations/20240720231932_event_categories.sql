@@ -109,22 +109,3 @@ grant truncate on table "public"."event_categories" to "service_role";
 
 grant update on table "public"."event_categories" to "service_role";
 
-INSERT INTO
-  "public"."categories" ("name")
-VALUES
-  ('sneakers'),
-  ('collectables'),
-  ('cultural');
-
-INSERT INTO
-  event_categories (event_id, category_id)
-SELECT
-  events.id,
-  categories.id
-FROM
-  events,
-  categories
-WHERE
-  categories.name = 'collectables';
-
-
