@@ -361,146 +361,150 @@ BEGIN
                 2
         ) RETURNING id into e_table_id;
 
-        -- create 75 event vendors with orders and line items
-        DECLARE
-            inserted_count INT := 0;
-            max_attempts INT := 1000;  -- Prevent infinite loop
-            attempt_count INT := 0;
-            inserted_row_count INT;
-            inserted_vendor_id UUID;
-            inserted_order_id INT;
-            tag_ids UUID[];
-            vendor_status TEXT[];
-            payment_status TEXT[];
-            vendor_payment_status public."Payment Status";
-        BEGIN
-            -- Fetch all tag IDs
-            SELECT ARRAY(SELECT tag_id FROM public.event_tags WHERE event_id = e_event_id) INTO tag_ids;
+        -- create 75 event vendors with orders and line items except for event 10 which will be empty
+        IF i != 10 THEN 
+            DECLARE
+                inserted_count INT := 0;
+                max_attempts INT := 1000;  -- Prevent infinite loop
+                attempt_count INT := 0;
+                inserted_row_count INT;
+                inserted_vendor_id UUID;
+                inserted_order_id INT;
+                tag_ids UUID[];
+                vendor_status TEXT[];
+                payment_status TEXT[];
+                vendor_payment_status public."Payment Status";
+            BEGIN
+                -- Fetch all tag IDs
+                SELECT ARRAY(SELECT tag_id FROM public.event_tags WHERE event_id = e_event_id) INTO tag_ids;
 
-            -- Vendor application status options
-            vendor_status := ARRAY['ACCEPTED', 'PENDING', 'REJECTED'];
+                -- Vendor application status options
+                vendor_status := ARRAY['ACCEPTED', 'PENDING', 'REJECTED'];
 
-            -- Payment status options for ACCEPTED vendors
-            payment_status := ARRAY['PAID', 'UNPAID'];
+                -- Payment status options for ACCEPTED vendors
+                payment_status := ARRAY['PAID', 'UNPAID'];
 
-            WHILE inserted_count < 75 AND attempt_count < max_attempts LOOP
-                WITH available_profiles AS (
-                    SELECT p.id, p.email
-                    FROM public.profiles p
-                    WHERE p.id = ANY(profile_ids)
-                    AND NOT EXISTS (
-                        SELECT 1 
-                        FROM public.event_vendors ev
-                        WHERE ev.event_id = e_event_id
-                        AND ev.vendor_id = p.id
+                WHILE inserted_count < 75 AND attempt_count < max_attempts LOOP
+                    WITH available_profiles AS (
+                        SELECT p.id, p.email
+                        FROM public.profiles p
+                        WHERE p.id = ANY(profile_ids)
+                        AND NOT EXISTS (
+                            SELECT 1 
+                            FROM public.event_vendors ev
+                            WHERE ev.event_id = e_event_id
+                            AND ev.vendor_id = p.id
+                        )
+                    ),
+                    selected_profile AS (
+                        SELECT id, email
+                        FROM available_profiles
+                        ORDER BY random()
+                        LIMIT 1
+                    ),
+                    vendor_application_status AS (
+                        SELECT vendor_status[floor(random() * array_length(vendor_status, 1) + 1)] AS status
                     )
-                ),
-                selected_profile AS (
-                    SELECT id, email
-                    FROM available_profiles
-                    ORDER BY random()
-                    LIMIT 1
-                ),
-                vendor_application_status AS (
-                    SELECT vendor_status[floor(random() * array_length(vendor_status, 1) + 1)] AS status
-                )
-                INSERT INTO public.event_vendors(
-                    event_id, 
-                    vendor_id,
-                    table_id,
-                    application_status,
-                    payment_status,
-                    table_quantity,
-                    vendors_at_table,
-                    inventory,
-                    application_phone,
-                    application_email
-                )
-                SELECT
-                    e_event_id,
-                    sp.id,
-                    e_table_id,
-                    CASE 
-                        WHEN i = 1 THEN 'ACCEPTED'::public."Application Status"
-                        ELSE vas.status::public."Application Status"
-                    END,
-                    CASE 
-                        WHEN i = 1 THEN 'PAID'::public."Payment Status"
-                        WHEN vas.status = 'ACCEPTED' THEN 
-                            payment_status[floor(random() * array_length(payment_status, 1) + 1)]::public."Payment Status"
-                        ELSE 'UNPAID'
-                    END,
-                    1,
-                    2,
-                    'Sports Cards, Memorabilia, Autographs',
-                    '555-555-5555',
-                    sp.email
-                FROM selected_profile sp, vendor_application_status vas
-                RETURNING vendor_id INTO inserted_vendor_id;
+                    INSERT INTO public.event_vendors(
+                        event_id, 
+                        vendor_id,
+                        table_id,
+                        application_status,
+                        payment_status,
+                        table_quantity,
+                        vendors_at_table,
+                        inventory,
+                        application_phone,
+                        application_email
+                    )
+                    SELECT
+                        e_event_id,
+                        sp.id,
+                        e_table_id,
+                        CASE 
+                            WHEN i = 1 THEN 'ACCEPTED'::public."Application Status"
+                            ELSE vas.status::public."Application Status"
+                        END,
+                        CASE 
+                            WHEN i = 1 THEN 'PAID'::public."Payment Status"
+                            WHEN vas.status = 'ACCEPTED' THEN 
+                                payment_status[floor(random() * array_length(payment_status, 1) + 1)]::public."Payment Status"
+                            ELSE 'UNPAID'
+                        END,
+                        1,
+                        2,
+                        'Sports Cards, Memorabilia, Autographs',
+                        '555-555-5555',
+                        sp.email
+                    FROM selected_profile sp, vendor_application_status vas
+                    RETURNING vendor_id INTO inserted_vendor_id;
 
-                GET DIAGNOSTICS inserted_row_count = ROW_COUNT;
+                    GET DIAGNOSTICS inserted_row_count = ROW_COUNT;
 
-                IF inserted_row_count > 0 AND inserted_vendor_id IS NOT NULL THEN
-                    -- Assign random number of tags (between 1 and 3) to this vendor
-                    num_tags := floor(random() * 3 + 1)::int;
-                    FOR j IN 1..num_tags LOOP
-                        -- Select a random tag ID
-                        random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
-                        
-                        -- Insert into vendor_tags if this combination doesn't already exist
-                        INSERT INTO public.event_vendor_tags(event_id, vendor_id, tag_id)
-                        SELECT e_event_id, inserted_vendor_id, random_tag_id
-                        WHERE NOT EXISTS (
-                            SELECT 1 FROM public.event_vendor_tags vt
-                            WHERE vt.event_id = e_event_id 
-                            AND vt.vendor_id = inserted_vendor_id 
-                            AND vt.tag_id = random_tag_id
-                        );
-                    END LOOP;
+                    IF inserted_row_count > 0 AND inserted_vendor_id IS NOT NULL THEN
+                        -- Assign random number of tags (between 1 and 3) to this vendor
+                        num_tags := floor(random() * 3 + 1)::int;
+                        FOR j IN 1..num_tags LOOP
+                            -- Select a random tag ID
+                            random_tag_id := tag_ids[floor(random() * array_length(tag_ids, 1) + 1)];
+                            
+                            -- Insert into vendor_tags if this combination doesn't already exist
+                            INSERT INTO public.event_vendor_tags(event_id, vendor_id, tag_id)
+                            SELECT e_event_id, inserted_vendor_id, random_tag_id
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM public.event_vendor_tags vt
+                                WHERE vt.event_id = e_event_id 
+                                AND vt.vendor_id = inserted_vendor_id 
+                                AND vt.tag_id = random_tag_id
+                            );
+                        END LOOP;
 
-                    -- Create order and line item if vendor is PAID
-                    SELECT ev.payment_status INTO vendor_payment_status FROM public.event_vendors ev
-                    WHERE vendor_id = inserted_vendor_id AND event_id = e_event_id;
+                        -- Create order and line item if vendor is PAID
+                        SELECT ev.payment_status INTO vendor_payment_status FROM public.event_vendors ev
+                        WHERE vendor_id = inserted_vendor_id AND event_id = e_event_id;
 
-                    IF vendor_payment_status = 'PAID' THEN
-                        INSERT INTO public.orders(
-                            event_id,
-                            customer_id,
-                            amount_paid
-                        ) 
-                        SELECT 
-                            e_event_id,
-                            inserted_vendor_id,
-                            price 
-                        FROM public.tables 
-                        WHERE id = e_table_id 
-                        RETURNING id INTO inserted_order_id;
+                        IF vendor_payment_status = 'PAID' THEN
+                            INSERT INTO public.orders(
+                                event_id,
+                                customer_id,
+                                amount_paid,
+                                created_at
+                            ) 
+                            SELECT 
+                                e_event_id,
+                                inserted_vendor_id,
+                                price,
+                                current_timestamp - (random() * interval '30 days')
+                            FROM public.tables 
+                            WHERE id = e_table_id 
+                            RETURNING id INTO inserted_order_id;
 
-                        INSERT INTO public.line_items(
-                            order_id,
-                            quantity,
-                            price,
-                            item_id,
-                            item_type
-                        ) 
-                        SELECT
-                            inserted_order_id,
-                            1,
-                            price,
-                            e_table_id,
-                            'TABLE'
-                        FROM public.tables 
-                        WHERE id = e_table_id;
+                            INSERT INTO public.line_items(
+                                order_id,
+                                quantity,
+                                price,
+                                item_id,
+                                item_type
+                            ) 
+                            SELECT
+                                inserted_order_id,
+                                1,
+                                price,
+                                e_table_id,
+                                'TABLE'
+                            FROM public.tables 
+                            WHERE id = e_table_id;
+                        END IF;
+                        inserted_count := inserted_count + 1;
                     END IF;
-                    inserted_count := inserted_count + 1;
+                    attempt_count := attempt_count + 1;
+                END LOOP;
+                IF inserted_count < 75 THEN
+                    RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
                 END IF;
-                attempt_count := attempt_count + 1;
-            END LOOP;
-            IF inserted_count < 75 THEN
-                RAISE EXCEPTION 'Could not insert 75 unique vendors after % attempts. Only inserted %', max_attempts, inserted_count;
-            END IF;
-        END;
-
+            END;
+        END IF;
+        
         -- Add 100 tickets to Event 1
         IF i = 1 THEN
             DECLARE
@@ -532,11 +536,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price
+                        t.price,
+                        current_timestamp - (random() * interval '20 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;
@@ -580,11 +586,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price * 2
+                        t.price * 2,
+                        current_timestamp - (random() * interval '40 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;
@@ -628,11 +636,13 @@ BEGIN
                     INSERT INTO public.orders(
                         event_id,
                         customer_id,
-                        amount_paid
+                        amount_paid,
+                        created_at
                     ) SELECT
                         e_event_id,
                         attendee_id,
-                        t.price * 3
+                        t.price * 3,
+                        current_timestamp - (random() * interval '20 days')
                     FROM public.tickets t
                     WHERE id = inserted_ticket_id
                     RETURNING id INTO inserted_order_id;

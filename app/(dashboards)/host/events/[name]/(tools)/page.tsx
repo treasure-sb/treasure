@@ -2,7 +2,7 @@ import Link from "next/link";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import VendorBreakdown from "./components/charts/VendorBreakdown";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
-import { Tables } from "@/types/supabase";
+import { Database, Tables } from "@/types/supabase";
 import {
   UsersIcon,
   BadgeDollarSign,
@@ -10,6 +10,9 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
+
+type AttendeeCountData =
+  Database["public"]["Functions"]["get_attendee_count"]["Returns"];
 
 export default async function Page({
   params: { name },
@@ -29,22 +32,12 @@ export default async function Page({
 
   const event: Tables<"events"> = eventData;
 
-  const { data: ticketsData } = await supabase
-    .from("event_tickets")
-    .select("*, ticket_info:tickets(*)")
-    .eq("event_id", event.id);
-
   const { data: tablesData } = await supabase
     .from("event_vendors")
     .select("*, table_info:tables(*)")
     .eq("event_id", event.id);
 
-  let ticketsSold = 0;
   let tablesSold = 0;
-
-  ticketsData?.map((ticket) => {
-    ticketsSold += 1;
-  });
 
   tablesData?.map((table) => {
     if (table.payment_status === "PAID") {
@@ -72,33 +65,39 @@ export default async function Page({
 
   const viewCount = lastPeriodViewsCount || 0;
 
+  const { data } = await supabase.rpc("get_attendee_count", {
+    event_id: eventData.id,
+  });
+
+  const attendeeCount: AttendeeCountData = data || 0;
+
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
         href={`/host/events/${name}/attendees`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
-        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
             Attendees
           </h3>
           <UsersIcon size={28} className="flex-shrink-0" />
         </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-3xl">
-          {ticketsSold}
+        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
+          {attendeeCount}
         </p>
       </Link>
       <Link
         href={`/host/events/${name}/sales`}
         className="bg-secondary rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-secondary/60 transition duration-300"
       >
-        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
             Total Sales
           </h3>
           <BadgeDollarSign size={28} className="flex-shrink-0" />
         </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-3xl">
+        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
           ${totalSales.toFixed(2)}
         </p>
       </Link>
@@ -106,13 +105,13 @@ export default async function Page({
         href={`/host/events/${name}/vendors`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
-        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
             Vendors
           </h3>
           <Star size={28} className="flex-shrink-0" />
         </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-3xl">
+        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
           {tablesSold} <span className="text-xl">paid</span>
         </p>
       </Link>
@@ -120,13 +119,13 @@ export default async function Page({
         href={`/host/events/${name}/views`}
         className="bg-secondary rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-secondary/60 transition duration-300"
       >
-        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
             Page Views
           </h3>
           <AppWindowIcon size={28} className="flex-shrink-0" />
         </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-3xl">
+        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
           {viewCount} <span className="text-xl">this week</span>
         </p>
       </Link>
@@ -134,7 +133,7 @@ export default async function Page({
         href={`/host/events/${name}/message`}
         className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
       >
-        <div className="flex lg:flex-col-reverse 2xl:flex-row justify-between">
+        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
           <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
             Message
           </h3>

@@ -63,16 +63,11 @@ const ApplicationStatusCell = ({ cell }: CellContext<Vendor, any>) => {
 
 const TagsCell = ({ cell }: CellContext<Vendor, any>) => {
   const value = cell.getValue() as string[];
+  const tagsJoined = value.join(", ");
+
   return (
-    <div className="flex flex-col space-y-1">
-      {value.slice(0, 3).map((tag, i) => (
-        <div key={i}>
-          <p>
-            {tag}
-            {i === 2 && value.length > 3 && <span>...</span>}
-          </p>
-        </div>
-      ))}
+    <div className="h-10 w-40 flex items-center">
+      <p className="truncate">{tagsJoined}</p>
     </div>
   );
 };

@@ -4,11 +4,14 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 
+type PriceType = "REGULAR" | "RSVP";
+
 export interface TicketSuccessInformation {
   ticketName: string;
   quantity: number;
   email: string;
   type: "TICKET" | "TABLE";
+  priceType: PriceType;
 }
 
 const getTicketName = async (ticketId: string) => {
@@ -61,6 +64,7 @@ export default async function Page({
   }
 
   const event: Tables<"events"> = checkoutSessionData.event;
+  const priceType = checkoutSessionData.price_type as PriceType;
   const eventDisplay = await getEventDisplayData(event);
 
   let ticketName: string;
@@ -86,6 +90,7 @@ export default async function Page({
     quantity,
     email,
     type,
+    priceType: priceType,
   };
 
   return (

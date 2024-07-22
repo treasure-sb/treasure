@@ -9,6 +9,7 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
+  Row,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -18,24 +19,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Filters from "./Filters";
-import ExportButton from "./ExportButton";
-import { Order } from "./OrderDataColumns";
+import { Attendee } from "./AttendeeDataColumns";
 import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+import AttendeeDialogContent from "../attendee_dialog/AttendeeDialogContent";
+import Filters from "./Filters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   event: Tables<"events">;
+  tickets: string[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   event,
+  tickets,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
+    null
+  );
+  const [open, setOpen] = useState(false);
+
+  const showAttendeeDialog = (row: Row<TData>) => {
+    setSelectedAttendee(row.original as Attendee);
+    setOpen(true);
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -49,18 +63,18 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const typeFilter = table.getColumn("type")?.getFilterValue();
-  const updateTypeFilter = (type: string | undefined) => {
-    table.getColumn("type")?.setFilterValue(type);
+  const ticketFilter = table.getColumn("ticketNames")?.getFilterValue();
+  const updateTicketFilter = (type: string | undefined) => {
+    table.getColumn("ticketNames")?.setFilterValue(type);
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <Filters typeFilter={typeFilter} updateTypeFilter={updateTypeFilter} />
-        <ExportButton
-          salesData={data as Order[]}
-          eventName={event.cleaned_name}
+        <Filters
+          ticketNames={tickets}
+          ticketFilter={ticketFilter}
+          updateTicketFilter={updateTicketFilter}
         />
       </div>
       <div className="rounded-md border">
@@ -87,10 +101,11 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="relative"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => {}}
+                  onClick={() => {
+                    showAttendeeDialog(row);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -133,6 +148,21 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setSelectedAttendee(null);
+          setOpen(isOpen);
+        }}
+      >
+        {selectedAttendee && (
+          <AttendeeDialogContent
+            attendeeData={selectedAttendee}
+            event={event}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }

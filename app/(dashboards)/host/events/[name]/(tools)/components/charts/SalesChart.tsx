@@ -9,6 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
+  AreaChart,
+  Area,
 } from "recharts";
 import {
   ValueType,
@@ -29,6 +31,28 @@ export default function SalesChart({
     0
   );
 
+  const getTickInterval = (max: number) => {
+    if (max <= 1) return 0.25;
+    if (max <= 5) return 1;
+    if (max <= 10) return 2;
+    if (max <= 100) return 20;
+    if (max <= 300) return 50;
+    if (max <= 500) return 100;
+    if (max <= 1000) return 200;
+    return Math.pow(10, Math.floor(Math.log10(max)) - 1);
+  };
+
+  const tickInterval = getTickInterval(maxValue);
+  const maxYValue =
+    maxValue < 1
+      ? Math.ceil(maxValue / 0.25) * 0.25
+      : Math.ceil(maxValue / tickInterval) * tickInterval;
+
+  const yAxisTicks = Array.from(
+    { length: Math.max(Math.floor(maxYValue / tickInterval) + 1, 4) },
+    (_, i) => Number((i * tickInterval).toFixed(2))
+  );
+
   const formatYTick = (value: string) => {
     return `$${value}`;
   };
@@ -39,13 +63,13 @@ export default function SalesChart({
 
   return (
     <ResponsiveContainer width="100%" height="90%">
-      <LineChart width={500} height={300} data={salesData}>
+      <AreaChart width={500} height={300} data={salesData}>
         <CartesianGrid
           strokeDasharray="4 1"
           stroke="#27272a"
           vertical={false}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip cursor={false} content={<CustomTooltip />} />
         <XAxis
           dataKey="normalizedDate"
           axisLine={false}
@@ -60,11 +84,28 @@ export default function SalesChart({
           tickSize={0}
           tickMargin={16}
           tickFormatter={formatYTick}
-          ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
+          ticks={yAxisTicks}
+          domain={[0, Math.max(maxYValue, 1)]}
         />
-        <Line type="monotone" dataKey="tables" stroke="#71d08c" dot={false} />
-        <Line type="monotone" dataKey="tickets" stroke="#eac362" dot={false} />
-      </LineChart>
+        <Area
+          type="monotone"
+          dataKey="tables"
+          fill="#71d08c"
+          stroke="#71d08c"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"a"}
+        />
+        <Area
+          type="monotone"
+          dataKey="tickets"
+          fill="#eac362"
+          stroke="#eac362"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"b"}
+        />
+      </AreaChart>
     </ResponsiveContainer>
   );
 }
