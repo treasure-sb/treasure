@@ -324,18 +324,15 @@ const getAllEventData = async (search: string, page: number) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
-    .select(
-      `
-    *, event_categories!inner(categories!inner(name), *)`,
-    )
+    .select(`*, event_categories!inner(categories!inner(name), *)`)
     .eq("event_categories.categories.name", "collectables")
-    .gte("events.date", today)
-    .ilike("events.name", `%${search}%`)
-    .order("events.featured", { ascending: false })
-    .order("events.date", { ascending: true })
-    .order("events.id", { ascending: true })
+    .gte("date", today)
+    .ilike("name", `%${search}%`)
+    .order("featured", { ascending: false })
+    .order("date", { ascending: true })
+    .order("id", { ascending: true })
     .range(startIndex, endIndex);
-
+  console.log(error);
   return { data, error };
 };
 
