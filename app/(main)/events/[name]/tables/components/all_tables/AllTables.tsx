@@ -57,11 +57,7 @@ export default function AllTables() {
   const tableOptions = tables.map((table, index) => (
     <AccordionItem className="p-4" key={index} value={`item-${index}`}>
       <AccordionTrigger className="decoration-background text-background">
-        {event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT" ? (
-          <TableInfoNoPayment type={table.section_name} />
-        ) : (
-          <TableInfo type={table.section_name} price={table.price} />
-        )}
+        <TableInfo type={table.section_name} price={table.price} />
       </AccordionTrigger>
       <AccordionContent className="px-6 py-2">
         <TablesCounter table={table} />

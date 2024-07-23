@@ -16,10 +16,6 @@ export default function ContinueButton({
   const { profile, event, flowDispatch } = useVendorFlow();
   const { applicationDispatch } = useVendorApplication();
 
-  const areApplicationsOpen =
-    event.vendor_exclusivity === "APPLICATIONS" ||
-    event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT";
-
   const isSoldOut = table.quantity === 0;
 
   const autofillVendorInfo = () => {
@@ -27,7 +23,7 @@ export default function ContinueButton({
     if (profile) {
       vendorInfo = {
         phone: formatPhoneNumber(
-          profile.phone?.slice(profile?.phone.length - 10) || ""
+          profile.phone?.slice(profile?.phone.length - 10) || "",
         ),
         email: profile.email,
         businessName: profile.business_name,
@@ -40,7 +36,7 @@ export default function ContinueButton({
   };
 
   const handleCheckout = async () => {
-    if (areApplicationsOpen) {
+    if (!isSoldOut) {
       applicationDispatch({ type: "setTable", payload: table });
       applicationDispatch({ type: "setTableQuantity", payload: tableCount });
       autofillVendorInfo();
@@ -50,15 +46,12 @@ export default function ContinueButton({
 
   return (
     <Button
-      disabled={!areApplicationsOpen || isSoldOut}
+      disabled={isSoldOut}
       onClick={async () => await handleCheckout()}
       className="w-full rounded-full p-6 relative"
     >
-      {areApplicationsOpen ? (
-        <p>Continue to Registration</p>
-      ) : (
-        <p>Not Accepting Applications</p>
-      )}
+      <p>Continue to Registration</p>
+
       {isSoldOut && (
         <div className="absolute -rotate-12 bg-red-500 p-2 w-36">Sold Out</div>
       )}

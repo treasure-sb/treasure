@@ -52,12 +52,12 @@ const createEvent = async (values: EventForm) => {
     city,
     state,
     date,
-    vendor_exclusivity,
     sales_status,
     start_time,
     end_time,
     poster_url,
     venue_map_url,
+    event_status,
   } = values;
   const {
     data: { user },
@@ -88,7 +88,7 @@ const createEvent = async (values: EventForm) => {
         state,
         start_time,
         end_time,
-        vendor_exclusivity,
+        event_status,
         sales_status,
         poster_url,
         venue_map_url,
@@ -104,7 +104,7 @@ const createEvent = async (values: EventForm) => {
       await createTableTicket(values.tables, event.id, event.name, posterUrl),
       await createApplicationInfo(
         values.application_vendor_information,
-        event.id
+        event.id,
       ),
       await createTags(values.tags, event.id),
     ];
@@ -136,7 +136,7 @@ const createTickets = async (
   tickets: EventFormTicket[],
   event_id: string,
   event_name: string,
-  poster_url: string
+  poster_url: string,
 ) => {
   const supabase = await createSupabaseServerClient();
   const ticketsPromise = tickets.map(async (ticket) => {
@@ -159,7 +159,7 @@ const createTableTicket = async (
   tables: EventFormTable[],
   event_id: string,
   event_name: string,
-  poster_url: string
+  poster_url: string,
 ) => {
   const supabase = await createSupabaseServerClient();
   const tablesPromise = tables.map(async (table) => {
@@ -191,7 +191,7 @@ const createTableTicket = async (
 
 const createApplicationInfo = async (
   application_vendors_information: EventVendorApplication,
-  event_id: string
+  event_id: string,
 ) => {
   const supabase = await createSupabaseServerClient();
   const {
