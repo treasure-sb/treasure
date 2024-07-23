@@ -28,7 +28,6 @@ export default function CreateEvent() {
     date: undefined,
     start_time: "09:30",
     end_time: "16:30",
-    event_status: "LIVE",
     tickets: [
       {
         ticket_price: "",
@@ -57,9 +56,10 @@ export default function CreateEvent() {
       terms: [{ term_id: 1, term: "" }],
     },
     sales_status: "NO_SALE",
+    vendor_exclusivity: "PUBLIC",
     poster_url: undefined,
     venue_map_url: undefined,
-  });
+  }); 
 
   useMemo(() => {
     if (eventID) {
@@ -78,11 +78,11 @@ export default function CreateEvent() {
           start_time: eventData.start_time.slice(0, -3),
           end_time: eventData.end_time.slice(0, -3),
           tickets: eventData.tickets,
-          event_status: eventData.event_status,
           tables:
             eventData.tables.length === 0 ? eventForm.tables : eventData.tables,
           tags: eventData.tags,
           sales_status: eventData.sales_status,
+          vendor_exclusivity: eventData.vendor_exclusivity,
           // poster_url: eventData.poster_url,
           // venue_map_url: eventData.venue_map_url,
         });

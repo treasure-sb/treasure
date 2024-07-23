@@ -230,6 +230,7 @@ BEGIN
             city,
             state,
             sales_status,
+            vendor_exclusivity
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,

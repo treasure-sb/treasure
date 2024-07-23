@@ -41,11 +41,12 @@ const vendorInfoSchema = z.object({
   }),
   wifi_availability: z.boolean().default(false),
   additional_information: z.string().optional(),
+  vendor_exclusivity: z.string().default("PUBLIC"),
   terms: z.array(
     z.object({
       term_id: z.number(),
       term: z.string().min(1, { message: "Term and Condition Required" }),
-    }),
+    })
   ),
 });
 
@@ -66,6 +67,7 @@ export default function EventVendorInfo({
         eventForm.application_vendor_information.wifi_availability,
       additional_information:
         eventForm.application_vendor_information.additional_information,
+      vendor_exclusivity: eventForm.vendor_exclusivity,
       terms: eventForm.application_vendor_information.terms,
     },
   });
@@ -76,9 +78,16 @@ export default function EventVendorInfo({
   });
   const [numTerms, setNumTerms] = useState(1);
 
+  const checkClicked = () => {
+    form.getValues().vendor_exclusivity === "PUBLIC"
+      ? form.setValue("vendor_exclusivity", "APPLICATIONS")
+      : form.setValue("vendor_exclusivity", "PUBLIC");
+  };
+
   const handleNext = () => {
     const newForm = {
       ...eventForm,
+      vendor_exclusivity: form.getValues().vendor_exclusivity,
       application_vendor_information: {
         check_in_time: form.getValues().check_in_time,
         check_in_location: form.getValues().check_in_location,
@@ -160,6 +169,23 @@ export default function EventVendorInfo({
                 )}
               />
               <div>There will be free wifi for vendors</div>
+            </div>
+            <div className="flex space-x-3">
+              <FormField
+                control={form.control}
+                name={`vendor_exclusivity`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value === "PUBLIC" ? false : true}
+                        onCheckedChange={() => checkClicked()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div>Applications are required for tables to be purchased</div>
             </div>
             <FormField
               control={form.control}
