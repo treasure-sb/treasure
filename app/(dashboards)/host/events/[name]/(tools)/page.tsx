@@ -114,7 +114,7 @@ export default async function Page({
       title: "Total Sales",
       Icon: BadgeDollarSign,
       href: `${name}/sales`,
-      stat: totalSales.toFixed(2),
+      stat: `$${totalSales.toFixed(2)}`,
     },
     {
       title: "Vendors",
