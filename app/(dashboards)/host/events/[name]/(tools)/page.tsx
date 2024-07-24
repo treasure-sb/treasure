@@ -9,10 +9,42 @@ import {
   Star,
   MessageCircle,
   AppWindowIcon,
+  LucideIcon,
 } from "lucide-react";
 
 type AttendeeCountData =
   Database["public"]["Functions"]["get_attendee_count"]["Returns"];
+
+type ToolOptionButtonProps = {
+  title: string;
+  Icon: LucideIcon;
+  href: string;
+  stat?: string;
+  subtext?: string;
+};
+
+const ToolOptionButton = ({
+  title,
+  Icon,
+  href,
+  stat,
+  subtext,
+}: ToolOptionButtonProps) => (
+  <Link
+    href={`/host/events/${href}`}
+    className="bg-secondary text-foreground flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 border-[1px] hover:bg-secondary/60 hover:border-[1px] hover:border-primary/30 transition duration-300"
+  >
+    <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
+      <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+        {title}
+      </h3>
+      <Icon size={28} className="flex-shrink-0" />
+    </div>
+    <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
+      {stat} <span className="text-xl">{subtext}</span>
+    </p>
+  </Link>
+);
 
 export default async function Page({
   params: { name },
@@ -71,75 +103,45 @@ export default async function Page({
 
   const attendeeCount: AttendeeCountData = data || 0;
 
+  const hostToolsOptions = [
+    {
+      title: "Attendees",
+      Icon: UsersIcon,
+      href: `${name}/attendees`,
+      stat: attendeeCount.toString(),
+    },
+    {
+      title: "Total Sales",
+      Icon: BadgeDollarSign,
+      href: `${name}/sales`,
+      stat: `$${totalSales.toFixed(2)}`,
+    },
+    {
+      title: "Vendors",
+      Icon: Star,
+      href: `${name}/vendors`,
+      stat: tablesSold.toString(),
+      subtext: "paid",
+    },
+    {
+      title: "Page Views",
+      Icon: AppWindowIcon,
+      href: `${name}/views`,
+      stat: viewCount.toString(),
+      subtext: "this week",
+    },
+    {
+      title: "Message",
+      Icon: MessageCircle,
+      href: `${name}/message`,
+    },
+  ];
+
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
-      <Link
-        href={`/host/events/${name}/attendees`}
-        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
-      >
-        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-            Attendees
-          </h3>
-          <UsersIcon size={28} className="flex-shrink-0" />
-        </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-          {attendeeCount}
-        </p>
-      </Link>
-      <Link
-        href={`/host/events/${name}/sales`}
-        className="bg-secondary rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-secondary/60 transition duration-300"
-      >
-        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-            Total Sales
-          </h3>
-          <BadgeDollarSign size={28} className="flex-shrink-0" />
-        </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-          ${totalSales.toFixed(2)}
-        </p>
-      </Link>
-      <Link
-        href={`/host/events/${name}/vendors`}
-        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
-      >
-        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-            Vendors
-          </h3>
-          <Star size={28} className="flex-shrink-0" />
-        </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-          {tablesSold} <span className="text-xl">paid</span>
-        </p>
-      </Link>
-      <Link
-        href={`/host/events/${name}/views`}
-        className="bg-secondary rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-secondary/60 transition duration-300"
-      >
-        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-            Page Views
-          </h3>
-          <AppWindowIcon size={28} className="flex-shrink-0" />
-        </div>
-        <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-          {viewCount} <span className="text-xl">this week</span>
-        </p>
-      </Link>
-      <Link
-        href={`/host/events/${name}/message`}
-        className="bg-primary text-black flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 hover:bg-primary/60 transition duration-300"
-      >
-        <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-          <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-            Message
-          </h3>
-          <MessageCircle size={28} className="flex-shrink-0" />
-        </div>
-      </Link>
+      {hostToolsOptions.map((option) => (
+        <ToolOptionButton key={option.title} {...option} />
+      ))}
       <SalesAnalytics event={event} periodLength={length} />
       <VendorBreakdown event={event} />
     </div>
