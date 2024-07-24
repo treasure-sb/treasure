@@ -15,6 +15,7 @@ import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
 import VendorSidebarOptions from "./VendorSidebarOptions";
 import AdminSidebarOptions from "./AdminSidebarOptions";
+import Logo from "@/components/icons/TreasureLogo";
 
 export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   <div
@@ -52,20 +53,9 @@ export default function Sidebar() {
       <div>
         <Link
           href="/home"
-          className="font-semibold text-3xl flex items-left justify-center mb-8"
+          className="font-semibold text-3xl flex items-center justify-center mb-8"
         >
-          {showSidebar ? (
-            <div className="w-full px-6 justify-start text-left">
-              <Image
-                src="/static/web_logo.png"
-                alt="web logo"
-                width={150}
-                height={120}
-              />
-            </div>
-          ) : (
-            <TreasureEmerald width={28} height={28} />
-          )}
+          {showSidebar ? <Logo /> : <TreasureEmerald width={28} height={28} />}
         </Link>
         <div className="space-y-6 flex flex-col">
           {type === "host" ? (
