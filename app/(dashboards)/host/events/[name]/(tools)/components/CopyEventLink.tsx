@@ -10,14 +10,16 @@ export default function CopyEventLink({
 }) {
   const handleCopy = async () => {
     const cleanLink = (link: string) => {
-      if(link.startsWith("https://")){
-        return link.substring(8)
+      if (link.startsWith("https://")) {
+        return link.substring(8);
       }
-      return link
-    }
+      return link;
+    };
     const navigatorCopy = async () => {
       try {
-        const inviteLink = `${cleanLink(window.location.origin)}/events/${cleaned_event_name}`;
+        const inviteLink = `${cleanLink(
+          window.location.origin
+        )}/events/${cleaned_event_name}`;
         setTimeout(() => {
           navigator.clipboard.writeText(inviteLink);
         }, 0);
@@ -31,8 +33,12 @@ export default function CopyEventLink({
   };
 
   return (
-    <Button onClick={handleCopy} variant={"ghost"} className="flex space-x-1">
-      <Chain className="w-5 h-5 text-primary" />
+    <Button
+      onClick={handleCopy}
+      variant={"ghost"}
+      className="flex space-x-1 group"
+    >
+      <Chain className="w-5 h-5 text-foreground group-hover:rotate-12 transition duration-300" />
       <p> Copy Link</p>
     </Button>
   );

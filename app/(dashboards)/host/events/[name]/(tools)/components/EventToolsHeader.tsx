@@ -1,7 +1,7 @@
 "use client";
 
 import { EventDisplayData } from "@/types/event";
-import { ArrowUpLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpLeft, ArrowUpRight, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import EventPoster from "@/components/events/shared/EventPoster";
@@ -58,28 +58,32 @@ export default function EventToolsHeader({
           </div>
         </div>
         <div className="flex flex-col items-end gap-4">
-          <Link
-            href={`/host/events/${event.cleaned_name}/edit`}
-            className="group cursor-pointer"
-          >
-            <Button variant={"secondary"} className="flex gap-2">
-              <p>Edit Event</p>
-            </Button>
-          </Link>
+          <Button asChild variant="secondary" className="flex gap-2">
+            <Link href={`/host/events/${event.cleaned_name}/edit`}>
+              Edit Event
+            </Link>
+          </Button>
+
           <div className="flex space-x-1">
+            <Button asChild variant={"ghost"} className="flex gap-2 group">
+              <Link href={`/host/events/${event.cleaned_name}/team`}>
+                <Users
+                  size={20}
+                  className="group-hover:-translate-y-[0.10rem] transition duration-300"
+                />
+                <span>Manage Team</span>
+              </Link>
+            </Button>
             <CopyEventLink cleaned_event_name={event.cleaned_name} />
-            <Link
-              href={`/events/${event.cleaned_name}`}
-              className="group cursor-pointer"
-            >
-              <Button variant={"ghost"} className="flex space-x-1">
-                <p>Go to Event</p>
+            <Button asChild variant="ghost" className="flex space-x-1 group">
+              <Link href={`/events/${event.cleaned_name}`}>
+                <span>Go to Event</span>
                 <ArrowUpRight
                   size={20}
                   className="group-hover:translate-x-[0.10rem] group-hover:-translate-y-[0.10rem] transition duration-300"
                 />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
