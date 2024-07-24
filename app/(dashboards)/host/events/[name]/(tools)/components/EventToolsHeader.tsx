@@ -23,7 +23,8 @@ export default function EventToolsHeader({
       splitPathname[4] === "attendees" ||
       splitPathname[4] === "sales" ||
       splitPathname[4] === "edit" ||
-      splitPathname[4] === "views");
+      splitPathname[4] === "views" ||
+      splitPathname[4] === "team");
 
   return (
     <div>

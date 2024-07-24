@@ -137,6 +137,21 @@ export type Database = {
           },
         ]
       }
+      categories: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       checkout_sessions: {
         Row: {
           created_at: string
@@ -198,6 +213,36 @@ export type Database = {
           },
         ]
       }
+      event_categories: {
+        Row: {
+          category_id: string
+          event_id: string
+        }
+        Insert: {
+          category_id?: string
+          event_id?: string
+        }
+        Update: {
+          category_id?: string
+          event_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_categories_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_codes: {
         Row: {
           code: string
@@ -235,6 +280,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "public_event_codes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_dates: {
+        Row: {
+          date: string
+          end_time: string | null
+          event_id: string
+          id: string
+          start_time: string
+        }
+        Insert: {
+          date: string
+          end_time?: string | null
+          event_id: string
+          id?: string
+          start_time: string
+        }
+        Update: {
+          date?: string
+          end_time?: string | null
+          event_id?: string
+          id?: string
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_dates_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
@@ -336,6 +413,42 @@ export type Database = {
           },
         ]
       }
+      event_roles: {
+        Row: {
+          event_id: string
+          id: string
+          role: Database["public"]["Enums"]["Event Roles"]
+          user_id: string
+        }
+        Insert: {
+          event_id?: string
+          id?: string
+          role: Database["public"]["Enums"]["Event Roles"]
+          user_id?: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          role?: Database["public"]["Enums"]["Event Roles"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_roles_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_tags: {
         Row: {
           event_id: string
@@ -417,6 +530,45 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_tickets_dates: {
+        Row: {
+          checked_in_at: string | null
+          event_dates_id: string
+          event_ticket_id: string
+          id: string
+          valid: boolean
+        }
+        Insert: {
+          checked_in_at?: string | null
+          event_dates_id: string
+          event_ticket_id: string
+          id?: string
+          valid?: boolean
+        }
+        Update: {
+          checked_in_at?: string | null
+          event_dates_id?: string
+          event_ticket_id?: string
+          id?: string
+          valid?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_dates_event_dates_id_fkey"
+            columns: ["event_dates_id"]
+            isOneToOne: false
+            referencedRelation: "event_dates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_tickets_dates_event_ticket_id_fkey"
+            columns: ["event_ticket_id"]
+            isOneToOne: false
+            referencedRelation: "event_tickets"
             referencedColumns: ["id"]
           },
         ]
@@ -1029,6 +1181,39 @@ export type Database = {
           },
         ]
       }
+      ticket_dates: {
+        Row: {
+          event_date_id: string
+          id: string
+          ticket_id: string
+        }
+        Insert: {
+          event_date_id: string
+          id?: string
+          ticket_id: string
+        }
+        Update: {
+          event_date_id?: string
+          id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_dates_event_date_id_fkey"
+            columns: ["event_date_id"]
+            isOneToOne: false
+            referencedRelation: "event_dates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_dates_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tickets: {
         Row: {
           created_at: string
@@ -1357,6 +1542,7 @@ export type Database = {
         | "WAITLISTED"
       "Checkout Price Type": "RSVP" | "REGULAR"
       "Checkout Ticket Types": "TICKET" | "TABLE"
+      "Event Roles": "HOST" | "COHOST" | "STAFF" | "SCANNER"
       "Event Ticket Status":
         | "NO_SALE"
         | "TABLES_ONLY"
