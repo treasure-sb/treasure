@@ -14,13 +14,16 @@ export default function EventToolsHeader({
   event: EventDisplayData;
 }) {
   const pathname = usePathname();
+  const splitPathname = pathname.split("/");
+
   const isEventTool =
-    pathname.includes("vendors") ||
-    pathname.includes("message") ||
-    pathname.includes("attendees") ||
-    pathname.includes("sales") ||
-    pathname.includes("edit") ||
-    pathname.includes("views");
+    splitPathname.length > 4 &&
+    (splitPathname[4] === "vendors" ||
+      splitPathname[4] === "message" ||
+      splitPathname[4] === "attendees" ||
+      splitPathname[4] === "sales" ||
+      splitPathname[4] === "edit" ||
+      splitPathname[4] === "views");
 
   return (
     <div>
