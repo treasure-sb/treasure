@@ -666,4 +666,10 @@ BEGIN
         END IF;
     END LOOP;
 END $$;
+
+INSERT INTO public.event_categories (event_id, category_id)
+SELECT events.id, categories.id
+FROM public.events
+JOIN public.categories ON categories.name = 'collectables';
+
 RESET ALL;
