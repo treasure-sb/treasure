@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Database, Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import { CustomerData } from "./types";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 type AttendeeData =
   Database["public"]["Functions"]["get_attendee_data"]["Returns"][number];
@@ -20,17 +21,7 @@ export default async function Page({
 }) {
   const supabase = await createSupabaseServerClient();
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
-
-  if (eventError) {
-    redirect("/host/events");
-  }
-
-  const event: Tables<"events"> = eventData;
+  const { event, eventError } = await getEventFromCleanedName(name);
 
   const { data } = await supabase.rpc("get_attendee_data", {
     event_id: event.id,

@@ -8,12 +8,9 @@ import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { Tables } from "@/types/supabase";
+import { EventWithDates } from "@/types/event";
 
-export default function UploadHighlight({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
+export default function UploadHighlight({ event }: { event: EventWithDates }) {
   const { refresh } = useRouter();
   const supabase = createClient();
 

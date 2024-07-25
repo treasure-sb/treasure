@@ -1,17 +1,21 @@
-import { Tables } from "@/types/supabase";
-import { convertToStandardTime } from "@/lib/utils";
-import { formatDate } from "@/lib/utils";
+import { EventWithDates } from "@/types/event";
+import { formatDates } from "@/lib/utils";
 import { ArrowUpRight, MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import EventCalendar from "@/components/ui/custom/event-calendar";
 
-export default function EventInfo({ event }: { event: Tables<"events"> }) {
-  const formattedDate = formatDate(event.date);
-  const formattedStartTime = convertToStandardTime(event.start_time);
-  const formattedEndTime = convertToStandardTime(event.end_time);
+export default function EventInfo({ event }: { event: EventWithDates }) {
+  let formattedDates: { date: string; start_time: string; end_time: string }[] =
+    formatDates(event.dates);
 
   const eventMonth = parseInt(event.date.split("-")[1]);
-  const eventDay = parseInt(event.date.split("-")[2]);
+  const eventDays: number[] =
+    formattedDates.length > 1
+      ? [
+          parseInt(event.dates[0].date.split("-")[2]),
+          parseInt(event.dates[event.dates.length - 1].date.split("-")[2]),
+        ]
+      : [parseInt(event.dates[0].date.split("-")[2])];
 
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     event.address
@@ -20,14 +24,28 @@ export default function EventInfo({ event }: { event: Tables<"events"> }) {
   return (
     <section className="space-y-2">
       <div className="flex space-x-4 items-center">
-        <EventCalendar month={eventMonth} day={eventDay} />
-        <div>
-          <p>{formattedDate}</p>
-          <p>
-            {formattedStartTime} - {formattedEndTime}
-          </p>
+        <EventCalendar month={eventMonth} days={eventDays} />
+        <div className="flex-col">
+          {formattedDates.length > 1 ? (
+            formattedDates.map((date) => (
+              <div className="flex">
+                <p>
+                  {date.date}{" "}
+                  <span className="text-xs">{`${date.start_time} - ${date.end_time}`}</span>
+                </p>
+              </div>
+            ))
+          ) : (
+            <div>
+              <p>{formattedDates[0].date}</p>
+              <p>
+                {formattedDates[0].start_time} - {formattedDates[0].end_time}
+              </p>
+            </div>
+          )}
         </div>
       </div>
+
       <div className="flex space-x-4">
         <div className="w-10">
           <MapPinIcon className="m-auto stroke-1 text-foreground/60" />

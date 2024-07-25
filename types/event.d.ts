@@ -107,7 +107,11 @@ export interface SearchParams {
   distance?: string;
 }
 
-export type EventDisplayData = Tables<"events"> & {
+export type EventDisplayData = EventWithDates & {
   publicPosterUrl: string;
-  formattedDate: string;
+  formattedDates: { date: string; start_time: string; end_time: string }[];
+};
+
+export type EventWithDates = Tables<"events"> & {
+  dates: { date: string; start_time: string; end_time: string }[];
 };

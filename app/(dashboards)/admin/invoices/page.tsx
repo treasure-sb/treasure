@@ -8,12 +8,13 @@ import DateRangeFilter from "./components/DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import Image from "next/image";
+import { EventWithDates } from "@/types/event";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
 } & {
   line_items: Tables<"line_items">[];
-} & { event: Tables<"events"> };
+} & { event: EventWithDates };
 
 type invoice = {
   host: string;

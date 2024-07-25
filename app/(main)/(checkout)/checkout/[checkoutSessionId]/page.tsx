@@ -1,7 +1,7 @@
 import InitializeCheckout from "./components/InitializeCheckout";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
-import { getEventDisplayData } from "@/lib/helpers/events";
+import { getEventDisplayData, getEventFromId } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/helpers/profiles";
 import { CheckoutTicketInfo } from "../../types";
@@ -71,12 +71,7 @@ export default async function Page({
   const { event_id, ticket_id, ticket_type, quantity, promo_id, metadata } =
     checkoutSession;
 
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", event_id)
-    .single();
-  const event: Tables<"events"> = eventData;
+  const { event, eventError } = await getEventFromId(event_id);
   const eventDisplay = await getEventDisplayData(event);
   const { profile } = await getProfile(checkoutSession.user_id);
 

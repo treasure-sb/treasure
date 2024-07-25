@@ -32,7 +32,7 @@ const getCityCoordinates = async (city: string) => {
       .join(" ");
 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      `${cityName}, ${stateName}`,
+      `${cityName}, ${stateName}`
     )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
     try {
@@ -60,7 +60,7 @@ const buildEventsQuery = async (
   from?: string,
   until?: string,
   city?: string,
-  distance?: number,
+  distance?: number
 ) => {
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
@@ -68,14 +68,16 @@ const buildEventsQuery = async (
 
   let query = supabase
     .from("events")
-    .select("*, event_categories!inner(categories!inner(name), *)")
+    .select(
+      "*, dates:event_dates(date,start_time,end_time), event_categories!inner(categories!inner(name), *)"
+    )
     .eq("event_categories.categories.name", "collectables");
 
   if (tagId) {
     query = supabase
       .from("events")
       .select(
-        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)",
+        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)"
       )
       .eq("event_categories.categories.name", "collectables")
       .eq("event_tags.tag_id", tagId);
@@ -121,7 +123,7 @@ const buildEventsQuery = async (
 
   query = query
     .order("featured", { ascending: false })
-    .order("date", { ascending: true })
+    .order("date", { referencedTable: "dates", ascending: true })
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
 
@@ -324,12 +326,14 @@ const getAllEventData = async (search: string, page: number) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
-    .select(`*, event_categories!inner(categories!inner(name), *)`)
+    .select(
+      `*, dates:event_dates(date,start_time,end_time), event_categories!inner(categories!inner(name), *)`
+    )
     .eq("event_categories.categories.name", "collectables")
     .gte("date", today)
     .ilike("name", `%${search}%`)
     .order("featured", { ascending: false })
-    .order("date", { ascending: true })
+    .order("date", { referencedTable: "dates", ascending: true })
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
   console.log(error);

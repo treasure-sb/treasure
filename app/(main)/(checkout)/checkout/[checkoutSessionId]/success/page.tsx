@@ -3,6 +3,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 
 type PriceType = "REGULAR" | "RSVP";
 
@@ -55,7 +56,9 @@ export default async function Page({
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
-      .select("*, event:events(*), ticket_id, profile:profiles(email)")
+      .select(
+        "*, event:events(*, event_dates(date, start_time, end_time)), ticket_id, profile:profiles(email)"
+      )
       .eq("id", checkoutSessionId)
       .single();
 
@@ -63,7 +66,7 @@ export default async function Page({
     redirect("/events");
   }
 
-  const event: Tables<"events"> = checkoutSessionData.event;
+  const event: EventWithDates = checkoutSessionData.event;
   const priceType = checkoutSessionData.price_type as PriceType;
   const eventDisplay = await getEventDisplayData(event);
 

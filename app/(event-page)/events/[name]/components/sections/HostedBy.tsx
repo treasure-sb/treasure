@@ -7,10 +7,11 @@ import Link from "next/link";
 import ContactHost from "./ContactHost";
 import { ArrowUpRight, InstagramIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { EventWithDates } from "@/types/event";
 
 type OrganizerType = Tables<"profiles"> | Tables<"temporary_profiles">;
 
-export default async function HostedBy({ event }: { event: Tables<"events"> }) {
+export default async function HostedBy({ event }: { event: EventWithDates }) {
   const supabase = await createSupabaseServerClient();
   let organizer: OrganizerType;
   let type = "profile";

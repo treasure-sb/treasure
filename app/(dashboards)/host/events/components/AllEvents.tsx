@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import NextEventCard from "./NextEventCard";
 import RegularEventCard from "./RegularEventCard";
+import { EventWithDates } from "@/types/event";
 
 export default async function AllEvents() {
   const supabase = await createSupabaseServerClient();
@@ -32,8 +33,8 @@ export default async function AllEvents() {
     redirect("/events");
   }
 
-  const upcomingEventsHosting: Tables<"events">[] = upcomingData || [];
-  const pastEventsHosting: Tables<"events">[] = pastData || [];
+  const upcomingEventsHosting: EventWithDates[] = upcomingData || [];
+  const pastEventsHosting: EventWithDates[] = pastData || [];
 
   const upcomingEventData = await eventDisplayData(upcomingEventsHosting);
   const pastEventData = await eventDisplayData(pastEventsHosting);

@@ -1,11 +1,11 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import FeaturedEventImageLink from "./FeaturedEventImageLink";
-import { Tables } from "@/types/supabase";
+import { EventWithDates } from "@/types/event";
 
 export default async function FeaturedEventDisplay({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.storage

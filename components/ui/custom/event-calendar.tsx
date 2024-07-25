@@ -15,17 +15,19 @@ export const months: { [key: number]: string } = {
 
 export default function EventCalendar({
   month,
-  day,
+  days,
 }: {
   month: number;
-  day: number;
+  days: number[];
 }) {
   return (
-    <div className="border-[1px] border-foreground/30 text-foreground/60 rounded-sm text-center w-10">
+    <div className="border-[1px] border-foreground/30 text-foreground/60 rounded-sm text-center w-15">
       <p className="border-b-[1px] border-foreground/30 px-2 text-xxs">
         {months[month]}
       </p>
-      <p className="px-2 mx-auto text-md">{day}</p>
+      <p className="px-2 mx-auto text-md">
+        {days.length > 1 ? `${days[0]} - ${days[days.length - 1]}` : days[0]}
+      </p>
     </div>
   );
 }

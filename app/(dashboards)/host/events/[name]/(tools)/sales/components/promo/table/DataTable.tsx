@@ -27,11 +27,12 @@ import Filters from "./Filters";
 import AddPromoButton from "./AddPromoButton";
 import EditPromoDialogContent from "../promo_dialog/EditPromoDialogContent";
 import { PromoCode } from "./PromoDataColumns";
+import { EventWithDates } from "@/types/event";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  event: Tables<"events">;
+  event: EventWithDates;
 }
 
 export function DataTable<TData, TValue>({

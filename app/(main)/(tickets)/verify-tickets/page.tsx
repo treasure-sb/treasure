@@ -2,6 +2,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import EventImage from "@/components/events/shared/EventImage";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
+import { getEventFromId } from "@/lib/helpers/events";
 
 export default async function Page({
   searchParams,
@@ -13,11 +14,7 @@ export default async function Page({
 }) {
   const { ticket_id, event_id } = searchParams;
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", event_id)
-    .single();
+  const { event, eventError } = await getEventFromId(event_id);
 
   const { data: eventTicketData, error: eventTicketError } = await supabase
     .from("event_tickets")
@@ -29,7 +26,6 @@ export default async function Page({
     redirect("/");
   }
 
-  const event: Tables<"events"> = eventData || {};
   const eventTicket = eventTicketData || {};
   const valid = eventTicket.valid;
 

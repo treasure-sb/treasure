@@ -4,6 +4,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import TabState from "./components/TabState";
 import Orders from "./components/orders/Orders";
 import PromoCodes from "./components/promo/PromoCodes";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
@@ -14,17 +15,11 @@ export default async function Page({
 }) {
   const supabase = await createSupabaseServerClient();
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
   if (eventError) {
     redirect("/host/events");
   }
-
-  const event: Tables<"events"> = eventData;
 
   return (
     <div className="max-w-7xl mx-auto">

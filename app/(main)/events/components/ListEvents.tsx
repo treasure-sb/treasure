@@ -58,7 +58,7 @@ export default function ListEvents({
     };
     fetchPage();
   }, [entry, desktopEntry]);
-  console.log(events);
+
   return (
     <>
       <div className="space-y-8 md:hidden block">

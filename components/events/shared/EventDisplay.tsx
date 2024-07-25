@@ -59,7 +59,7 @@ export default function EventDisplay({
         <p className="text-xl mt-2 font-bold line-clamp-2">{event.name}</p>
         <p className="text-base font-normal">
           <span className="text-primary text-base font-normal">
-            {event.formattedDate}
+            {event.formattedDates[0].date}
           </span>{" "}
           {event.city + ", " + event.state}
         </p>

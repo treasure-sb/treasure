@@ -23,7 +23,6 @@ export default function EventCard({
   clickable?: boolean;
   showLikeButton?: boolean;
 }) {
-  const { publicPosterUrl, formattedDate } = event;
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
   const skeletonDisplay = loading ? "inline-block" : "hidden";
@@ -50,7 +49,7 @@ export default function EventCard({
             <Image
               className={`rounded-xl group-hover:bg-black object-cover object-top group-hover:opacity-50 transition duration-300 ${imageVisibility}`}
               alt="image"
-              src={publicPosterUrl}
+              src={event.publicPosterUrl}
               fill
               sizes="100px"
               onLoad={() => setLoading(false)}
@@ -65,7 +64,13 @@ export default function EventCard({
 
           <div className="max-w-[65%] my-auto">
             <p className="text-lg font-bold line-clamp-2">{event.name}</p>
-            <p className="text-primary text-sm font-normal">{formattedDate} </p>
+            <p className="text-primary text-sm font-normal">
+              {event.formattedDates.length > 1
+                ? `${event.formattedDates[0].date} - ${
+                    event.formattedDates[event.formattedDates.length - 1].date
+                  }`
+                : event.formattedDates[0].date}{" "}
+            </p>
             <p className="text-sm font-normal truncate">
               {event.city + ", " + event.state}
             </p>

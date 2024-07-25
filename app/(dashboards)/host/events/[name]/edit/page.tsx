@@ -5,6 +5,7 @@ import EditEventDetails from "./components/event_details/EditEventDetails";
 import { ArrowUpLeft } from "lucide-react";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
@@ -13,17 +14,11 @@ export default async function Page({
 }) {
   const supabase = await createSupabaseServerClient();
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
-  if (eventError || !eventData) {
+  if (eventError) {
     redirect("/host/events");
   }
-
-  const event: Tables<"events"> = eventData || [];
 
   return (
     <main className="relative">

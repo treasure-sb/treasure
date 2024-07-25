@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import ViewsChart from "./components/ViewsChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "./components/DateFilter";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 const subtractFourHours = (date: Date): Date => {
   const newDate = new Date(date);
@@ -45,17 +46,11 @@ export default async function Page({
   lastPeriodStartDate.setDate(searchFromDate.getDate() - length * 2);
 
   const supabase = await createSupabaseServerClient();
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
   if (eventError) {
     redirect("/host/events");
   }
-
-  const event: Tables<"events"> = eventData;
 
   const { data: viewsData } = await supabase
     .from("event_views")

@@ -2,6 +2,8 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import EventPage from "@/app/(event-page)/events/[name]/components/EventPage";
 import { redirect } from "next/navigation";
 import { Tables } from "@/types/supabase";
+import { EventWithDates } from "@/types/event";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export async function generateMetadata({
   params,
@@ -9,11 +11,7 @@ export async function generateMetadata({
   params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("name, description")
-    .eq("cleaned_name", params.name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {
     return {
@@ -23,24 +21,17 @@ export async function generateMetadata({
   }
 
   return {
-    title: eventData.name,
-    description: eventData.description,
+    title: event.name,
+    description: event.description,
   };
 }
 
 export default async function Page({ params }: { params: { name: string } }) {
-  const supabase = await createSupabaseServerClient();
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", params.name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {
     redirect("/events");
   }
-
-  const event: Tables<"events"> = eventData;
 
   return <EventPage key={event.id} event={event} />;
 }

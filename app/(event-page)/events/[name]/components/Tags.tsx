@@ -1,8 +1,9 @@
 import { Tables } from "@/types/supabase";
 import { Badge } from "@/components/ui/badge";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { EventWithDates } from "@/types/event";
 
-export default async function Tags({ event }: { event: Tables<"events"> }) {
+export default async function Tags({ event }: { event: EventWithDates }) {
   const supabase = await createSupabaseServerClient();
   const { data: tagsData } = await supabase
     .from("event_tags")
