@@ -86,7 +86,7 @@ export default function ReviewInformation() {
     const { error } = await submitVendorApplication(
       vendorApplication,
       event,
-      vendorInfo
+      vendorInfo,
     );
     return !error;
   };
@@ -95,7 +95,7 @@ export default function ReviewInformation() {
     const { error } = await createVendorTags(
       vendorTags,
       profile?.id as string,
-      event.id
+      event.id,
     );
 
     if (error) {
@@ -149,7 +149,7 @@ export default function ReviewInformation() {
     };
     await sendVendorAppSubmittedEmail(
       vendorInfo.email as string,
-      vendorEmailPayload
+      vendorEmailPayload,
     );
   };
 
@@ -157,7 +157,7 @@ export default function ReviewInformation() {
     await sendVendorAppSubmittedSMS(
       vendorInfo.phone as string,
       vendorInfo.firstName as string,
-      event.name
+      event.name,
     );
   };
 
@@ -194,16 +194,15 @@ export default function ReviewInformation() {
           </p>
           <p>Qty: {tableQuantity}</p>
         </div>
-        {event.vendor_exclusivity === "APPLICATIONS" && (
-          <>
-            <Separator className="my-2" />
-            {
-              <div className="flex justify-end">
-                ${table.price * tableQuantity}
-              </div>
-            }
-          </>
-        )}
+
+        <>
+          <Separator className="my-2" />
+          {
+            <div className="flex justify-end">
+              ${table.price * tableQuantity}
+            </div>
+          }
+        </>
       </div>
       <div className="flex space-x-2">
         <Button

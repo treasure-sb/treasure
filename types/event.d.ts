@@ -53,7 +53,7 @@ export interface EventForm {
   tags: EventFormTag[];
   application_vendor_information: EventVendorApplication;
   sales_status: string;
-  vendor_exclusivity: string;
+  event_status: string;
   poster_url: File | string | undefined;
   venue_map_url: File | string | undefined;
 }
