@@ -29,7 +29,7 @@ export default async function Page({
             These people are part of this event's organization.
           </h3>
         </div>
-        <AddMember />
+        <AddMember event={eventDisplay} />
       </div>
       <ListMembers event={eventDisplay} />
       <RolesDescription />

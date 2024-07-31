@@ -22,6 +22,7 @@ import Welcome from "@/emails/Welcome";
 import VendorAppWaitlisted, {
   VendorAppWaitlistedEmailProps,
 } from "@/emails/VendorAppWaitlisted";
+import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -127,6 +128,19 @@ const sendTablePurchasedEmail = async (
   return await to(sendEmailPromise);
 };
 
+const sendTeamInviteEmail = async (
+  email: string,
+  emailProps: TeamInviteProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `You've been invited to join ${emailProps.eventName}'s team!`,
+    react: TeamInvite(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
 const chunkEmails = (emails: string[], batchSize: number) => {
   const chunks = [];
   for (let i = 0; i < emails.length; i += batchSize) {
@@ -194,6 +208,7 @@ export {
   sendVendorAppRejectedEmail,
   sendVendorAppWaitlistedEmail,
   sendTicketPurchasedEmail,
+  sendTeamInviteEmail,
   sendVendorAppSubmittedEmail,
   sendTablePurchasedEmail,
   sendReminderVendorAppAcceptedEmail,

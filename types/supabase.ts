@@ -449,6 +449,45 @@ export type Database = {
           },
         ]
       }
+      event_roles_invite_tokens: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          member_id: string
+          role: Database["public"]["Enums"]["Event Roles"]
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          member_id?: string
+          role: Database["public"]["Enums"]["Event Roles"]
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          member_id?: string
+          role?: Database["public"]["Enums"]["Event Roles"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_roles_invite_tokens_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_roles_invite_tokens_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_tags: {
         Row: {
           event_id: string
