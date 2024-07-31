@@ -1,0 +1,59 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+
+export default function ConfirmButton({
+  tokenID,
+  eventID,
+  memberID,
+}: {
+  tokenID: string;
+  eventID: string;
+  memberID: string;
+}) {
+  const supabase = createClient();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    toast.loading("Confirming role...");
+
+    try {
+      const { error } = await supabase
+        .from("event_roles")
+        .update({ status: "ACTIVE" })
+        .eq("event_id", eventID)
+        .eq("user_id", memberID);
+
+      if (error) {
+        throw error;
+      }
+
+      await supabase
+        .from("event_roles_invite_tokens")
+        .delete()
+        .eq("id", tokenID);
+
+      toast.dismiss();
+      toast.success("Role confirmed");
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Error confirming role");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Button
+      disabled={isLoading}
+      onClick={handleConfirm}
+      className="rounded-sm w-full"
+    >
+      Confirm Role
+    </Button>
+  );
+}

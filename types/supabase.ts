@@ -418,18 +418,21 @@ export type Database = {
           event_id: string
           id: string
           role: Database["public"]["Enums"]["Event Roles"]
+          status: Database["public"]["Enums"]["Event Role Status"]
           user_id: string
         }
         Insert: {
           event_id?: string
           id?: string
           role: Database["public"]["Enums"]["Event Roles"]
+          status?: Database["public"]["Enums"]["Event Role Status"]
           user_id?: string
         }
         Update: {
           event_id?: string
           id?: string
           role?: Database["public"]["Enums"]["Event Roles"]
+          status?: Database["public"]["Enums"]["Event Role Status"]
           user_id?: string
         }
         Relationships: [
@@ -1581,6 +1584,7 @@ export type Database = {
         | "WAITLISTED"
       "Checkout Price Type": "RSVP" | "REGULAR"
       "Checkout Ticket Types": "TICKET" | "TABLE"
+      "Event Role Status": "PENDING" | "ACTIVE" | "DECLINED"
       "Event Roles": "HOST" | "COHOST" | "STAFF" | "SCANNER"
       "Event Ticket Status":
         | "NO_SALE"

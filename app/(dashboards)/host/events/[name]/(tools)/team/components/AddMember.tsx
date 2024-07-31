@@ -18,6 +18,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { createClient } from "@/utils/supabase/client";
@@ -25,13 +26,20 @@ import { toast } from "sonner";
 import { EventDisplayData } from "@/types/event";
 import { sendTeamInviteEmail } from "@/lib/actions/emails";
 import { TeamInviteProps } from "@/emails/TeamInvite";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { roleMap } from "./MemberCard";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
+  role: z.enum(["COHOST", "HOST", "STAFF", "SCANNER"], {
+    required_error: "Please select a role",
+  }),
 });
 
 export default function AddMember({ event }: { event: EventDisplayData }) {
   const supabase = createClient();
+  const { refresh } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,6 +51,8 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
     toast.loading("Sending invite...");
 
     const inviteEmail = values.email;
+    const role = values.role;
+
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("id")
@@ -57,11 +67,20 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
       return;
     }
 
+    const { error: insertError } = await supabase.from("event_roles").insert([
+      {
+        event_id: event.id,
+        user_id: profileID.id,
+        role,
+        status: "PENDING",
+      },
+    ]);
+
     const { data: tokenData, error: tokenError } = await supabase
       .from("event_roles_invite_tokens")
       .insert([
         {
-          role: "COHOST",
+          role,
           event_id: event.id,
           member_id: profileID.id,
         },
@@ -69,7 +88,8 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
       .select("id")
       .single();
 
-    if (tokenError) {
+    if (tokenError || insertError) {
+      console.log(tokenError, insertError);
       toast.dismiss();
       toast.error("Error sending invite");
       return;
@@ -81,7 +101,7 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
       eventName: event.name,
       posterUrl: event.publicPosterUrl,
       inviteToken: tokenID.id,
-      role: "Co-Host",
+      role: roleMap[role],
     };
 
     const { error: emailError } = await sendTeamInviteEmail(
@@ -95,6 +115,7 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
 
     toast.dismiss();
     toast.success("Invite sent");
+    refresh();
   };
 
   return (
@@ -112,27 +133,70 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center"
+            className="flex flex-col space-y-8 md:space-y-4"
           >
             <FormField
               control={form.control}
-              name="email"
+              name="role"
               render={({ field }) => (
-                <FormItem className="flex-1 relative">
+                <FormItem className="space-y-3">
+                  <FormLabel>Select a role</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter email address"
-                      {...field}
-                      className="border p-2 px-4 rounded-md h-14 focus-within:border-primary"
-                    />
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="HOST" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Host</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="COHOST" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Co-Host</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="STAFF" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Staff</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="SCANNER" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Scanner</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
                   </FormControl>
-                  <FormMessage className="absolute top-[90%] left-0" />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="rounded-sm h-12 md:ml-2">
-              <span>Invite</span>
-            </Button>
+            <div className="flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-2 md:items-center">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="flex-1 relative">
+                    <FormControl>
+                      <Input
+                        placeholder="Enter email address"
+                        {...field}
+                        className="border p-2 px-4 rounded-md h-14 focus-within:border-primary"
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute top-[90%] left-0" />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="rounded-sm h-12 md:ml-2">
+                <span>Invite</span>
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

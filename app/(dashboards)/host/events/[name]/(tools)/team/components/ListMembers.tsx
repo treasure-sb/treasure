@@ -6,6 +6,7 @@ import { Database } from "@/types/supabase";
 
 type TeamMemberSupabase = {
   role: string;
+  status: string;
   profile: {
     first_name: string;
     last_name: string;
@@ -17,6 +18,7 @@ type TeamMemberSupabase = {
 
 export type TeamMember = {
   role: RoleMapKey;
+  status: StatusKey;
   firstName: string;
   lastName: string;
   email: string;
@@ -25,6 +27,7 @@ export type TeamMember = {
 };
 
 export type RoleMapKey = Database["public"]["Enums"]["Event Roles"];
+export type StatusKey = Database["public"]["Enums"]["Event Role Status"];
 
 const createTeamMember = async (
   member: TeamMemberSupabase
@@ -43,6 +46,7 @@ const createTeamMember = async (
 
   return {
     role: member.role as RoleMapKey,
+    status: member.status as StatusKey,
     firstName: member.profile.first_name,
     lastName: member.profile.last_name,
     email: member.profile.email,
@@ -60,7 +64,7 @@ export default async function ListMembers({
   const { data: teamData, error } = await supabase
     .from("event_roles")
     .select(
-      "role, profile:profiles(first_name, last_name, email, phone, avatar_url)"
+      "role, status, profile:profiles(first_name, last_name, email, phone, avatar_url)"
     )
     .eq("event_id", event.id)
     .returns<TeamMemberSupabase[]>();
