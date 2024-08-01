@@ -263,6 +263,18 @@ BEGIN
             'APPLICATIONS'
         ) RETURNING id INTO e_event_id;
 
+        INSERT INTO public.event_roles (
+            event_id,
+            user_id,
+            role,
+            status
+        ) VALUES (
+            e_event_id,
+            random_profile_id,
+            'HOST',
+            'ACTIVE'
+        )
+
         -- Assign random number of tags (between 3 and 8) to this event
         num_tags := floor(random() * 6 + 3)::int;
         FOR j IN 1..num_tags LOOP
