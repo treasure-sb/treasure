@@ -273,7 +273,7 @@ BEGIN
             random_profile_id,
             'HOST',
             'ACTIVE'
-        )
+        );
 
         -- Assign random number of tags (between 3 and 8) to this event
         num_tags := floor(random() * 6 + 3)::int;
