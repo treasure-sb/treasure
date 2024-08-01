@@ -771,8 +771,6 @@ export type Database = {
           lat: number
           lng: number
           name: string
-          organizer_id: string
-          organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string
@@ -794,8 +792,6 @@ export type Database = {
           lat: number
           lng: number
           name: string
-          organizer_id: string
-          organizer_type?: string
           poster_url: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string
@@ -817,8 +813,6 @@ export type Database = {
           lat?: number
           lng?: number
           name?: string
-          organizer_id?: string
-          organizer_type?: string
           poster_url?: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
           start_time?: string
@@ -1411,8 +1405,6 @@ export type Database = {
           lat: number
           lng: number
           name: string
-          organizer_id: string
-          organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string
@@ -1442,8 +1434,6 @@ export type Database = {
           lat: number
           lng: number
           name: string
-          organizer_id: string
-          organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
           start_time: string

@@ -8,7 +8,7 @@ export default function HostCard({ host }: { host: Host }) {
   return (
     <Link
       href={`/${hostProfile.username}`}
-      className="flex space-x-4 items-center border-[1px] rounded-2xl w-full md:w-96 p-4 pr-10 relative group bg-slate-500/5 group-hover:bg-slate-10 hover:bg-slate transition duration-300"
+      className="flex space-x-4 items-center border-[1px] rounded-2xl w-full md:w-[28rem] p-4 pr-10 relative group bg-slate-500/5 group-hover:bg-slate-10 hover:bg-slate transition duration-300"
     >
       <Avatar className="h-24 md:h-28 w-24 md:w-28">
         <AvatarImage src={host.publicUrl} />
