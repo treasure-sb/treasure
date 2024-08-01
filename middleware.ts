@@ -5,14 +5,10 @@ import { getEventFromCleanedName } from "./lib/helpers/events";
 import { RoleMapKey } from "./app/(dashboards)/host/events/[name]/(tools)/team/components/ListMembers";
 import createSupabaseServerClient from "./utils/supabase/server";
 
-type ProfileRole = {
-  role: RoleMapKey;
-};
-
 async function isUserEventMemberOrAdmin(
   userId: string | undefined,
   eventName: string
-) {
+): Promise<{ isAllowed: boolean; role: RoleMapKey | null }> {
   const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(userId);
 
@@ -27,16 +23,18 @@ async function isUserEventMemberOrAdmin(
 
   const teamRole = teamData ? (teamData.role as RoleMapKey) : null;
 
-  return (
+  const isAllowed: boolean = Boolean(
     event &&
-    (profile.role === "admin" ||
-      (teamRole && teamRole === "STAFF") ||
-      teamRole === "HOST" ||
-      teamRole === "COHOST")
+      (profile.role === "admin" ||
+        (teamRole &&
+          (teamRole === "STAFF" ||
+            teamRole === "HOST" ||
+            teamRole === "COHOST")))
   );
+
+  return { isAllowed, role: teamRole };
 }
 
-// segment after split = ["", "host", "events", "[id]", "..."]
 function isOrganizerPage(pathname: string) {
   const segments = pathname.split("/");
   return (
@@ -153,8 +151,27 @@ export async function middleware(request: NextRequest) {
   if (isOrganizerPage(pathname)) {
     const userId = session?.user.id;
     const eventName = request.nextUrl.pathname.split("/")[3];
-    if (!(await isUserEventMemberOrAdmin(userId, eventName))) {
+    const { isAllowed, role } = await isUserEventMemberOrAdmin(
+      userId,
+      eventName
+    );
+
+    if (!isAllowed) {
       return NextResponse.redirect(new URL("/host/events", request.url));
+    }
+
+    // Check if the user is a SCANNER and trying to access a restricted page
+    if (role === "SCANNER") {
+      const pathSegments = request.nextUrl.pathname.split("/");
+      const currentPath = pathSegments[4] ? `/${pathSegments[4]}` : "/";
+      const allowedPaths = ["/attendees", "/team"];
+
+      // If the current path is not in allowedPaths and is not the root event path
+      if (!allowedPaths.includes(currentPath) && currentPath !== "/") {
+        return NextResponse.redirect(
+          new URL(`/host/events/${eventName}`, request.url)
+        );
+      }
     }
   }
   return response;

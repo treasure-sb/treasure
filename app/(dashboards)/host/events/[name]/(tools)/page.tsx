@@ -11,6 +11,9 @@ import {
   AppWindowIcon,
   LucideIcon,
 } from "lucide-react";
+import { USDollar } from "@/lib/utils";
+import { validateUser } from "@/lib/actions/auth";
+import { RoleMapKey } from "./team/components/ListMembers";
 
 type AttendeeCountData =
   Database["public"]["Functions"]["get_attendee_count"]["Returns"];
@@ -19,6 +22,7 @@ type ToolOptionButtonProps = {
   title: string;
   Icon: LucideIcon;
   href: string;
+  inactive: boolean;
   stat?: string;
   subtext?: string;
 };
@@ -27,24 +31,46 @@ const ToolOptionButton = ({
   title,
   Icon,
   href,
+  inactive,
   stat,
   subtext,
-}: ToolOptionButtonProps) => (
-  <Link
-    href={`/host/events/${href}`}
-    className="bg-secondary text-foreground flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 border-[1px] hover:bg-secondary/60 hover:border-[1px] hover:border-primary/30 transition duration-300"
-  >
-    <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
-      <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
-        {title}
-      </h3>
-      <Icon size={28} className="flex-shrink-0" />
-    </div>
-    <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
-      {stat} <span className="text-xl">{subtext}</span>
-    </p>
-  </Link>
-);
+}: ToolOptionButtonProps) => {
+  const commonClasses =
+    "bg-secondary text-foreground flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 border-[1px] transition duration-300";
+  const activeClasses =
+    "hover:bg-secondary/60 hover:border-[1px] hover:border-primary/30";
+  const inactiveClasses = "opacity-50 cursor-not-allowed";
+
+  const content = (
+    <>
+      <div className="flex lg:flex-col-reverse 3xl:flex-row justify-between">
+        <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
+          {title}
+        </h3>
+        <Icon size={28} className="flex-shrink-0" />
+      </div>
+      <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
+        {stat ? (inactive ? "--" : stat) : null}{" "}
+        <span className="text-xl">{subtext}</span>
+      </p>
+    </>
+  );
+
+  if (inactive) {
+    return (
+      <div className={`${commonClasses} ${inactiveClasses}`}>{content}</div>
+    );
+  }
+
+  return (
+    <Link
+      href={`/host/events/${href}`}
+      className={`${commonClasses} ${activeClasses}`}
+    >
+      {content}
+    </Link>
+  );
+};
 
 export default async function Page({
   params: { name },
@@ -114,7 +140,7 @@ export default async function Page({
       title: "Total Sales",
       Icon: BadgeDollarSign,
       href: `${name}/sales`,
-      stat: `$${totalSales.toFixed(2)}`,
+      stat: `${USDollar.format(totalSales)}`,
     },
     {
       title: "Vendors",
@@ -137,10 +163,27 @@ export default async function Page({
     },
   ];
 
+  const {
+    data: { user },
+  } = await validateUser();
+
+  const { data: roleData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("event_id", event.id)
+    .eq("user_id", user!.id)
+    .single();
+
+  const role: RoleMapKey = roleData?.role as RoleMapKey;
+
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       {hostToolsOptions.map((option) => (
-        <ToolOptionButton key={option.title} {...option} />
+        <ToolOptionButton
+          key={option.title}
+          inactive={role === "SCANNER" && option.title !== "Attendees"}
+          {...option}
+        />
       ))}
       <SalesAnalytics event={event} periodLength={length} />
       <VendorBreakdown event={event} />

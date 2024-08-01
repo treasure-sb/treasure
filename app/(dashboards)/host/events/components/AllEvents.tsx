@@ -38,7 +38,8 @@ export default async function AllEvents() {
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
     .lt("event.date", today.toISOString())
-    .order("date", { referencedTable: "event", ascending: false });
+    .order("date", { referencedTable: "event", ascending: false })
+    .returns<MyEvent[]>();
 
   if (upcomingError || pastError) {
     redirect("/events");
@@ -49,6 +50,8 @@ export default async function AllEvents() {
 
   const upcomingEventData = await eventDisplayData(upcomingEventsHosting);
   const pastEventData = await eventDisplayData(pastEventsHosting);
+
+  console.log(upcomingData);
 
   const nextEvent = upcomingEventData.length > 0 ? upcomingEventData[0] : null;
   const futureEvents = upcomingEventData.slice(1);

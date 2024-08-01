@@ -9,7 +9,6 @@ import {
   EventVendorApplication,
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { createStripeProduct } from "../stripe";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import format from "date-fns/format";
 
