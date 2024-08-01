@@ -32,7 +32,7 @@ const getCityCoordinates = async (city: string) => {
       .join(" ");
 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      `${cityName}, ${stateName}`,
+      `${cityName}, ${stateName}`
     )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
     try {
@@ -60,7 +60,7 @@ const buildEventsQuery = async (
   from?: string,
   until?: string,
   city?: string,
-  distance?: number,
+  distance?: number
 ) => {
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
@@ -75,7 +75,7 @@ const buildEventsQuery = async (
     query = supabase
       .from("events")
       .select(
-        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)",
+        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)"
       )
       .eq("event_categories.categories.name", "collectables")
       .eq("event_tags.tag_id", tagId);
@@ -191,20 +191,6 @@ const getUpcomingEventsLiked = async (page: number, userId: string) => {
   return { data, error };
 };
 
-const getUpcomingEventsHosting = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", userId)
-    .gte("date", today)
-    .order("date", { ascending: true })
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
 const getPastEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
@@ -268,16 +254,36 @@ const getPastEventsLiked = async (page: number, userId: string) => {
   return { data, error };
 };
 
+const getUpcomingEventsHosting = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_roles")
+    .select("role, user_id, events!inner(*)")
+    .eq("user_id", userId)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST"])
+    .gte("events.date", today)
+    .order("date", { referencedTable: "events", ascending: true })
+    .range(startIndex, endIndex);
+
+  const eventData = data ? data.map((event) => event.events) : [];
+  return { data: eventData, error };
+};
+
 const getPastEventsHosting = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", userId)
-    .lt("date", today)
-    .order("date", { ascending: true })
+    .from("event_roles")
+    .select("role, user_id, events!inner(*)")
+    .eq("user_id", userId)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST"])
+    .lt("events.date", today)
+    .order("date", { referencedTable: "events", ascending: true })
     .range(startIndex, endIndex);
   return { data, error };
 };
@@ -332,7 +338,6 @@ const getAllEventData = async (search: string, page: number) => {
     .order("date", { ascending: true })
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
-  console.log(error);
   return { data, error };
 };
 

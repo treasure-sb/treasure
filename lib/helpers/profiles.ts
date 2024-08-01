@@ -124,6 +124,17 @@ const fetchTemporaryVendors = async (search: string) => {
   return [];
 };
 
+const isHostOrCoHost = async (profileId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: roleData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("user_id", profileId)
+    .in("role", ["HOST", "COHOST"]);
+
+  return roleData ? roleData.length > 0 : false;
+};
+
 export {
   getProfile,
   getProfileByUsername,
@@ -133,4 +144,5 @@ export {
   getTempProfileFromID,
   fetchTemporaryProfiles,
   fetchTemporaryVendors,
+  isHostOrCoHost,
 };
