@@ -92,12 +92,22 @@ const createEvent = async (values: EventForm) => {
         sales_status,
         poster_url,
         venue_map_url,
-        organizer_id: user?.id,
       },
     ])
     .select();
+
   if (data) {
     const event: Tables<"events"> = data[0];
+
+    await supabase.from("event_roles").insert([
+      {
+        event_id: event.id,
+        user_id: user!.id,
+        role: "HOST",
+        status: "ACTIVE",
+      },
+    ]);
+
     const posterUrl = await getPublicPosterUrl(event);
     const eventPromises = [
       await createTickets(values.tickets, event.id, event.name, posterUrl),

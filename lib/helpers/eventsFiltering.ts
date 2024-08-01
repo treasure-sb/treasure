@@ -300,18 +300,6 @@ const getEventsApplied = async (page: number, userId: string) => {
   return { data, error };
 };
 
-const getEventsHosting = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", userId)
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
 const getEventsLiked = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
@@ -350,7 +338,6 @@ export {
   getPastEventsHosting,
   getPastEventsLiked,
   getEventsApplied,
-  getEventsHosting,
   getEventsLiked,
   buildEventsQuery,
   getAllEventData,

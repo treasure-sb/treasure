@@ -3,7 +3,6 @@ import UserOptions from "./components/filtering/UserOptions";
 import Photos from "./components/Photos";
 import ListEventsHosting from "./components/ListEventsHosting";
 import Events from "./components/events/Events";
-import { getEventsHosting } from "@/lib/helpers/eventsFiltering";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import {
