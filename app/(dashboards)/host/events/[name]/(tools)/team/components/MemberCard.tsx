@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { RoleMapKey } from "./ListMembers";
 import { capitalize, cn } from "@/lib/utils";
+import { User } from "@supabase/supabase-js";
 
 type RoleMap = {
   [key in RoleMapKey]: string;
@@ -20,12 +21,20 @@ export const roleMap: RoleMap = {
   SCANNER: "Scanner",
 };
 
-export default function MemberCard({ member }: { member: TeamMember }) {
+export default function MemberCard({
+  member,
+  user,
+}: {
+  member: TeamMember;
+  user: User;
+}) {
   return (
     <Card className="w-full col-span-1">
       <CardHeader>
         <CardTitle>
-          {member.firstName} {member.lastName}
+          {member.userId === user.id
+            ? "You"
+            : `${member.firstName} ${member.lastName}`}
         </CardTitle>
         <CardDescription>{roleMap[member.role]}</CardDescription>
         <CardDescription className="text-xs flex items-center space-x-1.5">

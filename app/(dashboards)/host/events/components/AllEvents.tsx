@@ -6,34 +6,46 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import NextEventCard from "./NextEventCard";
 import RegularEventCard from "./RegularEventCard";
 
+type MyEvent = {
+  role: string;
+  event: Tables<"events">;
+};
+
 export default async function AllEvents() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await validateUser();
 
+  if (!user) {
+    redirect("/login");
+  }
+
   const today = new Date();
 
   const { data: upcomingData, error: upcomingError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", user?.id as string)
-    .gte("date", today.toISOString())
-    .order("date", { ascending: true });
+    .from("event_roles")
+    .select("role, event:events!inner(*)")
+    .eq("user_id", user.id)
+    .eq("status", "ACTIVE")
+    .gte("event.date", today.toISOString())
+    .order("date", { referencedTable: "event", ascending: true })
+    .returns<MyEvent[]>();
 
   const { data: pastData, error: pastError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("organizer_id", user?.id as string)
-    .lt("date", today.toISOString())
-    .order("date", { ascending: false });
+    .from("event_roles")
+    .select("role, event:events!inner(*)")
+    .eq("user_id", user.id)
+    .eq("status", "ACTIVE")
+    .lt("event.date", today.toISOString())
+    .order("date", { referencedTable: "event", ascending: false });
 
-  if (!upcomingData || upcomingError) {
+  if (upcomingError || pastError) {
     redirect("/events");
   }
 
-  const upcomingEventsHosting: Tables<"events">[] = upcomingData || [];
-  const pastEventsHosting: Tables<"events">[] = pastData || [];
+  const upcomingEventsHosting = upcomingData.map((event) => event.event);
+  const pastEventsHosting = pastData.map((event) => event.event);
 
   const upcomingEventData = await eventDisplayData(upcomingEventsHosting);
   const pastEventData = await eventDisplayData(pastEventsHosting);

@@ -3,10 +3,12 @@ import { redirect } from "next/navigation";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import MemberCard from "./MemberCard";
 import { Database } from "@/types/supabase";
+import { validateUser } from "@/lib/actions/auth";
 
 type TeamMemberSupabase = {
   role: string;
   status: string;
+  user_id: string;
   profile: {
     first_name: string;
     last_name: string;
@@ -17,6 +19,7 @@ type TeamMemberSupabase = {
 };
 
 export type TeamMember = {
+  userId: string;
   role: RoleMapKey;
   status: StatusKey;
   firstName: string;
@@ -45,6 +48,7 @@ const createTeamMember = async (
     });
 
   return {
+    userId: member.user_id,
     role: member.role as RoleMapKey,
     status: member.status as StatusKey,
     firstName: member.profile.first_name,
@@ -64,7 +68,7 @@ export default async function ListMembers({
   const { data: teamData, error } = await supabase
     .from("event_roles")
     .select(
-      "role, status, profile:profiles(first_name, last_name, email, phone, avatar_url)"
+      "role, status, user_id, profile:profiles(first_name, last_name, email, phone, avatar_url)"
     )
     .eq("event_id", event.id)
     .returns<TeamMemberSupabase[]>();
@@ -74,13 +78,18 @@ export default async function ListMembers({
     redirect("/host");
   }
 
+  const {
+    data: { user },
+  } = await validateUser();
+
+  const loggedInUser = user!;
   const teamMembersPromise = teamData.map(createTeamMember);
   const teamMembers = await Promise.all(teamMembersPromise);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4">
       {teamMembers.map((member) => (
-        <MemberCard key={member.email} member={member} />
+        <MemberCard key={member.email} member={member} user={loggedInUser} />
       ))}
     </div>
   );

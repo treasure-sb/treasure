@@ -1,21 +1,39 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getProfile } from "./lib/helpers/profiles";
+import { getEventFromCleanedName } from "./lib/helpers/events";
+import { RoleMapKey } from "./app/(dashboards)/host/events/[name]/(tools)/team/components/ListMembers";
 import createSupabaseServerClient from "./utils/supabase/server";
 
-async function isUserOrganzierOrAdmin(
+type ProfileRole = {
+  role: RoleMapKey;
+};
+
+async function isUserEventMemberOrAdmin(
   userId: string | undefined,
   eventName: string
 ) {
-  const { profile } = await getProfile(userId);
   const supabase = await createSupabaseServerClient();
-  const { data: event } = await supabase
-    .from("events")
-    .select("organizer_id")
-    .eq("cleaned_name", eventName)
+  const { profile } = await getProfile(userId);
+
+  const { event } = await getEventFromCleanedName(eventName);
+  const { data: teamData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("event_id", event.id)
+    .eq("user_id", userId)
+    .eq("status", "ACTIVE")
     .single();
 
-  return event && (event.organizer_id === userId || profile.role === "admin");
+  const teamRole = teamData ? (teamData.role as RoleMapKey) : null;
+
+  return (
+    event &&
+    (profile.role === "admin" ||
+      (teamRole && teamRole === "STAFF") ||
+      teamRole === "HOST" ||
+      teamRole === "COHOST")
+  );
 }
 
 // segment after split = ["", "host", "events", "[id]", "..."]
@@ -130,12 +148,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // check to see if the route is /host/events/[id]/...
-  // if so, check to see if the user is the organizer of the event or admin
+  // if so, check to see if the user is part of the Host, Co-Host, of Staff of the event or admin
   // if not, redirect to /host/events
   if (isOrganizerPage(pathname)) {
     const userId = session?.user.id;
     const eventName = request.nextUrl.pathname.split("/")[3];
-    if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
+    if (!(await isUserEventMemberOrAdmin(userId, eventName))) {
       return NextResponse.redirect(new URL("/host/events", request.url));
     }
   }
