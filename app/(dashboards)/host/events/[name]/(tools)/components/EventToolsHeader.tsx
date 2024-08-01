@@ -4,14 +4,18 @@ import { EventDisplayData } from "@/types/event";
 import { ArrowUpLeft, ArrowUpRight, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { RoleMapKey } from "../team/components/ListMembers";
+import { cn } from "@/lib/utils";
 import EventPoster from "@/components/events/shared/EventPoster";
 import Link from "next/link";
 import CopyEventLink from "./CopyEventLink";
 
 export default function EventToolsHeader({
   event,
+  role,
 }: {
   event: EventDisplayData;
+  role: RoleMapKey;
 }) {
   const pathname = usePathname();
   const splitPathname = pathname.split("/");
@@ -59,10 +63,22 @@ export default function EventToolsHeader({
           </div>
         </div>
         <div className="flex flex-col items-end gap-4">
-          <Button asChild variant="secondary" className="flex gap-2">
-            <Link href={`/host/events/${event.cleaned_name}/edit`}>
-              Edit Event
-            </Link>
+          <Button
+            asChild={role !== "SCANNER"}
+            variant="secondary"
+            className={cn(
+              "flex gap-2",
+              role === "SCANNER" && "opacity-50 cursor-not-allowed"
+            )}
+            disabled={role === "SCANNER"}
+          >
+            {role === "SCANNER" ? (
+              <span>Edit Event</span>
+            ) : (
+              <Link href={`/host/events/${event.cleaned_name}/edit`}>
+                Edit Event
+              </Link>
+            )}
           </Button>
 
           <div className="flex space-x-1">

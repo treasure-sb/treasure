@@ -47,7 +47,7 @@ const ToolOptionButton = ({
         <h3 className="font-semibold text-2xl lg:text-lg 2xl:text-2xl">
           {title}
         </h3>
-        <Icon size={28} className="flex-shrink-0" />
+        <Icon size={28} className="flex-shrink-0 lg:mb-2 3xl:mb-0" />
       </div>
       <p className="text-5xl lg:hidden 2xl:block 2xl:text-2xl 3xl:text-3xl">
         {stat ? (inactive ? "--" : stat) : null}{" "}
@@ -185,8 +185,8 @@ export default async function Page({
           {...option}
         />
       ))}
-      <SalesAnalytics event={event} periodLength={length} />
-      <VendorBreakdown event={event} />
+      <SalesAnalytics event={event} periodLength={length} role={role} />
+      <VendorBreakdown event={event} role={role} />
     </div>
   );
 }
