@@ -130,7 +130,24 @@ const isHostOrCoHost = async (profileId: string) => {
     .from("event_roles")
     .select("role")
     .eq("user_id", profileId)
+    .eq("status", "ACTIVE")
     .in("role", ["HOST", "COHOST"]);
+
+  return roleData ? roleData.length > 0 : false;
+};
+
+const isHostCoHostOrStaffOfEvent = async (
+  profileId: string,
+  eventId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: roleData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("user_id", profileId)
+    .eq("event_id", eventId)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST", "STAFF"]);
 
   return roleData ? roleData.length > 0 : false;
 };
@@ -145,4 +162,5 @@ export {
   fetchTemporaryProfiles,
   fetchTemporaryVendors,
   isHostOrCoHost,
+  isHostCoHostOrStaffOfEvent,
 };

@@ -46,13 +46,8 @@ export default function AcceptedOptions({
     },
   ]);
 
-  const {
-    table_quantity,
-    event_id,
-    vendor_id,
-    application_email,
-    application_phone,
-  } = vendorData;
+  const { table_quantity, event_id, application_email, application_phone } =
+    vendorData;
   const { name: eventName, publicPosterUrl: posterUrl } = eventData;
   const table = vendorData.table;
   const profile = vendorData.vendor;
@@ -142,11 +137,11 @@ export default function AcceptedOptions({
     setLoading(false);
   };
 
+  // TODO: fix using event_roles
   const moveVendors = async () => {
     const { data: eventsData, error } = await supabase
       .from("events")
-      .select("id, name, date, tables(id, section_name)")
-      .eq("organizer_id", eventData.organizer_id);
+      .select("id, name, date, tables(id, section_name)");
 
     setEvents(eventsData as EventsInfo[]);
     setViewMoveVender(true);
@@ -156,7 +151,7 @@ export default function AcceptedOptions({
     <div className="flex gap-2">
       {vendorData.payment_status === "PAID" ? (
         <>
-          <Button onClick={moveVendors} className="w-full">
+          <Button onClick={moveVendors} className="w-full rounded-sm" disabled>
             Move Vendor
           </Button>
           {viewMoveVender && (

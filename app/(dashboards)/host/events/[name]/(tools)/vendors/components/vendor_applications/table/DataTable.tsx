@@ -213,41 +213,25 @@ export default function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <TableRow
-                    className="relative"
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() =>
-                      showVendorInfo(
-                        row.getValue("vendor_info"),
-                        row.getValue("avatar_url")
-                      )
-                    }
-                  >
-                    {row.getVisibleCells().map((cell, i) => (
-                      <TableCell key={cell.id} className="py-4">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  <VendorDialogContent
-                    closeDialog={() => setOpen(false)}
-                    vendorData={
-                      selectedVendor
-                        ? selectedVendor
-                        : row.getValue("vendor_info")
-                    }
-                    avatarUrl={
-                      selectedAvatar
-                        ? selectedAvatar
-                        : row.getValue("avatar_url")
-                    }
-                    eventData={eventData}
-                  />
-                </Dialog>
+                <TableRow
+                  className="relative"
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() =>
+                    showVendorInfo(
+                      row.getValue("vendor_info"),
+                      row.getValue("avatar_url")
+                    )
+                  }
+                >
+                  {row.getVisibleCells().map((cell, i) => (
+                    <TableCell key={cell.id} className="py-4">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : (
               <TableRow>
@@ -280,6 +264,16 @@ export default function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        {selectedAvatar && (
+          <VendorDialogContent
+            closeDialog={() => setOpen(false)}
+            vendorData={selectedVendor}
+            avatarUrl={selectedAvatar}
+            eventData={eventData}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }
