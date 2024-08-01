@@ -12,6 +12,13 @@ import { EventDisplayData } from "@/types/event";
 import { HostSoldPayload } from "@/lib/sms";
 import { sendHostVendorAppReceievedSMS } from "@/lib/sms";
 
+type HostTeam = {
+  profile: {
+    email?: string;
+    phone?: string;
+  };
+};
+
 const submitVendorApplication = async (
   application: VendorApplication,
   event: EventDisplayData,
@@ -26,27 +33,41 @@ const submitVendorApplication = async (
     return { error: eventAppError };
   }
 
-  const { data: hostData } = await supabase
-    .from("profiles")
-    .select("email, phone")
-    .eq("id", event.organizer_id)
-    .single();
+  const { data: hostTeamData } = await supabase
+    .from("event_roles")
+    .select("profile:profiles(email, phone)")
+    .eq("event_id", event.id)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST"])
+    .returns<HostTeam[]>();
 
-  const hostContactInfo: { email?: string; phone?: string } = hostData || {};
-  if (hostContactInfo.phone) {
+  const hostPhoneNumbers = hostTeamData
+    ? hostTeamData
+        .map((profile) => profile.profile.phone)
+        .filter((phone): phone is string => phone !== null)
+    : [];
+
+  const hostEmails = hostTeamData
+    ? hostTeamData
+        .map((profile) => profile.profile.email)
+        .filter((email): email is string => email !== null)
+    : [];
+
+  if (hostPhoneNumbers.length > 0) {
     const sendHostSMSPayload: HostSoldPayload = {
-      phone: hostContactInfo.phone,
+      phones: hostPhoneNumbers,
       businessName: vendorInfo.businessName,
       firstName: vendorInfo.firstName,
       lastName: vendorInfo.lastName,
       eventName: event.name,
       eventDate: event.date,
-      eventCleanedName: event.cleaned_name
+      eventCleanedName: event.cleaned_name,
     };
     await sendHostVendorAppReceievedSMS(sendHostSMSPayload);
   }
-  if (hostContactInfo.email) {
-    await sendVendorReceivedEmail(event, hostContactInfo.email);
+
+  if (hostEmails.length > 0) {
+    await sendVendorReceivedEmail(event, hostEmails);
   }
   return { error: null };
 };
@@ -75,20 +96,20 @@ const createVendorTags = async (
 
 const sendVendorReceivedEmail = async (
   event: EventDisplayData,
-  hostEmail: string
+  hostEmails: string[]
 ) => {
   const eventPosterUrl = await getPublicPosterUrl(event);
 
   await sendVendorAppReceivedEmail(
-    hostEmail,
+    hostEmails,
     eventPosterUrl,
     event.name,
     event.cleaned_name
   );
 
-  if (hostEmail !== "treasure20110@gmail.com") {
+  if (!hostEmails.includes("treasure20110@gmail.com")) {
     await sendVendorAppReceivedEmail(
-      "treasure20110@gmail.com",
+      ["treasure20110@gmail.com"],
       eventPosterUrl,
       event.name,
       event.cleaned_name

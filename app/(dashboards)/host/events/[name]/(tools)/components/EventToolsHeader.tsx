@@ -70,7 +70,6 @@ export default function EventToolsHeader({
               "flex gap-2",
               role === "SCANNER" && "opacity-50 cursor-not-allowed"
             )}
-            disabled={role === "SCANNER"}
           >
             {role === "SCANNER" ? (
               <span>Edit Event</span>

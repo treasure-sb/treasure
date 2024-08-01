@@ -1,8 +1,8 @@
-import { sendSMS } from "./actions/twilio";
+import { sendNotifications, sendSMS } from "./actions/twilio";
 import moment from "moment";
 
 type HostSoldPayload = {
-  phone: string;
+  phones: string[];
   businessName: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -102,20 +102,22 @@ const sendVendorNotificationSMS = async (
 
 const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
   const {
-    phone,
+    phones,
     businessName,
     firstName,
     lastName,
     eventName,
     eventDate,
     eventCleanedName,
-    quantity
+    quantity,
   } = ticketSMSPayload;
-  return await sendSMS(
-    phone,
+  return await sendNotifications(
+    phones,
     `🎉 ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } just bought ${( quantity && quantity>1) ? `${quantity} tickets` : `a ticket`} to ${eventName} on ${moment(eventDate).format(
+    } just bought ${
+      quantity && quantity > 1 ? `${quantity} tickets` : `a ticket`
+    } to ${eventName} on ${moment(eventDate).format(
       "dddd, MMM Do"
     )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
@@ -123,16 +125,16 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
 
 const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
   const {
-    phone,
+    phones,
     businessName,
     firstName,
     lastName,
     eventName,
     eventDate,
-    eventCleanedName
+    eventCleanedName,
   } = tableSMSPayload;
-  await sendSMS(
-    phone,
+  await sendNotifications(
+    phones,
     `💰Congrats! You received payment from ${
       !businessName ? `${firstName} ${lastName}` : businessName
     } Their table(s) are confirmed for ${eventName} on ${moment(
@@ -147,7 +149,7 @@ const sendHostVendorAppReceievedSMS = async (
   vendorAppSMSPayload: HostSoldPayload
 ) => {
   const {
-    phone,
+    phones,
     eventName,
     eventDate,
     eventCleanedName,
@@ -155,8 +157,8 @@ const sendHostVendorAppReceievedSMS = async (
     firstName,
     lastName,
   } = vendorAppSMSPayload;
-  return await sendSMS(
-    phone,
+  return await sendNotifications(
+    phones,
     `🚨 You just received a new vendor application for ${eventName} on ${moment(
       eventDate
     ).format("dddd, MMM Do")} from ${
