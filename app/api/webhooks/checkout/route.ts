@@ -118,6 +118,7 @@ const handleTicketPurchase = async (
       metadata as { [key: string]: Json | undefined }
     ),
   };
+  
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,

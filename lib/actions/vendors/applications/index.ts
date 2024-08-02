@@ -38,7 +38,7 @@ const submitVendorApplication = async (
     .select("profile:profiles(email, phone)")
     .eq("event_id", event.id)
     .eq("status", "ACTIVE")
-    .in("role", ["HOST", "COHOST"])
+    .in("role", ["HOST", "COHOST", "STAFF"])
     .returns<HostTeam[]>();
 
   const hostPhoneNumbers = hostTeamData
