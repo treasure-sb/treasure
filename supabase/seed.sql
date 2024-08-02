@@ -263,6 +263,19 @@ BEGIN
             'APPLICATIONS'
         ) RETURNING id INTO e_event_id;
 
+        -- Insert event date
+        INSERT INTO public.event_dates (
+            event_id,
+            start_time,
+            end_time, 
+            date
+        ) VALUES (
+            e_event_id,
+            '10:00:00',
+            '18:00:00',
+            future_date
+        );
+
         -- Assign random number of tags (between 3 and 8) to this event
         num_tags := floor(random() * 6 + 3)::int;
         FOR j IN 1..num_tags LOOP
