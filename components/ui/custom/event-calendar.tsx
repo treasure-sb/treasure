@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const months: { [key: number]: string } = {
   1: "JAN",
   2: "FEB",
@@ -20,13 +22,24 @@ export default function EventCalendar({
   month: number;
   days: number[];
 }) {
+  const isMultiDay = days.length > 1;
+
   return (
-    <div className="border-[1px] border-foreground/30 text-foreground/60 rounded-sm text-center w-15">
+    <div
+      className={cn(
+        "border-[1px] border-foreground/30 text-foreground/60 rounded-sm text-center",
+        isMultiDay ? "w-12 pb-2" : "w-10"
+      )}
+    >
       <p className="border-b-[1px] border-foreground/30 px-2 text-xxs">
         {months[month]}
       </p>
       <p className="px-2 mx-auto text-md">
-        {days.length > 1 ? `${days[0]} - ${days[days.length - 1]}` : days[0]}
+        {isMultiDay ? (
+          <span className="text-[0.58rem]">{days.length} days</span>
+        ) : (
+          days[0]
+        )}
       </p>
     </div>
   );

@@ -1,8 +1,6 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventPage from "@/app/(event-page)/events/[name]/components/EventPage";
 import { redirect } from "next/navigation";
-import { Tables } from "@/types/supabase";
-import { EventWithDates } from "@/types/event";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export async function generateMetadata({
