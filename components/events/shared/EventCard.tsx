@@ -69,7 +69,7 @@ export default function EventCard({
                 ? `${event.formattedDates[0].date} - ${
                     event.formattedDates[event.formattedDates.length - 1].date
                   }`
-                : event.formattedDates[0].date}{" "}
+                : event.formattedDates[0].date}
             </p>
             <p className="text-sm font-normal truncate">
               {event.city + ", " + event.state}

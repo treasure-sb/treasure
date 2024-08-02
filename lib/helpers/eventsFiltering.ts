@@ -137,11 +137,11 @@ const getUpcomingEventsAttending = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data: attendeeData, error: attendeeError } = await supabase
     .from("event_tickets")
-    .select("events!inner(*)")
+    .select("events!inner(*, dates:event_dates(date,start_time,end_time))")
     .eq("attendee_id", userId)
     .gte("events.date", today)
     .order("id", { foreignTable: "events", ascending: true })
-    .order("date", { foreignTable: "events", ascending: true });
+    .order("date", { foreignTable: "events.dates", ascending: false });
   // .range(startIndex, endIndex);
 
   // filter out the duplicate events
@@ -157,13 +157,16 @@ const getUpcomingEventsAttending = async (page: number, userId: string) => {
 
   const { data: vendorData, error: vendorError } = await supabase
     .from("event_vendors")
-    .select("events!inner(*)")
+    .select(
+      "events!inner(*, dates:event_dates!inner(date,start_time,end_time))"
+    )
     .eq("vendor_id", userId)
     .eq("payment_status", "PAID")
     .gte("events.date", today)
-    .order("id", { foreignTable: "events", ascending: true })
-    .order("date", { foreignTable: "events", ascending: true })
+    .order("date", { foreignTable: "events.dates", ascending: true })
     .range(startIndex, endIndex);
+
+  console.log(vendorError);
 
   let data = filteredData;
   let error = attendeeError;
@@ -184,7 +187,9 @@ const getUpcomingEventsLiked = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("event_likes")
-    .select("events!inner(*)")
+    .select(
+      "events!inner(*, dates:event_dates!inner(date,start_time,end_time))"
+    )
     .eq("user_id", userId)
     .gte("events.date", today)
     .order("events(date)", { ascending: true })
@@ -199,10 +204,10 @@ const getUpcomingEventsHosting = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("events")
-    .select("*")
+    .select("*, dates:event_dates!inner(date,start_time,end_time)")
     .eq("organizer_id", userId)
     .gte("date", today)
-    .order("date", { ascending: true })
+    .order("date", { referencedTable: "dates", ascending: true })
     .range(startIndex, endIndex);
   return { data, error };
 };
