@@ -31,7 +31,7 @@ export default function EventInfo({ event }: { event: EventWithDates }) {
               <div className="flex">
                 <p>
                   {date.date}{" "}
-                  <span className="text-xs">{`${date.start_time} - ${date.end_time}`}</span>
+                  <span className="text-[0.6rem] text-tertiary">{`${date.start_time} - ${date.end_time}`}</span>
                 </p>
               </div>
             ))

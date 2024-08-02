@@ -36,7 +36,7 @@ export default function EventCalendar({
       </p>
       <p className="px-2 mx-auto text-md">
         {isMultiDay ? (
-          <span className="text-[0.58rem]">{days.length} days</span>
+          <span className="text-[0.59rem]">{days.length} days</span>
         ) : (
           days[0]
         )}
