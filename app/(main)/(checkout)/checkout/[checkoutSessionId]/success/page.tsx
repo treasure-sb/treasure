@@ -92,7 +92,9 @@ export default async function Page({
   }
 
   price =
-    checkoutSessionData.promo.type === "DOLLAR"
+    checkoutSessionData.promo === null
+      ? price
+      : checkoutSessionData.promo.type === "DOLLAR"
       ? price - checkoutSessionData.promo.discount
       : price * (1 - checkoutSessionData.promo.discount * 0.01);
   price = price < 0 ? 0 : price;
