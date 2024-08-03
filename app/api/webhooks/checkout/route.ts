@@ -112,7 +112,7 @@ const handleTicketPurchase = async (
     location: event_address,
     date: moment(event_date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${ticket_price * quantity}`,
+    totalPrice: `$${amountPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
       metadata as { [key: string]: Json | undefined }
@@ -217,7 +217,7 @@ const handleTablePurchase = async (
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
-    totalPrice: `$${quantity * table_price}`,
+    totalPrice: `$${amountPaid}`,
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
   };
