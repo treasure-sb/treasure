@@ -86,6 +86,7 @@ export default function InitializeCheckout({
             profile={profile}
             totalPrice={price}
             priceAfterPromo={priceAfterPromo}
+            promoCode={promoCode}
           />
         </Elements>
       )}

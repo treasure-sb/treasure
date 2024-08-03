@@ -75,7 +75,10 @@ export default function EditPromoDialogContent({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput label="Code" {...field} />
+                  <FloatingLabelInput
+                    label="Code (case sensitive)"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -140,7 +140,7 @@ const handleTicketPurchase = async (
       eventName: event_name,
       eventDate: event_date,
       eventCleanedName: event_cleaned_name,
-      quantity:quantity
+      quantity: quantity,
     };
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
@@ -239,7 +239,7 @@ const handleTablePurchase = async (
       lastName: vendor_last_name,
       eventName: event_name,
       eventDate: event_date,
-      eventCleanedName: event_cleaned_name
+      eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);
   }
@@ -260,7 +260,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, amountPaid, email } = JSON.parse(
+  const { checkoutSessionId, ticketPrice, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
 
@@ -278,10 +278,10 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, amountPaid, supabase, email);
+      await handleTicketPurchase(checkoutSession, ticketPrice, supabase, email);
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, amountPaid, supabase);
+      await handleTablePurchase(checkoutSession, ticketPrice, supabase);
       break;
     default:
       throw new Error("Invalid Ticket Type");
