@@ -9,17 +9,13 @@ export default function EventInfo({ event }: { event: EventWithDates }) {
     formatDates(event.dates);
 
   const eventMonth = parseInt(event.date.split("-")[1]);
-  const eventDays: number[] =
-    formattedDates.length > 1
-      ? [
-          parseInt(event.dates[0].date.split("-")[2]),
-          parseInt(event.dates[event.dates.length - 1].date.split("-")[2]),
-        ]
-      : [parseInt(event.dates[0].date.split("-")[2])];
-
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     event.address
   )}`;
+
+  const eventDays = event.dates.map((date) =>
+    parseInt(date.date.split("-")[2])
+  );
 
   return (
     <section className="space-y-2">

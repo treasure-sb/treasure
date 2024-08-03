@@ -230,7 +230,9 @@ BEGIN
             city,
             state,
             sales_status,
-            vendor_exclusivity
+            vendor_exclusivity,
+            min_date,
+            max_date
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
@@ -260,7 +262,9 @@ BEGIN
             'New York City',
             'NY',
             'SELLING_ALL',
-            'APPLICATIONS'
+            'APPLICATIONS',
+            future_date,
+            future_date
         ) RETURNING id INTO e_event_id;
 
         -- Insert event date

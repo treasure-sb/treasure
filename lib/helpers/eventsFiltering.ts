@@ -69,7 +69,11 @@ const buildEventsQuery = async (
   let query = supabase
     .from("events")
     .select(
-      "*, dates:event_dates(date,start_time,end_time), event_categories!inner(categories!inner(name), *)"
+      `
+      *,
+      dates:event_dates(date,start_time,end_time),
+      event_categories!inner(categories!inner(name), *)
+      `
     )
     .eq("event_categories.categories.name", "collectables");
 
@@ -106,15 +110,11 @@ const buildEventsQuery = async (
   }
 
   if (from) {
-    query = query.gte("date", from);
+    query = query.gte("max_date", from);
   }
 
   if (until) {
-    query = query.lte("date", until);
-  }
-
-  if (!from && !until) {
-    query = query.gte("date", today);
+    query = query.lte("min_date", until);
   }
 
   if (search) {
@@ -123,8 +123,9 @@ const buildEventsQuery = async (
 
   query = query
     .order("featured", { ascending: false })
-    .order("date", { referencedTable: "dates", ascending: true })
+    .order("min_date")
     .order("id", { ascending: true })
+    .order("date", { referencedTable: "dates", ascending: true })
     .range(startIndex, endIndex);
 
   const { data, error } = await query;
@@ -341,7 +342,7 @@ const getAllEventData = async (search: string, page: number) => {
     .order("date", { referencedTable: "dates", ascending: true })
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
-  console.log(error);
+
   return { data, error };
 };
 
