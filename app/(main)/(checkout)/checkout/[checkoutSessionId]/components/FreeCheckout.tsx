@@ -19,6 +19,7 @@ import StripeInput from "./StripeInput";
 import { addEventAttendee } from "@/lib/actions/tickets";
 import { EventDisplayData } from "@/types/event";
 import { useRouter } from "next/navigation";
+import { is } from "date-fns/locale";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -57,7 +58,8 @@ export default function FreeCheckout({
   const onSubmit = async () => {
     setIsLoading(true);
     const { first_name, last_name, email } = form.getValues();
-    const { ticket_id, quantity, user_id, event_id } = checkoutSession;
+    const { ticket_id, quantity, user_id, event_id, promo_id } =
+      checkoutSession;
     await supabase
       .from("profiles")
       .update({ first_name, last_name })
@@ -72,6 +74,7 @@ export default function FreeCheckout({
       purchase_quantity: quantity,
       email,
       amount_paid: 0,
+      promo_id,
     });
 
     if (error) {
@@ -84,6 +87,7 @@ export default function FreeCheckout({
     setIsLoading(false);
     toast.dismiss();
     toast.success(`Ticket${quantity > 1 ? "s" : ""} added successfully!`);
+    console.log(isLoading);
     push(`/checkout/${checkoutSession.id}/success`);
   };
 
