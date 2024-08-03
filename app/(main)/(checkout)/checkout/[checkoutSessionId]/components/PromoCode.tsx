@@ -48,12 +48,14 @@ export default function PromoCode({
 
     const promoData: Tables<"event_codes"> = data;
 
-    if (
-      promoData.status === "INACTIVE" ||
-      (promoData.usage_limit && promoData.num_used >= promoData.usage_limit)
-    ) {
+    if (promoData.status === "INACTIVE") {
       toast.dismiss();
       toast.error("Invalid promo code");
+      return;
+    }
+    if (promoData.usage_limit && promoData.num_used >= promoData.usage_limit) {
+      toast.dismiss();
+      toast.error("Promo code has reached its usage limit");
       return;
     }
 

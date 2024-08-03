@@ -260,7 +260,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, ticketPrice, email, promoCode } = JSON.parse(
+  const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
 
@@ -278,10 +278,15 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, ticketPrice, supabase, email);
+      await handleTicketPurchase(
+        checkoutSession,
+        priceAfterPromo,
+        supabase,
+        email
+      );
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, ticketPrice, supabase);
+      await handleTablePurchase(checkoutSession, priceAfterPromo, supabase);
       break;
     default:
       throw new Error("Invalid Ticket Type");

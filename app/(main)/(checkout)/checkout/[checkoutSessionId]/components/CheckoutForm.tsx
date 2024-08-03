@@ -39,12 +39,14 @@ export default function CheckoutForm({
   checkoutSession,
   profile,
   totalPrice,
+  subtotal,
   priceAfterPromo,
   promoCode,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
   totalPrice: number;
+  subtotal: number;
   priceAfterPromo: number;
   promoCode: Tables<"event_codes"> | null;
 }) {
@@ -85,6 +87,7 @@ export default function CheckoutForm({
 
     const paymentIntent = await createPaymentIntent(
       totalPrice,
+      subtotal,
       priceAfterPromo,
       checkoutSession.id,
       email,
