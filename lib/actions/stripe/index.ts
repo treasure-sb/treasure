@@ -12,6 +12,7 @@ interface Ticket {
 const createPaymentIntent = async (
   totalPrice: number,
   subtotal: number,
+  priceAfterPromo: number,
   checkoutSessionId: string,
   email: string,
   promoCode: string
@@ -24,7 +25,8 @@ const createPaymentIntent = async (
     },
     metadata: {
       checkoutSessionId,
-      ticketPrice: subtotal,
+      subtotal: subtotal,
+      priceAfterPromo,
       promoCode: promoCode,
       email,
     },
