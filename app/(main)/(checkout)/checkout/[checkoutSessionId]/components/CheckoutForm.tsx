@@ -40,11 +40,13 @@ export default function CheckoutForm({
   profile,
   totalPrice,
   priceAfterPromo,
+  promoCode,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
   totalPrice: number;
   priceAfterPromo: number;
+  promoCode: Tables<"event_codes"> | null;
 }) {
   const supabase = createClient();
   const stripe = useStripe();
@@ -85,7 +87,8 @@ export default function CheckoutForm({
       totalPrice,
       priceAfterPromo,
       checkoutSession.id,
-      email
+      email,
+      promoCode?.code || ""
     );
     const clientSecret = paymentIntent?.clientSecret || "";
 
