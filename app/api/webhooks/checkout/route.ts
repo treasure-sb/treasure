@@ -160,7 +160,7 @@ const handleTablePurchase = async (
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, user_id, quantity, ticket_id } = checkoutSession;
+  const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
 
   const { data, error } = await supabase
     .rpc("purchase_table", {
@@ -168,6 +168,8 @@ const handleTablePurchase = async (
       event_id,
       user_id,
       purchase_quantity: quantity,
+      amount_paid: amountPaid,
+      promo_id,
     })
     .returns<PurchaseTableResult[]>();
 
