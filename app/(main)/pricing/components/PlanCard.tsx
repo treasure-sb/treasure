@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+
 interface PlanCardProps {
   name: string;
   description: string;
@@ -79,7 +81,7 @@ export default function PlanCard({
                 {percentFee}% Transaction Fees
               </p>
               <Button
-                className={`rounded-3xl relative bottom-3 bg-[#73D08D] text-black`}
+                className={`rounded-3xl relative bottom-3 bg-[#73D08D] text-black w-fit mx-auto`}
                 size="lg"
               >
                 <text className="px-4">{btnText}</text>
@@ -144,12 +146,14 @@ export default function PlanCard({
               <p className="text-left mb-8 text-black">
                 {percentFee}% Transaction Fees
               </p>
-              <Button
-                className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`}
-                size="lg"
-              >
-                <text className="px-4">{btnText}</text>
-              </Button>
+              <Link href="/pricing/checkout">
+                <Button
+                  className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`}
+                  size="lg"
+                >
+                  <text className="px-4">{btnText}</text>
+                </Button>
+              </Link>
             </div>
           </div>
         </>

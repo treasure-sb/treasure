@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import PlanCard from "./components/PlanCard";
 import ComparisonRow from "./components/ComparisonRow";
+import { validateUser } from "@/lib/actions/auth";
 
-export default function Page() {
+export default async function Page() {
   const unicode = "&#65291";
   return (
     <div className="">
