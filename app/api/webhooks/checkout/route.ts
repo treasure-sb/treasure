@@ -262,9 +262,16 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
+
+  console.log(session);
+  console.log("pleplepleplepelepl");
+  console.log(event);
+
   const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
+
+  console.log("number 2");
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
@@ -274,8 +281,10 @@ const handlePaymentIntentSucceeded = async (
       .single();
 
   if (checkoutSessionError || !checkoutSessionData) {
+    console.log("error");
     throw new Error("Invalid Checkout Session");
   }
+  console.log("number 3");
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
@@ -307,9 +316,12 @@ export async function POST(req: Request) {
 
     if (event.type === "payment_intent.succeeded") {
       try {
+        console.log("number 0");
+
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
+        console.log("number 4");
 
         return NextResponse.json({
           message: "Payment Intent Succeeded",

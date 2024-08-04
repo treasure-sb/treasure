@@ -1,5 +1,6 @@
 "use server";
 import { Stripe } from "stripe";
+import { validateUser } from "@/lib/actions/auth";
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string);
 
@@ -25,9 +26,9 @@ const createPaymentIntent = async (
     },
     metadata: {
       checkoutSessionId,
-      subtotal: subtotal,
+      subtotal,
       priceAfterPromo,
-      promoCode: promoCode,
+      promoCode,
       email,
     },
   });
@@ -74,4 +75,48 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-export { createPaymentIntent, createStripeProduct, updatePaymentIntent };
+const stripeLink = async (returnUrl: string) => {
+  const {
+    data: { user },
+  } = await validateUser();
+
+  if (user) {
+    user.email == null && true; //EnterEmailModal;
+  }
+  const searchData = await stripe.customers.search({
+    query: `email:\'${user?.email}\'`,
+  });
+  let customer: any;
+  if (searchData && searchData.data.length == 0) {
+    customer = await stripe.customers.create({
+      email: user?.email,
+      phone: user?.phone,
+    });
+  } else {
+    customer = searchData.data[0];
+  }
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [
+      {
+        price: "price_1PjqNfHnRCFO3bhFJArayp7A",
+        quantity: 1,
+      },
+    ],
+    ui_mode: "embedded",
+    return_url: returnUrl,
+    metadata: {
+      plan: "Pro",
+      priceId: "price_1PjqNfHnRCFO3bhFJArayp7A",
+    },
+  });
+  let clientSecret = session.client_secret;
+  return clientSecret;
+};
+
+export {
+  createPaymentIntent,
+  createStripeProduct,
+  updatePaymentIntent,
+  stripeLink,
+};

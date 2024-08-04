@@ -100,7 +100,7 @@ export default async function Page({
         invoice_location === null
           ? []
           : invoice_location?.filter(
-              (person) => person.user_id === order.event.organizer_id
+              (person) => person.user_id === order.event.organizer_id,
             );
 
       payouts.push({
@@ -141,7 +141,7 @@ export default async function Page({
   payouts.sort(
     (a, b) =>
       parseInt(b.date.split("/").join("")) -
-      parseInt(a.date.split("/").join(""))
+      parseInt(a.date.split("/").join("")),
   );
 
   const payoutsPromise: Promise<invoice>[] = payouts.map(async (payout) => {
