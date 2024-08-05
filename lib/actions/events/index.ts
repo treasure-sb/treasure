@@ -9,7 +9,6 @@ import {
   EventVendorApplication,
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { createStripeProduct } from "../stripe";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import format from "date-fns/format";
 
@@ -96,10 +95,12 @@ const createEvent = async (values: EventForm) => {
       },
     ])
     .select();
+
   if (data) {
     const event: Tables<"events"> = data[0];
     const posterUrl = await getPublicPosterUrl(event);
     const eventPromises = [
+      await createEventDate(event.id, date as Date, start_time, end_time),
       await createTickets(values.tickets, event.id, event.name, posterUrl),
       await createTableTicket(values.tables, event.id, event.name, posterUrl),
       await createApplicationInfo(
@@ -309,7 +310,19 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
     .eq("id", eventId);
 
   await supabase.from("event_dates").delete().eq("event_id", eventId);
-  await supabase.from("event_dates").insert([
+  await createEventDate(eventId, date, startTime, endTime);
+
+  return { error };
+};
+
+const createEventDate = async (
+  eventId: string,
+  date: Date,
+  startTime: string,
+  endTime: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("event_dates").insert([
     {
       event_id: eventId,
       date,
@@ -317,7 +330,6 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
       end_time: endTime,
     },
   ]);
-
   return { error };
 };
 

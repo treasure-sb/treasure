@@ -1,4 +1,3 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import EditState from "./components/EditState";
 import EditEventDetails from "./components/event_details/EditEventDetails";
