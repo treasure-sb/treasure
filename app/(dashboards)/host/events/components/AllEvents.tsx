@@ -1,11 +1,10 @@
 import { eventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import NextEventCard from "./NextEventCard";
 import RegularEventCard from "./RegularEventCard";
-import { EventWithDates } from "@/types/event";
 
 export default async function AllEvents() {
   const supabase = await createSupabaseServerClient();
@@ -17,17 +16,17 @@ export default async function AllEvents() {
 
   const { data: upcomingData, error: upcomingError } = await supabase
     .from("events")
-    .select("*")
+    .select("*, dates:event_dates!inner(date, start_time, end_time)")
     .eq("organizer_id", user?.id as string)
-    .gte("date", today.toISOString())
-    .order("date", { ascending: true });
+    .gte("max_date", today.toISOString())
+    .order("min_date", { ascending: true });
 
   const { data: pastData, error: pastError } = await supabase
     .from("events")
-    .select("*")
+    .select("*, dates:event_dates!inner(date, start_time, end_time)")
     .eq("organizer_id", user?.id as string)
-    .lt("date", today.toISOString())
-    .order("date", { ascending: false });
+    .lt("max_date", today.toISOString())
+    .order("min_date", { ascending: false });
 
   if (!upcomingData || upcomingError) {
     redirect("/events");
@@ -40,7 +39,6 @@ export default async function AllEvents() {
   const pastEventData = await eventDisplayData(pastEventsHosting);
 
   const nextEvent = upcomingEventData.length > 0 ? upcomingEventData[0] : null;
-  const futureEvents = upcomingEventData.slice(1);
 
   return (
     <div className="space-y-8">
@@ -57,7 +55,7 @@ export default async function AllEvents() {
       </div>
       <div className="space-y-2">
         <h2 className="text-xl">Upcoming Events</h2>
-        {futureEvents.length === 0 ? (
+        {upcomingEventData.length === 0 ? (
           <p className="text-xl text-muted-foreground">No upcoming events</p>
         ) : (
           <div className="flex flex-col space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2 2xl:grid-cols-3">
@@ -77,7 +75,7 @@ export default async function AllEvents() {
           <p className="text-xl text-muted-foreground">No past events</p>
         ) : (
           <div className="flex flex-col space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2 2xl:grid-cols-3">
-            {upcomingEventData.map((event) => (
+            {pastEventData.map((event) => (
               <RegularEventCard
                 event={event}
                 key={event.id}

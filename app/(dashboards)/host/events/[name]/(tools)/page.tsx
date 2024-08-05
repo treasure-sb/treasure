@@ -59,7 +59,7 @@ export default async function Page({
 
   const supabase = await createSupabaseServerClient();
 
-  const { event, eventError } = await getEventFromCleanedName(name);
+  const { event } = await getEventFromCleanedName(name);
 
   const { data: tablesData } = await supabase
     .from("event_vendors")
