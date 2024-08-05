@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { useStripe } from "@stripe/react-stripe-js";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function Page() {
   return (
     <div>
-      <div className="flex-col gap-6 flex mx-auto mt-5 max-w-6xl bg-black p-8 rounded-sm border">
+      <div className="flex-col gap-6 flex mx-auto mt-5 max-w-3xl bg-black p-8 rounded-sm border">
         <h1 className="text-3xl sm:text-4xl text-center text-primary font-bold">
           Congratulations!
         </h1>
@@ -13,7 +14,7 @@ export default function Page() {
           Thanks for upgrading to the Pro plan! You now have access to all of
           the following benefits.
         </p>
-        <div className="flex flex-col w-full rounded-xl p-4 items-center justify-center text-xl font-semibold">
+        <div className="flex flex-col w-full rounded-xl p-4 justify-center text-xl font-semibold items-center">
           <div className="flex items-center gap-5 w-full mb-2">
             <CheckCircle size={20} strokeWidth={3} />
             <p className="text-left text-white">Embedded Checkout</p>

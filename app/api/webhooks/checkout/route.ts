@@ -282,16 +282,10 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-
-  console.log(session);
-  console.log("pleplepleplepelepl");
-  console.log(event);
-
+  console.log("Successful Payment: ", session);
   const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
-
-  console.log("number 2");
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
@@ -304,7 +298,6 @@ const handlePaymentIntentSucceeded = async (
     console.log("error");
     throw new Error("Invalid Checkout Session");
   }
-  console.log("number 3");
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
