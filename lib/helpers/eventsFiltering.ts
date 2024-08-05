@@ -5,7 +5,6 @@ import format from "date-fns/format";
 import { cityMap } from "./cities";
 import { capitalize } from "../utils";
 import { EventWithDates } from "@/types/event";
-import { Tables } from "@/types/supabase";
 
 const today = format(new Date(), "yyyy-MM-dd");
 const numEvents = 12;
@@ -30,9 +29,6 @@ type LikedEventData = {
   events: EventWithDates[];
 };
 
-/**
- * Retrieves the ID of a tag based on its name.
- */
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase

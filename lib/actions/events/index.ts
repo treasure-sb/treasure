@@ -308,6 +308,16 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
     })
     .eq("id", eventId);
 
+  await supabase.from("event_dates").delete().eq("event_id", eventId);
+  await supabase.from("event_dates").insert([
+    {
+      event_id: eventId,
+      date,
+      start_time: startTime,
+      end_time: endTime,
+    },
+  ]);
+
   return { error };
 };
 

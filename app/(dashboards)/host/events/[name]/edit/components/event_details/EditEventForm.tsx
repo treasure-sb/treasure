@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { EventDisplayData } from "@/types/event";
+import { EventDisplayData, EventWithDates } from "@/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
