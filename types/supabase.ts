@@ -692,8 +692,8 @@ export type Database = {
           id: string
           lat: number
           lng: number
-          max_date: string | null
-          min_date: string | null
+          max_date: string
+          min_date: string
           name: string
           organizer_id: string
           organizer_type: string
@@ -717,8 +717,8 @@ export type Database = {
           id?: string
           lat: number
           lng: number
-          max_date?: string | null
-          min_date?: string | null
+          max_date?: string
+          min_date?: string
           name: string
           organizer_id: string
           organizer_type?: string
@@ -742,8 +742,8 @@ export type Database = {
           id?: string
           lat?: number
           lng?: number
-          max_date?: string | null
-          min_date?: string | null
+          max_date?: string
+          min_date?: string
           name?: string
           organizer_id?: string
           organizer_type?: string
@@ -1338,8 +1338,8 @@ export type Database = {
           id: string
           lat: number
           lng: number
-          max_date: string | null
-          min_date: string | null
+          max_date: string
+          min_date: string
           name: string
           organizer_id: string
           organizer_type: string
@@ -1371,8 +1371,8 @@ export type Database = {
           id: string
           lat: number
           lng: number
-          max_date: string | null
-          min_date: string | null
+          max_date: string
+          min_date: string
           name: string
           organizer_id: string
           organizer_type: string

@@ -43,7 +43,7 @@ export default function NextEventCard({
           </p>
           <p className="text-sm md:text-base font-normal">
             <span className="font-normal text-primary">
-              {event.formattedDate}
+              {event.formattedDates[0].date}
             </span>
             {" | "}
             {event.city + ", " + event.state}
