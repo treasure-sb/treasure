@@ -146,6 +146,7 @@ const buildEventsQuery = async (
   query = query
     .order("featured", { ascending: false })
     .order("min_date")
+    .order("date", { ascending: true, referencedTable: "dates" })
     .range(startIndex, endIndex);
 
   const { data, error } = await query;
@@ -174,7 +175,7 @@ const getUpcomingEventsAttending = async (page: number, userId: string) => {
     .eq("vendor_id", userId)
     .eq("payment_status", "PAID")
     .gte("events.max_date", today)
-    .order("min_date", { referencedTable: "events", ascending: true })
+    .order("events(min_date)", { ascending: true })
     .range(startIndex, endIndex);
 
   const vendorData: VendorEventData[] = data || [];
@@ -200,6 +201,7 @@ const getPastEventsAttending = async (page: number, userId: string) => {
     .eq("vendor_id", userId)
     .eq("payment_status", "PAID")
     .lt("events.max_date", today)
+    .order("events(min_date)", { ascending: false })
     .range(startIndex, endIndex);
 
   const vendorData: VendorEventData[] = data || [];
@@ -221,6 +223,7 @@ const getUpcomingEventsLiked = async (page: number, userId: string) => {
     )
     .eq("user_id", userId)
     .gte("events.max_date", today)
+    .order("events(min_date)", { ascending: true })
     .range(startIndex, endIndex);
 
   const likedEventData: LikedEventData[] = data || [];
@@ -242,15 +245,13 @@ const getPastEventsLiked = async (page: number, userId: string) => {
     )
     .eq("user_id", userId)
     .lt("events.date", today)
+    .order("events(min_date)", { ascending: false })
     .range(startIndex, endIndex);
 
   const likedEventData: LikedEventData[] = data || [];
   const eventWithDates: EventWithDates[] = likedEventData.flatMap(
     (event) => event.events
   );
-
-  console.log(eventWithDates);
-
   return { data: eventWithDates, error };
 };
 
@@ -285,6 +286,7 @@ const getPastEventsHosting = async (page: number, userId: string) => {
   const eventWithDates: EventWithDates[] = data || [];
   return { data: eventWithDates, error };
 };
+
 const getEventsHosting = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
@@ -293,18 +295,6 @@ const getEventsHosting = async (page: number, userId: string) => {
     .from("events")
     .select("*")
     .eq("organizer_id", userId)
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
-const getEventsLiked = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
-    .from("event_likes")
-    .select("events(*)")
-    .eq("user_id", userId)
     .range(startIndex, endIndex);
   return { data, error };
 };
@@ -319,10 +309,10 @@ const getAllEventData = async (search: string, page: number) => {
       `*, dates:event_dates(date,start_time,end_time), event_categories!inner(categories!inner(name), *)`
     )
     .eq("event_categories.categories.name", "collectables")
-    .gte("date", today)
+    .gte("max_date", today)
     .ilike("name", `%${search}%`)
     .order("featured", { ascending: false })
-    .order("date", { referencedTable: "dates", ascending: true })
+    .order("min_date")
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
 
@@ -338,7 +328,6 @@ export {
   getPastEventsHosting,
   getPastEventsLiked,
   getEventsHosting,
-  getEventsLiked,
   buildEventsQuery,
   getAllEventData,
 };
