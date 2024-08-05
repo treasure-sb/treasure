@@ -6,7 +6,6 @@ import {
   getTagData,
   getUpcomingEventsAttending,
   getPastEventsAttending,
-  getEventsApplied,
   getUpcomingEventsLiked,
   getPastEventsLiked,
   getUpcomingEventsHosting,
@@ -16,14 +15,22 @@ import {
 import { formatDates } from "../utils";
 import createSupabaseServerClient from "../../utils/supabase/server";
 
-/**
- * Type definition for the filter functions.
- */
 interface FilterFunctions {
-  Hosting: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Applied: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Attending: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Liked: (page: number, userId: string, upcoming: boolean) => Promise<any>;
+  Hosting: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
+  Attending: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
+  Liked: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
 }
 
 const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
@@ -91,7 +98,7 @@ const getEventFromId = async (id: string) => {
 const fetchEventsFromFilters = async (
   page: number,
   searchParams: SearchParams | undefined
-): Promise<any[]> => {
+): Promise<EventWithDates[]> => {
   const { tag, from, until, city, search, distance } = searchParams || {};
 
   let tagId: string | undefined;
@@ -128,15 +135,6 @@ const fetchHostingEvents = async (
   }
 };
 
-const fetchAppliedEvents = async (
-  page: number,
-  userId: string,
-  upcoming: boolean
-) => {
-  const { data } = await getEventsApplied(page, userId);
-  return data?.map((event) => event.events) || [];
-};
-
 const fetchAttendingEvents = async (
   page: number,
   userId: string,
@@ -144,10 +142,10 @@ const fetchAttendingEvents = async (
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsAttending(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   } else {
     const { data } = await getPastEventsAttending(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   }
 };
 
@@ -158,16 +156,15 @@ const fetchLikedEvents = async (
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsLiked(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   } else {
     const { data } = await getPastEventsLiked(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   }
 };
 
 const filterFunctions: FilterFunctions = {
   Hosting: fetchHostingEvents,
-  Applied: fetchAppliedEvents,
   Attending: fetchAttendingEvents,
   Liked: fetchLikedEvents,
 };
@@ -189,25 +186,14 @@ const fetchUserEventsFromFilter = async (
   return await fetchFunction(page, user.id, upcoming);
 };
 
-/**
- * Fetches event data along with additional details such as public poster URL and formatted date.
- * This data is used for displaying events either as a card or display.
- */
 const getEventsDisplayData = async (
   page: number,
   searchParams: SearchParams | undefined
 ) => {
-  const events: EventWithDates[] = await fetchEventsFromFilters(
-    page,
-    searchParams
-  );
+  const events = await fetchEventsFromFilters(page, searchParams);
   return await eventDisplayData(events);
 };
 
-/**
- * Fetches user specific event data along with additional details such as public poster URL and formatted date.
- * This data is used for displaying events either as a card or display.
- */
 const getUserEventsDisplayData = async (
   page: number,
   filter: string | null,
@@ -218,7 +204,7 @@ const getUserEventsDisplayData = async (
   return await eventDisplayData(events);
 };
 
-const eventDisplayData = async (events: any[]) => {
+const eventDisplayData = async (events: EventWithDates[]) => {
   return Promise.all(
     events.map(
       async (event: EventWithDates) => await getEventDisplayData(event)
