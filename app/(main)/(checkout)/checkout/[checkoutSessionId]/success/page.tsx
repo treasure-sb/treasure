@@ -13,13 +13,14 @@ export interface TicketSuccessInformation {
   email: string;
   type: "TICKET" | "TABLE";
   priceType: PriceType;
+  amountPaid: number;
 }
 
-const getTicketName = async (ticketId: string) => {
+const getTicketInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: ticketData, error: ticketError } = await supabase
     .from("tickets")
-    .select("name")
+    .select("name, price")
     .eq("id", ticketId)
     .single();
 
@@ -27,21 +28,21 @@ const getTicketName = async (ticketId: string) => {
     throw new Error("Error fetching ticket name");
   }
 
-  return ticketData.name;
+  return ticketData;
 };
 
-const getTableName = async (ticketId: string) => {
+const getTableInfo = async (ticketId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: tableData, error: tableError } = await supabase
     .from("tables")
-    .select("section_name")
+    .select("name:section_name, price")
     .eq("id", ticketId)
     .single();
 
   if (tableError) {
     throw new Error("Error fetching table name");
   }
-  return tableData.section_name;
+  return tableData;
 };
 
 export default async function Page({
@@ -57,7 +58,7 @@ export default async function Page({
     await supabase
       .from("checkout_sessions")
       .select(
-        "*, event:events(*, event_dates(date, start_time, end_time)), ticket_id, profile:profiles(email)"
+        "*, event:events(*, dates:event_dates(date, start_time, end_time)), ticket_id, profile:profiles(email), promo:event_codes(*)"
       )
       .eq("id", checkoutSessionId)
       .single();
@@ -70,20 +71,34 @@ export default async function Page({
   const priceType = checkoutSessionData.price_type as PriceType;
   const eventDisplay = await getEventDisplayData(event);
 
+  let tInfo: any;
   let ticketName: string;
   let type: "TICKET" | "TABLE";
+  let price: number;
   switch (checkoutSessionData.ticket_type) {
     case "TICKET":
-      ticketName = await getTicketName(checkoutSessionData.ticket_id);
+      tInfo = await getTicketInfo(checkoutSessionData.ticket_id);
+      ticketName = tInfo.name;
+      price = tInfo.price;
       type = "TICKET";
       break;
     case "TABLE":
-      ticketName = await getTableName(checkoutSessionData.ticket_id);
+      tInfo = await getTableInfo(checkoutSessionData.ticket_id);
+      ticketName = tInfo.name;
+      price = tInfo.price;
       type = "TABLE";
       break;
     default:
       throw new Error("Invalid Ticket Type");
   }
+
+  price =
+    checkoutSessionData.promo === null
+      ? price
+      : checkoutSessionData.promo.type === "DOLLAR"
+      ? price - checkoutSessionData.promo.discount
+      : price * (1 - checkoutSessionData.promo.discount * 0.01);
+  price = price < 0 ? 0 : price;
 
   const quantity = checkoutSessionData.quantity;
   const email = checkoutSessionData.profile.email;
@@ -94,6 +109,7 @@ export default async function Page({
     email,
     type,
     priceType: priceType,
+    amountPaid: price,
   };
 
   return (
