@@ -16,6 +16,10 @@ type BuiltEvent = EventWithDates & {
       name: string;
     };
   }[];
+} & {
+  event_tags?: {
+    tag_id: string;
+  }[];
 };
 
 type VendorEventData = {
@@ -98,7 +102,10 @@ const buildEventsQuery = async (
     query = supabase
       .from("events")
       .select(
-        "*, event_tags!inner(*), event_categories!inner(categories!inner(name))"
+        `*,
+         dates:event_dates(date,start_time,end_time),
+         event_tags!inner(tag_id), 
+         event_categories!inner(categories!inner(name))`
       )
       .eq("event_categories.categories.name", "collectables")
       .eq("event_tags.tag_id", tagId);
@@ -135,6 +142,10 @@ const buildEventsQuery = async (
     query = query.lte("min_date", until);
   }
 
+  if (!from && !until) {
+    query = query.gte("min_date", today);
+  }
+
   if (search) {
     query = query.ilike("name", `%${search}%`);
   }
@@ -148,7 +159,7 @@ const buildEventsQuery = async (
   const { data, error } = await query;
   const events: BuiltEvent[] = data || [];
   const eventWithDates: EventWithDates[] = events.map((event) => {
-    const { event_categories, ...rest } = event;
+    const { event_categories, event_tags, ...rest } = event;
     return {
       ...rest,
     };
