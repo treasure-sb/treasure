@@ -23,11 +23,12 @@ import ExportButton from "./ExportButton";
 import { Order } from "./OrderDataColumns";
 import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
+import { EventWithDates } from "@/types/event";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  event: Tables<"events">;
+  event: EventWithDates;
 }
 
 export function DataTable<TData, TValue>({

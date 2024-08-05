@@ -19,12 +19,13 @@ import UploadHighlight from "./UploadHighlight";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
+import { EventWithDates } from "@/types/event";
 
 export default function PastHighlights({
   event,
   previousHighlights,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   previousHighlights: EventHighlightPhoto[];
 }) {
   const supabase = createClient();

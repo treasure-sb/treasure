@@ -11,6 +11,8 @@ import {
   AppWindowIcon,
   LucideIcon,
 } from "lucide-react";
+import { EventWithDates } from "@/types/event";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 type AttendeeCountData =
   Database["public"]["Functions"]["get_attendee_count"]["Returns"];
@@ -56,13 +58,8 @@ export default async function Page({
   const length = period === "30d" ? 30 : 7;
 
   const supabase = await createSupabaseServerClient();
-  const { data: eventData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
 
-  const event: Tables<"events"> = eventData;
+  const { event } = await getEventFromCleanedName(name);
 
   const { data: tablesData } = await supabase
     .from("event_vendors")
@@ -98,7 +95,7 @@ export default async function Page({
   const viewCount = lastPeriodViewsCount || 0;
 
   const { data } = await supabase.rpc("get_attendee_count", {
-    event_id: eventData.id,
+    event_id: event.id,
   });
 
   const attendeeCount: AttendeeCountData = data || 0;

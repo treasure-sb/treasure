@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { type TagData } from "../../types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import ListVendors from "./ListVendors";
+import { EventWithDates } from "@/types/event";
 
 export enum VendorTypes {
   PROFILE,
@@ -34,7 +35,7 @@ type ProfileVendor = {
 };
 
 type TempProfileVendor = {
-  assignment: string | null,
+  assignment: string | null;
   profile: Tables<"temporary_profiles_vendors">;
   tags: Tables<"tags">;
 };
@@ -58,7 +59,7 @@ const createVendorFromProfile = (profile: ProfileVendor) => {
     tags: tags.map((tag) => tag.tags.name),
     links: vendorProfile.links,
     inventory: profile.inventory,
-    assignment: profile.assignment
+    assignment: profile.assignment,
   };
 };
 
@@ -83,7 +84,7 @@ const createVendorFromTempProfile = (tempProfile: TempProfileVendor) => {
     tags: [tags && tags.name],
     links: instagramLink,
     inventory: null,
-    assignment: null
+    assignment: null,
   };
 };
 
@@ -106,7 +107,7 @@ const getVendorsWithPublicUrl = async (vendors: Vendor[]) => {
   );
 };
 
-export default async function Vendors({ event }: { event: Tables<"events"> }) {
+export default async function Vendors({ event }: { event: EventWithDates }) {
   const supabase = await createSupabaseServerClient();
   const { data: vendorsData } = await supabase
     .from("event_vendors")

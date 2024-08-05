@@ -27,6 +27,7 @@ import { fetchTemporaryVendors } from "@/lib/helpers/profiles";
 import { LucideUserPlus2 } from "lucide-react";
 import { toast } from "sonner";
 import { TagData } from "../../types";
+import { EventWithDates } from "@/types/event";
 
 type TemporaryVendor = Tables<"temporary_profiles"> & {
   temporary_vendors: {
@@ -38,7 +39,7 @@ export default function AssignTempVendor({
   event,
   tags,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   tags: TagData[];
 }) {
   const { refresh } = useRouter();

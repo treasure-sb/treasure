@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import DateRangeFilter from "./DateRangeFilter";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import AdamsMom from "./AdamsMom";
+import { EventWithDates } from "@/types/event";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
@@ -19,7 +20,7 @@ export default async function Orders({
   from,
   to,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   from?: string;
   to?: string;
 }) {

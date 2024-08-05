@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils";
 import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "../../views/components/DateFilter";
+import { EventWithDates } from "@/types/event";
 
 type OrderQueryData = {
   created_at: string;
@@ -39,7 +40,7 @@ export default async function SalesAnalytics({
   event,
   periodLength,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   periodLength: number;
 }) {
   const supabase = await createSupabaseServerClient();

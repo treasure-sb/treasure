@@ -1,7 +1,7 @@
 import EventToolsHeader from "./components/EventToolsHeader";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import { eventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { getEventDisplayData } from "@/lib/helpers/events";
 
 export default async function HostEventLayout({
   children,
@@ -10,25 +10,18 @@ export default async function HostEventLayout({
   children: React.ReactNode;
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
-  if (!data || error) {
+  if (eventError) {
     return redirect("/host/events");
   }
 
-  const displayData = await eventDisplayData([data]);
-  const eventData = displayData[0];
+  const displayData = await getEventDisplayData(event);
+
   return (
-    eventData && (
-      <div className="space-y-4">
-        <EventToolsHeader event={eventData} />
-        {children}
-      </div>
-    )
+    <div className="space-y-4">
+      <EventToolsHeader event={displayData} />
+      {children}
+    </div>
   );
 }

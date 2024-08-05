@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -29,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function AddEventGuests({ event }: { event: Tables<"events"> }) {
+export default function AddEventGuests({ event }: { event: EventWithDates }) {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const { refresh } = useRouter();
   const supabase = createClient();

@@ -5,11 +5,12 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import AssignTempVendor from "./AssignTempVendor";
 import { Tables } from "@/types/supabase";
 import { TagData } from "../../types";
+import { EventWithDates } from "@/types/event";
 
 export default async function AdminOptions({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   let eventInfo;
   const supabase = await createSupabaseServerClient();

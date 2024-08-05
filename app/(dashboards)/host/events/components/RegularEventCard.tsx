@@ -13,7 +13,7 @@ export default function RegularEventCard({
   event: EventDisplayData;
   redirectTo?: string;
 }) {
-  const { publicPosterUrl, formattedDate } = event;
+  const { publicPosterUrl, formattedDates } = event;
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
   const skeletonDisplay = loading ? "inline-block" : "hidden";
@@ -50,7 +50,9 @@ export default function RegularEventCard({
 
           <div className="my-auto">
             <p className="text-lg font-bold line-clamp-2">{event.name}</p>
-            <p className="text-primary text-sm font-normal">{formattedDate} </p>
+            <p className="text-primary text-sm font-normal">
+              {formattedDates[0].date}{" "}
+            </p>
             <p className="text-sm font-normal truncate">
               {event.city + ", " + event.state}
             </p>

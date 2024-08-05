@@ -3,6 +3,7 @@ import VendorsChart from "./VendorsChart";
 import { Tables } from "@/types/supabase";
 import { TagNameData } from "../../vendors/types";
 import ApplicationsChart from "./ApplicationsChart";
+import { EventWithDates } from "@/types/event";
 
 export type VendorBreakdownData = {
   name: string;
@@ -29,7 +30,7 @@ export type ApplicationData = {
 export default async function VendorBreakdown({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: tagsData } = await supabase

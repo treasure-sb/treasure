@@ -2,6 +2,7 @@ import { Tables } from "@/types/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { EventWithDates } from "@/types/event";
 
 const getGuestsPublicUrl = async (guests: Tables<"event_guests">[]) => {
   const supabase = await createSupabaseServerClient();
@@ -17,7 +18,7 @@ const getGuestsPublicUrl = async (guests: Tables<"event_guests">[]) => {
   );
 };
 
-export default async function Guests({ event }: { event: Tables<"events"> }) {
+export default async function Guests({ event }: { event: EventWithDates }) {
   const supabase = await createSupabaseServerClient();
   const { data: guestsData } = await supabase
     .from("event_guests")

@@ -3,12 +3,13 @@ import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { User } from "@supabase/supabase-js";
 import LikeButton from "@/components/events/shared/LikeButton";
 import EventPoster from "@/components/events/shared/EventPoster";
+import { EventWithDates } from "@/types/event";
 
 export default async function Poster({
   event,
   user,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   user: User | null;
 }) {
   const publicPosterUrl = await getPublicPosterUrl(event);

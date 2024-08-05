@@ -1,29 +1,36 @@
 "use server";
 
-import { EventDisplayData, SearchParams } from "@/types/event";
+import { EventDisplayData, EventWithDates, SearchParams } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   getTagData,
   getUpcomingEventsAttending,
   getPastEventsAttending,
-  getEventsApplied,
   getUpcomingEventsLiked,
   getPastEventsLiked,
   getUpcomingEventsHosting,
   getPastEventsHosting,
   buildEventsQuery,
 } from "./eventsFiltering";
-import { formatDate } from "../utils";
+import { formatDates } from "../utils";
 import createSupabaseServerClient from "../../utils/supabase/server";
 
-/**
- * Type definition for the filter functions.
- */
 interface FilterFunctions {
-  Hosting: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Applied: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Attending: (page: number, userId: string, upcoming: boolean) => Promise<any>;
-  Liked: (page: number, userId: string, upcoming: boolean) => Promise<any>;
+  Hosting: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
+  Attending: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
+  Liked: (
+    page: number,
+    userId: string,
+    upcoming: boolean
+  ) => Promise<EventWithDates[]>;
 }
 
 const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
@@ -47,7 +54,7 @@ const getPublicPosterUrlFromPosterUrl = async (posterUrl: string) => {
 };
 
 const getPublicVenueMapUrl = async (
-  event: Tables<"events"> | EventDisplayData,
+  event: EventWithDates | EventDisplayData
 ) => {
   const supabase = await createSupabaseServerClient();
   let publicVenueMapUrl = "";
@@ -66,11 +73,12 @@ const getEventFromCleanedName = async (cleanedName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("*")
+    .select("* , dates:event_dates(date, start_time, end_time)")
     .eq("cleaned_name", cleanedName)
+    .order("date", { referencedTable: "dates", ascending: true })
     .single();
 
-  const event: Tables<"events"> = eventData;
+  const event: EventWithDates = eventData;
   return { event, eventError };
 };
 
@@ -78,18 +86,19 @@ const getEventFromId = async (id: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("*")
+    .select("* , dates:event_dates(date, start_time, end_time)")
     .eq("id", id)
+    .order("date", { referencedTable: "dates", ascending: true })
     .single();
 
-  const event: Tables<"events"> = eventData;
+  const event: EventWithDates = eventData;
   return { event, eventError };
 };
 
 const fetchEventsFromFilters = async (
   page: number,
-  searchParams: SearchParams | undefined,
-): Promise<any[]> => {
+  searchParams: SearchParams | undefined
+): Promise<EventWithDates[]> => {
   const { tag, from, until, city, search, distance } = searchParams || {};
 
   let tagId: string | undefined;
@@ -106,7 +115,7 @@ const fetchEventsFromFilters = async (
     from,
     until,
     city,
-    parseInt(distance || "50"),
+    parseInt(distance || "50")
   );
 
   return data || [];
@@ -115,7 +124,7 @@ const fetchEventsFromFilters = async (
 const fetchHostingEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean,
+  upcoming: boolean
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsHosting(page, userId);
@@ -126,46 +135,36 @@ const fetchHostingEvents = async (
   }
 };
 
-const fetchAppliedEvents = async (
-  page: number,
-  userId: string,
-  upcoming: boolean,
-) => {
-  const { data } = await getEventsApplied(page, userId);
-  return data?.map((event) => event.events) || [];
-};
-
 const fetchAttendingEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean,
+  upcoming: boolean
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsAttending(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   } else {
     const { data } = await getPastEventsAttending(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   }
 };
 
 const fetchLikedEvents = async (
   page: number,
   userId: string,
-  upcoming: boolean,
+  upcoming: boolean
 ) => {
   if (upcoming) {
     const { data } = await getUpcomingEventsLiked(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   } else {
     const { data } = await getPastEventsLiked(page, userId);
-    return data?.map((event) => event.events) || [];
+    return data;
   }
 };
 
 const filterFunctions: FilterFunctions = {
   Hosting: fetchHostingEvents,
-  Applied: fetchAppliedEvents,
   Attending: fetchAttendingEvents,
   Liked: fetchLikedEvents,
 };
@@ -178,7 +177,7 @@ const fetchUserEventsFromFilter = async (
   page: number,
   filter: string | null,
   user: Tables<"profiles"> | Tables<"temporary_profiles">,
-  upcoming: boolean,
+  upcoming: boolean
 ) => {
   const fetchFunction =
     filter && filter in filterFunctions
@@ -187,51 +186,40 @@ const fetchUserEventsFromFilter = async (
   return await fetchFunction(page, user.id, upcoming);
 };
 
-/**
- * Fetches event data along with additional details such as public poster URL and formatted date.
- * This data is used for displaying events either as a card or display.
- */
 const getEventsDisplayData = async (
   page: number,
-  searchParams: SearchParams | undefined,
+  searchParams: SearchParams | undefined
 ) => {
-  const events: Tables<"events">[] = await fetchEventsFromFilters(
-    page,
-    searchParams,
-  );
+  const events = await fetchEventsFromFilters(page, searchParams);
   return await eventDisplayData(events);
 };
 
-/**
- * Fetches user specific event data along with additional details such as public poster URL and formatted date.
- * This data is used for displaying events either as a card or display.
- */
 const getUserEventsDisplayData = async (
   page: number,
   filter: string | null,
   upcoming: boolean,
-  user: Tables<"profiles"> | Tables<"temporary_profiles">,
+  user: Tables<"profiles"> | Tables<"temporary_profiles">
 ) => {
   const events = await fetchUserEventsFromFilter(page, filter, user, upcoming);
   return await eventDisplayData(events);
 };
 
-const eventDisplayData = async (events: any[]) => {
+const eventDisplayData = async (events: EventWithDates[]) => {
   return Promise.all(
     events.map(
-      async (event: Tables<"events">) => await getEventDisplayData(event),
-    ),
+      async (event: EventWithDates) => await getEventDisplayData(event)
+    )
   );
 };
 
 const getEventDisplayData = async (
-  event: Tables<"events">,
+  event: EventWithDates
 ): Promise<EventDisplayData> => {
   const publicPosterUrl = await getPublicPosterUrl(event);
   return {
     ...event,
     publicPosterUrl,
-    formattedDate: formatDate(event.date),
+    formattedDates: formatDates(event.dates),
   };
 };
 

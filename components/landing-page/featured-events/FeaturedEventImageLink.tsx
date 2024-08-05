@@ -6,6 +6,7 @@ import { Tables } from "@/types/supabase";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 
 type LinkWrapperProps = {
   children: React.ReactNode;
@@ -31,7 +32,7 @@ export default function FeaturedEventImageLink({
   event,
   publicUrl,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   publicUrl: string;
 }) {
   const { push } = useRouter();

@@ -2,12 +2,9 @@ import { Tables } from "@/types/supabase";
 import { DataTable } from "./table/DataTable";
 import { PromoCode, promoColumns } from "./table/PromoDataColumns";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { EventWithDates } from "@/types/event";
 
-export default async function PromoCodes({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
+export default async function PromoCodes({ event }: { event: EventWithDates }) {
   const supabase = await createSupabaseServerClient();
   const { data: promoData } = await supabase
     .from("event_codes")

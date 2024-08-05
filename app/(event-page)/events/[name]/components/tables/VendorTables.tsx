@@ -1,11 +1,11 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import SeeTables from "./SeeTables";
-import { Tables } from "@/types/supabase";
+import { EventWithDates } from "@/types/event";
 
 export default async function VendorTables({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data: tablesData } = await supabase

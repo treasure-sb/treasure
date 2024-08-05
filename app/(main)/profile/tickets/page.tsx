@@ -2,7 +2,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { User } from "@supabase/supabase-js";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { TicketIcon, Users2Icon } from "lucide-react";
-import { EventDisplayData } from "@/types/event";
+import { EventDisplayData, EventWithDates } from "@/types/event";
 import {
   Dialog,
   DialogTrigger,
@@ -26,14 +26,14 @@ export type TicketScanningMap = Map<string, TicketScanningInfo[]>;
 type EventTicketMap = Map<string, TicketScanningMap>;
 type EventDisplayMap = Map<string, EventDisplayData>;
 type EventTicket = Tables<"event_tickets"> & {
-  event: Tables<"events">;
+  event: EventWithDates;
   ticket: {
     name: string;
   };
 };
 
 type EventTable = Tables<"event_vendors"> & {
-  event: Tables<"events">;
+  event: EventWithDates;
   table: Tables<"tables">;
 };
 

@@ -30,12 +30,16 @@ export default function EditTimeAndDate({
   event: EventDisplayData;
 }) {
   const [edit, setEdit] = useState(false);
-  const [currentDate, setCurrentDate] = useState(event.date);
-  const [currentStartTime, setCurrentStartTime] = useState(event.start_time);
-  const [currentEndTime, setCurrentEndTime] = useState(event.end_time);
+  const { date, start_time, end_time } = event.dates[0];
+  const [currentDate, setCurrentDate] = useState(date);
+  const [currentStartTime, setCurrentStartTime] = useState(start_time);
+  const [currentEndTime, setCurrentEndTime] = useState(end_time);
 
   const eventMonth = parseInt(currentDate.split("-")[1]);
-  const eventDay = parseInt(currentDate.split("-")[2]);
+  const eventDays = event.dates.map((date) =>
+    parseInt(date.date.split("-")[2])
+  );
+
   const formattedDate = formatDate(currentDate);
   const formattedStartTime = convertToStandardTime(currentStartTime);
   const formattedEndTime = convertToStandardTime(currentEndTime);
@@ -144,7 +148,7 @@ export default function EditTimeAndDate({
       className="flex space-x-4 items-center relative w-fit group hover:cursor-pointer"
       onClick={() => setEdit(true)}
     >
-      <EventCalendar month={eventMonth} day={eventDay} />
+      <EventCalendar month={eventMonth} days={eventDays} />
       <div>
         <p>{formattedDate}</p>
         <p>
