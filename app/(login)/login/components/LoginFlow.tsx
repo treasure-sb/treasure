@@ -21,6 +21,7 @@ interface LoginFlowProps {
   heading?: string;
   subheading?: string;
   action?: () => void;
+  redirect?: string;
 }
 
 export default function LoginFlow({
@@ -28,6 +29,7 @@ export default function LoginFlow({
   heading,
   subheading,
   action,
+  redirect,
 }: LoginFlowProps) {
   const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -60,7 +62,6 @@ export default function LoginFlow({
       signupInviteToken,
     });
 
-    console.log(signUpUserResult);
     signupCheck(signUpUserResult, SubmitMethod.PHONE);
   };
 
@@ -106,6 +107,7 @@ export default function LoginFlow({
           goBack={goBack}
           isDialog={isDialog}
           action={action}
+          redirect={redirect}
         />
       ) : (
         <motion.div

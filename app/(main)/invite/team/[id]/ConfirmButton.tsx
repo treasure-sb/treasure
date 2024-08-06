@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ConfirmButton({
   tokenID,
@@ -16,6 +17,7 @@ export default function ConfirmButton({
 }) {
   const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
+  const { push } = useRouter();
 
   const handleConfirm = async () => {
     setIsLoading(true);
@@ -32,13 +34,18 @@ export default function ConfirmButton({
         throw error;
       }
 
-      await supabase
+      const { error: deleteError } = await supabase
         .from("event_roles_invite_tokens")
         .delete()
         .eq("id", tokenID);
 
+      if (deleteError) {
+        throw deleteError;
+      }
+
       toast.dismiss();
       toast.success("Role confirmed");
+      push(`/host/events/`);
     } catch (error) {
       toast.dismiss();
       toast.error("Error confirming role");

@@ -6,6 +6,7 @@ import { EventWithDates } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import ConfirmButton from "./ConfirmButton";
+import { validateUser } from "@/lib/actions/auth";
 
 type Profile = {
   id: string;
@@ -24,6 +25,14 @@ export default async function Page({
 }: {
   params: { id: string };
 }) {
+  const {
+    data: { user },
+  } = await validateUser();
+
+  if (!user) {
+    redirect(`/login?redirect=/invite/team/${id}`);
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("event_roles_invite_tokens")
@@ -43,6 +52,10 @@ export default async function Page({
     event: data.event as unknown as EventWithDates,
     profile: data.profile as unknown as Profile,
   };
+
+  if (inviteTokenData.profile.id !== user.id) {
+    redirect("/home");
+  }
 
   const eventDisplay = await getEventDisplayData(inviteTokenData.event);
 
