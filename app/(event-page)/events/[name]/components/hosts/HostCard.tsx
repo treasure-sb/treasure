@@ -4,10 +4,9 @@ import { Host } from "./HostedBy";
 import Link from "next/link";
 
 export default function HostCard({ host }: { host: Host }) {
-  const hostProfile = host.profile;
   return (
     <Link
-      href={`/${hostProfile.username}`}
+      href={`/${host.username}`}
       className="flex space-x-4 items-center border-[1px] rounded-2xl w-full md:w-[28rem] p-4 pr-10 relative group bg-slate-500/5 group-hover:bg-slate-10 hover:bg-slate transition duration-300"
     >
       <Avatar className="h-24 md:h-28 w-24 md:w-28">
@@ -17,11 +16,11 @@ export default function HostCard({ host }: { host: Host }) {
       <div className="flex flex-col space-y-2">
         <div>
           <p className="font-semibold text-lg md:text-xl">
-            {hostProfile.business_name
-              ? hostProfile.business_name
-              : hostProfile.first_name + " " + hostProfile.last_name}
+            {host.businessName
+              ? host.businessName
+              : host.firstName + " " + host.lastName}
           </p>
-          <p className="text-xs text-gray-500">@{hostProfile.username}</p>
+          <p className="text-xs text-gray-500">@{host.username}</p>
         </div>
       </div>
       <ArrowUpRight

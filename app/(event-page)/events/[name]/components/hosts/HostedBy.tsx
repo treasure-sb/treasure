@@ -8,36 +8,73 @@ type ProfileHost = {
   profile: Tables<"profiles">;
 };
 
+type TemporaryHost = {
+  profile: Tables<"temporary_profiles">;
+};
+
 export type Host = {
+  id: string;
   role: string;
-  profile: Tables<"profiles">;
+  firstName: string | null;
+  lastName: string | null;
+  businessName: string | null;
+  username: string;
   publicUrl: string;
 };
 
-const createOrganizer = async (organizer: ProfileHost) => {
+const createHost = async (host: ProfileHost): Promise<Host> => {
   const supabase = await createSupabaseServerClient();
   const {
     data: { publicUrl },
   } = await supabase.storage
     .from("avatars")
-    .getPublicUrl(organizer.profile.avatar_url, {
+    .getPublicUrl(host.profile.avatar_url, {
       transform: {
         width: 200,
         height: 200,
       },
     });
 
-  const { profile, role } = organizer;
+  const { profile, role } = host;
   return {
+    id: profile.id,
     role,
-    profile,
+    firstName: profile.first_name,
+    lastName: profile.last_name,
+    businessName: profile.business_name,
+    username: profile.username,
+    publicUrl: publicUrl,
+  };
+};
+
+const createHostFromTemp = async (host: TemporaryHost): Promise<Host> => {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { publicUrl },
+  } = await supabase.storage
+    .from("avatars")
+    .getPublicUrl(host.profile.avatar_url, {
+      transform: {
+        width: 200,
+        height: 200,
+      },
+    });
+
+  const { profile } = host;
+  return {
+    id: profile.id,
+    role: "HOST",
+    firstName: null,
+    lastName: null,
+    businessName: profile.business_name,
+    username: profile.username,
     publicUrl: publicUrl,
   };
 };
 
 export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
+  const { data: hostData } = await supabase
     .from("event_roles")
     .select("role, profile:profiles(*)")
     .eq("event_id", event.id)
@@ -45,7 +82,18 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
     .in("role", ["HOST", "COHOST"])
     .returns<ProfileHost[]>();
 
-  const hosts = await Promise.all(data?.map(createOrganizer) || []);
+  const { data: tempHostData } = await supabase
+    .from("temporary_hosts")
+    .select("profile:temporary_profiles(*)")
+    .eq("event_id", event.id)
+    .returns<TemporaryHost[]>();
+
+  const temporaryHosts = await Promise.all(
+    tempHostData?.map(createHostFromTemp) || []
+  );
+  const hosts = await Promise.all(hostData?.map(createHost) || []);
+
+  const showTempHosts = hosts.length === 0;
 
   return (
     <>
@@ -55,9 +103,11 @@ export default async function HostedBy({ event }: { event: Tables<"events"> }) {
           <h3 className="font-semibold text-lg mb-2">Hosted By</h3>
         </div>
         <div className="flex flex-col space-y-2">
-          {hosts.map((host) => (
-            <HostCard key={host.profile.id} host={host} />
-          ))}
+          {showTempHosts
+            ? temporaryHosts.map((host) => (
+                <HostCard key={host.id} host={host} />
+              ))
+            : hosts.map((host) => <HostCard key={host.id} host={host} />)}
         </div>
       </section>
     </>

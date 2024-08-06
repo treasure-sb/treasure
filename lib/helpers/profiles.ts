@@ -74,7 +74,7 @@ const fetchTemporaryProfiles = async (search: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: profilesData } = await supabase
     .from("temporary_profiles")
-    .select("*")
+    .select("*, temporary_hosts(event_id)")
     .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
     .limit(8);
 
