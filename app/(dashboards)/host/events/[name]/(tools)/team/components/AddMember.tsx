@@ -28,6 +28,7 @@ import { sendTeamInviteEmail } from "@/lib/actions/emails";
 import { TeamInviteProps } from "@/emails/TeamInvite";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { roleMap } from "./MemberCard";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
@@ -38,6 +39,7 @@ const formSchema = z.object({
 });
 
 export default function AddMember({ event }: { event: EventDisplayData }) {
+  const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const { refresh } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,74 +50,100 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     toast.loading("Sending invite...");
 
-    const inviteEmail = values.email;
-    const role = values.role;
+    try {
+      const inviteEmail = values.email;
+      const role = values.role;
 
+      const profileId = await getProfileFromEmail(inviteEmail);
+      if (!profileId) return;
+
+      await createEventRole(profileId, role);
+      const tokenId = await createInviteToken(role, profileId);
+
+      const emailPayload: TeamInviteProps = {
+        eventName: event.name,
+        posterUrl: event.publicPosterUrl,
+        inviteToken: tokenId,
+        role: roleMap[role],
+      };
+
+      await sendTeamInviteEmail(inviteEmail, emailPayload);
+
+      toast.dismiss();
+      toast.success("Invite sent");
+      refresh();
+    } catch (error) {
+      toast.dismiss();
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      toast.error(error.message);
+    } else {
+      toast.error("Failed to send invite");
+    }
+  };
+
+  const getProfileFromEmail = async (email: string) => {
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("id")
-      .eq("email", inviteEmail)
+      .eq("email", email)
       .single();
 
-    const profileID: { id: string } | null = profileData;
+    const profileId: { id: string } | null = profileData;
 
-    if (!profileID || profileError) {
-      toast.dismiss();
-      toast.error("User not found");
-      return;
+    if (!profileId || profileError) {
+      throw new Error("User not found");
     }
 
+    return profileId.id;
+  };
+
+  const createEventRole = async (profileId: string, role: string) => {
     const { error: insertError } = await supabase.from("event_roles").insert([
       {
         event_id: event.id,
-        user_id: profileID.id,
+        user_id: profileId,
         role,
         status: "PENDING",
       },
     ]);
 
+    if (insertError) {
+      if (insertError.message.includes("duplicate key value")) {
+        throw new Error("User has already been invited");
+      }
+      throw new Error("Failed to send invite");
+    }
+  };
+
+  const createInviteToken = async (role: string, profileId: string) => {
     const { data: tokenData, error: tokenError } = await supabase
       .from("event_roles_invite_tokens")
       .insert([
         {
           role,
           event_id: event.id,
-          member_id: profileID.id,
+          member_id: profileId,
         },
       ])
       .select("id")
       .single();
 
-    if (tokenError || insertError) {
-      console.log(tokenError, insertError);
-      toast.dismiss();
-      toast.error("Error sending invite");
-      return;
+    if (tokenError) {
+      throw new Error("Failed to send invite");
     }
 
-    const tokenID: { id: string } = tokenData;
-
-    const emailPayload: TeamInviteProps = {
-      eventName: event.name,
-      posterUrl: event.publicPosterUrl,
-      inviteToken: tokenID.id,
-      role: roleMap[role],
-    };
-
-    const { error: emailError } = await sendTeamInviteEmail(
-      inviteEmail,
-      emailPayload
-    );
-
-    if (emailError) {
-      console.log(emailError);
-    }
-
-    toast.dismiss();
-    toast.success("Invite sent");
-    refresh();
+    const tokenId: { id: string } = tokenData;
+    return tokenId.id;
   };
 
   return (
@@ -193,7 +221,11 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="rounded-sm h-12 md:ml-2">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="rounded-sm h-12 md:ml-2"
+              >
                 <span>Invite</span>
               </Button>
             </div>

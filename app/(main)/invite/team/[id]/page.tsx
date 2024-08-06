@@ -1,8 +1,8 @@
 import { RoleMapKey } from "@/app/(dashboards)/host/events/[name]/(tools)/team/components/ListMembers";
 import { roleMap } from "@/app/(dashboards)/host/events/[name]/(tools)/team/components/MemberCard";
 import { getEventDisplayData } from "@/lib/helpers/events";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import ConfirmButton from "./ConfirmButton";
@@ -15,7 +15,7 @@ type Profile = {
 
 type InviteTokenData = {
   role: RoleMapKey;
-  event: Tables<"events">;
+  event: EventWithDates;
   profile: Profile;
 };
 
@@ -28,7 +28,7 @@ export default async function Page({
   const { data, error } = await supabase
     .from("event_roles_invite_tokens")
     .select(
-      "role, event:events(*), profile:profiles(id, first_name, last_name)"
+      "role, event:events(*, dates:event_dates(date, start_time, end_time)), profile:profiles(id, first_name, last_name)"
     )
     .eq("id", id)
     .single();
@@ -40,7 +40,7 @@ export default async function Page({
 
   const inviteTokenData: InviteTokenData = {
     role: data.role,
-    event: data.event as unknown as Tables<"events">,
+    event: data.event as unknown as EventWithDates,
     profile: data.profile as unknown as Profile,
   };
 
