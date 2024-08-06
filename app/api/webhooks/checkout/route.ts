@@ -112,7 +112,7 @@ const handleTicketPurchase = async (
     location: event_address,
     date: moment(event_date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${ticket_price * quantity}`,
+    totalPrice: `$${amountPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
       metadata as { [key: string]: Json | undefined }
@@ -141,7 +141,7 @@ const handleTicketPurchase = async (
       eventName: event_name,
       eventDate: event_date,
       eventCleanedName: event_cleaned_name,
-      quantity:quantity
+      quantity: quantity,
     };
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
@@ -161,7 +161,7 @@ const handleTablePurchase = async (
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>
 ) => {
-  const { event_id, user_id, quantity, ticket_id } = checkoutSession;
+  const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
 
   const { data, error } = await supabase
     .rpc("purchase_table", {
@@ -169,6 +169,8 @@ const handleTablePurchase = async (
       event_id,
       user_id,
       purchase_quantity: quantity,
+      amount_paid: amountPaid,
+      promo_id,
     })
     .returns<PurchaseTableResult[]>();
 
@@ -216,7 +218,7 @@ const handleTablePurchase = async (
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
-    totalPrice: `$${quantity * table_price}`,
+    totalPrice: `$${amountPaid}`,
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
   };
@@ -240,7 +242,7 @@ const handleTablePurchase = async (
       lastName: vendor_last_name,
       eventName: event_name,
       eventDate: event_date,
-      eventCleanedName: event_cleaned_name
+      eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);
   }
@@ -261,7 +263,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, amountPaid, email } = JSON.parse(
+  const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
 
@@ -279,10 +281,15 @@ const handlePaymentIntentSucceeded = async (
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
   switch (checkoutSession.ticket_type) {
     case "TICKET":
-      await handleTicketPurchase(checkoutSession, amountPaid, supabase, email);
+      await handleTicketPurchase(
+        checkoutSession,
+        priceAfterPromo,
+        supabase,
+        email
+      );
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, amountPaid, supabase);
+      await handleTablePurchase(checkoutSession, priceAfterPromo, supabase);
       break;
     default:
       throw new Error("Invalid Ticket Type");

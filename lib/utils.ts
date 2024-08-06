@@ -41,6 +41,22 @@ export function formatDate(date: string) {
   return formattedDate;
 }
 
+export function formatDates(
+  dates: { date: string; start_time: string; end_time: string }[]
+) {
+  let formattedDates: { date: string; start_time: string; end_time: string }[] =
+    [];
+  dates.map((date) => {
+    let formattedDate = {
+      date: formatDate(date.date),
+      start_time: convertToStandardTime(date.start_time),
+      end_time: convertToStandardTime(date.end_time),
+    };
+    formattedDates.push(formattedDate);
+  });
+  return formattedDates;
+}
+
 export function roundPrice(price: string) {
   return parseFloat(parseFloat(price).toFixed(2));
 }

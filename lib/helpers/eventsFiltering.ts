@@ -4,14 +4,35 @@ import createSupabaseServerClient from "../../utils/supabase/server";
 import format from "date-fns/format";
 import { cityMap } from "./cities";
 import { capitalize } from "../utils";
+import { EventWithDates } from "@/types/event";
 
 const today = format(new Date(), "yyyy-MM-dd");
 const numEvents = 12;
 const numUserEvents = 6;
 
-/**
- * Retrieves the ID of a tag based on its name.
- */
+type BuiltEvent = EventWithDates & {
+  event_categories: {
+    categories: {
+      name: string;
+    };
+  }[];
+} & {
+  event_tags?: {
+    tag_id: string;
+  }[];
+};
+
+type VendorEventData = {
+  payment_status: string;
+  vendor_id: string;
+} & {
+  events: EventWithDates[];
+};
+
+type LikedEventData = {
+  events: EventWithDates[];
+};
+
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -68,14 +89,23 @@ const buildEventsQuery = async (
 
   let query = supabase
     .from("events")
-    .select("*, event_categories!inner(categories!inner(name), *)")
+    .select(
+      `
+      *,
+      dates:event_dates(date,start_time,end_time),
+      event_categories!inner(categories!inner(name))
+      `
+    )
     .eq("event_categories.categories.name", "collectables");
 
   if (tagId) {
     query = supabase
       .from("events")
       .select(
-        "*, event_tags!inner(*), event_categories!inner(categories!inner(name), *)"
+        `*,
+         dates:event_dates(date,start_time,end_time),
+         event_tags!inner(tag_id), 
+         event_categories!inner(categories!inner(name))`
       )
       .eq("event_categories.categories.name", "collectables")
       .eq("event_tags.tag_id", tagId);
@@ -85,7 +115,7 @@ const buildEventsQuery = async (
     const { lat, lng } = await getCityCoordinates(city);
 
     if (lat === 0 && lng === 0) {
-      return { data: [], error: "Null Island" };
+      return { data: [] as EventWithDates[], error: "Null Island" };
     }
 
     query = supabase.rpc("get_nearby_events", {
@@ -93,6 +123,7 @@ const buildEventsQuery = async (
       user_lat: lat,
       user_lon: lng,
     });
+
     if (tagId) {
       query = supabase.rpc("get_tagged_nearby_events", {
         radius: distance,
@@ -104,15 +135,15 @@ const buildEventsQuery = async (
   }
 
   if (from) {
-    query = query.gte("date", from);
+    query = query.gte("max_date", from);
   }
 
   if (until) {
-    query = query.lte("date", until);
+    query = query.lte("min_date", until);
   }
 
   if (!from && !until) {
-    query = query.gte("date", today);
+    query = query.gte("min_date", today);
   }
 
   if (search) {
@@ -121,59 +152,71 @@ const buildEventsQuery = async (
 
   query = query
     .order("featured", { ascending: false })
-    .order("date", { ascending: true })
-    .order("id", { ascending: true })
+    .order("min_date")
+    .order("date", { ascending: true, referencedTable: "dates" })
     .range(startIndex, endIndex);
 
   const { data, error } = await query;
-  return { data, error };
+  const events: BuiltEvent[] = data || [];
+  const eventWithDates: EventWithDates[] = events.map((event) => {
+    const { event_categories, event_tags, ...rest } = event;
+    return {
+      ...rest,
+    };
+  });
+
+  return { data: eventWithDates, error };
 };
 
 const getUpcomingEventsAttending = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
-  const { data: attendeeData, error: attendeeError } = await supabase
-    .from("event_tickets")
-    .select("events!inner(*)")
-    .eq("attendee_id", userId)
-    .gte("events.date", today)
-    .order("id", { foreignTable: "events", ascending: true })
-    .order("date", { foreignTable: "events", ascending: true });
-  // .range(startIndex, endIndex);
-
-  // filter out the duplicate events
-  let eventNameList: string[] = [];
-  let filteredData: any[] = [];
-
-  attendeeData?.map((event: any) => {
-    if (!eventNameList.includes(event.events.name as string)) {
-      eventNameList.push(event.events.name);
-      filteredData.push(event);
-    }
-  });
-
-  const { data: vendorData, error: vendorError } = await supabase
+  const { data, error } = await supabase
     .from("event_vendors")
-    .select("events!inner(*)")
+    .select(
+      `payment_status, 
+       vendor_id,
+       events!inner(*, dates:event_dates!inner(date, start_time, end_time))`
+    )
     .eq("vendor_id", userId)
     .eq("payment_status", "PAID")
-    .gte("events.date", today)
-    .order("id", { foreignTable: "events", ascending: true })
-    .order("date", { foreignTable: "events", ascending: true })
+    .gte("events.max_date", today)
+    .order("events(min_date)", { ascending: true })
     .range(startIndex, endIndex);
 
-  let data = filteredData;
-  let error = attendeeError;
+  const vendorData: VendorEventData[] = data || [];
+  const eventsWithDates: EventWithDates[] = vendorData.flatMap(
+    (vendor) => vendor.events
+  );
 
-  if (vendorData && vendorData?.length > 0) {
-    data = vendorData;
-    error = vendorError;
-  } else if (page > 1) {
-    data = [];
-    error = null;
-  }
-  return { data, error };
+  return { data: eventsWithDates, error };
+};
+
+const getPastEventsAttending = async (page: number, userId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const startIndex = (page - 1) * numUserEvents;
+  const endIndex = startIndex + numUserEvents - 1;
+  const { data, error } = await supabase
+    .from("event_vendors")
+    .select(
+      `
+      payment_status,
+      vendor_id,
+      events!inner(*, dates:event_dates!inner(date, start_time, end_time))`
+    )
+    .eq("vendor_id", userId)
+    .eq("payment_status", "PAID")
+    .lt("events.max_date", today)
+    .order("events(min_date)", { ascending: false })
+    .range(startIndex, endIndex);
+
+  const vendorData: VendorEventData[] = data || [];
+  const eventsWithDates: EventWithDates[] = vendorData.flatMap(
+    (vendor) => vendor.events
+  );
+
+  return { data: eventsWithDates, error };
 };
 
 const getUpcomingEventsLiked = async (page: number, userId: string) => {
@@ -182,61 +225,20 @@ const getUpcomingEventsLiked = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("event_likes")
-    .select("events!inner(*)")
+    .select(
+      "events!inner(*, dates:event_dates!inner(date,start_time,end_time))"
+    )
     .eq("user_id", userId)
-    .gte("events.date", today)
-    .order("events(date)", { ascending: true })
-    .order("events(id)", { ascending: true })
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
-const getPastEventsAttending = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numUserEvents - 1;
-  const { data: attendeeData, error: attendeeError } = await supabase
-    .from("event_tickets")
-    .select("events!inner(*)")
-    .eq("attendee_id", userId)
-    .lt("events.date", today)
-    .order("events(date)", { ascending: false })
-    .order("events(id)", { ascending: true });
-  // .range(startIndex, endIndex);
-
-  // filter out the duplicate events
-  let eventNameList: string[] = [];
-  let filteredData: any[] = [];
-
-  attendeeData?.map((event: any) => {
-    if (!eventNameList.includes(event.events.name as string)) {
-      eventNameList.push(event.events.name);
-      filteredData.push(event);
-    }
-  });
-
-  const { data: vendorData, error: vendorError } = await supabase
-    .from("event_vendors")
-    .select("events!inner(*)")
-    .eq("vendor_id", userId)
-    .eq("payment_status", "PAID")
-    .lt("events.date", today)
-    .order("id", { foreignTable: "events", ascending: true })
-    .order("date", { foreignTable: "events", ascending: true })
+    .gte("events.max_date", today)
+    .order("events(min_date)", { ascending: true })
     .range(startIndex, endIndex);
 
-  let data = filteredData;
-  let error = attendeeError;
+  const likedEventData: LikedEventData[] = data || [];
+  const eventWithDates: EventWithDates[] = likedEventData.flatMap(
+    (event) => event.events
+  );
 
-  if (vendorData && vendorData?.length > 0) {
-    data = vendorData;
-    error = vendorError;
-  } else if (page > 1) {
-    data = [];
-    error = null;
-  }
-
-  return { data, error };
+  return { data: eventWithDates, error };
 };
 
 const getPastEventsLiked = async (page: number, userId: string) => {
@@ -245,13 +247,19 @@ const getPastEventsLiked = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("event_likes")
-    .select("events!inner(*)")
+    .select(
+      "events!inner(*, dates:event_dates!inner(date,start_time,end_time))"
+    )
     .eq("user_id", userId)
     .lt("events.date", today)
-    .order("events(date)", { ascending: false })
-    .order("events(id)", { ascending: true })
+    .order("events(min_date)", { ascending: false })
     .range(startIndex, endIndex);
-  return { data, error };
+
+  const likedEventData: LikedEventData[] = data || [];
+  const eventWithDates: EventWithDates[] = likedEventData.flatMap(
+    (event) => event.events
+  );
+  return { data: eventWithDates, error };
 };
 
 const getUpcomingEventsHosting = async (page: number, userId: string) => {
@@ -259,17 +267,15 @@ const getUpcomingEventsHosting = async (page: number, userId: string) => {
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
-    .from("event_roles")
-    .select("role, user_id, events!inner(*)")
-    .eq("user_id", userId)
-    .eq("status", "ACTIVE")
-    .in("role", ["HOST", "COHOST"])
-    .gte("events.date", today)
-    .order("date", { referencedTable: "events", ascending: true })
+    .from("events")
+    .select("*, dates:event_dates!inner(date, start_time, end_time)")
+    .eq("organizer_id", userId)
+    .gte("max_date", today)
+    .order("min_date")
     .range(startIndex, endIndex);
 
-  const eventData = data ? data.map((event) => event.events) : [];
-  return { data: eventData, error };
+  const eventWithDates: EventWithDates[] = data || [];
+  return { data: eventWithDates, error };
 };
 
 const getPastEventsHosting = async (page: number, userId: string) => {
@@ -277,37 +283,25 @@ const getPastEventsHosting = async (page: number, userId: string) => {
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
-    .from("event_roles")
-    .select("role, user_id, events!inner(*)")
-    .eq("user_id", userId)
-    .eq("status", "ACTIVE")
-    .in("role", ["HOST", "COHOST"])
-    .lt("events.date", today)
-    .order("date", { referencedTable: "events", ascending: true })
+    .from("events")
+    .select("*, dates:event_dates!inner(date, start_time, end_time)")
+    .eq("organizer_id", userId)
+    .lt("max_date", today)
+    .order("min_date", { ascending: false })
     .range(startIndex, endIndex);
-  return { data, error };
+
+  const eventWithDates: EventWithDates[] = data || [];
+  return { data: eventWithDates, error };
 };
 
-const getEventsApplied = async (page: number, userId: string) => {
+const getEventsHosting = async (page: number, userId: string) => {
   const supabase = await createSupabaseServerClient();
   const startIndex = (page - 1) * numUserEvents;
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
-    .from("vendor_applications")
-    .select("events(*)")
-    .eq("vendor_id", userId)
-    .range(startIndex, endIndex);
-  return { data, error };
-};
-
-const getEventsLiked = async (page: number, userId: string) => {
-  const supabase = await createSupabaseServerClient();
-  const startIndex = (page - 1) * numUserEvents;
-  const endIndex = startIndex + numUserEvents - 1;
-  const { data, error } = await supabase
-    .from("event_likes")
-    .select("events(*)")
-    .eq("user_id", userId)
+    .from("events")
+    .select("*")
+    .eq("organizer_id", userId)
     .range(startIndex, endIndex);
   return { data, error };
 };
@@ -318,14 +312,17 @@ const getAllEventData = async (search: string, page: number) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("events")
-    .select(`*, event_categories!inner(categories!inner(name), *)`)
+    .select(
+      `*, dates:event_dates(date,start_time,end_time), event_categories!inner(categories!inner(name), *)`
+    )
     .eq("event_categories.categories.name", "collectables")
-    .gte("date", today)
+    .gte("max_date", today)
     .ilike("name", `%${search}%`)
     .order("featured", { ascending: false })
-    .order("date", { ascending: true })
+    .order("min_date")
     .order("id", { ascending: true })
     .range(startIndex, endIndex);
+
   return { data, error };
 };
 
@@ -337,8 +334,7 @@ export {
   getUpcomingEventsHosting,
   getPastEventsHosting,
   getPastEventsLiked,
-  getEventsApplied,
-  getEventsLiked,
+  getEventsHosting,
   buildEventsQuery,
   getAllEventData,
 };

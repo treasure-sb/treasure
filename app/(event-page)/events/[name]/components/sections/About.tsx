@@ -1,6 +1,6 @@
-import { Tables } from "@/types/supabase";
+import { EventWithDates } from "@/types/event";
 
-export default function About({ event }: { event: Tables<"events"> }) {
+export default function About({ event }: { event: EventWithDates }) {
   return (
     <section>
       <h3 className="font-semibold text-lg mb-2">About</h3>

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { User } from "@supabase/supabase-js";
-import { EventDisplayData } from "@/types/event";
+import { EventDisplayData, EventWithDates } from "@/types/event";
 import { likeEvent, unlikeEvent } from "@/lib/actions/events";
 import { Tables } from "@/types/supabase";
 import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
@@ -15,7 +15,7 @@ export default function LikeButton({
   event,
   user,
 }: {
-  event: EventDisplayData | Tables<"events">;
+  event: EventDisplayData | EventWithDates;
   user?: User | null;
 }) {
   const queryClient = useQueryClient();

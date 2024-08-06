@@ -2,6 +2,7 @@ import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import ListHighlights from "./ListHighlights";
+import { EventWithDates } from "@/types/event";
 
 export type EventHighlightPhoto = {
   photoUrl: string;
@@ -12,7 +13,7 @@ export type EventHighlightPhoto = {
 export default async function PastHighlights({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
 

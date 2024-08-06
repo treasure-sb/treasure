@@ -56,7 +56,13 @@ export default function EventToolsHeader({
           </div>
           <div>
             <h2 className="text-3xl font-semibold">{event.name}</h2>
-            <p className="text-primary">{event.formattedDate}</p>
+            <p className="text-primary">
+              {event.formattedDates.length > 1
+                ? `${event.formattedDates[0].date} - ${
+                    event.formattedDates[event.formattedDates.length - 1].date
+                  }`
+                : event.formattedDates[0].date}
+            </p>
             <p className="text-sm font-normal truncate">
               {event.city + ", " + event.state}
             </p>

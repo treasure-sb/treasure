@@ -12,6 +12,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Tables } from "@/types/supabase";
 import { Key } from "react";
 import React from "react";
+import { EventWithDates } from "@/types/event";
 
 type TicketFetchData = {
   id: string;
@@ -29,7 +30,7 @@ export default function AttendeeDialogContent({
   event,
 }: {
   attendeeData: Attendee;
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = createClient();
   const { avatar_url, first_name, last_name, email, phone } =

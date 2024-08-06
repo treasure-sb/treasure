@@ -228,7 +228,10 @@ BEGIN
             city,
             state,
             sales_status,
-            vendor_exclusivity
+            vendor_exclusivity,
+            min_date,
+            max_date,
+            organizer_id
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
@@ -256,8 +259,24 @@ BEGIN
             'New York City',
             'NY',
             'SELLING_ALL',
-            'APPLICATIONS'
+            'APPLICATIONS',
+            future_date,
+            future_date,
+            random_profile_id
         ) RETURNING id INTO e_event_id;
+
+        -- Insert event date
+        INSERT INTO public.event_dates (
+            event_id,
+            start_time,
+            end_time, 
+            date
+        ) VALUES (
+            e_event_id,
+            '10:00:00',
+            '18:00:00',
+            future_date
+        );
 
         INSERT INTO public.event_roles (
             event_id,

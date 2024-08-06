@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils";
 import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "../../views/components/DateFilter";
+import { EventWithDates } from "@/types/event";
 import { RoleMapKey } from "../../team/components/ListMembers";
 
 type OrderQueryData = {
@@ -47,7 +48,7 @@ export default async function SalesAnalytics({
   periodLength,
   role,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   periodLength: number;
   role: RoleMapKey;
 }) {

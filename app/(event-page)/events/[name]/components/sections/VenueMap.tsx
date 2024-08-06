@@ -7,12 +7,13 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
 import Image from "next/image";
+import { EventWithDates } from "@/types/event";
 
 export default function VenueMap({
   event,
   venueMapPublicUrl,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   venueMapPublicUrl: string;
 }) {
   const [showOverlay, setShowOverlay] = useState(false);

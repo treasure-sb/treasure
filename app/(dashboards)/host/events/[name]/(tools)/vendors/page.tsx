@@ -5,6 +5,7 @@ import TabState from "./components/TabState";
 import VendorApplications from "./components/vendor_applications/VendorApplications";
 import VendorAssignment from "./components/assignments/VendorAssignment";
 import TempVendors from "./components/temp_vendors/TempVendors";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
@@ -13,17 +14,13 @@ export default async function Page({
 }) {
   const supabase = await createSupabaseServerClient();
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
   if (eventError) {
     redirect("/host/events");
   }
 
-  const displayData = await getEventDisplayData(eventData);
+  const displayData = await getEventDisplayData(event);
 
   return (
     <div className="max-w-7xl mx-auto">

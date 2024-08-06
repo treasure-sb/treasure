@@ -4,10 +4,11 @@ import FeaturedEventCarousel from "./FeaturedEventCarousel";
 import { Tables } from "@/types/supabase";
 import { getAllEventData } from "@/lib/helpers/eventsFiltering";
 import { LucideArrowUpRight } from "lucide-react";
+import { EventWithDates } from "@/types/event";
 
 export default async function FeaturedEvents() {
   const { data: eventsData } = await getAllEventData("", 1);
-  const events: Tables<"events">[] = eventsData || [];
+  const events: EventWithDates[] = eventsData || [];
   const eventsDisplay = events.map((event) => (
     <FeaturedEventDisplay key={event.id} event={event} />
   ));

@@ -3,13 +3,14 @@
 import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { EventWithDates } from "@/types/event";
 
 export default function SeeTables({
   tables,
   event,
 }: {
   tables: Tables<"tables">[];
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const minimumTablePrice = tables[0].price;
   const numTablesLeft = tables.reduce((acc, table) => acc + table.quantity, 0);

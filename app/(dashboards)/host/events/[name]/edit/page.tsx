@@ -1,29 +1,20 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import Link from "next/link";
 import EditState from "./components/EditState";
 import EditEventDetails from "./components/event_details/EditEventDetails";
 import { ArrowUpLeft } from "lucide-react";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
 }: {
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
-
-  if (eventError || !eventData) {
+  if (eventError) {
     redirect("/host/events");
   }
-
-  const event: Tables<"events"> = eventData || [];
 
   return (
     <main className="relative">

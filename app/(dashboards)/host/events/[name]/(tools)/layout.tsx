@@ -1,10 +1,10 @@
 import EventToolsHeader from "./components/EventToolsHeader";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import { getEventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { validateUser } from "@/lib/actions/auth";
-import { Tables } from "@/types/supabase";
 import { RoleMapKey } from "./team/components/ListMembers";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { getEventDisplayData } from "@/lib/helpers/events";
+import createSupabaseServerClient from "@/utils/supabase/server";
 
 export default async function HostEventLayout({
   children,
@@ -14,18 +14,13 @@ export default async function HostEventLayout({
   params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(name);
 
-  if (!data || error) {
+  if (eventError) {
     return redirect("/host/events");
   }
 
-  const eventData: Tables<"events"> = data;
-  const eventDisplay = await getEventDisplayData(eventData);
+  const eventDisplay = await getEventDisplayData(event);
 
   const {
     data: { user },
@@ -41,7 +36,7 @@ export default async function HostEventLayout({
   const role: RoleMapKey = roleData?.role as RoleMapKey;
 
   return (
-    eventData && (
+    event && (
       <div className="space-y-4">
         <EventToolsHeader event={eventDisplay} role={role} />
         {children}

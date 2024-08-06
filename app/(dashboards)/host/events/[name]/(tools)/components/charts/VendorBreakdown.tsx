@@ -3,6 +3,7 @@ import VendorsChart from "./VendorsChart";
 import { Tables } from "@/types/supabase";
 import { TagNameData } from "../../vendors/types";
 import ApplicationsChart from "./ApplicationsChart";
+import { EventWithDates } from "@/types/event";
 import { RoleMapKey } from "../../team/components/ListMembers";
 
 export type VendorBreakdownData = {
@@ -37,7 +38,7 @@ export default async function VendorBreakdown({
   event,
   role,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
   role: RoleMapKey;
 }) {
   const isScanner = role === "SCANNER";

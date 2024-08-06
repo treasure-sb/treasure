@@ -18,12 +18,9 @@ import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Footer from "@/components/shared/Footer";
+import { EventWithDates } from "@/types/event";
 
-export default async function EventPage({
-  event,
-}: {
-  event: Tables<"events">;
-}) {
+export default async function EventPage({ event }: { event: EventWithDates }) {
   const {
     data: { user },
   } = await validateUser();

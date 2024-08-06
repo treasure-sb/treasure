@@ -4,6 +4,10 @@ import AcceptButton from "./AcceptButton";
 import { Button } from "@/components/ui/button";
 import { validateUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
+import {
+  getEventFromCleanedName,
+  getEventDisplayData,
+} from "@/lib/helpers/events";
 
 export default async function Page({
   searchParams,
@@ -17,11 +21,8 @@ export default async function Page({
   }
 
   const supabase = await createSupabaseServerClient();
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", eventUrl)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(eventUrl);
+  const eventDisplay = await getEventDisplayData(event);
 
   if (eventError) {
     redirect("/");
@@ -59,7 +60,7 @@ export default async function Page({
     const vendorId = user.id;
     await supabase
       .from("event_vendors")
-      .insert([{ event_id: eventData.id, vendor_id: vendorId }]);
+      .insert([{ event_id: event.id, vendor_id: vendorId }]);
     redirect(`/events/${eventUrl}`);
   };
 
@@ -69,14 +70,14 @@ export default async function Page({
 
   const {
     data: { publicUrl: eventPosterPublicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(eventData.poster_url);
+  } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
 
   return (
     <main className="max-w-lg m-auto space-y-4">
       <h1 className="font-semibold text-xl text-center">
-        You've been invited to be a vendor at {eventData.name}!
+        You've been invited to be a vendor at {event.name}!
       </h1>
-      <EventDisplay event={eventData} />
+      <EventDisplay event={eventDisplay} />
       <div className="flex space-x-2">
         <AcceptButton handleAccept={handleAccept} />
         <Button variant={"destructive"} className="w-full">

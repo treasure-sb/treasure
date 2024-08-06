@@ -37,7 +37,7 @@ const createOrganizer = async (organizer: ProfileHost) => {
 
 export default async function HostedBy({ event }: { event: Tables<"events"> }) {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("event_roles")
     .select("role, profile:profiles(*)")
     .eq("event_id", event.id)

@@ -19,6 +19,7 @@ import StripeInput from "./StripeInput";
 import { addEventAttendee } from "@/lib/actions/tickets";
 import { EventDisplayData } from "@/types/event";
 import { useRouter } from "next/navigation";
+import { is } from "date-fns/locale";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -57,22 +58,38 @@ export default function FreeCheckout({
   const onSubmit = async () => {
     setIsLoading(true);
     const { first_name, last_name, email } = form.getValues();
-    const { ticket_id, quantity, user_id, event_id } = checkoutSession;
+    const { ticket_id, quantity, user_id, event_id, promo_id, ticket_type } =
+      checkoutSession;
     await supabase
       .from("profiles")
       .update({ first_name, last_name })
       .eq("id", profile.id);
 
-    toast.loading(`Getting ticket${quantity > 1 ? "s" : ""}...`);
+    toast.loading(
+      `Getting ${ticket_type === "TABLE" ? "table" : "ticket"} ${
+        quantity > 1 ? "s" : ""
+      }...`
+    );
 
-    const { data, error } = await supabase.rpc("purchase_tickets", {
-      ticket_id,
-      event_id,
-      user_id,
-      purchase_quantity: quantity,
-      email,
-      amount_paid: 0,
-    });
+    const { data, error } =
+      ticket_type === "TABLE"
+        ? await supabase.rpc("purchase_table", {
+            table_id: ticket_id,
+            event_id,
+            user_id,
+            purchase_quantity: quantity,
+            amount_paid: 0,
+            promo_id,
+          })
+        : await supabase.rpc("purchase_tickets", {
+            ticket_id,
+            event_id,
+            user_id,
+            purchase_quantity: quantity,
+            email,
+            amount_paid: 0,
+            promo_id,
+          });
 
     if (error) {
       setIsLoading(false);
@@ -84,6 +101,7 @@ export default function FreeCheckout({
     setIsLoading(false);
     toast.dismiss();
     toast.success(`Ticket${quantity > 1 ? "s" : ""} added successfully!`);
+    console.log(isLoading);
     push(`/checkout/${checkoutSession.id}/success`);
   };
 

@@ -18,11 +18,12 @@ import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
 import { fetchTemporaryProfiles } from "@/lib/helpers/profiles";
 import AssignEventIcon from "@/components/icons/AssignEventIcon";
+import { EventWithDates } from "@/types/event";
 
 export default function AssignEventOrganizer({
   event,
 }: {
-  event: Tables<"events">;
+  event: EventWithDates;
 }) {
   const supabase = createClient();
   const { refresh } = useRouter();

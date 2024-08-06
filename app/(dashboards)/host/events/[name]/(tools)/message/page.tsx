@@ -4,6 +4,7 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import Message from "./components/Message";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
@@ -15,14 +16,8 @@ export default async function Page({
     data: { user },
   } = await validateUser();
 
-  const { data: eventsData } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", name)
-    .single();
-
-  const eventData: Tables<"events"> = eventsData;
-  const eventDisplay = await getEventDisplayData(eventData);
+  const { event, eventError } = await getEventFromCleanedName(name);
+  const eventDisplay = await getEventDisplayData(event);
 
   const { profile: hostProfile } = await getProfile(user?.id);
 

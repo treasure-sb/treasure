@@ -5,6 +5,7 @@ import { validateUser } from "@/lib/actions/auth";
 import type { EventTagData, Link, ProfileWithInstagram } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TableFlowConsumer from "./components/TableFlowConsumer";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export async function generateMetadata({
   params,
@@ -12,11 +13,7 @@ export async function generateMetadata({
   params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("name, description")
-    .eq("cleaned_name", params.name)
-    .single();
+  const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {
     return {
@@ -26,7 +23,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${eventData.name} Tables`,
+    title: `${event.name} Tables`,
   };
 }
 
@@ -38,7 +35,6 @@ export default async function Page({
   };
 }) {
   const supabase = await createSupabaseServerClient();
-  const eventName = params.name;
 
   const {
     data: { user },
@@ -68,12 +64,7 @@ export default async function Page({
     };
   }
 
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("cleaned_name", eventName)
-    .single();
-  const event: Tables<"events"> = eventData;
+  const { event, eventError } = await getEventFromCleanedName(params.name);
   const eventDisplayData = await getEventDisplayData(event);
 
   if (eventError) {

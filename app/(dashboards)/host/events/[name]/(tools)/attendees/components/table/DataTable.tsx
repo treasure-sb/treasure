@@ -25,11 +25,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import AttendeeDialogContent from "../attendee_dialog/AttendeeDialogContent";
 import Filters from "./Filters";
+import { EventWithDates } from "@/types/event";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  event: Tables<"events">;
+  event: EventWithDates;
   tickets: string[];
 }
 

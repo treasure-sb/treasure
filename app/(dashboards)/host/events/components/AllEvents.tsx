@@ -1,14 +1,14 @@
 import { eventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
+import { EventWithDates } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import NextEventCard from "./NextEventCard";
 import RegularEventCard from "./RegularEventCard";
 
 type MyEvent = {
   role: string;
-  event: Tables<"events">;
+  event: EventWithDates;
 };
 
 export default async function AllEvents() {
@@ -25,20 +25,24 @@ export default async function AllEvents() {
 
   const { data: upcomingData, error: upcomingError } = await supabase
     .from("event_roles")
-    .select("role, event:events!inner(*)")
+    .select(
+      "role, event:events!inner(*, dates:event_dates!inner(date, start_time, end_time))"
+    )
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
-    .gte("event.date", today.toISOString())
-    .order("date", { referencedTable: "event", ascending: true })
+    .gte("event.max_date", today.toISOString())
+    .order("event(min_date)", { ascending: true })
     .returns<MyEvent[]>();
 
   const { data: pastData, error: pastError } = await supabase
     .from("event_roles")
-    .select("role, event:events!inner(*)")
+    .select(
+      "role, event:events!inner(*, dates:event_dates!inner(date, start_time, end_time))"
+    )
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
-    .lt("event.date", today.toISOString())
-    .order("date", { referencedTable: "event", ascending: false })
+    .lt("event.max_date", today.toISOString())
+    .order("event(min_date)", { ascending: false })
     .returns<MyEvent[]>();
 
   if (upcomingError || pastError) {
@@ -51,10 +55,7 @@ export default async function AllEvents() {
   const upcomingEventData = await eventDisplayData(upcomingEventsHosting);
   const pastEventData = await eventDisplayData(pastEventsHosting);
 
-  console.log(upcomingData);
-
   const nextEvent = upcomingEventData.length > 0 ? upcomingEventData[0] : null;
-  const futureEvents = upcomingEventData.slice(1);
 
   return (
     <div className="space-y-8">
@@ -71,7 +72,7 @@ export default async function AllEvents() {
       </div>
       <div className="space-y-2">
         <h2 className="text-xl">Upcoming Events</h2>
-        {futureEvents.length === 0 ? (
+        {upcomingEventData.length === 0 ? (
           <p className="text-xl text-muted-foreground">No upcoming events</p>
         ) : (
           <div className="flex flex-col space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2 2xl:grid-cols-3">
@@ -91,7 +92,7 @@ export default async function AllEvents() {
           <p className="text-xl text-muted-foreground">No past events</p>
         ) : (
           <div className="flex flex-col space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2 2xl:grid-cols-3">
-            {upcomingEventData.map((event) => (
+            {pastEventData.map((event) => (
               <RegularEventCard
                 event={event}
                 key={event.id}
