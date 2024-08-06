@@ -86,7 +86,7 @@ export default function EventToolsHeader({
             )}
           </Button>
 
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 flex-wrap">
             <Button asChild variant={"ghost"} className="flex gap-2 group">
               <Link href={`/host/events/${event.cleaned_name}/team`}>
                 <Users

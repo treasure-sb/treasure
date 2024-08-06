@@ -33,6 +33,14 @@ type LikedEventData = {
   events: EventWithDates[];
 };
 
+type HostedEventData = EventWithDates & {
+  roles: {
+    id: string;
+    role: string;
+    status: string;
+  }[];
+};
+
 const getTagData = async (tagName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -268,13 +276,23 @@ const getUpcomingEventsHosting = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("events")
-    .select("*, dates:event_dates!inner(date, start_time, end_time)")
-    .eq("organizer_id", userId)
+    .select(
+      "*, dates:event_dates!inner(date, start_time, end_time), roles:event_roles!inner(id, role, status)"
+    )
+    .eq("roles.user_id", userId)
+    .eq("roles.status", "ACTIVE")
+    .in("roles.role", ["HOST", "COHOST"])
     .gte("max_date", today)
     .order("min_date")
     .range(startIndex, endIndex);
 
-  const eventWithDates: EventWithDates[] = data || [];
+  const hostedData: HostedEventData[] = data || [];
+  const eventWithDates: EventWithDates[] = hostedData.map((event) => {
+    const { roles, ...rest } = event;
+    return {
+      ...rest,
+    };
+  });
   return { data: eventWithDates, error };
 };
 
@@ -284,13 +302,23 @@ const getPastEventsHosting = async (page: number, userId: string) => {
   const endIndex = startIndex + numUserEvents - 1;
   const { data, error } = await supabase
     .from("events")
-    .select("*, dates:event_dates!inner(date, start_time, end_time)")
-    .eq("organizer_id", userId)
+    .select(
+      "*, dates:event_dates!inner(date, start_time, end_time), roles:event_roles!inner(id, role, status)"
+    )
+    .eq("roles.user_id", userId)
+    .eq("roles.status", "ACTIVE")
+    .in("roles.role", ["HOST", "COHOST"])
     .lt("max_date", today)
     .order("min_date", { ascending: false })
     .range(startIndex, endIndex);
 
-  const eventWithDates: EventWithDates[] = data || [];
+  const hostedData: HostedEventData[] = data || [];
+  const eventWithDates: EventWithDates[] = hostedData.map((event) => {
+    const { roles, ...rest } = event;
+    return {
+      ...rest,
+    };
+  });
   return { data: eventWithDates, error };
 };
 
