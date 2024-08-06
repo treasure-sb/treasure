@@ -48,7 +48,7 @@ export default function ConfirmButton({
       push(`/host/events/`);
     } catch (error) {
       toast.dismiss();
-      toast.error("Error confirming role");
+      toast.error(`Error confirming role`);
     } finally {
       setIsLoading(false);
     }
