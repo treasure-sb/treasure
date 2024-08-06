@@ -30,47 +30,76 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { roleMap } from "./MemberCard";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PhoneInput, {
+  filterPhoneNumber,
+} from "@/components/ui/custom/phone-input-non-floating";
+import { sendTeamInviteSMS } from "@/lib/sms";
+import { RoleMapKey } from "./ListMembers";
 
-const formSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+const emailSchema = z.object({
+  contact: z.string().email("Please enter a valid email address"),
+  role: z.enum(["COHOST", "HOST", "STAFF", "SCANNER"], {
+    required_error: "Please select a role",
+  }),
+});
+
+const phoneSchema = z.object({
+  contact: z
+    .string()
+    .transform((val) => filterPhoneNumber(val))
+    .refine(
+      (val) => /^\d{10}$/.test(val),
+      "Please enter a valid 10-digit phone number"
+    ),
   role: z.enum(["COHOST", "HOST", "STAFF", "SCANNER"], {
     required_error: "Please select a role",
   }),
 });
 
 export default function AddMember({ event }: { event: EventDisplayData }) {
+  const [useEmail, setUseEmail] = useState(true);
+  const [selectedRole, setSelectedRole] = useState<RoleMapKey | null>(null);
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const { refresh } = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+
+  const form = useForm<
+    z.infer<typeof emailSchema> | z.infer<typeof phoneSchema>
+  >({
+    resolver: zodResolver(useEmail ? emailSchema : phoneSchema),
     defaultValues: {
-      email: "",
+      contact: "",
+      role: selectedRole || undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (
+    values: z.infer<typeof emailSchema> | z.infer<typeof phoneSchema>
+  ) => {
     setLoading(true);
     toast.loading("Sending invite...");
 
     try {
-      const inviteEmail = values.email;
+      const contact = values.contact;
       const role = values.role;
 
-      const profileId = await getProfileFromEmail(inviteEmail);
+      const profileId = await getProfileFromContact(contact);
       if (!profileId) return;
 
       await createEventRole(profileId, role);
       const tokenId = await createInviteToken(role, profileId);
 
-      const emailPayload: TeamInviteProps = {
-        eventName: event.name,
-        posterUrl: event.publicPosterUrl,
-        inviteToken: tokenId,
-        role: roleMap[role],
-      };
-
-      await sendTeamInviteEmail(inviteEmail, emailPayload);
+      if (useEmail) {
+        const emailPayload: TeamInviteProps = {
+          eventName: event.name,
+          posterUrl: event.publicPosterUrl,
+          inviteToken: tokenId,
+          role: roleMap[role],
+        };
+        await sendTeamInviteEmail(contact, emailPayload);
+      } else {
+        await sendTeamInviteSMS(contact, roleMap[role], event.name, tokenId);
+      }
 
       toast.dismiss();
       toast.success("Invite sent");
@@ -91,11 +120,13 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
     }
   };
 
-  const getProfileFromEmail = async (email: string) => {
+  const getProfileFromContact = async (contact: string) => {
+    const column = useEmail ? "email" : "phone";
+    const searchContact = useEmail ? contact : `+1${contact}`;
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("id")
-      .eq("email", email)
+      .eq(column, searchContact)
       .single();
 
     const profileId: { id: string } | null = profileData;
@@ -171,8 +202,11 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
                   <FormLabel>Select a role</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
                       defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        setSelectedRole(value as RoleMapKey);
+                      }}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
@@ -204,20 +238,33 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-2 md:items-center">
+            <div className="flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-2 md:items-center relative">
               <FormField
                 control={form.control}
-                name="email"
+                name="contact"
                 render={({ field }) => (
                   <FormItem className="flex-1 relative">
                     <FormControl>
-                      <Input
-                        placeholder="Enter email address"
-                        {...field}
-                        className="border p-2 px-4 rounded-md h-14 focus-within:border-primary"
-                      />
+                      {useEmail ? (
+                        <Input
+                          placeholder={
+                            useEmail
+                              ? "Enter email address"
+                              : "Enter phone number"
+                          }
+                          {...field}
+                          className="border p-2 px-4 rounded-md h-14 focus-within:border-primary"
+                        />
+                      ) : (
+                        <PhoneInput
+                          className="border p-2 px-4 rounded-md h-14 focus-within:border-primary"
+                          phoneNumber={field.value}
+                          updatePhoneNumber={field.onChange}
+                          placeholder="Enter phone number"
+                        />
+                      )}
                     </FormControl>
-                    <FormMessage className="absolute top-[90%] left-0" />
+                    <FormMessage className="text-xs md:text-sm absolute top-[90%] left-[30%] whitespace-nowrap" />
                   </FormItem>
                 )}
               />
@@ -227,6 +274,17 @@ export default function AddMember({ event }: { event: EventDisplayData }) {
                 className="rounded-sm h-12 md:ml-2"
               >
                 <span>Invite</span>
+              </Button>
+              <Button
+                type="button"
+                variant={"link"}
+                className="absolute top-4 -left-2 md:top-12 md:-left-4 text-xs font-normal text-muted-foreground"
+                onClick={() => {
+                  setUseEmail(!useEmail);
+                  form.reset({ contact: "", role: selectedRole || undefined });
+                }}
+              >
+                {useEmail ? "Use Phone" : "Use Email"}
               </Button>
             </div>
           </form>

@@ -167,6 +167,18 @@ const sendHostVendorAppReceievedSMS = async (
   );
 };
 
+const sendTeamInviteSMS = async (
+  phone: string,
+  role: string,
+  eventName: string,
+  inviteToken: string
+) => {
+  return await sendSMS(
+    phone,
+    `🚨 You've been invited to join the ${role} team for ${eventName}! Click the link below to accept your invitation!\n\nontreasure.com/invite/team/${inviteToken}`
+  );
+};
+
 export {
   sendAttendeeTicketPurchasedSMS,
   sendVendorTablePurchasedSMS,
@@ -178,5 +190,6 @@ export {
   sendHostTicketSoldSMS,
   sendHostVendorAppReceievedSMS,
   sendVendorNotificationSMS,
+  sendTeamInviteSMS,
   type HostSoldPayload,
 };

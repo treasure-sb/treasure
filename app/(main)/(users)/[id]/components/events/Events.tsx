@@ -2,10 +2,10 @@ import { getUserEventsDisplayData } from "@/lib/helpers/events";
 import { Tables } from "@/types/supabase";
 import { User } from "@supabase/supabase-js";
 import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
 import ListUpcomingEvents from "./ListUpcomingEvents";
 import ListPreviousEvents from "./ListPastEvents";
 import EventFilters from "../filtering/EventFilters";
-import { Suspense } from "react";
 
 export default async function Events({
   eventsFilter,

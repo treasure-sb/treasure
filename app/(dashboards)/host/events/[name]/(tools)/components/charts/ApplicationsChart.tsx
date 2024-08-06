@@ -128,7 +128,6 @@ const CustomTooltip = ({
   payload,
   label,
 }: TooltipProps<ValueType, NameType>) => {
-  console.log(payload, label, active);
   const name = payload?.[0]?.name;
   if (active && payload && payload.length) {
     return (
