@@ -3,10 +3,10 @@ import { roleMap } from "@/app/(dashboards)/host/events/[name]/(tools)/team/comp
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { EventWithDates } from "@/types/event";
+import { validateUser } from "@/lib/actions/auth";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import EventDisplay from "@/components/events/shared/EventDisplay";
 import ConfirmButton from "./ConfirmButton";
-import { validateUser } from "@/lib/actions/auth";
 
 type Profile = {
   id: string;

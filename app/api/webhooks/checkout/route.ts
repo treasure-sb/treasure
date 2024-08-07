@@ -48,6 +48,15 @@ type DinnerSelections = {
   isSampa: boolean;
 };
 
+type TeamData = {
+  role: string;
+  status: string;
+  profile: {
+    phone: string;
+    email: string;
+  };
+};
+
 function formatDinnerSelections(metadata: {
   [key: string]: Json | undefined;
 }): string {
@@ -88,20 +97,17 @@ const handleTicketPurchase = async (
   const {
     event_address,
     event_cleaned_name,
-    event_organizer_id,
     event_date,
     event_description,
     event_name,
     event_poster_url,
     event_ticket_ids,
     ticket_name,
-    ticket_price,
   } = data[0];
 
   const { profile } = await getProfile(user_id);
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
-  const host = await getProfile(event_organizer_id);
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
 
   const ticketPurchaseEmailProps = {
@@ -118,7 +124,7 @@ const handleTicketPurchase = async (
       metadata as { [key: string]: Json | undefined }
     ),
   };
-  
+
   if (profile.email) {
     await sendTicketPurchasedEmail(
       profile.email,
@@ -132,9 +138,20 @@ const handleTicketPurchase = async (
     await sendAttendeeTicketPurchasedSMS(profile.phone, event_name, event_date);
   }
 
-  if (host.profile && host.profile.phone) {
+  const { data: teamData } = await supabase
+    .from("event_roles")
+    .select("role, status, profile:profiles(phone, email)")
+    .eq("event_id", event_id)
+    .in("role", ["HOST", "COHOST", "STAFF"])
+    .returns<TeamData[]>();
+
+  const teamPhoneNumbers = teamData
+    ? teamData.map((member) => member.profile.phone).filter(Boolean)
+    : [];
+
+  if (teamPhoneNumbers.length > 0) {
     const hostSMSPayload: HostSoldPayload = {
-      phone: host.profile.phone,
+      phones: teamPhoneNumbers,
       businessName: profile.business_name,
       firstName: profile.first_name,
       lastName: profile.last_name,
@@ -179,14 +196,12 @@ const handleTablePurchase = async (
   }
 
   const {
-    organizer_id,
     event_name,
     event_address,
     event_cleaned_name,
     event_date,
     event_description,
     event_poster_url,
-    table_price,
     table_section_name,
     vendor_table_quantity,
     vendor_first_name,
@@ -198,7 +213,6 @@ const handleTablePurchase = async (
     vendor_application_phone,
   } = data[0];
 
-  const host = await getProfile(organizer_id);
   const {
     data: { publicUrl },
   } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
@@ -234,9 +248,20 @@ const handleTablePurchase = async (
     event_date
   );
 
-  if (host.profile && host.profile.phone) {
+  const { data: teamData } = await supabase
+    .from("event_roles")
+    .select("role, status, profile:profiles(phone, email)")
+    .eq("event_id", event_id)
+    .in("role", ["HOST", "COHOST", "STAFF"])
+    .returns<TeamData[]>();
+
+  const teamPhoneNumbers = teamData
+    ? teamData.map((member) => member.profile.phone).filter(Boolean)
+    : [];
+
+  if (teamPhoneNumbers.length > 0) {
     const hostSMSPayload: HostSoldPayload = {
-      phone: host.profile.phone,
+      phones: teamPhoneNumbers,
       businessName: vendor_business_name,
       firstName: vendor_first_name,
       lastName: vendor_last_name,
@@ -247,10 +272,7 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  if (
-    vendor_application_email !== "treasure20110@gmail.com" ||
-    (host.profile && host.profile.role !== "admin")
-  ) {
+  if (vendor_application_email !== "treasure20110@gmail.com") {
     await sendTablePurchasedEmail(
       "treasure20110@gmail.com",
       tablePurchasedEmailPayload
