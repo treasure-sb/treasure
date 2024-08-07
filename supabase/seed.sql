@@ -219,20 +219,19 @@ BEGIN
             start_time,
             end_time,
             poster_url,
-            organizer_id,
             date,
             address,
             lng,
             lat,
             venue_name,
             cleaned_name,
-            organizer_type,
             city,
             state,
             sales_status,
             vendor_exclusivity,
             min_date,
-            max_date
+            max_date,
+            organizer_id
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
@@ -251,20 +250,19 @@ BEGIN
             '10:00:00',
             '18:00:00',
             'poster' || (floor(random() * 4 + 1)::int)::text || '.jpg',
-            random_profile_id,
             future_date,
             'NYC Address ' || i,
             event_lng,
             event_lat,
             'NYC Venue ' || i,
             'nyc-event-' || i || '-' || to_char(current_date, 'MMDDYYYY'),
-            'profile',
             'New York City',
             'NY',
             'SELLING_ALL',
             'APPLICATIONS',
             future_date,
-            future_date
+            future_date,
+            random_profile_id
         ) RETURNING id INTO e_event_id;
 
         -- Insert event date
@@ -278,6 +276,18 @@ BEGIN
             '10:00:00',
             '18:00:00',
             future_date
+        );
+
+        INSERT INTO public.event_roles (
+            event_id,
+            user_id,
+            role,
+            status
+        ) VALUES (
+            e_event_id,
+            random_profile_id,
+            'HOST',
+            'ACTIVE'
         );
 
         -- Assign random number of tags (between 3 and 8) to this event

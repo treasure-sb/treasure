@@ -16,12 +16,14 @@ export default function EventDisplay({
   redirect,
   clickable = true,
   showLikeButton = true,
+  showTicket = true,
 }: {
   user?: User | null;
   event: EventDisplayData;
   redirect?: string;
   clickable?: boolean;
   showLikeButton?: boolean;
+  showTicket?: boolean;
 }) {
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
@@ -68,7 +70,7 @@ export default function EventDisplay({
           {event.city + ", " + event.state}
         </p>
       </Link>
-      {event.sales_status !== "NO_SALE" && (
+      {showTicket && event.sales_status !== "NO_SALE" && (
         <Ticket
           fill="black"
           className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg]"

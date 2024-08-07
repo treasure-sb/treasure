@@ -6,7 +6,7 @@ import { getPublicVenueMapUrl } from "@/lib/helpers/events";
 import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
 import VendorTables from "./tables/VendorTables";
-import HostedBy from "./sections/HostedBy";
+import HostedBy from "./hosts/HostedBy";
 import Vendors from "./vendors/Vendors";
 import EventOptions from "./options/EventOptions";
 import EventInfo from "./sections/EventInfo";

@@ -1,24 +1,40 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getProfile } from "./lib/helpers/profiles";
+import { getEventFromCleanedName } from "./lib/helpers/events";
+import { RoleMapKey } from "./app/(dashboards)/host/events/[name]/(tools)/team/components/ListMembers";
 import createSupabaseServerClient from "./utils/supabase/server";
 
-async function isUserOrganzierOrAdmin(
+async function isUserEventMemberOrAdmin(
   userId: string | undefined,
   eventName: string
-) {
-  const { profile } = await getProfile(userId);
+): Promise<{ isAllowed: boolean; role: RoleMapKey | null }> {
   const supabase = await createSupabaseServerClient();
-  const { data: event } = await supabase
-    .from("events")
-    .select("organizer_id")
-    .eq("cleaned_name", eventName)
+  const { profile } = await getProfile(userId);
+
+  const { event } = await getEventFromCleanedName(eventName);
+  const { data: teamData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("event_id", event.id)
+    .eq("user_id", userId)
+    .eq("status", "ACTIVE")
     .single();
 
-  return event && (event.organizer_id === userId || profile.role === "admin");
+  const teamRole = teamData ? (teamData.role as RoleMapKey) : null;
+
+  const isAllowed: boolean = Boolean(
+    event &&
+      (profile.role === "admin" ||
+        (teamRole &&
+          (teamRole === "STAFF" ||
+            teamRole === "HOST" ||
+            teamRole === "COHOST")))
+  );
+
+  return { isAllowed, role: teamRole };
 }
 
-// segment after split = ["", "host", "events", "[id]", "..."]
 function isOrganizerPage(pathname: string) {
   const segments = pathname.split("/");
   return (
@@ -130,13 +146,32 @@ export async function middleware(request: NextRequest) {
   }
 
   // check to see if the route is /host/events/[id]/...
-  // if so, check to see if the user is the organizer of the event or admin
+  // if so, check to see if the user is part of the Host, Co-Host, of Staff of the event or admin
   // if not, redirect to /host/events
   if (isOrganizerPage(pathname)) {
     const userId = session?.user.id;
     const eventName = request.nextUrl.pathname.split("/")[3];
-    if (!(await isUserOrganzierOrAdmin(userId, eventName))) {
+    const { isAllowed, role } = await isUserEventMemberOrAdmin(
+      userId,
+      eventName
+    );
+
+    if (!isAllowed) {
       return NextResponse.redirect(new URL("/host/events", request.url));
+    }
+
+    // Check if the user is a SCANNER and trying to access a restricted page
+    if (role === "SCANNER") {
+      const pathSegments = request.nextUrl.pathname.split("/");
+      const currentPath = pathSegments[4] ? `/${pathSegments[4]}` : "/";
+      const allowedPaths = ["/attendees", "/team"];
+
+      // If the current path is not in allowedPaths and is not the root event path
+      if (!allowedPaths.includes(currentPath) && currentPath !== "/") {
+        return NextResponse.redirect(
+          new URL(`/host/events/${eventName}`, request.url)
+        );
+      }
     }
   }
   return response;

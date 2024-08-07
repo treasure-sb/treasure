@@ -74,7 +74,7 @@ const fetchTemporaryProfiles = async (search: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: profilesData } = await supabase
     .from("temporary_profiles")
-    .select("*")
+    .select("*, temporary_hosts(event_id)")
     .or(`username.ilike.%${search}%,business_name.ilike.%${search}%`)
     .limit(8);
 
@@ -124,6 +124,34 @@ const fetchTemporaryVendors = async (search: string) => {
   return [];
 };
 
+const isHostOrCoHost = async (profileId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: roleData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("user_id", profileId)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST"]);
+
+  return roleData ? roleData.length > 0 : false;
+};
+
+const isHostCoHostOrStaffOfEvent = async (
+  profileId: string,
+  eventId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: roleData } = await supabase
+    .from("event_roles")
+    .select("role")
+    .eq("user_id", profileId)
+    .eq("event_id", eventId)
+    .eq("status", "ACTIVE")
+    .in("role", ["HOST", "COHOST", "STAFF"]);
+
+  return roleData ? roleData.length > 0 : false;
+};
+
 export {
   getProfile,
   getProfileByUsername,
@@ -133,4 +161,6 @@ export {
   getTempProfileFromID,
   fetchTemporaryProfiles,
   fetchTemporaryVendors,
+  isHostOrCoHost,
+  isHostCoHostOrStaffOfEvent,
 };

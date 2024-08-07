@@ -1,30 +1,32 @@
+import { Button } from "@react-email/components";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import NeedHelp from "./components/NeedHelp";
+import BodySection from "./components/Section";
 import TailwindConfig from "./config/TailwindConfig";
 import {
   Body,
-  Button,
   Container,
   Heading,
   Html,
   Section,
   Text,
   Img,
-  Hr,
-  Link,
 } from "@react-email/components";
-import BodySection from "./components/Section";
-import NeedHelp from "./components/NeedHelp";
 
-export default function VendorAppReceived({
-  posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
-  eventName = "Garden State Card Show",
-  cleanedEventName = "garden-state-card-show",
-}: {
-  posterUrl: string;
+export interface TeamInviteProps {
   eventName: string;
-  cleanedEventName: string;
-}) {
+  posterUrl: string;
+  role: string;
+  inviteToken: string;
+}
+
+export default function TeamInvite({
+  eventName = "Garden State Card Show",
+  posterUrl = "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/posters1701495337087",
+  role = "Co-Host",
+  inviteToken = "1234567890",
+}: TeamInviteProps) {
   return (
     <Html>
       <TailwindConfig>
@@ -32,15 +34,11 @@ export default function VendorAppReceived({
           <Container className="bg-background border-2 max-w-lg px-10">
             <Header />
             <Section>
-              <Heading className="text-left font-normal">
-                You have a new vendor application
+              <Heading className="font-normal">
+                You've been invited to join {eventName}'s team!
               </Heading>
-              <Text>
-                To see the application please click the link below. Note that
-                the vendor will not be able to purchase any tables until you
-                accept them.
-              </Text>
             </Section>
+
             <BodySection>
               <Img
                 className="m-auto rounded-[.8rem]"
@@ -52,14 +50,17 @@ export default function VendorAppReceived({
               <Heading className="font-normal mt-6 text-left">
                 {eventName}
               </Heading>
+              <Text className="text-left whitespace-pre-line font-semibold">
+                You've been invited to join the {role} team for {eventName}.
+                Click the button below to accept the invitation.
+              </Text>
               <Button
+                href={`https://www.ontreasure.xyz/invite/team/${inviteToken}`}
                 className="bg-primary ml-auto p-4 px-6 rounded-sm text-foreground"
-                href={`https://ontreasure.xyz/host/events/${cleanedEventName}/vendors`}
               >
-                View Application
+                View Invitation
               </Button>
             </BodySection>
-
             <NeedHelp />
             <Footer />
           </Container>

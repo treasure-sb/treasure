@@ -4,6 +4,7 @@ import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "../../views/components/DateFilter";
 import { EventWithDates } from "@/types/event";
+import { RoleMapKey } from "../../team/components/ListMembers";
 
 type OrderQueryData = {
   created_at: string;
@@ -36,64 +37,84 @@ const normalizeDate = (date: Date) => {
   return adjustedDate.toISOString().slice(0, 10);
 };
 
+const MutedSalesChart = () => (
+  <div className="h-full flex items-center justify-center text-muted-foreground pb-20">
+    Sales data not available for your role
+  </div>
+);
+
 export default async function SalesAnalytics({
   event,
   periodLength,
+  role,
 }: {
   event: EventWithDates;
   periodLength: number;
+  role: RoleMapKey;
 }) {
-  const supabase = await createSupabaseServerClient();
-  const { data: ordersData } = await supabase
-    .from("orders")
-    .select("created_at, amount_paid, line_items(*)")
-    .eq("event_id", event.id);
-
-  const orders: OrderQueryData = ordersData || [];
-  const today = new Date();
-  const lastDaysMap = new Map<string, SalesMapValue>();
-
-  Array.from({ length: periodLength }).forEach((_, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    lastDaysMap.set(normalizeDate(date), { tickets: 0, tables: 0 });
-  });
-
-  orders.forEach((order) => {
-    const saleDate = normalizeDate(new Date(order.created_at));
-    if (lastDaysMap.has(saleDate)) {
-      order.line_items.forEach((item) => {
-        const itemType = item.item_type;
-        const itemMap = lastDaysMap.get(saleDate)!;
-        if (itemType === "TICKET") {
-          itemMap.tickets += item.price * item.quantity;
-        } else {
-          itemMap.tables += item.price * item.quantity;
-        }
-      });
-    }
-  });
-
+  const isScanner = role === "SCANNER";
   const salesData: SalesData = [];
-  lastDaysMap.forEach((value, key) => {
-    salesData.push({
-      day: new Date(key).getDate().toString(),
-      formattedDate: formatDate(key),
-      normalizedDate: key,
-      tickets: value.tickets,
-      tables: value.tables,
-    });
-  });
 
-  salesData.reverse();
+  if (!isScanner) {
+    const supabase = await createSupabaseServerClient();
+    const { data: ordersData } = await supabase
+      .from("orders")
+      .select("created_at, amount_paid, line_items(*)")
+      .eq("event_id", event.id);
+
+    const orders: OrderQueryData = ordersData || [];
+    const today = new Date();
+    const lastDaysMap = new Map<string, SalesMapValue>();
+
+    Array.from({ length: periodLength }).forEach((_, i) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      lastDaysMap.set(normalizeDate(date), { tickets: 0, tables: 0 });
+    });
+
+    orders.forEach((order) => {
+      const saleDate = normalizeDate(new Date(order.created_at));
+      if (lastDaysMap.has(saleDate)) {
+        order.line_items.forEach((item) => {
+          const itemType = item.item_type;
+          const itemMap = lastDaysMap.get(saleDate)!;
+          if (itemType === "TICKET") {
+            itemMap.tickets += item.price * item.quantity;
+          } else {
+            itemMap.tables += item.price * item.quantity;
+          }
+        });
+      }
+    });
+
+    lastDaysMap.forEach((value, key) => {
+      salesData.push({
+        day: new Date(key).getDate().toString(),
+        formattedDate: formatDate(key),
+        normalizedDate: key,
+        tickets: value.tickets,
+        tables: value.tables,
+      });
+    });
+
+    salesData.reverse();
+  }
 
   return (
-    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary">
+    <div
+      className={`h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
+        isScanner ? "opacity-50" : ""
+      }`}
+    >
       <div className="flex space-x-2 items-end justify-between mb-4">
         <h3 className="text-2xl font-semibold">Sales Analytics</h3>
-        <DateFilter />
+        {!isScanner && <DateFilter />}
       </div>
-      <SalesChart salesData={salesData} periodLength={periodLength} />
+      {isScanner ? (
+        <MutedSalesChart />
+      ) : (
+        <SalesChart salesData={salesData} periodLength={periodLength} />
+      )}
     </div>
   );
 }

@@ -57,7 +57,7 @@ export default function VendorAppAccepted({
               </Heading>
               <Button
                 href={`https://www.ontreasure.xyz/checkout/${checkoutSessionId}`}
-                className="bg-primary ml-auto p-4 px-6 rounded-full text-foreground"
+                className="bg-primary ml-auto p-4 px-6 rounded-sm text-foreground"
               >
                 Pay Now for Table
               </Button>

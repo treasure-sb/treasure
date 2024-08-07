@@ -78,7 +78,7 @@ export default function TablePurchased({
                 {eventName}
               </Heading>
               <Button
-                className="bg-primary text-foreground font-normal rounded-full px-6 py-4"
+                className="bg-primary text-foreground font-normal rounded-sm px-6 py-4"
                 href="https://www.ontreasure.xyz/profile/tickets"
               >
                 View Vendor Tickets

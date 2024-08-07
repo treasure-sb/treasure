@@ -22,6 +22,7 @@ import Welcome from "@/emails/Welcome";
 import VendorAppWaitlisted, {
   VendorAppWaitlistedEmailProps,
 } from "@/emails/VendorAppWaitlisted";
+import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -35,17 +36,20 @@ const sendWelcomeEmail = async (email: string, firstName: string) => {
 };
 
 const sendVendorAppReceivedEmail = async (
-  email: string,
+  emails: string[],
   posterUrl: string,
   eventName: string,
   cleanedEventName: string
 ) => {
-  const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
-    to: email,
-    subject: "You Recieved a Vendor Application!",
-    react: VendorAppReceived({ posterUrl, eventName, cleanedEventName }),
+  const batchEmails = emails.map((email) => {
+    return {
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: "You Recieved a Vendor Application!",
+      react: VendorAppReceived({ posterUrl, eventName, cleanedEventName }),
+    };
   });
+  const sendEmailPromise = resend.batch.send(batchEmails);
   return await to(sendEmailPromise);
 };
 
@@ -127,6 +131,19 @@ const sendTablePurchasedEmail = async (
   return await to(sendEmailPromise);
 };
 
+const sendTeamInviteEmail = async (
+  email: string,
+  emailProps: TeamInviteProps
+) => {
+  const sendEmailPromise = resend.emails.send({
+    from: "Treasure <noreply@ontreasure.xyz>",
+    to: email,
+    subject: `You've been invited to join ${emailProps.eventName}'s team!`,
+    react: TeamInvite(emailProps),
+  });
+  return await to(sendEmailPromise);
+};
+
 const chunkEmails = (emails: string[], batchSize: number) => {
   const chunks = [];
   for (let i = 0; i < emails.length; i += batchSize) {
@@ -194,6 +211,7 @@ export {
   sendVendorAppRejectedEmail,
   sendVendorAppWaitlistedEmail,
   sendTicketPurchasedEmail,
+  sendTeamInviteEmail,
   sendVendorAppSubmittedEmail,
   sendTablePurchasedEmail,
   sendReminderVendorAppAcceptedEmail,

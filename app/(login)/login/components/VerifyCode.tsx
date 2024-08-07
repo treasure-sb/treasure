@@ -20,6 +20,7 @@ interface VerifyCodeProps {
   isDialog: boolean;
   goBack: () => void;
   action?: () => void;
+  redirect?: string;
 }
 
 export default function VerifyCode({
@@ -30,6 +31,7 @@ export default function VerifyCode({
   isDialog,
   goBack,
   action,
+  redirect,
 }: VerifyCodeProps) {
   const { replace } = useRouter();
   const [code, setCode] = useState("");
@@ -82,7 +84,9 @@ export default function VerifyCode({
         action && (await action());
       } else {
         verfication.profileExists
-          ? replace("/events")
+          ? redirect
+            ? replace(redirect)
+            : replace("/events")
           : setAdditionalInfo(true);
       }
     } else {

@@ -1,26 +1,34 @@
 "use client";
 
 import { EventDisplayData } from "@/types/event";
-import { ArrowUpLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpLeft, ArrowUpRight, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { RoleMapKey } from "../team/components/ListMembers";
+import { cn } from "@/lib/utils";
 import EventPoster from "@/components/events/shared/EventPoster";
 import Link from "next/link";
 import CopyEventLink from "./CopyEventLink";
 
 export default function EventToolsHeader({
   event,
+  role,
 }: {
   event: EventDisplayData;
+  role: RoleMapKey;
 }) {
   const pathname = usePathname();
+  const splitPathname = pathname.split("/");
+
   const isEventTool =
-    pathname.includes("vendors") ||
-    pathname.includes("message") ||
-    pathname.includes("attendees") ||
-    pathname.includes("sales") ||
-    pathname.includes("edit") ||
-    pathname.includes("views");
+    splitPathname.length > 4 &&
+    (splitPathname[4] === "vendors" ||
+      splitPathname[4] === "message" ||
+      splitPathname[4] === "attendees" ||
+      splitPathname[4] === "sales" ||
+      splitPathname[4] === "edit" ||
+      splitPathname[4] === "views" ||
+      splitPathname[4] === "team");
 
   return (
     <div>
@@ -61,28 +69,43 @@ export default function EventToolsHeader({
           </div>
         </div>
         <div className="flex flex-col items-end gap-4">
-          <Link
-            href={`/host/events/${event.cleaned_name}/edit`}
-            className="group cursor-pointer"
+          <Button
+            asChild={role !== "SCANNER"}
+            variant="secondary"
+            className={cn(
+              "flex gap-2",
+              role === "SCANNER" && "opacity-50 cursor-not-allowed"
+            )}
           >
-            <Button variant={"secondary"} className="flex gap-2">
-              <p>Edit Event</p>
+            {role === "SCANNER" ? (
+              <span>Edit Event</span>
+            ) : (
+              <Link href={`/host/events/${event.cleaned_name}/edit`}>
+                Edit Event
+              </Link>
+            )}
+          </Button>
+
+          <div className="flex space-x-1 flex-wrap">
+            <Button asChild variant={"ghost"} className="flex gap-2 group">
+              <Link href={`/host/events/${event.cleaned_name}/team`}>
+                <Users
+                  size={20}
+                  className="group-hover:-translate-y-[0.10rem] transition duration-300"
+                />
+                <span>Manage Team</span>
+              </Link>
             </Button>
-          </Link>
-          <div className="flex space-x-1">
             <CopyEventLink cleaned_event_name={event.cleaned_name} />
-            <Link
-              href={`/events/${event.cleaned_name}`}
-              className="group cursor-pointer"
-            >
-              <Button variant={"ghost"} className="flex space-x-1">
-                <p>Go to Event</p>
+            <Button asChild variant="ghost" className="flex space-x-1 group">
+              <Link href={`/events/${event.cleaned_name}`}>
+                <span>Go to Event</span>
                 <ArrowUpRight
                   size={20}
                   className="group-hover:translate-x-[0.10rem] group-hover:-translate-y-[0.10rem] transition duration-300"
                 />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

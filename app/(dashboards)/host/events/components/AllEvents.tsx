@@ -6,34 +6,51 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import NextEventCard from "./NextEventCard";
 import RegularEventCard from "./RegularEventCard";
 
+type MyEvent = {
+  role: string;
+  event: EventWithDates;
+};
+
 export default async function AllEvents() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await validateUser();
 
+  if (!user) {
+    redirect("/login");
+  }
+
   const today = new Date();
 
   const { data: upcomingData, error: upcomingError } = await supabase
-    .from("events")
-    .select("*, dates:event_dates!inner(date, start_time, end_time)")
-    .eq("organizer_id", user?.id as string)
-    .gte("max_date", today.toISOString())
-    .order("min_date", { ascending: true });
+    .from("event_roles")
+    .select(
+      "role, event:events!inner(*, dates:event_dates!inner(date, start_time, end_time))"
+    )
+    .eq("user_id", user.id)
+    .eq("status", "ACTIVE")
+    .gte("event.max_date", today.toISOString())
+    .order("event(min_date)", { ascending: true })
+    .returns<MyEvent[]>();
 
   const { data: pastData, error: pastError } = await supabase
-    .from("events")
-    .select("*, dates:event_dates!inner(date, start_time, end_time)")
-    .eq("organizer_id", user?.id as string)
-    .lt("max_date", today.toISOString())
-    .order("min_date", { ascending: false });
+    .from("event_roles")
+    .select(
+      "role, event:events!inner(*, dates:event_dates!inner(date, start_time, end_time))"
+    )
+    .eq("user_id", user.id)
+    .eq("status", "ACTIVE")
+    .lt("event.max_date", today.toISOString())
+    .order("event(min_date)", { ascending: false })
+    .returns<MyEvent[]>();
 
-  if (!upcomingData || upcomingError) {
+  if (upcomingError || pastError) {
     redirect("/events");
   }
 
-  const upcomingEventsHosting: EventWithDates[] = upcomingData || [];
-  const pastEventsHosting: EventWithDates[] = pastData || [];
+  const upcomingEventsHosting = upcomingData.map((event) => event.event);
+  const pastEventsHosting = pastData.map((event) => event.event);
 
   const upcomingEventData = await eventDisplayData(upcomingEventsHosting);
   const pastEventData = await eventDisplayData(pastEventsHosting);

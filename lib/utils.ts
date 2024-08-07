@@ -61,6 +61,11 @@ export function roundPrice(price: string) {
   return parseFloat(parseFloat(price).toFixed(2));
 }
 
+export const USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 type PromiseResult<T> = {
   data: T | null;
   error: any | null;

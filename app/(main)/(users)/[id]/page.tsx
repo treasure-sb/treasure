@@ -3,13 +3,13 @@ import UserOptions from "./components/filtering/UserOptions";
 import Photos from "./components/Photos";
 import ListEventsHosting from "./components/ListEventsHosting";
 import Events from "./components/events/Events";
-import { getEventsHosting } from "@/lib/helpers/eventsFiltering";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import {
   getProfile,
   getProfileByUsername,
   getTempProfile,
+  isHostOrCoHost,
 } from "@/lib/helpers/profiles";
 import { validateUser } from "@/lib/actions/auth";
 import { Suspense } from "react";
@@ -46,8 +46,7 @@ export default async function Page({
     user = tempProfile;
   }
 
-  const { data: hostingData } = await getEventsHosting(1, user.id);
-  const isHosting = hostingData ? hostingData.length > 0 : false;
+  const isHosting = await isHostOrCoHost(user.id);
   const eventsFilter = filter
     ? filter
     : isHosting && !searchParams?.events
