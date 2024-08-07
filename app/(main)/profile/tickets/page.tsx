@@ -44,7 +44,9 @@ export default async function Page() {
 
   const { data: ticketData } = await supabase
     .from("event_tickets")
-    .select("*, event:events(*), ticket:tickets(name)")
+    .select(
+      "*, event:events(*,dates:event_dates!inner(date, start_time, end_time)), ticket:tickets(name)"
+    )
     .eq("attendee_id", user.id);
 
   const eventTickets: EventTicket[] = ticketData || [];
@@ -71,7 +73,8 @@ export default async function Page() {
 
   const displayPromise = ticketData?.map(async (ticket) => {
     const eventId = ticket.event.id;
-    const event = ticket.event;
+    const event: EventWithDates = ticket.event;
+
     if (!eventDisplayMap.has(eventId)) {
       const displayData = await getEventDisplayData(event);
       eventDisplayMap.set(eventId, displayData);
@@ -82,14 +85,16 @@ export default async function Page() {
 
   const { data: tableData } = await supabase
     .from("event_vendors")
-    .select("*, event:events(*), table:tables(*)")
+    .select(
+      "*, event:events(*,dates:event_dates!inner(date, start_time, end_time)), table:tables(*)"
+    )
     .eq("vendor_id", user.id)
     .eq("payment_status", "PAID");
 
   const eventTables: EventTable[] = tableData || [];
 
   const tableTicketsPromise = eventTables.map(async (table) => {
-    const event = table.event;
+    const event: EventWithDates = table.event;
     const eventTable = table.table;
     const displayData = await getEventDisplayData(event);
     const tableTicket = {
