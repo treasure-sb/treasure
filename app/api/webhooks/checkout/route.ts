@@ -3,10 +3,7 @@ import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
 } from "@/lib/actions/emails";
-import {
-  getPublicPosterUrl,
-  getPublicPosterUrlFromPosterUrl,
-} from "@/lib/helpers/events";
+import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { Database, Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
