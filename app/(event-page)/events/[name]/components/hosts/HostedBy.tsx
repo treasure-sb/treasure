@@ -13,6 +13,7 @@ type TemporaryHost = {
 };
 
 export type Host = {
+  type: "HOST" | "TEMPORARY";
   id: string;
   role: string;
   firstName: string | null;
@@ -37,6 +38,7 @@ const createHost = async (host: ProfileHost): Promise<Host> => {
 
   const { profile, role } = host;
   return {
+    type: "HOST",
     id: profile.id,
     role,
     firstName: profile.first_name,
@@ -62,6 +64,7 @@ const createHostFromTemp = async (host: TemporaryHost): Promise<Host> => {
 
   const { profile } = host;
   return {
+    type: "TEMPORARY",
     id: profile.id,
     role: "HOST",
     firstName: null,
