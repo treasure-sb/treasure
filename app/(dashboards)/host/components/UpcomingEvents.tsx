@@ -12,6 +12,7 @@ import { eventDisplayData } from "@/lib/helpers/events";
 import Link from "next/link";
 
 import Image from "next/image"; // Import the Image component from the correct package
+import { Separator } from "@/components/ui/separator";
 
 type EventQueryData = EventWithDates & {
   roles: {
@@ -92,7 +93,10 @@ export default async function UpcomingEvents({ user }: { user: User }) {
         ) : (
           <div className="w-full space-y-2">
             {eventsDisplay.map((event, index) => (
-              <EventLink key={index} event={event} />
+              <>
+                <EventLink key={index} event={event} />
+                {index < eventsDisplay.length - 1 && <Separator />}
+              </>
             ))}
           </div>
         )}
