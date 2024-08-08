@@ -9,10 +9,9 @@ import {
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { EventDisplayData, EventWithDates } from "@/types/event";
 import { eventDisplayData } from "@/lib/helpers/events";
-import Link from "next/link";
-
-import Image from "next/image"; // Import the Image component from the correct package
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
+import Image from "next/image";
 
 type EventQueryData = EventWithDates & {
   roles: {
@@ -72,7 +71,7 @@ export default async function UpcomingEvents({ user }: { user: User }) {
   const eventsDisplay = await eventDisplayData(eventsWithDates);
 
   return (
-    <Card className="w-full md:w-1/2 h-[28rem]">
+    <Card className="w-full md:w-1/2 h-[31rem]">
       <CardHeader>
         <CardTitle className="text-xl flex justify-between">
           <p>Upcoming Events</p>

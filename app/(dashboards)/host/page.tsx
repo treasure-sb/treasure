@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import UpcomingEvents from "./components/UpcomingEvents";
+import PendingVendors from "./components/PendingVendors";
 
 export type RevenueQueryData = {
   created_at: string;
@@ -70,7 +71,7 @@ export default async function Page() {
     },
     {
       title: "Total Events",
-      content: "2",
+      content: "4",
     },
     {
       title: "Total Attendees",
@@ -89,8 +90,9 @@ export default async function Page() {
           ))}
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
         <UpcomingEvents user={user!} />
+        <PendingVendors user={user!} />
       </div>
     </div>
   );
