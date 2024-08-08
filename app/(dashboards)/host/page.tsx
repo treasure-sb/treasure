@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import UpcomingEvents from "./components/UpcomingEvents";
 
 export type RevenueQueryData = {
   created_at: string;
@@ -78,15 +79,18 @@ export default async function Page() {
   ];
 
   return (
-    <div>
+    <div className="space-y-4">
       <h1 className="font-semibold text-2xl mb-2">Host Dashboard</h1>
-      <div className="flex flex-col md:flex-row md:space-x-2">
+      <div className="flex flex-col md:flex-row md:space-x-4">
         <Revenue user={user!} />
-        <div className="md:h-[29rem] flex flex-col justify-between space-y-2">
+        <div className="md:h-[29rem] flex flex-col justify-between space-y-4">
           {hostStats.map((stat, index) => (
             <StatCard key={index} {...stat} />
           ))}
         </div>
+      </div>
+      <div className="w-full">
+        <UpcomingEvents user={user!} />
       </div>
     </div>
   );
