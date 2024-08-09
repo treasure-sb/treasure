@@ -228,7 +228,7 @@ export default function PendingWaitlistOptions({
         <Button
           onClick={async () => await rejectVendor()}
           disabled={loading}
-          className="w-full text-black"
+          className="w-full text-black rounded-sm"
           variant={"destructive"}
         >
           Reject
@@ -237,7 +237,7 @@ export default function PendingWaitlistOptions({
           <Button
             onClick={async () => await waitlistVendor()}
             disabled={loading}
-            className="w-full"
+            className="w-full rounded-sm"
             variant={"tertiary"}
           >
             Waitlist
@@ -246,7 +246,7 @@ export default function PendingWaitlistOptions({
         <Button
           onClick={async () => await acceptVendor()}
           disabled={loading}
-          className="w-full"
+          className="w-full rounded-sm"
         >
           Accept
         </Button>

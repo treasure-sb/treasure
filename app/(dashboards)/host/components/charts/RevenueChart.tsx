@@ -16,6 +16,7 @@ import {
 } from "recharts/types/component/DefaultTooltipContent";
 import { type RevenueData } from "./Revenue";
 import { format, parseISO } from "date-fns";
+import { USDollar } from "@/lib/utils";
 
 export default function RevenueChart({
   revenueData,
@@ -105,13 +106,12 @@ const CustomTooltip = ({
   label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    const ticketSales = payload[0].payload.tickets;
-    const tableSales = payload[0].payload.tables;
+    const amount = payload[0].payload.amount;
     const formattedDate = payload[0].payload.formattedDate;
     return (
       <div className="p-4 bg-background flex flex-col gap-2 rounded-md border-[1px]">
-        <p className="text-base">Ticket Sales</p>
-        <p className="text-base">Table Sales</p>
+        <p className="text-base">Revenue</p>
+        <p className="text-base">{USDollar.format(amount)}</p>
         <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
     );

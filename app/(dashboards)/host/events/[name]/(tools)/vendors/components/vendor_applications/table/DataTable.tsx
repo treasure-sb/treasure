@@ -26,15 +26,17 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { EventDisplayData } from "@/types/event";
-import Filters from "./Filters";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import ExportIcon from "@/components/icons/ExportIcon";
+import Filters from "./Filters";
+import { VendorModalProps } from "../../TabState";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   eventData: EventDisplayData;
   tags: string[];
+  modalProps: VendorModalProps;
 }
 
 interface exportInfo {
@@ -50,19 +52,12 @@ export default function DataTable<TData, TValue>({
   data,
   eventData,
   tags,
+  modalProps,
 }: DataTableProps<TData, TValue>) {
+  const { selectedVendor, open, setOpen, showVendorInfo } = modalProps;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [selectedVendor, setSelectedVendor] = useState<any | null>(null);
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
-
-  const showVendorInfo = (vendor_info: any, avatar_url: string | null) => {
-    setSelectedVendor(vendor_info);
-    setSelectedAvatar(avatar_url);
-    setOpen(true);
-  };
 
   const table = useReactTable({
     data,
@@ -212,15 +207,14 @@ export default function DataTable<TData, TValue>({
 
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, index) => (
                 <TableRow
+                  key={row.id}
                   className="relative"
                   data-state={row.getIsSelected() && "selected"}
                   onClick={() =>
-                    showVendorInfo(
-                      row.getValue("vendor_info"),
-                      row.getValue("avatar_url")
-                    )
+                    showVendorInfo &&
+                    showVendorInfo(row.getValue("vendor_info"))
                   }
                 >
                   {row.getVisibleCells().map((cell, i) => (
@@ -265,11 +259,10 @@ export default function DataTable<TData, TValue>({
         </Button>
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
-        {selectedAvatar && (
+        {selectedVendor && (
           <VendorDialogContent
-            closeDialog={() => setOpen(false)}
+            closeDialog={() => setOpen && setOpen(false)}
             vendorData={selectedVendor}
-            avatarUrl={selectedAvatar}
             eventData={eventData}
           />
         )}

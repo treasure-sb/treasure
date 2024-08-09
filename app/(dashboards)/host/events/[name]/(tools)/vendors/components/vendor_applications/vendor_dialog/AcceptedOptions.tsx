@@ -169,7 +169,7 @@ export default function AcceptedOptions({
           <Button
             onClick={async () => remindVendorToPay()}
             disabled={loading}
-            className="w-full text-black"
+            className="w-full text-black rounded-sm"
           >
             Remind to Pay
           </Button>
@@ -177,7 +177,7 @@ export default function AcceptedOptions({
             onClick={async () => markAsPaid()}
             variant={"secondary"}
             disabled={loading}
-            className="w-full"
+            className="w-full rounded-sm"
           >
             Mark as Paid
           </Button>

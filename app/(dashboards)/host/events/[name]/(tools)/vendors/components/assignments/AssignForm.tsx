@@ -129,7 +129,9 @@ export default function AssignForm({
             )}
           />
         </div>
-        <Button type="submit">Save</Button>
+        <Button className="rounded-sm" type="submit">
+          Save
+        </Button>
       </form>
     </Form>
   );

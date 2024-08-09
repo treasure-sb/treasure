@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import UpcomingEvents from "./components/UpcomingEvents";
 import PendingVendors from "./components/PendingVendors";
+import VerifiedVendors from "./components/VerifiedVendors";
 
 export type RevenueQueryData = {
   created_at: string;
@@ -82,7 +83,7 @@ export default async function Page() {
   return (
     <div className="space-y-4">
       <h1 className="font-semibold text-2xl mb-2">Host Dashboard</h1>
-      <div className="flex flex-col md:flex-row md:space-x-4">
+      <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <Revenue user={user!} />
         <div className="md:h-[29rem] flex flex-col justify-between space-y-4">
           {hostStats.map((stat, index) => (
@@ -90,9 +91,11 @@ export default async function Page() {
           ))}
         </div>
       </div>
-      <div className="w-full flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+      {/* <div className="w-full flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0"> */}
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
         <UpcomingEvents user={user!} />
         <PendingVendors user={user!} />
+        <VerifiedVendors user={user!} />
       </div>
     </div>
   );

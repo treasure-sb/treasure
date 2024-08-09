@@ -7,42 +7,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { EventVendorData, EventVendorQueryData } from "../types";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { EventVendorQueryData } from "../types";
+import { transformEventVendorData } from "./PendingVendors";
 import { VendorLink } from "./VendorLink";
 
-export const transformEventVendorData = async (
-  vendor: EventVendorQueryData
-): Promise<EventVendorData> => {
-  const supabase = await createSupabaseServerClient();
-  const { event, profile, application_status } = vendor;
-  const { roles, ...restEvent } = event;
-
-  const {
-    data: { publicUrl },
-  } = await supabase.storage
-    .from("avatars")
-    .getPublicUrl(vendor.profile.avatar_url, {
-      transform: {
-        width: 200,
-        height: 200,
-      },
-    });
-
-  return {
-    applicationStatus: application_status,
-    profile: {
-      username: profile.username,
-      firstName: profile.first_name,
-      lastName: profile.last_name,
-      businessName: profile.business_name,
-      publicAvatarUrl: publicUrl,
-    },
-    event: restEvent,
-  };
-};
-
-export default async function PendingVendors({ user }: { user: User }) {
+export default async function VerifiedVendors({ user }: { user: User }) {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("event_vendors")
@@ -51,7 +21,7 @@ export default async function PendingVendors({ user }: { user: User }) {
        profile:profiles(avatar_url, username, first_name, last_name, business_name), 
        event:events!inner(*, dates:event_dates(date, start_time, end_time), roles:event_roles!inner(user_id, role, status))`
     )
-    .eq("application_status", "PENDING")
+    .eq("application_status", "ACCEPTED")
     .eq("event.roles.user_id", user.id)
     .in("event.roles.role", ["HOST", "COHOST", "STAFF"])
     .eq("event.roles.status", "ACTIVE")
@@ -67,14 +37,14 @@ export default async function PendingVendors({ user }: { user: User }) {
     <Card className="w-full col-span-1 md:col-span-1 2xl:col-span-1 h-[31rem]">
       <CardHeader>
         <CardTitle className="text-xl">
-          <p>Pending Vendors</p>
+          <p>Verified Vendors</p>
         </CardTitle>
         <CardDescription>{}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
         {pendingVendorEventData.map((vendor, index) => (
           <>
-            <VendorLink key={index} vendorData={vendor} status={"PENDING"} />
+            <VendorLink key={index} vendorData={vendor} status={"ACCEPTED"} />
             {index < pendingVendorEventData.length - 1 && <Separator />}
           </>
         ))}

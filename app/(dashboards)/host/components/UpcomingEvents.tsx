@@ -71,7 +71,7 @@ export default async function UpcomingEvents({ user }: { user: User }) {
   const eventsDisplay = await eventDisplayData(eventsWithDates);
 
   return (
-    <Card className="w-full md:w-1/2 h-[31rem]">
+    <Card className="w-full col-span-1 md:col-span-2 h-[31rem]">
       <CardHeader>
         <CardTitle className="text-xl flex justify-between">
           <p>Upcoming Events</p>
