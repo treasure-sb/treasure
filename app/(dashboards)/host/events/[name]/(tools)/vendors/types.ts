@@ -24,6 +24,8 @@ type EventVendorData = Tables<"event_vendors"> & {
       name: string;
     };
   }[];
+} & {
+  publicAvatarUrl: string;
 };
 
 export type { EventVendorData, EventVendorTableInfo, TagNameData };

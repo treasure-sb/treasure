@@ -101,7 +101,7 @@ export default async function LoggedInHeader({
             </Link>
             <Link
               className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
-              href="/host/events"
+              href="/host"
             >
               <LayoutDashboardIcon className="stroke-1" />
               <p>Host Dashboard</p>

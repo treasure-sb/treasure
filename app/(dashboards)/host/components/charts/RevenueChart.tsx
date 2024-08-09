@@ -14,18 +14,19 @@ import {
   ValueType,
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
-import { SalesData } from "./SalesAnalytics";
+import { type RevenueData } from "./Revenue";
 import { format, parseISO } from "date-fns";
+import { USDollar } from "@/lib/utils";
 
-export default function SalesChart({
-  salesData,
+export default function RevenueChart({
+  revenueData,
   periodLength,
 }: {
-  salesData: SalesData;
+  revenueData: RevenueData[];
   periodLength: number;
 }) {
-  const maxValue = salesData.reduce(
-    (max, item) => Math.max(max, Math.max(item.tables, item.tickets)),
+  const maxValue = revenueData.reduce(
+    (max, item) => Math.max(max, Math.max(item.amount)),
     0
   );
 
@@ -61,7 +62,7 @@ export default function SalesChart({
 
   return (
     <ResponsiveContainer width="100%" height="90%">
-      <AreaChart width={500} height={300} data={salesData}>
+      <AreaChart width={500} height={300} data={revenueData}>
         <CartesianGrid
           strokeDasharray="4 1"
           stroke="#27272a"
@@ -87,21 +88,12 @@ export default function SalesChart({
         />
         <Area
           type="monotone"
-          dataKey="tables"
+          dataKey="amount"
           fill="#71d08c"
           stroke="#71d08c"
           dot={false}
           fillOpacity={0.4}
           stackId={"a"}
-        />
-        <Area
-          type="monotone"
-          dataKey="tickets"
-          fill="#eac362"
-          stroke="#eac362"
-          dot={false}
-          fillOpacity={0.4}
-          stackId={"b"}
         />
       </AreaChart>
     </ResponsiveContainer>
@@ -114,23 +106,12 @@ const CustomTooltip = ({
   label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    const ticketSales = payload[0].payload.tickets;
-    const tableSales = payload[0].payload.tables;
+    const amount = payload[0].payload.amount;
     const formattedDate = payload[0].payload.formattedDate;
     return (
       <div className="p-4 bg-background flex flex-col gap-2 rounded-md border-[1px]">
-        <p className="text-base">
-          Ticket Sales
-          <span className="ml-2 bg-tertiary/10 text-yellow-500 rounded-[3px] p-1">
-            ${ticketSales.toFixed(2)}
-          </span>
-        </p>
-        <p className="text-base">
-          Table Sales
-          <span className="ml-2 bg-primary/10 text-green-500 rounded-[3px] p-1">
-            ${tableSales.toFixed(2)}
-          </span>
-        </p>
+        <p className="text-base">Revenue</p>
+        <p className="text-base">{USDollar.format(amount)}</p>
         <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
     );

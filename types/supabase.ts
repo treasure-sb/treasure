@@ -1415,6 +1415,12 @@ export type Database = {
         }
         Returns: string
       }
+      get_all_events_attendees_count: {
+        Args: {
+          user_id: string
+        }
+        Returns: number
+      }
       get_attendee_count: {
         Args: {
           event_id: string

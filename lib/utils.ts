@@ -61,6 +61,18 @@ export function roundPrice(price: string) {
   return parseFloat(parseFloat(price).toFixed(2));
 }
 
+export const subtractFourHours = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() - 4);
+  return newDate;
+};
+
+export const normalizeDate = (date: Date) => {
+  const adjustedDate = subtractFourHours(date);
+  adjustedDate.setHours(0, 0, 0, 0);
+  return adjustedDate.toISOString().slice(0, 10);
+};
+
 export const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",

@@ -140,7 +140,9 @@ export default function MoveVendor({
             />
           </div>
 
-          <Button type="submit">Move</Button>
+          <Button className="rounded-sm" type="submit">
+            Move
+          </Button>
         </form>
       </Form>
     </div>
