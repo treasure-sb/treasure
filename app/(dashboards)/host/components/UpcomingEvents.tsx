@@ -50,6 +50,7 @@ const EventLink = ({ event }: { event: EventDisplayData }) => {
 
 export default async function UpcomingEvents({ user }: { user: User }) {
   const supabase = await createSupabaseServerClient();
+  const today = new Date();
   const { data } = await supabase
     .from("events")
     .select(
@@ -58,6 +59,7 @@ export default async function UpcomingEvents({ user }: { user: User }) {
     .eq("roles.user_id", user.id)
     .eq("roles.status", "ACTIVE")
     .in("roles.role", ["HOST", "COHOST", "STAFF", "SCANNER"])
+    .gte("max_date", today.toISOString())
     .order("min_date", { ascending: true })
     .limit(4);
 

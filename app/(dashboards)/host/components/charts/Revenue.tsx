@@ -1,8 +1,8 @@
 import { normalizeDate } from "@/lib/utils";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import RevenueChart from "./RevenueChart";
 import { RevenueQueryData } from "../../page";
 import { User } from "@supabase/supabase-js";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import RevenueChart from "./RevenueChart";
 
 type RevenueMapValue = {
   amount: number;
