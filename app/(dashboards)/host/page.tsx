@@ -49,7 +49,7 @@ export default async function Page() {
   } = await validateUser();
 
   const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
+  const { data: ordersData } = await supabase
     .from("orders")
     .select(
       "created_at, amount_paid, event:events!inner(event_roles!inner(user_id, role, status))"
@@ -59,11 +59,31 @@ export default async function Page() {
     .eq("event.event_roles.status", "ACTIVE")
     .returns<RevenueQueryData[]>();
 
-  const revenueData: RevenueQueryData[] = data || [];
+  const revenueData: RevenueQueryData[] = ordersData || [];
   const totalRevenue = revenueData.reduce(
     (amount, item) => amount + item.amount_paid,
     0
   );
+
+  const { count } = await supabase
+    .from("events")
+    .select("name, event_roles!inner(user_id, role, status)", {
+      count: "exact",
+      head: true,
+    })
+    .eq("event_roles.user_id", user!.id)
+    .in("event_roles.role", ["HOST", "COHOST", "STAFF", "SCANNER"])
+    .eq("event_roles.status", "ACTIVE");
+
+  const { data: attendeeCountData } = await supabase.rpc(
+    "get_all_events_attendees_count",
+    {
+      user_id: user!.id,
+    }
+  );
+
+  const totalAttendeeCount = attendeeCountData || 0;
+  const totalEventCount = count || 0;
 
   const hostStats: StatCardProps[] = [
     {
@@ -72,11 +92,11 @@ export default async function Page() {
     },
     {
       title: "Total Events",
-      content: "4",
+      content: totalEventCount.toString(),
     },
     {
       title: "Total Attendees",
-      content: "102",
+      content: totalAttendeeCount.toString(),
     },
   ];
 
