@@ -108,6 +108,14 @@ const stripeLink = async (returnUrl: string) => {
     metadata: {
       plan: "Pro",
       priceId: "price_1PjqNfHnRCFO3bhFJArayp7A",
+      user_id: (
+        await validateUser()
+      ).data.user?.id
+        ? (await validateUser()).data.user?.id ||
+          ((
+            await validateUser()
+          ).data.user?.id as string)
+        : "",
     },
   });
   let clientSecret = session.client_secret;

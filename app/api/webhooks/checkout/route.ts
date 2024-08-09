@@ -6,7 +6,7 @@ import {
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { Database, Json, Tables } from "@/types/supabase";
-import { SupabaseClient } from "@supabase/supabase-js";
+import { Subscription, SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
   type HostSoldPayload,
@@ -282,11 +282,80 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  console.log("Successful Payment: ", session);
+  const secondsToISODate = (seconds: number): string => {
+    return new Date(seconds * 1000).toISOString();
+  };
   const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
+  if (session.description == "Subscription creation") {
+    const invoice = await stripe.invoices.retrieve(session.invoice as string);
+    const checkoutSessionMetadata = (
+      await stripe.checkout.sessions.list({ payment_intent: session.id })
+    ).data[0].metadata;
+    const { plan, priceId, user_id } = JSON.parse(
+      JSON.stringify(checkoutSessionMetadata)
+    );
+    const product_id = (
+      await supabase
+        .from("subscription_products")
+        .select("id")
+        .eq("stripe_price_id", "price_1PjqNfHnRCFO3bhFJArayp7A")
+        .maybeSingle()
+    ).data?.id;
+    let subscription_id = await supabase
+      .from("subscriptions")
+      .insert({
+        user_id: user_id,
+        subscribed_product_id: product_id,
+        stripe_subscription_id: invoice.subscription,
+        status: "ACTIVE",
+        start_date: secondsToISODate(invoice.lines.data[0].period.start),
+        end_date: secondsToISODate(invoice.lines.data[0].period.end),
+        created_at: invoice.lines.data[0].plan?.created
+          ? secondsToISODate(invoice.lines.data[0].plan?.created)
+          : null,
+        updated_at: null,
+      })
+      .select()
+      .maybeSingle();
 
+    console.log(subscription_id);
+    const invoice_error = await supabase.from("subscription_invoices").insert({
+      subscription_id: subscription_id.data ? subscription_id.data.id : "",
+      stripe_invoice_id: invoice.id,
+      amount_paid: invoice.amount_paid / 100,
+      paid_on: secondsToISODate(session.created),
+    });
+    console.log(subscription_id);
+    return;
+  }
+  {
+    /*const handleSubscriptionRenewAttempt = async (
+    event: Stripe.InvoiceUpdatedEvent
+  ) => {
+    const invoice = event.data.object;
+    if (invoice.status == "open") {
+      const { data, error } = await supabase
+        .from("subscription")
+        .update({
+          status: "CANCELLED",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("stripe_subscription_id", invoice.subscription);
+    } else {
+      const { data, error } = await supabase
+        .from("subscription")
+        .update({
+          updated_at: new Date().toISOString(),
+          start_date: secondsToISODate(invoice.lines.data[0].period.start),
+          end_date: secondsToISODate(invoice.lines.data[0].period.start),
+        })
+        .eq("stripe_subscription_id", invoice.subscription);
+    }
+    invoice.id;
+  };*/
+  }
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
@@ -329,12 +398,9 @@ export async function POST(req: Request) {
 
     if (event.type === "payment_intent.succeeded") {
       try {
-        console.log("number 0");
-
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
-        console.log("number 4");
 
         return NextResponse.json({
           message: "Payment Intent Succeeded",

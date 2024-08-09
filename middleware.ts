@@ -115,7 +115,11 @@ export async function middleware(request: NextRequest) {
   if (session && (pathname === "/login" || pathname === "/signup")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
-
+  if (!session && pathname == "/pricing/checkout") {
+    return NextResponse.redirect(
+      new URL("/login?redirect=/pricing/checkout", request.url)
+    );
+  }
   // if a signup invite token is preset and it is not valid, redirect to /signup
   if (
     pathname === "/signup" &&
