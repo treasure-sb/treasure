@@ -86,7 +86,7 @@ export default async function UpcomingEvents({ user }: { user: User }) {
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
         {eventsDisplay.length === 0 ? (
-          <p className="text-muted-foreground text-sm mt-32">
+          <p className="text-muted-foreground text-sm mt-40">
             You don't have any upcoming events.
           </p>
         ) : (

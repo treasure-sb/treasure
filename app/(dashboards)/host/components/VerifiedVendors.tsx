@@ -28,9 +28,9 @@ export default async function VerifiedVendors({ user }: { user: User }) {
     .returns<EventVendorQueryData[]>()
     .limit(6);
 
-  const pendingVendorData: EventVendorQueryData[] = data || [];
-  const pendingVendorEventData = await Promise.all(
-    pendingVendorData.map(transformEventVendorData)
+  const verifiedVendorData: EventVendorQueryData[] = data || [];
+  const verifiedVendorEventData = await Promise.all(
+    verifiedVendorData.map(transformEventVendorData)
   );
 
   return (
@@ -42,12 +42,18 @@ export default async function VerifiedVendors({ user }: { user: User }) {
         <CardDescription>{}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
-        {pendingVendorEventData.map((vendor, index) => (
-          <>
-            <VendorLink key={index} vendorData={vendor} status={"ACCEPTED"} />
-            {index < pendingVendorEventData.length - 1 && <Separator />}
-          </>
-        ))}
+        {verifiedVendorEventData.length === 0 ? (
+          <p className="text-muted-foreground text-sm mt-40 text-center">
+            You don't have any verified vendors.
+          </p>
+        ) : (
+          verifiedVendorEventData.map((vendor, index) => (
+            <>
+              <VendorLink key={index} vendorData={vendor} status={"ACCEPTED"} />
+              {index < verifiedVendorEventData.length - 1 && <Separator />}
+            </>
+          ))
+        )}
       </CardContent>
     </Card>
   );

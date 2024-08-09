@@ -111,7 +111,6 @@ export default async function Page() {
           ))}
         </div>
       </div>
-      {/* <div className="w-full flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0"> */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
         <UpcomingEvents user={user!} />
         <PendingVendors user={user!} />

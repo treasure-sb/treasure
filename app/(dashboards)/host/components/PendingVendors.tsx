@@ -72,12 +72,18 @@ export default async function PendingVendors({ user }: { user: User }) {
         <CardDescription>{}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
-        {pendingVendorEventData.map((vendor, index) => (
-          <>
-            <VendorLink key={index} vendorData={vendor} status={"PENDING"} />
-            {index < pendingVendorEventData.length - 1 && <Separator />}
-          </>
-        ))}
+        {pendingVendorEventData.length === 0 ? (
+          <p className="text-muted-foreground text-sm mt-40 text-center">
+            You don't have any pending vendors.
+          </p>
+        ) : (
+          pendingVendorEventData.map((vendor, index) => (
+            <>
+              <VendorLink key={index} vendorData={vendor} status={"PENDING"} />
+              {index < pendingVendorEventData.length - 1 && <Separator />}
+            </>
+          ))
+        )}
       </CardContent>
     </Card>
   );
