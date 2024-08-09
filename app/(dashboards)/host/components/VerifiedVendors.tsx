@@ -13,6 +13,7 @@ import { transformEventVendorData } from "./PendingVendors";
 import { VendorLink } from "./VendorLink";
 
 export default async function VerifiedVendors({ user }: { user: User }) {
+  const today = new Date();
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("event_vendors")
@@ -25,6 +26,7 @@ export default async function VerifiedVendors({ user }: { user: User }) {
     .eq("event.roles.user_id", user.id)
     .in("event.roles.role", ["HOST", "COHOST", "STAFF"])
     .eq("event.roles.status", "ACTIVE")
+    .gte("event.max_date", today.toISOString())
     .returns<EventVendorQueryData[]>()
     .limit(6);
 

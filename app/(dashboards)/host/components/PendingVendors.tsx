@@ -44,6 +44,7 @@ export const transformEventVendorData = async (
 
 export default async function PendingVendors({ user }: { user: User }) {
   const supabase = await createSupabaseServerClient();
+  const today = new Date();
   const { data } = await supabase
     .from("event_vendors")
     .select(
@@ -55,6 +56,7 @@ export default async function PendingVendors({ user }: { user: User }) {
     .eq("event.roles.user_id", user.id)
     .in("event.roles.role", ["HOST", "COHOST", "STAFF"])
     .eq("event.roles.status", "ACTIVE")
+    .gte("event.max_date", today.toISOString())
     .returns<EventVendorQueryData[]>()
     .limit(6);
 
