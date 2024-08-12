@@ -23,6 +23,7 @@ import Stripe from "stripe";
 import { subscribe } from "diagnostics_channel";
 import { randomUUID } from "crypto";
 import { validateUser } from "@/lib/actions/auth";
+import { secondsToISODate } from "@/lib/helpers/stripeHelp";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -285,9 +286,7 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const secondsToISODate = (seconds: number): string => {
-    return new Date(seconds * 1000).toISOString();
-  };
+
   const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
     JSON.stringify(session.metadata)
   );
@@ -322,8 +321,6 @@ const handlePaymentIntentSucceeded = async (
       })
       .select()
       .maybeSingle();
-
-    console.log(subscription_id);
     const invoice_error = await supabase.from("subscription_invoices").insert({
       subscription_id: subscription_id.data ? subscription_id.data.id : "",
       stripe_invoice_id: invoice.id,
@@ -333,32 +330,7 @@ const handlePaymentIntentSucceeded = async (
     console.log(subscription_id);
     return;
   }
-  {
-    /*const handleSubscriptionRenewAttempt = async (
-    event: Stripe.InvoiceUpdatedEvent
-  ) => {
-    const invoice = event.data.object;
-    if (invoice.status == "open") {
-      const { data, error } = await supabase
-        .from("subscription")
-        .update({
-          status: "CANCELLED",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("stripe_subscription_id", invoice.subscription);
-    } else {
-      const { data, error } = await supabase
-        .from("subscription")
-        .update({
-          updated_at: new Date().toISOString(),
-          start_date: secondsToISODate(invoice.lines.data[0].period.start),
-          end_date: secondsToISODate(invoice.lines.data[0].period.start),
-        })
-        .eq("stripe_subscription_id", invoice.subscription);
-    }
-    invoice.id;
-  };*/
-  }
+
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
       .from("checkout_sessions")
@@ -388,6 +360,33 @@ const handlePaymentIntentSucceeded = async (
       throw new Error("Invalid Ticket Type");
   }
 };
+const handleSubscriptionRenewAttempt = async (
+  event: Stripe.CustomerSubscriptionUpdatedEvent
+) => {
+  const supabase = await createSupabaseServerClient();
+  const invoice = event.data.object.latest_invoice as Stripe.Invoice;
+  if (invoice !== null) {
+    if (invoice.status == "open") {
+      const { data, error } = await supabase
+        .from("subscription")
+        .update({
+          status: "CANCELLED",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("stripe_subscription_id", invoice.subscription);
+    } else {
+      const { data, error } = await supabase
+        .from("subscription")
+        .update({
+          updated_at: new Date().toISOString(),
+          start_date: secondsToISODate(invoice.lines.data[0].period.start),
+          end_date: secondsToISODate(invoice.lines.data[0].period.start),
+        })
+        .eq("stripe_subscription_id", invoice.subscription);
+    }
+    invoice.id;
+  }
+};
 
 export async function POST(req: Request) {
   try {
@@ -398,7 +397,15 @@ export async function POST(req: Request) {
       signature,
       webhookSecret
     );
-
+    if (event.type == "customer.subscription.updated") {
+      try {
+        //FINISH THIS/ REDO
+        await handleSubscriptionRenewAttempt(
+          event as Stripe.CustomerSubscriptionUpdatedEvent
+        );
+      } finally {
+      }
+    }
     if (event.type === "payment_intent.succeeded") {
       try {
         await handlePaymentIntentSucceeded(
