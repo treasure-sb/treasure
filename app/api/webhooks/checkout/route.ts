@@ -177,6 +177,8 @@ const handleTablePurchase = async (
 ) => {
   const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
 
+  console.log("Table Purchase", checkoutSession, amountPaid);
+
   const { data, error } = await supabase
     .rpc("purchase_table", {
       table_id: ticket_id,
