@@ -12,7 +12,10 @@ export default function Page() {
       <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] mx-[-3%]">
         <Hero />
       </div>
-      <FeaturedEvents />
+      <div id="featured-events">
+        <FeaturedEvents />
+      </div>
+
       <div className="w-full py-6 mt:20 md:mt-40 space-y-20 md:space-y-40">
         <div className="max-w-[var(--container-width)] m-auto">
           <Free />
