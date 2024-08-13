@@ -8,6 +8,7 @@ import {
   useTransform,
   useAnimate,
 } from "framer-motion";
+import { useTheme } from "next-themes";
 
 export default function HeaderMotion({
   children,
@@ -15,9 +16,16 @@ export default function HeaderMotion({
   children: React.ReactNode;
 }) {
   const { scrollY } = useScroll();
+  const { theme } = useTheme();
   const [scope, animate] = useAnimate();
   const backgroundOpacity = useTransform(scrollY, [0, 80], [0, 0.98]);
-  const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.4]);
+  const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.6]);
+
+  const darkBackgroundColor = useMotionTemplate`rgba(18, 18, 18, ${backgroundOpacity})`;
+  const lightBackgroundColor = useMotionTemplate`rgba(255, 255, 255, ${backgroundOpacity})`;
+
+  const darkBorderColor = useMotionTemplate`rgba(255, 255, 255, ${borderOpacity})`;
+  const lightBorderColor = useMotionTemplate`rgba(18, 18, 18, ${borderOpacity})`;
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious();
@@ -33,8 +41,9 @@ export default function HeaderMotion({
     <motion.header
       ref={scope}
       style={{
-        backgroundColor: useMotionTemplate`rgba(18, 18, 18, ${backgroundOpacity})`,
-        borderColor: useMotionTemplate`rgba(255, 255, 255, ${borderOpacity})`,
+        backgroundColor:
+          theme === "dark" ? darkBackgroundColor : lightBackgroundColor,
+        borderColor: theme === "dark" ? darkBorderColor : lightBorderColor,
       }}
       className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-4 px-4 sm:px-8"
     >

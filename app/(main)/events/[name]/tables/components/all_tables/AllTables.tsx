@@ -25,13 +25,14 @@ const LabeledText = ({
 }) => {
   return (
     <p className="text-sm">
-      <span className="text-background font-semibold">{label}:</span> {children}
+      <span className="dark:text-background font-semibold">{label}:</span>{" "}
+      {children}
     </p>
   );
 };
 
 const TableInfo = ({ type, price }: TicketInfoProps) => (
-  <div className="flex space-x-4 text-background">
+  <div className="flex space-x-4 dark:text-background text-foreground">
     <TicketIcon className="stroke-2 text-background" />
     <div className="flex">
       <p>{type}</p> <p className="ml-2 font-bold">${price.toFixed(2)}</p>
@@ -73,14 +74,14 @@ export default function AllTables() {
     <div className="mt-10">
       <EventCard event={event} clickable={false} showLikeButton={false} />
       <Accordion
-        className="mt-10 mb-4 bg-foreground rounded-md"
+        className="mt-10 mb-4 dark:bg-foreground border-[1px] border-foreground dark:border-none rounded-md"
         type="single"
         defaultValue="item-0"
         collapsible
       >
         {tableOptions}
       </Accordion>
-      <div className="bg-foreground rounded-md p-6 text-background">
+      <div className="dark:bg-foreground rounded-md p-6 dark:text-background border-[1px] border-foreground dark:border-none">
         <h5 className="text-md font-semibold mb-2">
           Vendor Check-In Information:
         </h5>

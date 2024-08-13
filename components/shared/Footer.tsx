@@ -44,13 +44,11 @@ export default function Footer({
             </a>
           ))}
         </nav>
-        <Link href="/home" className="flex items-center justify-center w-full">
-          <Image
-            src="/static/web_logo.png"
-            alt="web logo"
-            width={100}
-            height={80}
-          />
+        <Link
+          href="/home"
+          className="flex items-center justify-center w-full font-bold"
+        >
+          <p>Treasure</p>
         </Link>
         <p className="text-center text-sm text-gray-600 dark:text-gray-100 px-2 py-1">
           &copy; {new Date().getFullYear()} Treasure. All rights reserved.

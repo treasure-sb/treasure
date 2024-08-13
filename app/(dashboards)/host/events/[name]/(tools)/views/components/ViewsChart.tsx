@@ -31,7 +31,7 @@ export default function ViewsChart({
   const maxValue = Math.max(...data.map((d) => d.views));
 
   return (
-    <div className="h-[30rem] bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
+    <div className="h-[30rem] bg-slate-100 dark:bg-[#0d0d0c] rounded-md p-6 border-2 border-secondary">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart width={500} height={300} data={data}>
           <CartesianGrid

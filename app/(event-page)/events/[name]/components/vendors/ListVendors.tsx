@@ -75,7 +75,7 @@ export default function ListVendors({
           <Button
             variant={"link"}
             onClick={() => setNumVendors(4)}
-            className="text-white hover:no-underline"
+            className="text-foreground hover:no-underline"
           >
             See Less
           </Button>
@@ -84,7 +84,7 @@ export default function ListVendors({
           <Button
             variant={"link"}
             onClick={() => setNumVendors((numVendors) => numVendors + 4)}
-            className="text-white hover:no-underline"
+            className="text-foreground hover:no-underline"
           >
             See More
           </Button>

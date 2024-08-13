@@ -89,7 +89,7 @@ export default async function Page({
 
   return (
     <div className="max-w-7xl mx-auto py-10">
-      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
+      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4 ">
         <div className="flex space-x-2 items-center">
           <h2 className="text-2xl font-semibold">Page Views </h2>
           <div className="text-muted-foreground text-2xl font-semibold flex items-center">

@@ -23,11 +23,11 @@ export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
   };
 
   return (
-    <div className="space-y-4 text-background">
+    <div className="space-y-4 dark:text-background">
       <div className="flex space-x-6 justify-center">
         <Button
           disabled={tableCount === minTables}
-          className="text-4xl disabled:text-background/40 hover:bg-background/10 hover:text-background"
+          className="text-4xl disabled:text-foreground/40 dark:disabled:text-background/40 dark:hover:bg-background/10 dark:hover:text-background"
           variant={"ghost"}
           onClick={handleDecrement}
         >
@@ -36,7 +36,7 @@ export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
         <p className="text-3xl">{tableCount}</p>
         <Button
           disabled={tableCount === maxTables}
-          className="text-4xl disabled:text-background/40 hover:bg-background/10 hover:text-background"
+          className="text-4xl disabled:text-foreground/40 dark:disabled:text-background/40 dark:hover:bg-background/10 dark:hover:text-background"
           variant={"ghost"}
           onClick={handleIncrement}
         >
