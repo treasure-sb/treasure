@@ -62,7 +62,7 @@ export default async function Revenue({ user }: { user: User }) {
 
   return (
     <div
-      className={`h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary flex-1`}
+      className={`h-80 md:h-[29rem] col-span-2 bg-slate-100 dark:bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary flex-1`}
     >
       <div className="flex space-x-2 items-end justify-between mb-4">
         <h3 className="text-2xl font-semibold">Revenue</h3>

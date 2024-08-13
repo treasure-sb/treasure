@@ -20,6 +20,8 @@ import {
 import Image from "next/image";
 import HeaderStatic from "./HeaderStatic";
 import Logo from "@/components/icons/TreasureLogo";
+import { ThemeSwitch } from "./ThemeSwitch";
+import TreasureEmerald from "@/components/icons/TreasureEmerald";
 
 export default async function LoggedInHeader({
   user,
@@ -46,7 +48,10 @@ export default async function LoggedInHeader({
             href="/home"
             className="font-bold text-3xl flex items-center justify-start space-x-1"
           >
-            <Logo />
+            <div className="flex space-x-1 items-center font-bold">
+              <TreasureEmerald width={28} height={28} />
+              <p>Treasure</p>
+            </div>
           </Link>
           {profile.role === "admin" && (
             <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
@@ -76,7 +81,7 @@ export default async function LoggedInHeader({
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex flex-col bg-black mt-4 p-2 overflow-hidden"
+            className="flex flex-col bg-slate-100 dark:bg-black mt-4 p-2 overflow-hidden"
           >
             <Link
               className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
@@ -106,6 +111,7 @@ export default async function LoggedInHeader({
               <LayoutDashboardIcon className="stroke-1" />
               <p>Host Dashboard</p>
             </Link>
+            <ThemeSwitch />
           </PopoverContent>
         </Popover>
       </div>

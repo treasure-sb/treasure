@@ -55,7 +55,14 @@ export default function Sidebar() {
           href="/home"
           className="font-semibold text-3xl flex items-center justify-center mb-8"
         >
-          {showSidebar ? <Logo /> : <TreasureEmerald width={28} height={28} />}
+          {showSidebar ? (
+            <div className="flex space-x-1 items-center font-bold">
+              <TreasureEmerald width={28} height={28} />
+              <p>Treasure</p>
+            </div>
+          ) : (
+            <TreasureEmerald width={28} height={28} />
+          )}
         </Link>
         <div className="space-y-6 flex flex-col">
           {type === "host" ? (

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 
 export default function Blurred({
@@ -13,6 +14,12 @@ export default function Blurred({
   opacity?: number;
   marginX?: boolean;
 }) {
+  const { theme } = useTheme();
+  const darkGradient =
+    "linear-gradient(to bottom, transparent 75%, #121212 100%)";
+  const lightGradient =
+    "linear-gradient(to bottom, transparent 75%, #f3f4f6 100%)";
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -32,8 +39,7 @@ export default function Blurred({
       />
       <div
         style={{
-          background:
-            "linear-gradient(to bottom, transparent 75%, #121212 100%)",
+          background: theme === "dark" ? darkGradient : lightGradient,
         }}
         className="-z-10 absolute inset-x-0 top-0 bottom-0"
       />

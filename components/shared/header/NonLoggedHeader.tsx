@@ -1,8 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import HeaderMotion from "./HeaderMotion";
 import HeaderStatic from "./HeaderStatic";
-import Logo from "@/components/icons/TreasureLogo";
+import TreasureEmerald from "@/components/icons/TreasureEmerald";
 
 export default function NonLoggedHeader({
   useMotion = true,
@@ -20,7 +19,10 @@ export default function NonLoggedHeader({
           href="/home"
           className="font-bold text-3xl flex items-center justify-start space-x-1"
         >
-          <Logo />
+          <div className="flex space-x-1 items-center font-bold">
+            <TreasureEmerald width={28} height={28} />
+            <p>Treasure</p>
+          </div>
         </Link>
       )}
       <div className="flex items-center space-x-4 md:space-x-8 ml-auto">

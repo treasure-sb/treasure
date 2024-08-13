@@ -13,7 +13,7 @@ export default function Page() {
         <Hero />
       </div>
       <FeaturedEvents />
-      <div className="w-full py-6 mt:24 md:mt-60 space-y-20 md:space-y-40">
+      <div className="w-full py-6 mt:20 md:mt-40 space-y-20 md:space-y-40">
         <div className="max-w-[var(--container-width)] m-auto">
           <Free />
         </div>

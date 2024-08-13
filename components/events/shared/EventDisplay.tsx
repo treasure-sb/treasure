@@ -72,8 +72,7 @@ export default function EventDisplay({
       </Link>
       {showTicket && event.sales_status !== "NO_SALE" && (
         <Ticket
-          fill="black"
-          className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg]"
+          className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg] fill-white dark:fill-black"
           size={32}
         />
       )}

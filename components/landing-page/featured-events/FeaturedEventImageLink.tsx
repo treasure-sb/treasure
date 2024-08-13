@@ -74,7 +74,7 @@ export default function FeaturedEventImageLink({
           height={800}
         />
       </AspectRatio>
-      <div className="text-background p-2 md:p-4 border-t-[1px] h-fit md:group-hover:bg-tertiary/70 transition duration-300 rounded-b-md">
+      <div className="bg-background text-foreground dark:text-background dark:bg-foreground p-2 md:p-4 border-[1px] border-t-0 border-black dark:border-none h-fit md:group-hover:bg-background/90 md:group-hover:dark:bg-foreground/90 transition duration-300 rounded-b-md">
         <h4 className="md:text-xl text-xs font-semibold truncate">
           {event.name}
         </h4>
