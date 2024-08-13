@@ -2,13 +2,15 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { LucideArrowUpRight } from "lucide-react";
+import { ChevronDown, LucideArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "../ui/button";
 
 export default function Hero() {
   const [currentTag, setCurrentTag] = useState(0);
   const tags = [
+    "Hobby",
     "Collectible",
     "Pokémon Card",
     "Sports Card",
@@ -28,55 +30,78 @@ export default function Hero() {
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
   };
-
+  const scrollToNextSection = () => {
+    const nextSection = document.getElementById("featured-events");
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
-    <section className="h-[100vh] pb-40 relative max-w-[var(--container-width)] m-auto flex flex-col-reverse space-y-10 lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
-      <div className="text-left flex flex-col space-y-4 tracking-tight pb-4">
-        <p className="text-3xl font-semibold lg:text-8xl lg:max-w-6xl">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={tags[currentTag]}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={variants}
-              transition={{ duration: 0.4 }}
-              className="text-primary inline-block"
-            >
-              {tags[currentTag]}
-            </motion.span>
-          </AnimatePresence>{" "}
-          <br />
-          Shows Every Weekend Near You
+    <section className="h-[100vh] mt-[-80px] justify-end relative max-w-[var(--container-width)] mx-auto flex flex-col-reverse lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
+      {/* Your existing Hero content */}
+
+      <div className="text-center flex flex-col space-y-6 tracking-tight max-h-[50%]">
+        <p className="text-4xl text-black font-semibold lg:text-8xl lg:max-w-6xl">
+          Find More Hobby Events You Love{" "}
+          <span className="text-[#2AAA88]">Every Weekend</span>
         </p>
-        <Link
-          href="/events"
-          className="w-fit flex items-center space-x-1 md:space-x-2 group"
-        >
-          <p className="text-primary font-semibold text-2xl lg:text-6xl group-hover:text-primary/80 transition duration-300">
-            Browse Events
-          </p>
-          <LucideArrowUpRight
-            size={70}
-            className="text-primary hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
-          />
-          <LucideArrowUpRight
-            size={30}
-            className="text-primary block lg:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
-          />
-        </Link>
+        <p className="text-black font-semibold text-center text-sm">
+          Join the #1 community for card shows and hobby events. <br />
+          We make getting tickets and tables easy.
+        </p>
+        <div className="flex flex-row justify-evenly">
+          <Link
+            href="/events"
+            className="w-fit flex items-center space-x-1 md:space-x-2 group self-center"
+          >
+            <Button className="text-white">
+              <p className="mr-1">Create Your Event</p>
+              <LucideArrowUpRight
+                size={30}
+                className="text-white hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
+              />
+              <LucideArrowUpRight
+                size={20}
+                className="text-white block lg:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
+              />
+            </Button>
+          </Link>
+          <Link
+            href="/events"
+            className="w-fit flex items-center space-x-1 md:space-x-2 group self-center"
+          >
+            <Button className="text-black bg-transparent border-2">
+              <p className="text mr-1">Browse Events</p>
+              <LucideArrowUpRight
+                size={30}
+                className="text-white hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
+              />
+              <LucideArrowUpRight
+                size={20}
+                className="text-black block lg:hidden group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
+              />
+            </Button>
+          </Link>
+        </div>
+        <div className="absolute bottom-5 min-w-full">
+          <button
+            onClick={scrollToNextSection}
+            className="transform -translate-x-1/2 animate-bounce self-center"
+            aria-label="Scroll to next section"
+          >
+            <ChevronDown size={32} color="black" />
+          </button>
+        </div>
       </div>
-      <div className="w-[40%] h-full relative hidden lg:block">
+      <div className="w-[50%] h-full hidden lg:block">
         <Image
-          className="w-full h-full object-cover rounded-md"
+          className="w-full h-full object-contain rounded-md object-center"
           quality={100}
           priority
-          src="/static/landing-page/fenway3.png"
+          src="/static/landing-page/Hero Image.png"
           alt="hero image"
           width={2000}
           height={2000}
-          objectFit="cover"
-          objectPosition="center"
         />
         <motion.div
           initial={{ height: "100%" }}
@@ -85,28 +110,15 @@ export default function Hero() {
           className="absolute inset-0 bg-background"
         />
       </div>
-      <div className="flex lg:hidden mx-[-32px] relative h-full z-40">
+      <div className="h-fit lg:hidden">
         <Image
-          className="absolute top-0 left-0 w-[60%] h-[50%] object-cover rounded-md rotate-2 z-10"
+          className="h-fit object-top object-contain mt-14"
           quality={100}
-          src="/static/landing-page/fenway2.png"
+          src="/static/landing-page/Hero Image.png"
           priority
           alt="hero image"
-          width={2000}
           height={2000}
-          objectFit="cover"
-          objectPosition="center"
-        />
-        <Image
-          className="absolute top-0 left-[38%] mt-20 w-[60%] h-[50%] object-cover rounded-md -rotate-3 z-20"
-          quality={100}
-          src="/static/landing-page/fenway3.png"
-          priority
-          alt="hero image"
           width={2000}
-          height={2000}
-          objectFit="cover"
-          objectPosition="center"
         />
       </div>
     </section>
