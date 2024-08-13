@@ -9,11 +9,13 @@ export default function Page() {
   return (
     <ThemeProvider defaultTheme="light">
       <main>
-        <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] mx-[-16px]">
+        <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] mx-[-16px] md:mx-[-2%]">
           <Hero />
         </div>
+        <div id="featured-events">
+          <FeaturedEvents />
+        </div>
 
-        <FeaturedEvents />
         <div className="w-full py-6 mt:24 md:mt-60">
           <div className="max-w-[var(--container-width)] m-auto">
             <h4 className="text-2xl md:text-5xl tracking-wide font-semibold mt-8 mb-12 text-center flex justify-center gap-2">
