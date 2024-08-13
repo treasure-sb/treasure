@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AllYourAttendees() {
   return (
     <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between p-6 lg:p-10">
-      <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4">
+      <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4 lg:py-12">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-5xl">
           All Your Attendees & Vendors in One Place
         </p>

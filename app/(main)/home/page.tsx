@@ -4,6 +4,7 @@ import Grid from "@/components/landing-page/grid/Grid";
 import AllYourAttendees from "@/components/landing-page/AllYourAttendees";
 import Footer from "@/components/shared/Footer";
 import Free from "@/components/landing-page/Free";
+import TrackSales from "@/components/landing-page/TrackSales";
 
 export default function Page() {
   return (
@@ -12,9 +13,12 @@ export default function Page() {
         <Hero />
       </div>
       <FeaturedEvents />
-      <div className="w-full py-6 mt:24 md:mt-60">
-        <div className="max-w-[var(--container-width)] m-auto space-y-20 md:space-y-40">
+      <div className="w-full py-6 mt:24 md:mt-60 space-y-20 md:space-y-40">
+        <div className="max-w-[var(--container-width)] m-auto">
           <Free />
+        </div>
+        <TrackSales />
+        <div className="max-w-[var(--container-width)] m-auto space-y-20 md:space-y-40">
           <AllYourAttendees />
           <Grid />
         </div>
