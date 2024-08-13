@@ -9,7 +9,7 @@ import TrackSales from "@/components/landing-page/TrackSales";
 export default function Page() {
   return (
     <main>
-      <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] mx-[-16px]">
+      <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] mx-[-3%]">
         <Hero />
       </div>
       <FeaturedEvents />

@@ -70,7 +70,7 @@ export default function Hero() {
             href="/events"
             className="w-fit flex items-center space-x-1 md:space-x-2 group self-center"
           >
-            <Button className="text-black bg-transparent border-2">
+            <Button className="text-black bg-transparent border-2 border-black">
               <p className="text mr-1">Browse Events</p>
               <LucideArrowUpRight
                 size={30}
