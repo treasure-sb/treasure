@@ -15,7 +15,6 @@ export default function Page() {
       <div id="featured-events">
         <FeaturedEvents />
       </div>
-
       <div className="w-full py-6 mt:20 md:mt-40 space-y-20 md:space-y-40">
         <div className="max-w-[var(--container-width)] m-auto">
           <Free />

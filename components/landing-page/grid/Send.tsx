@@ -4,8 +4,8 @@ import Link from "next/link";
 export default function Send() {
   return (
     <div className="col-span-1 bg-[#ACF2D6] dark:bg-green-600 p-6 lg:p-10 rounded-2xl flex flex-col justify-between ">
-      <p className="text-2xl font-semibold lg:text-4xl 2xl:text-5xl">
-        Send Unlimited Texts & Emails
+      <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem]">
+        Send Unlimited Free Texts & Emails
       </p>
       <div className="flex flex-row my-8">
         <div className="bg-gray-900 border-2 border-slate-300 p-4 rounded-2xl text-sm text-muted-foreground">
