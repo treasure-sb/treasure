@@ -3,6 +3,7 @@ import Hero from "@/components/landing-page/Hero";
 import Grid from "@/components/landing-page/grid/Grid";
 import AllYourAttendees from "@/components/landing-page/AllYourAttendees";
 import Footer from "@/components/shared/Footer";
+import Free from "@/components/landing-page/Free";
 
 export default function Page() {
   return (
@@ -13,6 +14,7 @@ export default function Page() {
       <FeaturedEvents />
       <div className="w-full py-6 mt:24 md:mt-60">
         <div className="max-w-[var(--container-width)] m-auto space-y-20 md:space-y-40">
+          <Free />
           <AllYourAttendees />
           <Grid />
         </div>
