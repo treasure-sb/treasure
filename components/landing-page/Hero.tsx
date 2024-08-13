@@ -37,19 +37,19 @@ export default function Hero() {
     }
   };
   return (
-    <section className="h-[100vh]  lg: mt-[-6.5%] justify-end relative max-w-[var(--container-width)] mx-auto flex flex-col-reverse lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
+    <section className="h-[100vh]  mt-[-19.5%] md:mt-[-6.5%] justify-end relative max-w-[var(--container-width)] mx-auto flex flex-col-reverse lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
       {/* Your existing Hero content */}
 
       <div className="text-center flex flex-col space-y-6 tracking-tight max-h-[50%] md:max-h-full md:my-auto">
-        <p className="text-4xl text-black font-semibold lg:text-8xl lg:max-w-6xl">
+        <p className="text-4xl text-black font-semibold lg:text-8xl lg:max-w-6xl md:text-2xl">
           Find More Hobby Events You Love{" "}
           <span className="text-[#2AAA88]">Every Weekend</span>
         </p>
-        <p className="text-black font-semibold text-center text-sm">
+        <p className="text-black font-semibold text-center text-md">
           Join the #1 community for card shows and hobby events. <br />
           We make getting tickets and tables easy.
         </p>
-        <div className="flex flex-row justify-evenly">
+        <div className="flex flex-row justify-center gap-8">
           <Link
             href="/login?redirect=/home"
             className="w-fit flex items-center space-x-1 md:space-x-2 group self-center"
@@ -95,7 +95,7 @@ export default function Hero() {
       </div>
       <div className="w-[50%] h-full hidden lg:block">
         <Image
-          className="w-full h-full object-fit rounded-md object-center"
+          className="w-full h-full object-fit rounded-md object-center md:hidden lg:block"
           quality={100}
           priority
           src="/static/landing-page/Hero Image.png"
@@ -112,7 +112,7 @@ export default function Hero() {
       </div>
       <div className="h-fit lg:hidden">
         <Image
-          className="h-fit object-top object-contain mt-14"
+          className="h-fit object-top object-contain mt-14 md:hidden lg:block"
           quality={100}
           src="/static/landing-page/Hero Image.png"
           priority
