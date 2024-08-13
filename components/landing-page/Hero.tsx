@@ -37,10 +37,10 @@ export default function Hero() {
     }
   };
   return (
-    <section className="h-[100vh] mt-[-80px] justify-end relative max-w-[var(--container-width)] mx-auto flex flex-col-reverse lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
+    <section className="h-[100vh]  lg: mt-[-6.5%] justify-end relative max-w-[var(--container-width)] mx-auto flex flex-col-reverse lg:flex-row lg:space-x-10 lg:space-y-0 lg:items-end overflow-hidden">
       {/* Your existing Hero content */}
 
-      <div className="text-center flex flex-col space-y-6 tracking-tight max-h-[50%]">
+      <div className="text-center flex flex-col space-y-6 tracking-tight max-h-[50%] md:max-h-full md:my-auto">
         <p className="text-4xl text-black font-semibold lg:text-8xl lg:max-w-6xl">
           Find More Hobby Events You Love{" "}
           <span className="text-[#2AAA88]">Every Weekend</span>
@@ -51,11 +51,11 @@ export default function Hero() {
         </p>
         <div className="flex flex-row justify-evenly">
           <Link
-            href="/events"
+            href="/login?redirect=/home"
             className="w-fit flex items-center space-x-1 md:space-x-2 group self-center"
           >
             <Button className="text-white">
-              <p className="mr-1">Create Your Event</p>
+              <p className="mr-1">Get Started Now</p>
               <LucideArrowUpRight
                 size={30}
                 className="text-white hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
@@ -74,7 +74,7 @@ export default function Hero() {
               <p className="text mr-1">Browse Events</p>
               <LucideArrowUpRight
                 size={30}
-                className="text-white hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
+                className="text-black hidden lg:block group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300 group-hover:text-primary/80"
               />
               <LucideArrowUpRight
                 size={20}
@@ -95,7 +95,7 @@ export default function Hero() {
       </div>
       <div className="w-[50%] h-full hidden lg:block">
         <Image
-          className="w-full h-full object-contain rounded-md object-center"
+          className="w-full h-full object-fit rounded-md object-center"
           quality={100}
           priority
           src="/static/landing-page/Hero Image.png"
