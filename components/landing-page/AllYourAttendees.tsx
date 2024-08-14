@@ -1,12 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import LandingButton from "./LandingButton";
 
 export default function AllYourAttendees() {
   return (
-    <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between p-6 lg:p-10">
-      <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4 lg:py-12">
+    <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between">
+      <div className="flex flex-col justify-between lg:w-1/2 lg:pr-20 space-y-4 lg:py-12">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl">
           All Your Attendees & Vendors in One Place
         </p>
@@ -29,7 +27,7 @@ export default function AllYourAttendees() {
         </div>
       </div>
       <Image
-        className="w-full h-auto md:w-3/4 lg:w-1/2 2xl:w-[36rem] rounded-2xl object-contain mb-10 md:ml-auto"
+        className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] rounded-2xl object-contain mb-10 md:ml-auto"
         quality={100}
         priority
         src="/static/landing-page/attendees.png"

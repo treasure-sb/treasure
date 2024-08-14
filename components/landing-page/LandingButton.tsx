@@ -16,7 +16,7 @@ export default function LandingButton({
   return (
     <Button className={className} variant={variant} size={"landing"} asChild>
       <Link
-        className="flex items-center space-x-1 group text-xs md:text-xl"
+        className="flex items-center space-x-1 group text-xs md:text-base"
         href={href}
       >
         <p>{text}</p>
