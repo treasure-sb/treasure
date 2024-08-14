@@ -1,11 +1,9 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import LandingButton from "../LandingButton";
 
 export default function Send() {
   return (
     <div className="col-span-1 bg-[#ACF2D6] dark:bg-green-600 p-6 lg:p-10 rounded-2xl flex flex-col justify-between ">
-      <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem]">
+      <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">
         Send Unlimited Free Texts & Emails
       </p>
       <div className="flex flex-row my-8">

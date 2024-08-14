@@ -15,7 +15,7 @@ export default function TrackSales() {
           width={600}
           height={600}
         />
-        <div className="flex flex-col justify-between items-start md:items-end lg:items-start lg:w-1/2 lg:pl-20 space-y-4 lg:py-12">
+        <div className="flex flex-col justify-between items-start md:items-end lg:items-start lg:w-1/2 lg:pl-20 space-y-4">
           <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl text-left">
             Track Sales & Get Paid Daily
           </p>

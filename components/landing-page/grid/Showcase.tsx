@@ -5,13 +5,14 @@ export default function Showcase() {
   return (
     <div className="col-span-1 flex flex-col-reverse lg:col-span-3 lg:flex-row bg-[#7DD9E8] dark:bg-blue-400 p-6 lg:p-10 rounded-2xl overflow-hidden">
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4">
-        <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem]">
+        <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">
           Showcase Your Vendors & Special Guests
         </p>
         <div className="space-y-4">
           <p className="text-sm lg:text-base 2xl:text-2xl">
-            Send invites and event updates to re-engage customers directly from
-            your dashboard. Create custom groups by event category & attendance.
+            Automatically promote vendors that sign up on Treasure with their
+            social links and photos. Add guests in just a few clicks. Make it
+            easy for attendees to preview programing ahead of time.
           </p>
           <LandingButton
             variant="tertiary"
