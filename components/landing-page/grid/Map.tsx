@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import LandingButton from "../LandingButton";
 
 export default function Map() {
   return (
@@ -13,15 +12,11 @@ export default function Map() {
           <p className="text-sm lg:text-base 2xl:text-2xl">
             Assign vendors to specific locations and attractions on your event.
           </p>
-          <Button
-            className="bg-[#7DD9E8] hover:bg-[#7DD9E8]/60"
-            size={"landing"}
-            asChild
-          >
-            <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-              Create Your Event
-            </Link>
-          </Button>
+          <LandingButton
+            className="bg-[#7DD9E8] hover:bg-[#7DD9E8]/90"
+            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+            text="Create Your Event"
+          />
         </div>
       </div>
       <div className="lg:w-1/2 mb-10 lg:mb-0">

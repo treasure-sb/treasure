@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import LandingButton from "./LandingButton";
 
 export default function AllYourAttendees() {
   return (
@@ -14,11 +15,17 @@ export default function AllYourAttendees() {
             Send invites and event updates to re-engage customers directly from
             your dashboard. Create custom groups by event category & attendance.
           </p>
-          <Button size={"landing"} asChild>
-            <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-              Create Your Event
-            </Link>
-          </Button>
+          <div className="flex space-x-4">
+            <LandingButton
+              href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+              text="Create Your Event"
+            />
+            <LandingButton
+              href="/events"
+              text="Browse Events"
+              variant={"outline"}
+            />
+          </div>
         </div>
       </div>
       <Image

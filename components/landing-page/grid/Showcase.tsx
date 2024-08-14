@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import LandingButton from "../LandingButton";
 
 export default function Showcase() {
   return (
@@ -14,11 +15,11 @@ export default function Showcase() {
             Send invites and event updates to re-engage customers directly from
             your dashboard. Create custom groups by event category & attendance.
           </p>
-          <Button variant={"tertiary"} size={"landing"} asChild>
-            <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-              Create Your Event
-            </Link>
-          </Button>
+          <LandingButton
+            variant="tertiary"
+            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+            text="Create Your Event"
+          />
         </div>
       </div>
       <div className="w-fit mb-10 lg:mb-0 flex items-center justify-center mx-auto relative">

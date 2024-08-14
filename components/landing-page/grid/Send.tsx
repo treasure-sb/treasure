@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import LandingButton from "../LandingButton";
 
 export default function Send() {
   return (
@@ -19,11 +20,10 @@ export default function Send() {
           Most emails don’t get opened. Send texts with emails to best re-engage
           customers.
         </p>
-        <Button size={"landing"} asChild>
-          <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-            Create Your Event
-          </Link>
-        </Button>
+        <LandingButton
+          href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+          text="Create Your Event"
+        />
       </div>
     </div>
   );

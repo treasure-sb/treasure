@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import LandingButton from "./LandingButton";
 
 export default function TrackSales() {
   return (
@@ -25,11 +26,17 @@ export default function TrackSales() {
               Sell tickets and charge vendors the moment you start promoting
               your event. Get access to more funds well in advance.
             </p>
-            <Button variant={"tertiary"} size={"landing"} asChild>
-              <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-                Create Your Event
-              </Link>
-            </Button>
+            <div className="flex space-x-4">
+              <LandingButton
+                href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+                text="Create Your Event"
+              />
+              <LandingButton
+                href="/events"
+                text="Browse Events"
+                variant={"outline"}
+              />
+            </div>
           </div>
         </div>
       </div>
