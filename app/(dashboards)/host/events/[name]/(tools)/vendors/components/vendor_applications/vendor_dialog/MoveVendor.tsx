@@ -119,7 +119,7 @@ export default function MoveVendor({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="text-left ">
-                      {events.map((event: any) => (
+                      {events.map((event) => (
                         <SelectItem className="text-left" value={event.id}>
                           <p>{event.name}</p>
                         </SelectItem>

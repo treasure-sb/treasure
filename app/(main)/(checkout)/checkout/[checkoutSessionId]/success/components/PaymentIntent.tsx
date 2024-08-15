@@ -111,9 +111,6 @@ export default function PaymentIntent({
                   <p className="font-semibold text-lg md:text-2xl">
                     {eventDisplay.name}
                   </p>
-                  {/* <p className="text-md md:text-lg">
-                    {moment(eventDisplay.date).format("dddd, MMM Do")}
-                  </p> */}
                 </div>
                 {status === "failure" && (
                   <Link href={`/checkout/${checkoutSessionId}`}>
@@ -154,10 +151,9 @@ export default function PaymentIntent({
                       />
                     </div>
                   </div>
-
                   <div className="flex justify-center">
                     <Link href="/profile/tickets">
-                      <Button className="rounded-full w-32 md:w-40">
+                      <Button className="rounded-sm w-32 md:w-40">
                         View {isTicket ? "Tickets" : "Tables"}
                       </Button>
                     </Link>
