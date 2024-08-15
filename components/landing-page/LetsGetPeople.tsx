@@ -3,7 +3,7 @@ import LandingButton from "./LandingButton";
 
 export default function LetsGetPeople() {
   return (
-    <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between p-6 lg:p-10">
+    <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between">
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-20 space-y-4">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl">
           Let's Get People Out More
