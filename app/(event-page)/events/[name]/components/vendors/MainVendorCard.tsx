@@ -46,17 +46,16 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
                 ? vendor.businessName
                 : vendor.firstName + " " + vendor.lastName}{" "}
               {vendor.type === VendorTypes.PROFILE && (
-              <Link
-                href={`/${vendor.username}`}
-                className="text-xs flex items-center space-x-1"
-              >
-                <p>Full Profile</p>
-                <ArrowUpRight size={12} />
-              </Link>
-            )}
+                <Link
+                  href={`/u/${vendor.username}`}
+                  className="text-xs flex items-center space-x-1"
+                >
+                  <p>Full Profile</p>
+                  <ArrowUpRight size={12} />
+                </Link>
+              )}
             </DialogTitle>
             <DialogDescription>{vendor.bio}</DialogDescription>
-            
           </DialogHeader>
           <div className="flex space-x-4">
             <Avatar className="h-32 w-32">
@@ -125,7 +124,7 @@ export default function MainVendorCard({ vendor }: { vendor: Vendor }) {
         <DrawerHeader className="text-left">
           {vendor.type === VendorTypes.PROFILE && (
             <Link
-              href={`/${vendor.username}`}
+              href={`/u/${vendor.username}`}
               className="text-xs flex items-center space-x-1 ml-auto"
             >
               <p>Full Profile</p>

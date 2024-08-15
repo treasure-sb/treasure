@@ -6,7 +6,7 @@ export default function HeaderAvatar() {
   const { profile, publicUrl } = useProfile();
 
   return profile ? (
-    <Link href={`/${profile?.username}`}>
+    <Link href={`/u/${profile?.username}`}>
       {profile?.avatar_url && (
         <Avatar className="h-14 w-14">
           <AvatarImage src={publicUrl} />

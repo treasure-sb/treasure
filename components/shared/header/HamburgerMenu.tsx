@@ -75,7 +75,7 @@ export default function HamburgerMenu({
     },
     { href: "/profile", text: "Settings", Icon: Settings, handleOpen },
     {
-      href: "/host/events",
+      href: "/host",
       text: "Host Dashboard",
       Icon: LayoutDashboardIcon,
       handleOpen,
@@ -112,7 +112,7 @@ export default function HamburgerMenu({
                 transition={{ delay: 0.3, duration: 0.4 }}
                 onClick={() => setOpen(false)}
               >
-                <Link href={`/${profile.username}`} className="rounded-full">
+                <Link href={`/u/${profile.username}`} className="rounded-full">
                   <Avatar className="h-20 w-20">
                     <AvatarImage src={profilePublicUrl} />
                     <AvatarFallback>

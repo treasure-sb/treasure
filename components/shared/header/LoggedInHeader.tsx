@@ -58,7 +58,7 @@ export default async function LoggedInHeader({
     { href: "/tickets", text: "Tickets", Icon: TicketIcon },
     { href: "/profile", text: "Profile", Icon: User2Icon },
     { href: "/settings", text: "Settings", Icon: Settings },
-    { href: "/dashboard", text: "Dashboard", Icon: LayoutDashboardIcon },
+    { href: "/host", text: "Host Dashboard", Icon: LayoutDashboardIcon },
   ];
 
   return (

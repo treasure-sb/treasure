@@ -6,7 +6,7 @@ export default function CopyProfileLink({ username }: { username: string }) {
   const handleCopy = async () => {
     const naviagtorCopy = async () => {
       try {
-        const inviteLink = `${window.location.origin}/${username}`;
+        const inviteLink = `${window.location.origin}/u/${username}`;
         setTimeout(() => {
           navigator.clipboard.writeText(inviteLink);
         }, 0);
