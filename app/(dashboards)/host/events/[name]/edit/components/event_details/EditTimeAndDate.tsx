@@ -62,9 +62,9 @@ export default function EditTimeAndDate({
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value
+                      {/* {field.value
                         ? format(field.value, "PPP")
-                        : format(new Date(event.date), "PPP")}
+                        : format(new Date(event.date), "PPP")} */}
                       <CalendarDays className="stroke-1" />
                     </Button>
                   </FormControl>

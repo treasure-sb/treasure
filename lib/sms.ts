@@ -7,7 +7,7 @@ type HostSoldPayload = {
   firstName: string | null;
   lastName: string | null;
   eventName: string;
-  eventDate: string;
+  eventDate: string | undefined;
   eventCleanedName: string;
   quantity?: number;
 };

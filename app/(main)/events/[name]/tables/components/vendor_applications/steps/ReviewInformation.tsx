@@ -139,7 +139,7 @@ export default function ReviewInformation() {
       tableType: table.section_name,
       quantity: tableQuantity,
       location: event.address,
-      date: event.date,
+      date: undefined,
       guestName: `${vendorInfo.firstName} ${vendorInfo.lastName}`,
       businessName: vendorInfo.businessName,
       itemInventory: inventory,

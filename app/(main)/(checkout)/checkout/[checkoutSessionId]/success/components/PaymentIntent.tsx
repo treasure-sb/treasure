@@ -111,9 +111,9 @@ export default function PaymentIntent({
                   <p className="font-semibold text-lg md:text-2xl">
                     {eventDisplay.name}
                   </p>
-                  <p className="text-md md:text-lg">
+                  {/* <p className="text-md md:text-lg">
                     {moment(eventDisplay.date).format("dddd, MMM Do")}
-                  </p>
+                  </p> */}
                 </div>
                 {status === "failure" && (
                   <Link href={`/checkout/${checkoutSessionId}`}>

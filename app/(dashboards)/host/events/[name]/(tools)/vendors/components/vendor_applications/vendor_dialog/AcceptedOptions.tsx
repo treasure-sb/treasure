@@ -36,7 +36,7 @@ export default function AcceptedOptions({
     {
       name: eventData.name,
       id: eventData.id,
-      date: eventData.date,
+      date: "",
       tables: [
         {
           section_name: vendorData.table.section_name,
