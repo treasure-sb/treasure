@@ -19,9 +19,7 @@ const sendAttendeeTicketPurchasedSMS = async (
 ) => {
   return await sendSMS(
     phone,
-    `🙌 You’re going to ${eventName} on ${moment(eventDate).format(
-      "dddd, MMM Do"
-    )}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
+    `🙌 You’re going to ${eventName} on ${eventDate}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
   );
 };
 
@@ -117,9 +115,7 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
       !businessName ? `${firstName} ${lastName}` : businessName
     } just bought ${
       quantity && quantity > 1 ? `${quantity} tickets` : `a ticket`
-    } to ${eventName} on ${moment(eventDate).format(
-      "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
+    } to ${eventName} on ${eventDate}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
 };
 

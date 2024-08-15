@@ -94,13 +94,23 @@ const handleTicketPurchase = async (
   const {
     event_address,
     event_cleaned_name,
-    event_date,
+    event_dates,
     event_description,
     event_name,
     event_poster_url,
     event_ticket_ids,
     ticket_name,
   } = data[0];
+
+  let formattedEventDate: string = "";
+
+  event_dates.map((date, i) => {
+    if (event_dates.length === i + 1) {
+      formattedEventDate += moment(date).format("dddd, MMM Do");
+    } else {
+      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
+    }
+  });
 
   const { profile } = await getProfile(user_id);
   const purchasedTicketId =
@@ -113,7 +123,7 @@ const handleTicketPurchase = async (
     ticketType: ticket_name,
     quantity: quantity,
     location: event_address,
-    date: moment(event_date).format("dddd, MMM Do"),
+    date: formattedEventDate,
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${amountPaid}`,
     eventInfo: event_description,
@@ -132,7 +142,11 @@ const handleTicketPurchase = async (
   }
 
   if (profile.phone) {
-    await sendAttendeeTicketPurchasedSMS(profile.phone, event_name, event_date);
+    await sendAttendeeTicketPurchasedSMS(
+      profile.phone,
+      event_name,
+      formattedEventDate
+    );
   }
 
   const { data: teamData } = await supabase
@@ -153,7 +167,7 @@ const handleTicketPurchase = async (
       firstName: profile.first_name,
       lastName: profile.last_name,
       eventName: event_name,
-      eventDate: event_date,
+      eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
       quantity: quantity,
     };
@@ -176,8 +190,6 @@ const handleTablePurchase = async (
   supabase: SupabaseClient<any, "public", any>
 ) => {
   const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
-
-  console.log("Table Purchase", checkoutSession, amountPaid);
 
   const { data, error } = await supabase
     .rpc("purchase_table", {

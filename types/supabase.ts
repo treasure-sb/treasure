@@ -532,7 +532,6 @@ export type Database = {
           event_id: string
           id: string
           ticket_id: string
-          valid: boolean
         }
         Insert: {
           attendee_id: string
@@ -541,7 +540,6 @@ export type Database = {
           event_id: string
           id?: string
           ticket_id: string
-          valid?: boolean
         }
         Update: {
           attendee_id?: string
@@ -550,7 +548,6 @@ export type Database = {
           event_id?: string
           id?: string
           ticket_id?: string
-          valid?: boolean
         }
         Relationships: [
           {
@@ -763,9 +760,7 @@ export type Database = {
           city: string
           cleaned_name: string
           created_at: string
-          date: string
           description: string
-          end_time: string
           featured: number
           id: string
           lat: number
@@ -777,7 +772,6 @@ export type Database = {
           organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
-          start_time: string
           state: string
           vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url: string | null
@@ -788,9 +782,7 @@ export type Database = {
           city?: string
           cleaned_name: string
           created_at?: string
-          date: string
           description: string
-          end_time: string
           featured?: number
           id?: string
           lat: number
@@ -802,7 +794,6 @@ export type Database = {
           organizer_type?: string
           poster_url: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
-          start_time: string
           state?: string
           vendor_exclusivity?: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url?: string | null
@@ -813,9 +804,7 @@ export type Database = {
           city?: string
           cleaned_name?: string
           created_at?: string
-          date?: string
           description?: string
-          end_time?: string
           featured?: number
           id?: string
           lat?: number
@@ -827,7 +816,6 @@ export type Database = {
           organizer_type?: string
           poster_url?: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
-          start_time?: string
           state?: string
           vendor_exclusivity?: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url?: string | null
@@ -1455,9 +1443,7 @@ export type Database = {
           city: string
           cleaned_name: string
           created_at: string
-          date: string
           description: string
-          end_time: string
           featured: number
           id: string
           lat: number
@@ -1469,7 +1455,6 @@ export type Database = {
           organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
-          start_time: string
           state: string
           vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url: string | null
@@ -1488,9 +1473,7 @@ export type Database = {
           city: string
           cleaned_name: string
           created_at: string
-          date: string
           description: string
-          end_time: string
           featured: number
           id: string
           lat: number
@@ -1502,7 +1485,6 @@ export type Database = {
           organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
-          start_time: string
           state: string
           vendor_exclusivity: Database["public"]["Enums"]["Vendor Exclusivity"]
           venue_map_url: string | null
@@ -1569,7 +1551,7 @@ export type Database = {
           order_id: number
           event_ticket_ids: string[]
           event_name: string
-          event_date: string
+          event_dates: string[]
           event_address: string
           event_description: string
           event_cleaned_name: string
