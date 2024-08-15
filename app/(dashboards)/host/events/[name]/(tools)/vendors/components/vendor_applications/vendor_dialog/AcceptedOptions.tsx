@@ -15,7 +15,7 @@ import MoveVendor from "./MoveVendor";
 export type EventsInfo = {
   name: string;
   id: string;
-  date: string;
+  dates: { date: string; start_time: string; end_time: string }[];
   tables: { id: string; section_name: string }[];
 };
 
@@ -36,7 +36,7 @@ export default function AcceptedOptions({
     {
       name: eventData.name,
       id: eventData.id,
-      date: "",
+      dates: eventData.dates,
       tables: [
         {
           section_name: vendorData.table.section_name,
@@ -141,7 +141,9 @@ export default function AcceptedOptions({
   const moveVendors = async () => {
     const { data: eventsData, error } = await supabase
       .from("events")
-      .select("id, name, date, tables(id, section_name)");
+      .select(
+        "id, name, dates:event_dates(date, start_time, end_time), tables(id, section_name)"
+      );
 
     setEvents(eventsData as EventsInfo[]);
     setViewMoveVender(true);
