@@ -216,10 +216,7 @@ BEGIN
             created_at,
             name,
             description,
-            start_time,
-            end_time,
             poster_url,
-            date,
             address,
             lng,
             lat,
@@ -247,10 +244,8 @@ BEGIN
 						- Grading Services: On-site professional grading by PSA and BGS.
 
 						Grab your tickets now and be part of this unforgettable celebration of sports history and collectibles!',
-            '10:00:00',
-            '18:00:00',
+            
             'poster' || (floor(random() * 4 + 1)::int)::text || '.jpg',
-            future_date,
             'NYC Address ' || i,
             event_lng,
             event_lat,
