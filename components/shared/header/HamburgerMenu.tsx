@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
+import { LucideIcon, MenuIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
   CalendarSearch,
@@ -21,6 +21,36 @@ import {
   LayoutDashboardIcon,
 } from "lucide-react";
 import Link from "next/link";
+
+type SheetLinkProps = {
+  href: string;
+  text: string;
+  Icon: LucideIcon;
+  handleOpen: () => void;
+};
+
+const animationVariants = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+};
+
+const SheetLink = ({ href, text, Icon, handleOpen }: SheetLinkProps) => {
+  return (
+    <motion.div
+      variants={animationVariants}
+      initial="initial"
+      animate="animate"
+      transition={{ delay: 0.4, duration: 0.4 }}
+      onClick={handleOpen}
+      className="group"
+    >
+      <Link href={href} className="text-xl flex items-center space-x-3">
+        <Icon />
+        <p>{text}</p>
+      </Link>
+    </motion.div>
+  );
+};
 
 export default function HamburgerMenu({
   profile,
@@ -32,10 +62,25 @@ export default function HamburgerMenu({
   isEventPage?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const animationVariants = {
-    initial: { opacity: 0, y: 8 },
-    animate: { opacity: 1, y: 0 },
-  };
+
+  const handleOpen = () => setOpen(false);
+
+  const sheetLinks = [
+    { href: "/profile/tickets", text: "Tickets", Icon: TicketIcon, handleOpen },
+    {
+      href: `/u/${profile.username}`,
+      text: "Profile",
+      Icon: User2Icon,
+      handleOpen,
+    },
+    { href: "/profile", text: "Settings", Icon: Settings, handleOpen },
+    {
+      href: "/host/events",
+      text: "Host Dashboard",
+      Icon: LayoutDashboardIcon,
+      handleOpen,
+    },
+  ];
 
   return (
     <div className="block md:hidden ml-auto">
@@ -89,88 +134,22 @@ export default function HamburgerMenu({
           </motion.div>
           <div className="flex flex-col space-y-8 w-full">
             {!isEventPage && (
-              <motion.div
-                variants={animationVariants}
-                initial="initial"
-                animate="animate"
-                transition={{ delay: 0.4, duration: 0.4 }}
-                onClick={() => setOpen(false)}
-                className="group"
-              >
-                <Link
-                  href="/events"
-                  className="text-xl flex items-center space-x-3"
-                >
-                  <CalendarSearch />
-                  <p>Events</p>
-                </Link>
-              </motion.div>
+              <SheetLink
+                href="/events"
+                text="Events"
+                handleOpen={handleOpen}
+                Icon={CalendarSearch}
+              />
             )}
-            <motion.div
-              variants={animationVariants}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: 0.4, duration: 0.4 }}
-              onClick={() => setOpen(false)}
-              className="group"
-            >
-              <Link
-                href="/profile/tickets"
-                className="text-xl flex items-center space-x-3"
-              >
-                <TicketIcon />
-                <p>Tickets</p>
-              </Link>
-            </motion.div>
-            <motion.div
-              variants={animationVariants}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: 0.4, duration: 0.4 }}
-              onClick={() => setOpen(false)}
-              className="group"
-            >
-              <Link
-                href={`/${profile.username}`}
-                className="text-xl flex items-center space-x-3"
-              >
-                <User2Icon />
-                <p>Profile</p>
-              </Link>
-            </motion.div>
-            <motion.div
-              variants={animationVariants}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: 0.4, duration: 0.4 }}
-              onClick={() => setOpen(false)}
-              className="group"
-            >
-              <Link
-                href="/profile"
-                className="text-xl flex items-center space-x-3"
-              >
-                <Settings />
-                <p>Settings</p>
-              </Link>
-            </motion.div>
-
-            <motion.div
-              variants={animationVariants}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: 0.4, duration: 0.4 }}
-              onClick={() => setOpen(false)}
-              className="group"
-            >
-              <Link
-                href="/host/events"
-                className="text-xl flex items-center space-x-3"
-              >
-                <LayoutDashboardIcon />
-                <p>Host Dashboard</p>
-              </Link>
-            </motion.div>
+            {sheetLinks.map(({ href, text, Icon, handleOpen }) => (
+              <SheetLink
+                key={text}
+                href={href}
+                text={text}
+                Icon={Icon}
+                handleOpen={handleOpen}
+              />
+            ))}
           </div>
         </SheetContent>
       </Sheet>
