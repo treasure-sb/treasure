@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { profile: loggedInProfile } = await getProfile(user.id);
 
   if (loggedInProfile.role !== "admin") {
-    redirect(`/${username}`);
+    redirect(`/u/${username}`);
   }
 
   const { profile: profileToEdit, error } = await getProfileByUsername(
