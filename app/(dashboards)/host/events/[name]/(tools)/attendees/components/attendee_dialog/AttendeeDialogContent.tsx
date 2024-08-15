@@ -13,16 +13,17 @@ import { Tables } from "@/types/supabase";
 import { Key } from "react";
 import React from "react";
 import { EventWithDates } from "@/types/event";
+import { formatDate } from "@/lib/utils";
 
 type TicketFetchData = {
   id: string;
-  valid: boolean;
   tickets: { name: string };
+  event_tickets_dates: { valid: boolean; event_dates: { date: string } }[];
 };
 
 type FormattedTicket = {
   ticketId: string;
-  valid: boolean;
+  event_tickets_dates: { valid: boolean; date: string }[];
 };
 
 export default function AttendeeDialogContent({
@@ -39,13 +40,15 @@ export default function AttendeeDialogContent({
   const { data, isLoading } = useQuery({
     queryKey: [attendeeData.id + "tickets"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("event_tickets")
-        .select("id, valid, tickets(name)")
+        .select(
+          "id, tickets(name), event_tickets_dates(valid, event_dates(date))"
+        )
         .eq("attendee_id", attendeeData.id)
         .eq("event_id", event.id)
         .returns<TicketFetchData[]>();
-
+      console.log(data, error);
       if (!data) return [];
       return data;
     },
@@ -57,15 +60,27 @@ export default function AttendeeDialogContent({
     if (acc.has(tickets.tickets.name)) {
       acc.set(tickets.tickets.name, [
         ...acc.get(tickets.tickets.name)!,
-        { ticketId: tickets.id, valid: tickets.valid },
+        {
+          ticketId: tickets.id,
+          event_tickets_dates: tickets.event_tickets_dates.map((etd) => {
+            return { valid: etd.valid, date: etd.event_dates.date };
+          }),
+        },
       ]);
     } else {
       acc.set(tickets.tickets.name, [
-        { ticketId: tickets.id, valid: tickets.valid },
+        {
+          ticketId: tickets.id,
+          event_tickets_dates: tickets.event_tickets_dates.map((etd) => {
+            return { valid: etd.valid, date: etd.event_dates.date };
+          }),
+        },
       ]);
     }
     return acc;
   }, new Map<string, FormattedTicket[]>());
+
+  console.log(formattedTicketData);
 
   let overallTicketCount = 0;
 
@@ -102,7 +117,7 @@ export default function AttendeeDialogContent({
       <div className="space-y-4">
         {Array.from(formattedTicketData).map(([ticketType, tickets], index) => (
           <div key={ticketType}>
-            <div className="space-y-2 bg-secondary/30 rounded-sm p-4 h-fit max-h-32 overflow-y-auto">
+            <div className="space-y-2 bg-secondary/30 rounded-sm p-4 h-fit max-h-32 sm:max-h-44 overflow-y-auto">
               <h4 className="font-semibold">{ticketType}</h4>
               <div className="space-y-4">
                 {tickets.map((ticket: FormattedTicket) => {
@@ -110,12 +125,27 @@ export default function AttendeeDialogContent({
                   return (
                     <div
                       key={ticket.ticketId}
-                      className="flex space-x-4 justify-between"
+                      className="flex flex-col space-x-4 justify-between"
                     >
                       <p>Ticket {overallTicketCount}</p>
-                      <p>
-                        {ticket.valid ? <NotScannedIcon /> : <ScannedIcon />}
-                      </p>
+                      <div className="flex flex-col gap-3 ">
+                        {ticket.event_tickets_dates.map((etd) => {
+                          return (
+                            <div className="flex w-full justify-between items-center">
+                              <p className="text-muted-foreground text-xs">
+                                {formatDate(etd.date)}
+                              </p>
+                              <p>
+                                {etd.valid ? (
+                                  <NotScannedIcon />
+                                ) : (
+                                  <ScannedIcon />
+                                )}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   );
                 })}

@@ -16,12 +16,26 @@ import {
   User2Icon,
   Settings,
   LayoutDashboardIcon,
+  LucideIcon,
 } from "lucide-react";
-import Image from "next/image";
 import HeaderStatic from "./HeaderStatic";
-import Logo from "@/components/icons/TreasureLogo";
-import { ThemeSwitch } from "./ThemeSwitch";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+
+type PopoverLinkProps = {
+  href: string;
+  text: string;
+  Icon: LucideIcon;
+};
+
+const PopoverLink = ({ href, text, Icon }: PopoverLinkProps) => (
+  <Link
+    className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
+    href={href}
+  >
+    <Icon className="stroke-1" />
+    <p>{text}</p>
+  </Link>
+);
 
 export default async function LoggedInHeader({
   user,
@@ -39,6 +53,13 @@ export default async function LoggedInHeader({
   } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
 
   const Header = useMotion ? HeaderMotion : HeaderStatic;
+
+  const popoverLinks = [
+    { href: "/tickets", text: "Tickets", Icon: TicketIcon },
+    { href: "/profile", text: "Profile", Icon: User2Icon },
+    { href: "/settings", text: "Settings", Icon: Settings },
+    { href: "/host", text: "Host Dashboard", Icon: LayoutDashboardIcon },
+  ];
 
   return (
     <Header>
@@ -83,35 +104,9 @@ export default async function LoggedInHeader({
             align="end"
             className="flex flex-col bg-slate-100 dark:bg-black mt-4 p-2 overflow-hidden"
           >
-            <Link
-              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
-              href="/profile/tickets"
-            >
-              <TicketIcon className="stroke-1" />
-              <p>Tickets</p>
-            </Link>
-            <Link
-              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
-              href={`/${profile.username}`}
-            >
-              <User2Icon className="stroke-1" />
-              <p>Profile</p>
-            </Link>
-            <Link
-              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
-              href="/profile"
-            >
-              <Settings className="stroke-1" />
-              <p>Settings</p>
-            </Link>
-            <Link
-              className="hover:text-primary duration-300 transition px-4 py-2 flex space-x-2"
-              href="/host"
-            >
-              <LayoutDashboardIcon className="stroke-1" />
-              <p>Host Dashboard</p>
-            </Link>
-            <ThemeSwitch />
+            {popoverLinks.map(({ href, text, Icon }) => (
+              <PopoverLink key={text} href={href} text={text} Icon={Icon} />
+            ))}
           </PopoverContent>
         </Popover>
       </div>

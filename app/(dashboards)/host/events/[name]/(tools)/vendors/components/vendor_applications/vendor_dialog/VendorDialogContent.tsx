@@ -74,7 +74,7 @@ export default function VendorDialogContent({
 
             <Link
               target="_blank"
-              href={`/${profile.username}`}
+              href={`/u/${profile.username}`}
               className="absolute right-2 bottom-2 text-xs underline decoration-primary"
             >
               Full Profile

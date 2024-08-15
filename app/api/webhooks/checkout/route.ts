@@ -94,13 +94,23 @@ const handleTicketPurchase = async (
   const {
     event_address,
     event_cleaned_name,
-    event_date,
+    event_dates,
     event_description,
     event_name,
     event_poster_url,
     event_ticket_ids,
     ticket_name,
   } = data[0];
+
+  let formattedEventDate: string = "";
+
+  event_dates.map((date, i) => {
+    if (event_dates.length === i + 1) {
+      formattedEventDate += moment(date).format("dddd, MMM Do");
+    } else {
+      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
+    }
+  });
 
   const { profile } = await getProfile(user_id);
   const purchasedTicketId =
@@ -113,7 +123,7 @@ const handleTicketPurchase = async (
     ticketType: ticket_name,
     quantity: quantity,
     location: event_address,
-    date: moment(event_date).format("dddd, MMM Do"),
+    date: formattedEventDate,
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${amountPaid}`,
     eventInfo: event_description,
@@ -132,7 +142,11 @@ const handleTicketPurchase = async (
   }
 
   if (profile.phone) {
-    await sendAttendeeTicketPurchasedSMS(profile.phone, event_name, event_date);
+    await sendAttendeeTicketPurchasedSMS(
+      profile.phone,
+      event_name,
+      formattedEventDate
+    );
   }
 
   const { data: teamData } = await supabase
@@ -153,7 +167,7 @@ const handleTicketPurchase = async (
       firstName: profile.first_name,
       lastName: profile.last_name,
       eventName: event_name,
-      eventDate: event_date,
+      eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
       quantity: quantity,
     };
@@ -196,7 +210,8 @@ const handleTablePurchase = async (
     event_name,
     event_address,
     event_cleaned_name,
-    event_date,
+    event_max_date,
+    event_min_date,
     event_description,
     event_poster_url,
     table_section_name,
@@ -209,6 +224,22 @@ const handleTablePurchase = async (
     vendor_application_email,
     vendor_application_phone,
   } = data[0];
+
+  let formattedEventDate: string = "";
+
+  const event_dates = [event_min_date, event_max_date];
+
+  if (event_min_date === event_max_date) {
+    event_dates.pop();
+  }
+
+  event_dates.map((date, i) => {
+    if (event_dates.length === i + 1) {
+      formattedEventDate += moment(date).format("dddd, MMM Do");
+    } else {
+      formattedEventDate += moment(date).format("dddd, MMM Do") + " - ";
+    }
+  });
 
   const {
     data: { publicUrl },
@@ -225,7 +256,7 @@ const handleTablePurchase = async (
     tableType: table_section_name,
     quantity: vendor_table_quantity,
     location: event_address,
-    date: moment(event_date).format("dddd, MMM Do"),
+    date: formattedEventDate,
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
@@ -242,7 +273,7 @@ const handleTablePurchase = async (
   await sendVendorTablePurchasedSMS(
     vendor_application_phone,
     event_name,
-    event_date
+    formattedEventDate
   );
 
   const { data: teamData } = await supabase
@@ -263,7 +294,7 @@ const handleTablePurchase = async (
       firstName: vendor_first_name,
       lastName: vendor_last_name,
       eventName: event_name,
-      eventDate: event_date,
+      eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);

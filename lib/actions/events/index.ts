@@ -91,6 +91,9 @@ const createEvent = async (values: EventForm) => {
         sales_status,
         poster_url,
         venue_map_url,
+        organizer_id: user!.id,
+        max_date: date,
+        min_date: date,
       },
     ])
     .select();
@@ -110,8 +113,8 @@ const createEvent = async (values: EventForm) => {
     const posterUrl = await getPublicPosterUrl(event);
     const eventPromises = [
       await createEventDate(event.id, date as Date, start_time, end_time),
-      await createTickets(values.tickets, event.id, event.name, posterUrl),
-      await createTableTicket(values.tables, event.id, event.name, posterUrl),
+      await createTickets(values.tickets, event.id),
+      await createTableTicket(values.tables, event.id),
       await createApplicationInfo(
         values.application_vendor_information,
         event.id
@@ -142,12 +145,7 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
   });
 };
 
-const createTickets = async (
-  tickets: EventFormTicket[],
-  event_id: string,
-  event_name: string,
-  poster_url: string
-) => {
+const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
   const supabase = await createSupabaseServerClient();
   const ticketsPromise = tickets.map(async (ticket) => {
     const { ticket_price, ticket_quantity, ticket_name } = ticket;
@@ -167,9 +165,7 @@ const createTickets = async (
 
 const createTableTicket = async (
   tables: EventFormTable[],
-  event_id: string,
-  event_name: string,
-  poster_url: string
+  event_id: string
 ) => {
   const supabase = await createSupabaseServerClient();
   const tablesPromise = tables.map(async (table) => {
@@ -270,10 +266,15 @@ type EditEvent = {
   name: string;
   description: string;
   venueName: string;
+  dates: EventDate[];
+} & EventLocation;
+
+type EventDate = {
+  id: string;
   date: Date;
   startTime: string;
   endTime: string;
-} & EventLocation;
+};
 
 type EventLocation = {
   address: string;
@@ -290,38 +291,56 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
     posterUrl,
     description,
     venueName,
-    date,
-    startTime,
-    endTime,
     address,
     lat,
     lng,
     city,
     state,
+    dates,
   } = editEventData;
 
-  const { error } = await supabase
-    .from("events")
-    .update({
-      name,
-      description,
-      date,
-      address,
-      lat,
-      lng,
-      city,
-      state,
-      venue_name: venueName,
-      start_time: startTime,
-      end_time: endTime,
-      poster_url: posterUrl,
-    })
-    .eq("id", eventId);
+  const { maxDate, minDate } = dates.reduce(
+    (acc, dates) => {
+      return {
+        maxDate: dates.date > acc.maxDate ? dates.date : acc.maxDate,
+        minDate: dates.date < acc.minDate ? dates.date : acc.minDate,
+      };
+    },
+    { maxDate: dates[0].date, minDate: dates[0].date }
+  );
 
-  await supabase.from("event_dates").delete().eq("event_id", eventId);
-  await createEventDate(eventId, date, startTime, endTime);
+  try {
+    const { error: updateError } = await supabase
+      .from("events")
+      .update({
+        name,
+        description,
+        address,
+        lat,
+        lng,
+        city,
+        state,
+        venue_name: venueName,
+        poster_url: posterUrl,
+        max_date: maxDate,
+        min_date: minDate,
+      })
+      .eq("id", eventId);
 
-  return { error };
+    if (updateError) {
+      throw updateError;
+    }
+
+    const dateUpdatePromises = dates.map((date) =>
+      editEventDate(date.id, date.date, date.startTime, date.endTime)
+    );
+
+    await Promise.all(dateUpdatePromises);
+
+    return { success: true, error: null };
+  } catch (error) {
+    return { success: false, error };
+  }
 };
 
 const createEventDate = async (
@@ -339,6 +358,24 @@ const createEventDate = async (
       end_time: endTime,
     },
   ]);
+  return { error };
+};
+
+const editEventDate = async (
+  dateId: string,
+  date: Date,
+  startTime: string,
+  endTime: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("event_dates")
+    .update({
+      date,
+      start_time: startTime,
+      end_time: endTime,
+    })
+    .eq("id", dateId);
   return { error };
 };
 
