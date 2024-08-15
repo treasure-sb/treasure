@@ -11,7 +11,7 @@ import Join from "@/components/landing-page/Join";
 export default function Page() {
   return (
     <main>
-      <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] to-[#E0FFF6] relative mx-[-16px] sm:mx-[-32px] max-w-[100vw]">
+      <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#84C6E2] from-[22%] via-[#84C6E2] via-[22%] to-[#fdf9f2] dark:to-[#141414] to-[70%] mx-[-16px] sm:mx-[-32px] mt-[-80px] md:-mt-28">
         <Hero />
       </div>
       <div id="featured-events">
