@@ -1,7 +1,21 @@
+"use client";
 import Image from "next/image";
 import LandingButton from "./LandingButton";
+import { useEffect, useRef } from "react";
+import { useAnimation, useInView, motion } from "framer-motion";
+import { customLandingEase } from "./Free";
 
 export default function LetsGetPeople() {
+  const imageRef = useRef(null);
+  const controls = useAnimation();
+  const isInView = useInView(imageRef, { once: true, amount: 0.5 });
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start({ opacity: 1, y: 0 });
+    }
+  }, [isInView, controls]);
+
   return (
     <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between">
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-20 space-y-4">
@@ -24,15 +38,23 @@ export default function LetsGetPeople() {
           </div>
         </div>
       </div>
-      <Image
-        className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] rounded-2xl object-contain mb-10 md:ml-auto"
-        quality={100}
-        priority
-        src="/static/landing-page/about_us.png"
-        alt="about us"
-        width={600}
-        height={600}
-      />
+      <motion.div
+        ref={imageRef}
+        initial={{ opacity: 0, y: 30 }}
+        animate={controls}
+        transition={{ duration: 1.25, ease: customLandingEase }}
+        className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] mb-10 md:ml-auto"
+      >
+        <Image
+          className="w-full h-full rounded-2xl object-contain"
+          quality={100}
+          priority
+          src="/static/landing-page/about_us.png"
+          alt="attendees"
+          width={600}
+          height={600}
+        />
+      </motion.div>
     </div>
   );
 }

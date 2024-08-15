@@ -1,20 +1,42 @@
+"use client";
 import Image from "next/image";
 import LandingButton from "./LandingButton";
+import { useEffect, useRef } from "react";
+import { useAnimation, useInView, motion } from "framer-motion";
+import { customLandingEase } from "./Free";
 
 export default function TrackSales() {
+  const imageRef = useRef(null);
+  const controls = useAnimation();
+  const isInView = useInView(imageRef, { once: true, amount: 0.5 });
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start({ opacity: 1, y: 0 });
+    }
+  }, [isInView, controls]);
+
   return (
     <div className="relative mx-[-16px] sm:mx-[-32px] py-16 overflow-hidden dark:text-background">
       <div className="absolute inset-0 bg-gradient-to-b from-[#F8E1BB] to-[#97DFFF]"></div>
       <div className="relative max-w-[var(--container-width)] m-auto flex flex-col lg:flex-row lg:justify-between p-6 lg:p-10">
-        <Image
-          className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] rounded-2xl object-contain mb-10"
-          quality={100}
-          priority
-          src="/static/landing-page/dashboard.png"
-          alt="host dashboard"
-          width={600}
-          height={600}
-        />
+        <motion.div
+          ref={imageRef}
+          initial={{ opacity: 0, y: 30 }}
+          animate={controls}
+          transition={{ duration: 1.25, ease: customLandingEase }}
+          className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] mb-10"
+        >
+          <Image
+            className="w-full h-full rounded-2xl object-contain"
+            quality={100}
+            priority
+            src="/static/landing-page/dashboard.png"
+            alt="attendees"
+            width={600}
+            height={600}
+          />
+        </motion.div>
         <div className="flex flex-col justify-between items-start md:items-end lg:items-start lg:w-1/2 lg:pl-20 space-y-4">
           <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl text-left">
             Track Sales & Get Paid Daily

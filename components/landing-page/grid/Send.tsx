@@ -1,8 +1,28 @@
+"use client";
 import LandingButton from "../LandingButton";
+import { useEffect, useRef } from "react";
+import { useAnimation, useInView, motion } from "framer-motion";
+import { customLandingEase } from "../Free";
 
 export default function Send() {
+  const containerRef = useRef(null);
+  const controls = useAnimation();
+  const isInView = useInView(containerRef, { once: true, amount: 0.5 });
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start({ opacity: 1, x: 0 });
+    }
+  }, [isInView, controls]);
+
   return (
-    <div className="col-span-1 bg-[#ACF2D6] dark:bg-green-600 p-6 lg:p-10 rounded-2xl flex flex-col justify-between ">
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, x: -30 }}
+      animate={controls}
+      transition={{ duration: 1.75, ease: customLandingEase }}
+      className="col-span-1 bg-[#ACF2D6] dark:bg-green-600 p-6 lg:p-10 rounded-2xl flex flex-col justify-between "
+    >
       <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">
         Send Unlimited Free Texts & Emails
       </p>
@@ -23,6 +43,6 @@ export default function Send() {
           text="Create Your Event"
         />
       </div>
-    </div>
+    </motion.div>
   );
 }

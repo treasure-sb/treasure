@@ -1,9 +1,29 @@
+"use client";
 import Image from "next/image";
 import LandingButton from "../LandingButton";
+import { useEffect, useRef } from "react";
+import { useAnimation, useInView, motion } from "framer-motion";
+import { customLandingEase } from "../Free";
 
-export default function Map() {
+export default function Send() {
+  const containerRef = useRef(null);
+  const controls = useAnimation();
+  const isInView = useInView(containerRef, { once: true, amount: 0.5 });
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start({ opacity: 1, x: 0 });
+    }
+  }, [isInView, controls]);
+
   return (
-    <div className="col-span-1 flex flex-col-reverse lg:col-span-2 lg:flex-row bg-[#F8D57E] dark:bg-tertiary p-6 lg:p-10 rounded-2xl">
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, x: 30 }}
+      animate={controls}
+      transition={{ duration: 1.75, ease: customLandingEase }}
+      className="col-span-1 flex flex-col-reverse lg:col-span-2 lg:flex-row bg-[#F8D57E] dark:bg-tertiary p-6 lg:p-10 rounded-2xl"
+    >
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">
           Map Your Vendors & Attractions
@@ -31,6 +51,6 @@ export default function Map() {
           height={600}
         />
       </div>
-    </div>
+    </motion.div>
   );
 }
