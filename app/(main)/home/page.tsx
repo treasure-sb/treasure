@@ -5,6 +5,8 @@ import AllYourAttendees from "@/components/landing-page/AllYourAttendees";
 import Footer from "@/components/shared/Footer";
 import Free from "@/components/landing-page/Free";
 import TrackSales from "@/components/landing-page/TrackSales";
+import LetsGetPeople from "@/components/landing-page/LetsGetPeople";
+import Join from "@/components/landing-page/Join";
 
 export default function Page() {
   return (
@@ -15,7 +17,6 @@ export default function Page() {
       <div id="featured-events">
         <FeaturedEvents />
       </div>
-
       <div className="w-full py-6 mt:20 md:mt-40 space-y-20 md:space-y-40">
         <div className="max-w-[var(--container-width)] m-auto">
           <Free />
@@ -24,7 +25,9 @@ export default function Page() {
         <div className="max-w-[var(--container-width)] m-auto space-y-20 md:space-y-40">
           <AllYourAttendees />
           <Grid />
+          <LetsGetPeople />
         </div>
+        <Join />
       </div>
       <Footer />
     </main>

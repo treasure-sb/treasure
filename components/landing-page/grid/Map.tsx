@@ -1,30 +1,26 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import LandingButton from "../LandingButton";
 
 export default function Map() {
   return (
     <div className="col-span-1 flex flex-col-reverse lg:col-span-2 lg:flex-row bg-[#F8D57E] dark:bg-tertiary p-6 lg:p-10 rounded-2xl">
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4">
-        <p className="text-2xl font-semibold lg:text-4xl 2xl:text-5xl">
+        <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">
           Map Your Vendors & Attractions
         </p>
         <div className="space-y-4">
           <p className="text-sm lg:text-base 2xl:text-2xl">
-            Assign vendors to specific locations and attractions on your event.
+            Create a custom map or upload your own. Assign vendors & attractions
+            for easy attendee discovery.
           </p>
-          <Button
-            className="bg-[#7DD9E8] hover:bg-[#7DD9E8]/60"
-            size={"landing"}
-            asChild
-          >
-            <Link href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i">
-              Create Your Event
-            </Link>
-          </Button>
+          <LandingButton
+            className="bg-[#7DD9E8] hover:bg-[#7DD9E8]/90"
+            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+            text="Create Your Event"
+          />
         </div>
       </div>
-      <div className="lg:w-1/2 mb-10 lg:mb-0">
+      <div className="lg:w-1/2 flex-1 mb-10 lg:mb-0 flex items-center lg:items-end">
         <Image
           className="w-full h-auto object-contain ml-6 lg:ml-10"
           quality={100}
