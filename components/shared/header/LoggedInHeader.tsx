@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 type PopoverLinkProps = {
   href: string;
@@ -107,6 +108,7 @@ export default async function LoggedInHeader({
             {popoverLinks.map(({ href, text, Icon }) => (
               <PopoverLink key={text} href={href} text={text} Icon={Icon} />
             ))}
+            <ThemeSwitch />
           </PopoverContent>
         </Popover>
       </div>

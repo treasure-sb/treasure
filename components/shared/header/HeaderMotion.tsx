@@ -22,9 +22,9 @@ export default function HeaderMotion({
   const borderOpacity = useTransform(scrollY, [0, 300], [0, 0.6]);
 
   const darkBackgroundColor = useMotionTemplate`rgba(18, 18, 18, ${backgroundOpacity})`;
-  const lightBackgroundColor = useMotionTemplate`rgba(255, 255, 255, ${backgroundOpacity})`;
+  const lightBackgroundColor = useMotionTemplate`rgba(253, 249, 242, ${backgroundOpacity})`;
 
-  const darkBorderColor = useMotionTemplate`rgba(255, 255, 255, ${borderOpacity})`;
+  const darkBorderColor = useMotionTemplate`rgba(253, 249, 242, ${borderOpacity})`;
   const lightBorderColor = useMotionTemplate`rgba(18, 18, 18, ${borderOpacity})`;
 
   useMotionValueEvent(scrollY, "change", (current) => {
