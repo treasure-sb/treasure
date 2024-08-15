@@ -1,7 +1,11 @@
 "use client";
 
 import { z } from "zod";
-import { EventDisplayData, EventWithDates } from "@/types/event";
+import {
+  EditEventDisplayData,
+  EventDisplayData,
+  EventWithDates,
+} from "@/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -21,7 +25,6 @@ import { EditEvent, EventLocation, updateEvent } from "@/lib/actions/events";
 import { useRouter } from "next/navigation";
 import { Tables } from "@/types/supabase";
 import EventPoster from "@/components/events/shared/EventPoster";
-import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
 import EditLocation from "./EditLocation";
 import EditTimeAndDate from "./EditTimeAndDate";
 import EditTags from "./tags/EditTags";
@@ -60,6 +63,19 @@ const replacePoster = async (posterUrl: string, newPosterFile: File) => {
   return { data: data.path, error: removeError };
 };
 
+const dateSchema = z.object({
+  id: z.string().min(1),
+  date: z.date({
+    required_error: "Date is required",
+  }),
+  startTime: z.string().refine((value) => isValidTime(value), {
+    message: "Must be a valid time (HH:mm)",
+  }),
+  endTime: z.string().refine((value) => isValidTime(value), {
+    message: "Must be a valid time (HH:mm)",
+  }),
+});
+
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
@@ -70,38 +86,22 @@ const formSchema = z.object({
   venueName: z.string().min(1, {
     message: "Location name is required",
   }),
-  date: z.date({
-    required_error: "Date is required",
-  }),
-  startTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
-  }),
-  endTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
+  dates: z.array(dateSchema).nonempty({
+    message: "At least one date is required",
   }),
   posterUrl: z.union([z.instanceof(File), z.string()]),
 });
 
-export type FormType = UseFormReturn<
-  {
-    name: string;
-    description: string;
-    venueName: string;
-    date: Date;
-    startTime: string;
-    endTime: string;
-    posterUrl: (string | File) & (string | File | undefined);
-  },
-  any,
-  undefined
->;
+type FormData = z.infer<typeof formSchema>;
+
+export type FormType = UseFormReturn<FormData>;
 
 export default function EditEventForm({
   event,
   initialTags,
   allTags,
 }: {
-  event: EventDisplayData;
+  event: EditEventDisplayData;
   initialTags: Tables<"tags">[];
   allTags: Tables<"tags">[];
 }) {
@@ -126,9 +126,12 @@ export default function EditEventForm({
       name: event.name,
       description: event.description,
       venueName: event.venue_name,
-      startTime: undefined,
-      endTime: undefined,
-      date: undefined,
+      dates: event.dates.map((date) => ({
+        id: date.id,
+        date: fixDate(date.date),
+        startTime: date.start_time.slice(0, date.start_time.lastIndexOf(":")),
+        endTime: date.end_time.slice(0, date.end_time.lastIndexOf(":")),
+      })),
       posterUrl: event.poster_url,
     },
   });

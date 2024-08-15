@@ -1,6 +1,12 @@
 "use server";
 
-import { EventDisplayData, EventWithDates, SearchParams } from "@/types/event";
+import {
+  EditEventDisplayData,
+  EditEventWithDates,
+  EventDisplayData,
+  EventWithDates,
+  SearchParams,
+} from "@/types/event";
 import { Tables } from "@/types/supabase";
 import {
   getTagData,
@@ -79,6 +85,19 @@ const getEventFromCleanedName = async (cleanedName: string) => {
     .single();
 
   const event: EventWithDates = eventData;
+  return { event, eventError };
+};
+
+const getEditEventFromCleanedName = async (cleanedName: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("* , dates:event_dates(id, date, start_time, end_time)")
+    .eq("cleaned_name", cleanedName)
+    .order("date", { referencedTable: "dates", ascending: true })
+    .single();
+
+  const event: EditEventWithDates = eventData;
   return { event, eventError };
 };
 
@@ -223,14 +242,27 @@ const getEventDisplayData = async (
   };
 };
 
+const getEditEventDisplayData = async (
+  event: EditEventWithDates
+): Promise<EditEventDisplayData> => {
+  const publicPosterUrl = await getPublicPosterUrl(event);
+  return {
+    ...event,
+    publicPosterUrl,
+    formattedDates: formatDates(event.dates),
+  };
+};
+
 export {
   getPublicPosterUrl,
   getPublicPosterUrlFromPosterUrl,
   getPublicVenueMapUrl,
   eventDisplayData,
   getEventFromCleanedName,
+  getEditEventFromCleanedName,
   getEventFromId,
   getEventDisplayData,
   getEventsDisplayData,
+  getEditEventDisplayData,
   getUserEventsDisplayData,
 };
