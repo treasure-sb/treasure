@@ -13,6 +13,7 @@ import { Tables } from "@/types/supabase";
 import { Key } from "react";
 import React from "react";
 import { EventWithDates } from "@/types/event";
+import { formatDate } from "@/lib/utils";
 
 type TicketFetchData = {
   id: string;
@@ -132,7 +133,7 @@ export default function AttendeeDialogContent({
                           return (
                             <div className="flex w-full justify-between items-center">
                               <p className="text-muted-foreground text-xs">
-                                {etd.date}
+                                {formatDate(etd.date)}
                               </p>
                               <p>
                                 {etd.valid ? (
