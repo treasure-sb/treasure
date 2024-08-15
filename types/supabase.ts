@@ -1519,7 +1519,8 @@ export type Database = {
           order_id: number
           event_name: string
           organizer_id: string
-          event_date: string
+          event_max_date: string
+          event_min_date: string
           event_address: string
           event_description: string
           event_cleaned_name: string
