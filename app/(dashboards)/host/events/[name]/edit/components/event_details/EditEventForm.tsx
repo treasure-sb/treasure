@@ -126,9 +126,9 @@ export default function EditEventForm({
       name: event.name,
       description: event.description,
       venueName: event.venue_name,
-      startTime: event.start_time.slice(0, event.start_time.lastIndexOf(":")),
-      endTime: event.end_time.slice(0, event.end_time.lastIndexOf(":")),
-      date: fixDate(event.date),
+      startTime: undefined,
+      endTime: undefined,
+      date: undefined,
       posterUrl: event.poster_url,
     },
   });

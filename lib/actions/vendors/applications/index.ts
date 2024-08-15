@@ -60,7 +60,7 @@ const submitVendorApplication = async (
       firstName: vendorInfo.firstName,
       lastName: vendorInfo.lastName,
       eventName: event.name,
-      eventDate: event.date,
+      eventDate: undefined,
       eventCleanedName: event.cleaned_name,
     };
     await sendHostVendorAppReceievedSMS(sendHostSMSPayload);

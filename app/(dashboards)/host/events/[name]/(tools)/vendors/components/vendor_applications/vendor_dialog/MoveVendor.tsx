@@ -128,7 +128,6 @@ export default function MoveVendor({
                       {events.map((event: any) => (
                         <SelectItem className="text-left" value={event.id}>
                           <p>{event.name}</p>
-                          <p className="text-xs">{event.date}</p>
                         </SelectItem>
                       ))}
                     </SelectContent>

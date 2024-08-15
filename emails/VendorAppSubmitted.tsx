@@ -26,7 +26,7 @@ export interface VendorAppSubmittedEmailProps {
   tableType: string;
   quantity: number;
   location: string;
-  date: string;
+  date: string | undefined;
   guestName: string;
   businessName: string | null;
   itemInventory: string;
