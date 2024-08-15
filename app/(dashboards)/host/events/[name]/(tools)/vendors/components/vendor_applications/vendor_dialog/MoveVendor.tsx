@@ -24,19 +24,13 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { moveVendors } from "@/lib/actions/vendors/applications";
 import { useRouter } from "next/navigation";
+import { EventsInfo } from "./AcceptedOptions";
 
 const FormSchema = z.object({
   event: z.string({
     required_error: "Please select an event.",
   }),
 });
-
-export type EventsInfo = {
-  name: string;
-  id: string;
-  date: string;
-  tables: { id: string; section_name: string }[];
-};
 
 export default function MoveVendor({
   vendorData,
@@ -125,7 +119,7 @@ export default function MoveVendor({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="text-left ">
-                      {events.map((event: any) => (
+                      {events.map((event) => (
                         <SelectItem className="text-left" value={event.id}>
                           <p>{event.name}</p>
                         </SelectItem>

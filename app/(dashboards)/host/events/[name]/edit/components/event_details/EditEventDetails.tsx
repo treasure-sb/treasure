@@ -6,17 +6,17 @@ import PastHighlights from "./highlights/PastHighlights";
 import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
-import { getEventDisplayData } from "@/lib/helpers/events";
+import { getEditEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
-import { EventWithDates } from "@/types/event";
+import { EditEventWithDates } from "@/types/event";
 
 export default async function EditEventDetails({
   event,
 }: {
-  event: EventWithDates;
+  event: EditEventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
-  const eventDisplayData = await getEventDisplayData(event);
+  const eventDisplayData = await getEditEventDisplayData(event);
 
   const { data: ticketsData } = await supabase
     .from("tickets")

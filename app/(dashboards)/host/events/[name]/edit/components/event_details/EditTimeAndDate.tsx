@@ -11,15 +11,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarDays } from "lucide-react";
-import { EventDisplayData } from "@/types/event";
+import { EditEventDisplayData } from "@/types/event";
 import { FormType } from "./EditEventForm";
 import { useState } from "react";
 import { convertToStandardTime, formatDate } from "@/lib/utils";
 import { PencilIcon, EyeIcon } from "lucide-react";
+import { format } from "date-fns";
 import EventCalendar from "@/components/ui/custom/event-calendar";
 
 export default function EditTimeAndDate({
@@ -27,7 +27,7 @@ export default function EditTimeAndDate({
   event,
 }: {
   form: FormType;
-  event: EventDisplayData;
+  event: EditEventDisplayData;
 }) {
   const [edit, setEdit] = useState(false);
   const { date, start_time, end_time } = event.dates[0];
@@ -49,7 +49,7 @@ export default function EditTimeAndDate({
       <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0 md:items-center">
         <FormField
           control={form.control}
-          name="date"
+          name={`dates.${0}.date`}
           render={({ field }) => (
             <FormItem>
               <Popover>
@@ -62,9 +62,9 @@ export default function EditTimeAndDate({
                         !field.value && "text-muted-foreground"
                       )}
                     >
-                      {/* {field.value
+                      {field.value
                         ? format(field.value, "PPP")
-                        : format(new Date(event.date), "PPP")} */}
+                        : format(new Date(date), "PPP")}
                       <CalendarDays className="stroke-1" />
                     </Button>
                   </FormControl>
@@ -93,7 +93,7 @@ export default function EditTimeAndDate({
         <div className="flex space-x-2">
           <FormField
             control={form.control}
-            name="startTime"
+            name={`dates.${0}.startTime`}
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -114,7 +114,7 @@ export default function EditTimeAndDate({
           />
           <FormField
             control={form.control}
-            name="endTime"
+            name={`dates.${0}.endTime`}
             render={({ field }) => (
               <FormItem>
                 <FloatingLabelInput

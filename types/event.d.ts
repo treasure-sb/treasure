@@ -107,11 +107,18 @@ export interface SearchParams {
   distance?: string;
 }
 
-export type EventDisplayData = EventWithDates & {
+export type EventWithDates = Tables<"events"> & {
+  dates: { date: string; start_time: string; end_time: string }[];
+};
+
+export type EditEventWithDates = Tables<"events"> & {
+  dates: { id: string; date: string; start_time: string; end_time: string }[];
+};
+
+type BaseEventDisplayData = {
   publicPosterUrl: string;
   formattedDates: { date: string; start_time: string; end_time: string }[];
 };
 
-export type EventWithDates = Tables<"events"> & {
-  dates: { date: string; start_time: string; end_time: string }[];
-};
+export type EventDisplayData = EventWithDates & BaseEventDisplayData;
+export type EditEventDisplayData = EditEventWithDates & BaseEventDisplayData;
