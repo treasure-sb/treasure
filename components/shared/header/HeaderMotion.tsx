@@ -79,7 +79,7 @@ export default function HeaderMotion({
         backgroundColor,
         borderColor,
       }}
-      className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-4 px-4 sm:px-8"
+      className="w-screen overflow-x-hidden fixed inset-x-0 border-b-[1px] py-3 md:py-2 px-4 sm:px-6"
     >
       <div className="max-w-[var(--container-width)] flex justify-between items-center m-auto w-full">
         {children}

@@ -1,5 +1,5 @@
 "use clent";
-import { convertToStandardTime } from "@/lib/utils";
+import { cn, convertToStandardTime } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -33,7 +33,7 @@ const LabeledText = ({
 
 const TableInfo = ({ type, price }: TicketInfoProps) => (
   <div className="flex space-x-4 dark:text-background text-foreground">
-    <TicketIcon className="stroke-2 text-background" />
+    <TicketIcon className="stroke-2 dark:text-background" />
     <div className="flex">
       <p>{type}</p> <p className="ml-2 font-bold">${price.toFixed(2)}</p>
     </div>
@@ -56,8 +56,12 @@ export default function AllTables() {
   const { generalVendorInfo, event, tables } = useVendorFlow();
 
   const tableOptions = tables.map((table, index) => (
-    <AccordionItem className="p-4" key={index} value={`item-${index}`}>
-      <AccordionTrigger className="decoration-background text-background">
+    <AccordionItem
+      className={cn(`p-4`, index === tables.length - 1 && "border-b-0")}
+      key={index}
+      value={`item-${index}`}
+    >
+      <AccordionTrigger className="dark:decoration-background dark:text-background">
         {event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT" ? (
           <TableInfoNoPayment type={table.section_name} />
         ) : (

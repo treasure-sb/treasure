@@ -68,15 +68,15 @@ export default async function LoggedInHeader({
         <div className="relative">
           <Link
             href="/home"
-            className="font-bold text-3xl flex items-center justify-start space-x-1"
+            className="flex items-center justify-start space-x-1"
           >
             <div className="flex space-x-1 items-center font-bold">
-              <TreasureEmerald width={30} height={30} />
-              <p>Treasure</p>
+              <TreasureEmerald width={16} height={16} />
+              <p className="text-2xl">Treasure</p>
             </div>
           </Link>
           {profile.role === "admin" && (
-            <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
+            <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2 text-sm">
               admin
             </p>
           )}
@@ -93,7 +93,7 @@ export default async function LoggedInHeader({
         )}
         <Popover>
           <PopoverTrigger asChild>
-            <Avatar className="h-14 w-14 border-primary hover:cursor-pointer">
+            <Avatar className="h-12 w-12 border-primary hover:cursor-pointer">
               <AvatarImage src={publicUrl} />
               <AvatarFallback>
                 {profile.first_name[0]}

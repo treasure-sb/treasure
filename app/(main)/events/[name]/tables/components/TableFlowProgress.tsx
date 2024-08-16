@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import { TableView } from "../context/VendorFlowContext";
 import { ArrowRight } from "lucide-react";
 import { useVendorFlow } from "../context/VendorFlowContext";
+import { useTheme } from "next-themes";
 
 const Step = ({ step }: { step: TableView }) => {
   const { currentView } = useVendorFlow();
+  const { theme } = useTheme();
 
   let status =
     currentView === step
@@ -20,9 +22,12 @@ const Step = ({ step }: { step: TableView }) => {
         initial={false}
         animate={status}
         variants={{
-          active: { borderColor: "#71d08c" },
-          inactive: { borderColor: "#fff" },
-          complete: { borderColor: "#71d08c", backgroundColor: "#71d08c" },
+          active: { borderColor: theme === "light" ? "#2AAA88" : "#71d08c" },
+          inactive: { borderColor: theme === "light" ? "#000" : "#fff" },
+          complete: {
+            borderColor: theme === "light" ? "#2AAA88" : "#71d08c",
+            backgroundColor: theme === "light" ? "#2AAA88" : "#71d08c",
+          },
         }}
         className="rounded-full w-4 h-4 border-[1px] flex items-center justify-center"
       >

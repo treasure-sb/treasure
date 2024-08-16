@@ -17,11 +17,11 @@ export default function NonLoggedHeader({
       {!isEventPage && (
         <Link
           href="/home"
-          className="font-bold text-3xl flex items-center justify-start space-x-1"
+          className="flex items-center justify-start space-x-1"
         >
           <div className="flex space-x-1 items-center font-bold">
-            <TreasureEmerald width={28} height={28} />
-            <p>Treasure</p>
+            <TreasureEmerald width={16} height={16} />
+            <p className="text-2xl">Treasure</p>
           </div>
         </Link>
       )}

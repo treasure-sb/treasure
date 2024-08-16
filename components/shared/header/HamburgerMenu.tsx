@@ -90,7 +90,7 @@ export default function HamburgerMenu({
           <MenuIcon
             className="stroke-1 hover:cursor-pointer"
             onClick={() => setOpen(true)}
-            size={38}
+            size={30}
           />
         </SheetTrigger>
         <SheetContent className="pt-16">
