@@ -108,7 +108,9 @@ export default async function LoggedInHeader({
             {popoverLinks.map(({ href, text, Icon }) => (
               <PopoverLink key={text} href={href} text={text} Icon={Icon} />
             ))}
-            <ThemeSwitch />
+            <div className="px-4 py-2">
+              <ThemeSwitch />
+            </div>
           </PopoverContent>
         </Popover>
       </div>
