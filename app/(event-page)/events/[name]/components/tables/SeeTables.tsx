@@ -14,6 +14,7 @@ export default function SeeTables({
 }) {
   const minimumTablePrice = tables[0].price;
   const numTablesLeft = tables.reduce((acc, table) => acc + table.quantity, 0);
+  const sayWaitlist = event.id === "e397bbe5-f006-489e-b89d-06130fad72df";
 
   return (
     <div className="w-full items-center flex justify-between font-semibold space-x-4">
@@ -37,7 +38,9 @@ export default function SeeTables({
                 href={`/events/${event.cleaned_name}/tables`}
                 className="relative"
               >
-                <Button className="border-primary w-32">Register Now</Button>
+                <Button className="border-primary w-32">
+                  {sayWaitlist ? "Waitlist Now" : "Register Now"}
+                </Button>
                 {numTablesLeft < 20 && (
                   <p className="absolute text-xs right-0 -bottom-4 italic text-primary/90">
                     {numTablesLeft} tables left!
