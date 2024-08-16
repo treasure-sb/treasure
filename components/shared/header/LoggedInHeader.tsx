@@ -55,9 +55,9 @@ export default async function LoggedInHeader({
   const Header = useMotion ? HeaderMotion : HeaderStatic;
 
   const popoverLinks = [
-    { href: "/tickets", text: "Tickets", Icon: TicketIcon },
-    { href: "/profile", text: "Profile", Icon: User2Icon },
-    { href: "/settings", text: "Settings", Icon: Settings },
+    { href: "/profile/tickets", text: "Tickets", Icon: TicketIcon },
+    { href: `/u/${profile.username}`, text: "Profile", Icon: User2Icon },
+    { href: "/profile", text: "Settings", Icon: Settings },
     { href: "/host", text: "Host Dashboard", Icon: LayoutDashboardIcon },
   ];
 
