@@ -32,7 +32,7 @@ const checkPreviousEvents = async (event_name: string, event_date: Date) => {
     .from("events")
     .select("*")
     .eq("name", event_name)
-    .eq("date", formattedDate);
+    .eq("min_date", formattedDate);
   if (!events || events.length === 0) {
     return 0;
   }
@@ -82,11 +82,8 @@ const createEvent = async (values: EventForm) => {
         lng,
         venue_name,
         lat,
-        date,
         city,
         state,
-        start_time,
-        end_time,
         vendor_exclusivity,
         sales_status,
         poster_url,
