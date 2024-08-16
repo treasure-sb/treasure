@@ -15,6 +15,7 @@ export type Order = {
   type: "TABLE" | "TICKET";
   itemName: string;
   customer: CustomerData;
+  metadata: string | null;
 };
 
 const CustomerCell = ({ row }: CellContext<Order, any>) => {
@@ -86,6 +87,24 @@ const DateCell = ({ cell }: CellContext<Order, any>) => {
 const OrderIDCell = ({ cell }: CellContext<Order, any>) => {
   const orderID = cell.getValue() as number;
   return <p>#{orderID}</p>;
+};
+
+const MetadataCell = ({ cell }: CellContext<Order, any>) => {
+  const metadata = cell.getValue() as number;
+  return <p>{metadata}</p>;
+};
+
+const MetadataHeader = ({ column }: { column: any }) => {
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className="font-normal -ml-4"
+    >
+      Dinner Selection
+      <ArrowUpDown className="ml-2 h-4 w-4" />
+    </Button>
+  );
 };
 
 const AmountPaidCell = ({ cell }: CellContext<Order, any>) => {
@@ -166,6 +185,53 @@ export const columns: ColumnDef<Order>[] = [
     header: DateHeader,
     cell: DateCell,
   },
+  {
+    accessorKey: "itemName",
+    header: undefined,
+    cell: undefined,
+  },
+];
+
+export const columnsSampa: ColumnDef<Order>[] = [
+  {
+    accessorKey: "orderID",
+    header: "Order ID",
+    cell: OrderIDCell,
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: TypeCell,
+    filterFn: (row, id, value) => {
+      return row.getValue(id) === value;
+    },
+  },
+  {
+    accessorKey: "metadata",
+    header: MetadataHeader,
+    cell: MetadataCell,
+  },
+  {
+    accessorKey: "quantity",
+    header: QuantityHeader,
+    cell: QuantityCell,
+  },
+  {
+    accessorKey: "customer",
+    header: "Customer",
+    cell: CustomerCell,
+  },
+  {
+    accessorKey: "amountPaid",
+    header: AmountPaidHeader,
+    cell: AmountPaidCell,
+  },
+  {
+    accessorKey: "purchaseDate",
+    header: DateHeader,
+    cell: DateCell,
+  },
+
   {
     accessorKey: "itemName",
     header: undefined,
