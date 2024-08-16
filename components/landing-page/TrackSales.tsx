@@ -52,6 +52,7 @@ export default function TrackSales() {
                 text="Create Your Event"
               />
               <LandingButton
+                className="dark:bg-transparent dark:border-background darK:hover:text-background"
                 href="/events"
                 text="Browse Events"
                 variant={"outline"}

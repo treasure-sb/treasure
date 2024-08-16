@@ -22,11 +22,11 @@ export default function LandingButton({
         <p>{text}</p>
         <LucideArrowUpRight
           size={26}
-          className="hidden md:block group-hover:text-foreground/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
+          className="hidden md:block group-hover:text-foreground/80 dark:group-hover:text-background/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
         />
         <LucideArrowUpRight
           size={20}
-          className="block md:hidden group-hover:text-foreground/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
+          className="block md:hidden group-hover:text-foreground/80 dark:group-hover:text-background/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
         />
       </Link>
     </Button>

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import LandingButton from "./LandingButton";
@@ -53,7 +52,7 @@ export default function Hero() {
           className="animate-bounce"
           aria-label="Scroll to next section"
         >
-          <ChevronDown size={32} color="black" />
+          <ChevronDown size={32} className="text-foreground" />
         </button>
       </div>
     </section>
