@@ -71,7 +71,7 @@ export default async function LoggedInHeader({
             className="font-bold text-3xl flex items-center justify-start space-x-1"
           >
             <div className="flex space-x-1 items-center font-bold">
-              <TreasureEmerald width={28} height={28} />
+              <TreasureEmerald width={30} height={30} />
               <p>Treasure</p>
             </div>
           </Link>
