@@ -1,5 +1,5 @@
 import { DataTable } from "./DataTable";
-import { columns, Order } from "./OrderDataColumns";
+import { columns, Order, columnsSampa } from "./OrderDataColumns";
 import { Tables } from "@/types/supabase";
 import { getProfileAvatar } from "@/lib/helpers/profiles";
 import { type CustomerData } from "../../types";
@@ -64,6 +64,11 @@ export default async function Orders({
       itemName = tableData?.section_name;
     }
 
+    const meta =
+      order.metadata === null
+        ? null // @ts-ignore
+        : order.metadata.dinnerSelections.toString();
+
     return {
       orderID: order.id,
       quantity: order.line_items[0].quantity,
@@ -72,6 +77,7 @@ export default async function Orders({
       purchaseDate: new Date(order.created_at),
       itemName: itemName,
       customer: customer,
+      metadata: meta,
     };
   });
 
@@ -90,7 +96,15 @@ export default async function Orders({
           <DateRangeFilter />
         </Suspense>
       </div>
-      <DataTable columns={columns} data={tableData} event={event} />
+      <DataTable
+        columns={
+          event.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3"
+            ? columnsSampa
+            : columns
+        }
+        data={tableData}
+        event={event}
+      />
     </>
   );
 }
