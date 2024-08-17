@@ -5,7 +5,7 @@ import { z } from "zod";
 import { PromoFormSchema } from "@/app/(dashboards)/host/events/[name]/(tools)/sales/types";
 
 const createPromoCode = async (
-  eventId: string,
+  eventId: string | null,
   promoForm: z.infer<typeof PromoFormSchema>
 ) => {
   const supabase = await createSupabaseServerClient();
@@ -16,14 +16,14 @@ const createPromoCode = async (
     status,
     usage_limit: usageLimit || null,
     type: promoType,
-    event_id: eventId,
+    event_id: eventId || null,
   });
 
   return { data, error };
 };
 
 const updatePromoCode = async (
-  eventId: string,
+  eventId: string | null,
   promoForm: z.infer<typeof PromoFormSchema>
 ) => {
   const supabase = await createSupabaseServerClient();
@@ -37,7 +37,6 @@ const updatePromoCode = async (
       usage_limit: usageLimit || null,
       type: promoType,
     })
-    .eq("event_id", eventId)
     .eq("id", id);
 
   return { data, error };
