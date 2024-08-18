@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
-import { ThemeSwitch } from "./ThemeSwitch";
+import { ThemeSwitch } from "../ThemeSwitch";
 
 type PopoverLinkProps = {
   href: string;
@@ -66,10 +66,7 @@ export default async function LoggedInHeader({
     <Header>
       {!isEventPage && (
         <div className="relative">
-          <Link
-            href="/home"
-            className="flex items-center justify-start space-x-1"
-          >
+          <Link href="/home" className="flex items-center justify-start">
             <div className="flex space-x-1 items-center font-bold">
               <TreasureEmerald width={16} height={16} />
               <p className="text-2xl">Treasure</p>
@@ -103,7 +100,7 @@ export default async function LoggedInHeader({
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex flex-col bg-slate-100 dark:bg-black mt-4 p-2 overflow-hidden"
+            className="flex flex-col dark:bg-black mt-4 p-2 overflow-hidden"
           >
             {popoverLinks.map(({ href, text, Icon }) => (
               <PopoverLink key={text} href={href} text={text} Icon={Icon} />

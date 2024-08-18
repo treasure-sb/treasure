@@ -21,7 +21,7 @@ import {
   LayoutDashboardIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { ThemeSwitch } from "./ThemeSwitch";
+import { ThemeSwitch } from "../ThemeSwitch";
 
 type SheetLinkProps = {
   href: string;

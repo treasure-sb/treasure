@@ -48,6 +48,7 @@ export default function Footer({
           href="/home"
           className="flex items-center justify-center w-full font-bold"
         >
+          <TreasureEmerald width={8} height={8} />
           <p>Treasure</p>
         </Link>
         <p className="text-center text-sm text-gray-600 dark:text-gray-100 px-2 py-1">

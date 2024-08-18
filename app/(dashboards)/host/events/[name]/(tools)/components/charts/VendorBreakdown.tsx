@@ -111,7 +111,7 @@ export default async function VendorBreakdown({
 
   return (
     <div
-      className={`h-80 md:h-[29rem] col-span-3 bg-slate-100 dark:bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
+      className={`h-80 md:h-[29rem] col-span-3 bg-secondary dark:bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
         isScanner ? "opacity-50" : ""
       }`}
     >

@@ -42,7 +42,7 @@ export default function DateRangeFilter() {
         <PopoverTrigger asChild className="rounded-sm">
           <Button
             id="date"
-            variant={"outline"}
+            variant={"dotted"}
             className={cn(
               "w-[300px] justify-start text-left font-normal",
               !date && "text-muted-foreground"

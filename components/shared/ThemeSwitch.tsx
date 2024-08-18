@@ -9,7 +9,7 @@ export function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center justify-center space-x-2 bg-secondary/40 p-4 py-3 rounded-md">
       <SunIcon />
       <Switch
         id="theme"

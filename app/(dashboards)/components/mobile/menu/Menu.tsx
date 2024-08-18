@@ -15,6 +15,7 @@ import VendorMenuOptions from "./VendorMenuOptions";
 import Link from "next/link";
 import AdminMenuOptions from "./AdminMenuOptions";
 import Image from "next/image";
+import { ThemeSwitch } from "@/components/shared/ThemeSwitch";
 
 export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,13 +57,16 @@ export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
               <AdminMenuOptions setIsOpen={setIsOpen} />
             )}
           </div>
-          <Button
-            variant={"ghost"}
-            className="rounded-sm text-lg font-normal justify-start space-x-2 p-6"
-            onClick={async () => await handleLogout()}
-          >
-            <LogOut className="stroke-1" size={28} /> <p>Log out</p>
-          </Button>
+          <div className="space-y-4 w-full">
+            <ThemeSwitch />
+            <Button
+              variant={"ghost"}
+              className="rounded-sm text-lg font-normal justify-start space-x-2 p-6 w-full"
+              onClick={async () => await handleLogout()}
+            >
+              <LogOut className="stroke-1" size={28} /> <p>Log out</p>
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

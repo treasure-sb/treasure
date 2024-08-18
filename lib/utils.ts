@@ -33,7 +33,7 @@ export function validateEmail(email: string) {
 
 export function formatDate(date: string) {
   const formattedDate = new Date(date).toLocaleDateString(undefined, {
-    weekday: "long",
+    weekday: "short",
     day: "numeric",
     month: "short",
     timeZone: "UTC",
