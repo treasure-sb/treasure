@@ -33,8 +33,8 @@ export default function Hero() {
               priority
               src="/static/landing-page/hero/hero.png"
               alt="hero"
-              width={600}
-              height={600}
+              width={450}
+              height={450}
               onLoad={() => setImageLoaded(true)}
             />
           </div>
