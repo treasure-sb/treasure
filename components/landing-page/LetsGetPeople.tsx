@@ -49,7 +49,7 @@ export default function LetsGetPeople() {
           className="w-full h-full rounded-3xl object-contain"
           quality={100}
           priority
-          src="/static/landing-page/about_us.png"
+          src="/static/landing-page/team_graphic.png"
           alt="attendees"
           width={600}
           height={600}
