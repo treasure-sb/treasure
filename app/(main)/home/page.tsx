@@ -1,5 +1,5 @@
 import FeaturedEvents from "@/components/landing-page/featured-events/FeaturedEvents";
-import Hero from "@/components/landing-page/Hero";
+import Hero from "@/components/landing-page/hero/Hero";
 import Grid from "@/components/landing-page/grid/Grid";
 import AllYourAttendees from "@/components/landing-page/AllYourAttendees";
 import Footer from "@/components/shared/Footer";
