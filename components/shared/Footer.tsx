@@ -46,10 +46,10 @@ export default function Footer({
         </nav>
         <Link
           href="/home"
-          className="flex items-center justify-center w-full font-bold"
+          className="flex items-center justify-center -space-x-1 font-bold"
         >
           <TreasureEmerald width={8} height={8} />
-          <p>Treasure</p>
+          <p className="tracking-tighter">Treasure</p>
         </Link>
         <p className="text-center text-sm text-gray-600 dark:text-gray-100 px-2 py-1">
           &copy; {new Date().getFullYear()} Treasure. All rights reserved.

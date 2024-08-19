@@ -23,7 +23,7 @@ export default function Send() {
         initial={{ opacity: 0, y: 30 }}
         animate={controls}
         transition={{ duration: 1.75, ease: customLandingEase }}
-        className="flex flex-col-reverse lg:flex-row bg-[#F8D57E] dark:bg-tertiary p-6 lg:p-10 rounded-2xl h-full"
+        className="flex flex-col-reverse lg:flex-row bg-[#F8D57E] dark:bg-tertiary p-6 lg:p-10 rounded-3xl h-full"
       >
         <div className="flex flex-col justify-between lg:w-1/2 lg:pr-6 space-y-4">
           <p className="text-2xl font-semibold lg:text-4xl 2xl:text-[2.88rem] 2xl:leading-[1.3]">

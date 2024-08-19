@@ -99,7 +99,7 @@ export default function PaymentIntent({
                   status === "success" ? "bg-primary" : "bg-red-500"
                 )}
               >
-                <div className="text-center mb-10">
+                <div className="text-center mb-10 text-foreground dark:text-background">
                   <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
                   <h2 className="font-bold text-3xl md:text-5xl">
                     {status === "success"
@@ -107,7 +107,7 @@ export default function PaymentIntent({
                       : "Please try again"}
                   </h2>
                 </div>
-                <div className="text-center">
+                <div className="text-center text-foreground dark:text-background">
                   <p className="font-semibold text-lg md:text-2xl">
                     {eventDisplay.name}
                   </p>

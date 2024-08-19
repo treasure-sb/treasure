@@ -16,7 +16,7 @@ export default function Hero() {
           <motion.div
             className="absolute inset-0 flex items-center justify-center w-full h-full"
             initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: width < 1280 ? 1.05 : 1.1 }}
+            animate={{ opacity: 1, scale: width < 1700 ? 1.05 : 1.35 }}
             transition={{ duration: 1.75, ease: "easeOut" }}
           >
             <HeroGradient className="w-full h-full" />
@@ -33,7 +33,7 @@ export default function Hero() {
             />
           </div>
         </div>
-        <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-6 mb-14 lg:mb-0 lg:pr-8 mx-auto">
+        <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-6 lg:space-y-12 mb-14 lg:mb-0 lg:pr-8 mx-auto">
           <h1 className="text-xl sm:text-2xl md:text-5xl lg:text-6xl 2xl:text-[5.25rem] font-semibold text-left 2xl:leading-[1.05]">
             Find More Hobby Events You Love{" "}
             <span className="text-[#2AAA88] dark:text-primary">

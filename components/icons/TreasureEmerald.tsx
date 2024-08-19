@@ -6,11 +6,13 @@ export default function TreasureEmerald({
   height,
   bounce,
   delay,
+  className,
 }: {
   width: number;
   height: number;
   bounce?: boolean;
   delay?: number;
+  className?: string;
 }) {
   return (
     <motion.svg
@@ -25,6 +27,7 @@ export default function TreasureEmerald({
           ease: "easeInOut",
         },
       })}
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       id="Layer_1"
@@ -34,7 +37,7 @@ export default function TreasureEmerald({
       height={height + 14}
       viewBox="0 0 400 400"
     >
-      <g transform="translate(100, 50) scale(1)">
+      <g transform="translate(80, 50) scale(1)">
         <path
           fill="#95FDD3"
           opacity="1.000000"

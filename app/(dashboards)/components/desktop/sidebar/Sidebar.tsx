@@ -52,13 +52,15 @@ export default function Sidebar() {
       <div>
         <Link
           href="/home"
-          className="font-semibold text-3xl flex items-center justify-center mb-8"
+          className="flex items-center justify-center mb-8 -space-x-1 font-bold"
         >
           {showSidebar ? (
-            <div className="flex space-x-1 items-center font-bold">
-              <TreasureEmerald width={28} height={28} />
-              <p>Treasure</p>
-            </div>
+            <>
+              <TreasureEmerald width={22} height={22} />
+              <p className="text-3xl tracking-[-0.1rem] lg:tracking-[-0.14rem]">
+                Treasure
+              </p>
+            </>
           ) : (
             <TreasureEmerald width={28} height={28} />
           )}
