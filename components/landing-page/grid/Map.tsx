@@ -30,7 +30,7 @@ export default function Send() {
             Map Your Vendors & Attractions
           </p>
           <div className="space-y-4">
-            <p className="text-sm lg:text-base 2xl:text-2xl">
+            <p className="text-sm font-light lg:text-base 2xl:text-2xl">
               Create a custom map or upload your own. Assign vendors &
               attractions for easy attendee discovery.
             </p>

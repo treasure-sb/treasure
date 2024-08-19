@@ -29,7 +29,7 @@ export default function Showcase() {
           Showcase Your Vendors & Special Guests
         </p>
         <div className="space-y-4">
-          <p className="text-sm lg:text-base 2xl:text-2xl">
+          <p className="text-sm lg:text-base 2xl:text-2xl font-light">
             Automatically promote vendors that sign up on Treasure with their
             social links and photos. Add guests in just a few clicks. Make it
             easy for attendees to preview programing ahead of time.

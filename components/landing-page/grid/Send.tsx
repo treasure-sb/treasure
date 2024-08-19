@@ -34,7 +34,7 @@ export default function Send() {
         </div>
       </div>
       <div className="space-y-4">
-        <p className="text-sm lg:text-base 2xl:text-2xl">
+        <p className="text-sm lg:text-base 2xl:text-2xl font-light">
           Most emails don’t get opened. Send texts with emails to best re-engage
           customers.
         </p>

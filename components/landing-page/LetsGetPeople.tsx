@@ -18,16 +18,16 @@ export default function LetsGetPeople() {
 
   return (
     <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between">
-      <div className="flex flex-col justify-between lg:w-1/2 lg:pr-20 space-y-4">
+      <div className="flex flex-col justify-between lg:justify-center lg:w-1/2 lg:pr-20 space-y-4 lg:space-y-20">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl">
           Let's Get People Out More
         </p>
         <div className="space-y-4">
-          <p className="text-sm lg:text-base 2xl:text-3xl mb-10">
+          <p className="text-sm font-light lg:text-base 2xl:text-3xl mb-10">
             We grew up collecting cards, sneakers, and comic books. We love
             going to conventions but the logistics are not always easy. So we
-            started Treasure to help more people get to shows and love the hobby
-            like we do.
+            started Treasure to help more people get to shows and love the hobby{" "}
+            <span className="text-primary">like we do.</span>
           </p>
           <div className="flex space-x-4">
             <LandingButton
