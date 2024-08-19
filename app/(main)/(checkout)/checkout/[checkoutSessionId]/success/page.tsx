@@ -1,7 +1,6 @@
 import InitializePaymentIntent from "./components/InitializePaymentIntent";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { getEventDisplayData } from "@/lib/helpers/events";
-import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { EventWithDates } from "@/types/event";
 

@@ -1,4 +1,5 @@
 "use client";
+import { randomUUID } from "crypto";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
@@ -70,8 +71,10 @@ export default function FeaturedEventCarousel({
         slidesToSlide={1}
         swipeable
       >
-        {featuredEvents.map((event) => (
-          <div className="mx-2">{event}</div>
+        {featuredEvents.map((event, index) => (
+          <div key={`event-${index}-${event.key}`} className="mx-2">
+            {event}
+          </div>
         ))}
       </Carousel>
     </div>

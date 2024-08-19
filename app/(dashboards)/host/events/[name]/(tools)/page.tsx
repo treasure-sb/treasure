@@ -37,7 +37,7 @@ const ToolOptionButton = ({
   subtext,
 }: ToolOptionButtonProps) => {
   const commonClasses =
-    "bg-secondary text-foreground flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 border-[1px] transition duration-300";
+    "bg-secondary/30 text-foreground flex flex-col rounded-md p-6 lg:p-4 2xl:p-6 relative group h-44 border-[1px] transition duration-300";
   const activeClasses =
     "hover:bg-secondary/60 hover:border-[1px] hover:border-primary/30";
   const inactiveClasses = "opacity-50 cursor-not-allowed";

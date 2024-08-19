@@ -33,11 +33,7 @@ export default function Filters({
     <div className="flex space-x-2 overflow-scroll scrollbar-hidden">
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant={"ghost"}
-            role="combobox"
-            className="border-dotted border-[1px] rounded-sm flex items-center"
-          >
+          <Button variant={"dotted"} role="combobox">
             <p>Payment Status</p>
             <div
               className={cn(
@@ -90,11 +86,7 @@ export default function Filters({
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant={"ghost"}
-            role="combobox"
-            className="border-dotted border-[1px] rounded-sm flex items-center"
-          >
+          <Button variant={"dotted"} role="combobox">
             <p>Application Status</p>
             <div
               className={cn(
@@ -181,11 +173,7 @@ export default function Filters({
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant={"ghost"}
-            role="combobox"
-            className="border-dotted border-[1px] rounded-sm flex items-center"
-          >
+          <Button variant={"dotted"} role="combobox">
             <p>Tags</p>
             {tagFilter && tagFilter.length > 0 ? (
               <div className="ml-2 flex space-x-1 border-l-[1px] pl-2">

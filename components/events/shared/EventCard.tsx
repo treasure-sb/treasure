@@ -79,10 +79,7 @@ export default function EventCard({
       </Link>
       {showLikeButton && <LikeButton event={event} user={user} />}
       {event.sales_status !== "NO_SALE" && (
-        <Ticket
-          fill="black"
-          className="stroke-2 text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg]"
-        />
+        <Ticket className="stroke-1 text-foreground dark:text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg] fill-primary dark:fill-black" />
       )}
     </div>
   );

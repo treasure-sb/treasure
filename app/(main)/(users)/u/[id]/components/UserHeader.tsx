@@ -151,9 +151,9 @@ export default async function UserHeader({
         {ownProfile && (
           <Link
             href="/profile"
-            className="absolute top-1 right-1 w-11 h-11 flex items-center justify-center rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500 focus:outline-none"
+            className="absolute top-1 right-1 w-11 h-11 p-2 rounded-full bg-background dark:bg-foreground border-2 border-foreground dark:border-background hover:cursor-pointer transition duration-500"
           >
-            <Settings className="w-7 h-7 m-auto text-background" />
+            <Settings className="w-6 h-6 m-auto text-foreground dark:text-background" />
           </Link>
         )}
         <CopyProfileLink username={user.username} />

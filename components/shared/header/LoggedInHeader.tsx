@@ -18,8 +18,9 @@ import {
   LayoutDashboardIcon,
   LucideIcon,
 } from "lucide-react";
+import { ThemeSwitch } from "../ThemeSwitch";
 import HeaderStatic from "./HeaderStatic";
-import Logo from "@/components/icons/TreasureLogo";
+import TreasureEmerald from "@/components/icons/TreasureEmerald";
 
 type PopoverLinkProps = {
   href: string;
@@ -67,12 +68,24 @@ export default async function LoggedInHeader({
         <div className="relative">
           <Link
             href="/home"
-            className="font-bold text-3xl flex items-center justify-start space-x-1"
+            className="flex items-center justify-start -space-x-1 font-bold"
           >
-            <Logo />
+            <TreasureEmerald
+              className="block lg:hidden"
+              width={16}
+              height={16}
+            />
+            <TreasureEmerald
+              className="hidden lg:block"
+              width={22}
+              height={22}
+            />
+            <p className="text-2xl lg:text-3xl tracking-[-0.1rem] lg:tracking-[-0.14rem]">
+              Treasure
+            </p>
           </Link>
           {profile.role === "admin" && (
-            <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2">
+            <p className="text-primary font-bold absolute bottom-[-18px] right-[-26px] mb-2 text-sm">
               admin
             </p>
           )}
@@ -89,7 +102,7 @@ export default async function LoggedInHeader({
         )}
         <Popover>
           <PopoverTrigger asChild>
-            <Avatar className="h-14 w-14 border-primary hover:cursor-pointer">
+            <Avatar className="h-12 w-12 border-primary hover:cursor-pointer">
               <AvatarImage src={publicUrl} />
               <AvatarFallback>
                 {profile.first_name[0]}
@@ -99,11 +112,14 @@ export default async function LoggedInHeader({
           </PopoverTrigger>
           <PopoverContent
             align="end"
-            className="flex flex-col bg-black mt-4 p-2 overflow-hidden"
+            className="flex flex-col dark:bg-black mt-4 p-2 overflow-hidden"
           >
             {popoverLinks.map(({ href, text, Icon }) => (
               <PopoverLink key={text} href={href} text={text} Icon={Icon} />
             ))}
+            <div className="px-4 py-2">
+              <ThemeSwitch />
+            </div>
           </PopoverContent>
         </Popover>
       </div>

@@ -27,9 +27,10 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { EventDisplayData } from "@/types/event";
 import { mkConfig, generateCsv, download } from "export-to-csv";
+import { VendorModalProps } from "../../TabState";
+import { DownloadIcon } from "lucide-react";
 import ExportIcon from "@/components/icons/ExportIcon";
 import Filters from "./Filters";
-import { VendorModalProps } from "../../TabState";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -177,10 +178,10 @@ export default function DataTable<TData, TValue>({
         />
         <Button
           onClick={exportFunction}
-          variant={"outline"}
-          className="border-dotted border-[1px] rounded-sm flex items-center space-x-2"
+          variant={"dotted"}
+          className="rounded-sm flex items-center space-x-2"
         >
-          <ExportIcon />
+          <DownloadIcon />
           <p>Export</p>
         </Button>
       </div>

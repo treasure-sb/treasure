@@ -22,9 +22,9 @@ export default function CopyProfileLink({ username }: { username: string }) {
   return (
     <div
       onClick={handleCopy}
-      className="absolute bottom-1 left-1 w-11 h-11 p-2 rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500"
+      className="absolute bottom-1 left-1 w-11 h-11 p-2 rounded-full bg-background dark:bg-foreground border-2 border-foreground dark:border-background hover:cursor-pointer transition duration-500"
     >
-      <Chain className="w-6 h-6 m-auto text-background" />
+      <Chain className="w-6 h-6 m-auto text-foreground dark:text-background" />
     </div>
   );
 }

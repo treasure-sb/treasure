@@ -21,6 +21,7 @@ import {
   LayoutDashboardIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { ThemeSwitch } from "../ThemeSwitch";
 
 type SheetLinkProps = {
   href: string;
@@ -89,7 +90,7 @@ export default function HamburgerMenu({
           <MenuIcon
             className="stroke-1 hover:cursor-pointer"
             onClick={() => setOpen(true)}
-            size={38}
+            size={30}
           />
         </SheetTrigger>
         <SheetContent className="pt-16">
@@ -150,6 +151,14 @@ export default function HamburgerMenu({
                 handleOpen={handleOpen}
               />
             ))}
+            <motion.div
+              variants={animationVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              <ThemeSwitch />
+            </motion.div>
           </div>
         </SheetContent>
       </Sheet>

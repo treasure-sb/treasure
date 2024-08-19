@@ -8,8 +8,8 @@ interface TicketInfoProps {
 export const TicketInfo = ({ type, price }: TicketInfoProps) => {
   const isTicketFree = price === 0;
   return (
-    <div className="flex space-x-4 text-background">
-      <TicketIcon className="stroke-2 text-background" />
+    <div className="flex space-x-4 dark:text-background">
+      <TicketIcon className="stroke-2 dark:text-background" />
       <div className="flex">
         <p>{type}</p>{" "}
         <p className="ml-2 font-bold">

@@ -42,7 +42,7 @@ export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
       >
         <Icon
           className={`w-8 h-8 stroke-1 m-auto ${
-            active === name ? "text-white" : ""
+            active === name ? "text-primary" : ""
           }`}
         />
         {active === name && (
@@ -53,7 +53,7 @@ export default function EventFilters({ isHosting }: { isHosting?: boolean }) {
   };
 
   return (
-    <div className="w-full flex justify-between mt-4 text-secondary">
+    <div className="w-full flex justify-between mt-4 text-foreground/40 dark:text-secondary">
       {renderFilters()}
     </div>
   );

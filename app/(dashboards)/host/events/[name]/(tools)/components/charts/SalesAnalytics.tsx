@@ -90,7 +90,7 @@ export default async function SalesAnalytics({
 
   return (
     <div
-      className={`h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
+      className={`h-80 md:h-[29rem] col-span-2 bg-secondary dark:bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
         isScanner ? "opacity-50" : ""
       }`}
     >

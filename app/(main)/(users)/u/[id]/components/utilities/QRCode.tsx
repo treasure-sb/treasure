@@ -14,8 +14,8 @@ export default function QRCode({ username }: { username: string }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="absolute bottom-1 right-1 w-11 h-11 flex items-center justify-center rounded-full bg-foreground border-2 hover:cursor-pointer hover:bg-tertiary transition duration-500 focus:outline-none">
-        <QrCodeIcon className="text-background" />
+      <DialogTrigger className="absolute bottom-1 right-1 w-11 h-11 p-2 rounded-full bg-background dark:bg-foreground border-2 border-foreground dark:border-background hover:cursor-pointer transition duration-500">
+        <QrCodeIcon className="text-foreground dark:text-background" />
       </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => {
