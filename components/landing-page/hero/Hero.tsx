@@ -13,7 +13,7 @@ export default function Hero() {
 
   return (
     <section className="max-w-[var(--container-width)] mx-auto px-4 sm:px-6 py-8 lg:py-12">
-      <div className="flex flex-col justify-between items-center mx-auto min-h-screen lg:h-[80vh] lg:min-h-0 lg:flex-row-reverse lg:items-stretch w-full">
+      <div className="flex flex-col justify-between items-center mx-auto h-[100svh] lg:h-[80vh] lg:min-h-0 lg:flex-row-reverse lg:items-stretch w-full">
         <div className="relative w-full md:w-3/4 lg:w-1/2 h-96 md:h-[550px] lg:h-auto flex justify-center lg:justify-end items-center mx-auto">
           <AnimatePresence>
             {imageLoaded && (
