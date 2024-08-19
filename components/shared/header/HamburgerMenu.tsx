@@ -151,7 +151,14 @@ export default function HamburgerMenu({
                 handleOpen={handleOpen}
               />
             ))}
-            <ThemeSwitch />
+            <motion.div
+              variants={animationVariants}
+              initial="initial"
+              animate="animate"
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              <ThemeSwitch />
+            </motion.div>
           </div>
         </SheetContent>
       </Sheet>
