@@ -25,10 +25,10 @@ export default function TrackSales() {
           initial={{ opacity: 0, y: 30 }}
           animate={controls}
           transition={{ duration: 1.25, ease: customLandingEase }}
-          className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[36rem] mb-10"
+          className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[38rem] mb-10"
         >
           <Image
-            className="w-full h-full rounded-2xl object-contain"
+            className="w-full h-full rounded-3xl object-contain"
             quality={100}
             priority
             src="/static/landing-page/dashboard.png"

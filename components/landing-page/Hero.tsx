@@ -20,7 +20,7 @@ export default function Hero() {
             Find More Hobby Events You Love{" "}
             <span className="text-[#2AAA88]">Every Weekend</span>
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-normal text-left">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-left">
             Join the #1 community for card shows and hobby events.
             <br className="hidden sm:block" />
             We make getting tickets and tables easy.
@@ -45,15 +45,6 @@ export default function Hero() {
             height={2000}
           />
         </div>
-      </div>
-      <div className="w-full flex justify-center mt-8 lg:mt-0">
-        <button
-          onClick={scrollToNextSection}
-          className="animate-bounce"
-          aria-label="Scroll to next section"
-        >
-          <ChevronDown size={32} className="text-foreground" />
-        </button>
       </div>
     </section>
   );

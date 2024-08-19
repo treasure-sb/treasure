@@ -22,7 +22,10 @@ export default function Free() {
     <div className="flex flex-col-reverse lg:col-span-2 lg:flex-row lg:justify-between">
       <div className="flex flex-col justify-between lg:w-1/2 lg:pr-20 lg:justify-center lg:space-y-20 space-y-4">
         <p className="text-2xl font-semibold lg:text-4xl 2xl:text-6xl 2xl:leading-snug">
-          Free for Event Organizers, Forever
+          Free for Event Organizers,{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#C9B677] to-[#67581E]">
+            Forever
+          </span>
         </p>
         <p className="text-sm font-light 2xl:text-3xl pb-4 lg:pb-0">
           The #1 way to sell your tickets and vendor tables online. No fee on
@@ -48,7 +51,7 @@ export default function Free() {
         className="w-full h-auto md:w-[60%] lg:w-1/2 2xl:w-[38rem] mb-10 md:ml-auto"
       >
         <Image
-          className="w-full h-full rounded-2xl object-contain"
+          className="w-full h-full rounded-3xl object-contain"
           quality={100}
           priority
           src="/static/landing-page/free.png"
