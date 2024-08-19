@@ -63,7 +63,7 @@ export default function DateRangeFilter() {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent className="w-auto p-0" align="end" side="top">
           <Calendar
             initialFocus
             mode="range"

@@ -32,7 +32,7 @@ export default function LetsGetPeople() {
           <div className="flex space-x-4">
             <LandingButton
               variant="tertiary"
-              href="/login"
+              href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
               text="Get Started with Treasure"
             />
           </div>

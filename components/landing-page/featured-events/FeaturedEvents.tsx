@@ -17,8 +17,8 @@ export default async function FeaturedEvents() {
         <h3 className="font-semibold text-xl lg:text-2xl">Trending</h3>
       </div>
       <FeaturedEventCarousel featuredEvents={eventsDisplay} />
-      <div className="max-w-[var(--container-width)] m-auto mt-10 mb-6 flex justify-between items-center">
-        <p className="text-sm md:text-xl max-w-[16rem] md:max-w-lg lg:max-w-none">
+      <div className="max-w-[var(--container-width)] m-auto mt-10 mb-6 flex justify-between items-center space-x-4">
+        <p className="text-sm md:text-xl max-w-[16rem] md:max-w-lg lg:max-w-none font-light">
           Check out the most popular shows in your city, from Sports and Pokemon
           to Comic Books and TCG.
         </p>
