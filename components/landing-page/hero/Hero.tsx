@@ -20,7 +20,7 @@ export default function Hero() {
               <motion.div
                 className="absolute inset-0 flex items-center justify-center w-full h-full"
                 initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: width < 1700 ? 1.05 : 1.35 }}
+                animate={{ opacity: 1, scale: width < 2000 ? 1.05 : 1.35 }}
                 transition={{ duration: 1.75, ease: "easeOut" }}
               >
                 <HeroGradient className="w-full h-full" />
