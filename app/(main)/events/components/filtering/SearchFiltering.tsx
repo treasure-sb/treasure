@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { useRef, useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import { SearchIcon } from "lucide-react";
 import Cancel from "@/components/icons/Cancel";
-import Search from "@/components/icons/Search";
 
 export default function SearchFiltering() {
   const [clickedSearch, setClickedSearch] = useState(false);
@@ -51,7 +51,7 @@ export default function SearchFiltering() {
       variant={"ghost"}
       className="rounded-full px-2"
     >
-      <Search fill="white" />
+      <SearchIcon className="text-foreground" />
     </Button>
   );
 }
