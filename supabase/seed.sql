@@ -177,6 +177,7 @@ DECLARE
     random_profile_id UUID;
     e_event_id UUID;
     e_table_id UUID;
+    e_date_id UUID;
     i INTEGER;
     j INTEGER;
     event_lat FLOAT := 40.7128;  -- Latitude for New York City
@@ -271,7 +272,7 @@ BEGIN
             '10:00:00',
             '18:00:00',
             future_date
-        );
+        ) RETURNING id INTO e_date_id;
 
         INSERT INTO public.event_roles (
             event_id,
@@ -688,6 +689,24 @@ BEGIN
         END IF;
     END LOOP;
 END $$;
+
+INSERT INTO
+  public.ticket_dates (ticket_id, event_date_id)
+SELECT
+  t.id,
+  ed.id
+FROM
+  public.event_dates ed
+  JOIN public.tickets t ON ed.event_id = t.event_id;
+
+INSERT INTO
+  public.event_tickets_dates (event_ticket_id, event_dates_id)
+SELECT
+  t.id,
+  ed.id
+FROM
+  public.event_dates ed
+  JOIN public.event_tickets t ON ed.event_id = t.event_id;
 
 INSERT INTO public.event_categories (event_id, category_id)
 SELECT events.id, categories.id

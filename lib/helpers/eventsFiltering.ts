@@ -94,6 +94,7 @@ const buildEventsQuery = async (
   const startIndex = (page - 1) * numEvents;
   const endIndex = startIndex + numEvents - 1;
   const supabase = await createSupabaseServerClient();
+  const isRPC = city ? true : false;
 
   let query = supabase
     .from("events")
@@ -130,16 +131,8 @@ const buildEventsQuery = async (
       radius: distance,
       user_lat: lat,
       user_lon: lng,
+      tag_id: tagId,
     });
-
-    if (tagId) {
-      query = supabase.rpc("get_tagged_nearby_events", {
-        radius: distance,
-        user_lat: lat,
-        user_lon: lng,
-        tagid: tagId,
-      });
-    }
   }
 
   if (from) {
@@ -158,20 +151,26 @@ const buildEventsQuery = async (
     query = query.ilike("name", `%${search}%`);
   }
 
-  query = query
-    .order("featured", { ascending: false })
-    .order("min_date")
-    .order("date", { ascending: true, referencedTable: "dates" })
-    .range(startIndex, endIndex);
+  if (!isRPC) {
+    query = query
+      .order("featured", { ascending: false })
+      .order("min_date")
+      .order("date", { ascending: true, referencedTable: "dates" })
+      .range(startIndex, endIndex);
+  } else {
+    query = query.range(startIndex, endIndex);
+  }
 
   const { data, error } = await query;
   const events: BuiltEvent[] = data || [];
-  const eventWithDates: EventWithDates[] = events.map((event) => {
-    const { event_categories, event_tags, ...rest } = event;
-    return {
-      ...rest,
-    };
-  });
+  const eventWithDates: EventWithDates[] = events
+    ? events.map((event) => {
+        const { event_categories, event_tags, ...rest } = event;
+        return {
+          ...rest,
+        };
+      })
+    : [];
 
   return { data: eventWithDates, error };
 };
