@@ -10,11 +10,9 @@ export const TicketInfo = ({ type, price }: TicketInfoProps) => {
   return (
     <div className="flex space-x-4 dark:text-background">
       <TicketIcon className="stroke-2 dark:text-background" />
-      <div className="flex">
+      <div className="flex font-bold">
         <p>{type}</p>{" "}
-        <p className="ml-2 font-bold">
-          {isTicketFree ? "Free" : `$${price.toFixed(2)}`}
-        </p>
+        <p className="ml-2">{isTicketFree ? "Free" : `$${price.toFixed(2)}`}</p>
       </div>
     </div>
   );
