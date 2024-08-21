@@ -35,7 +35,11 @@ const createEvent = async (values: EventForm) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const previousEventsCount = await getPreviousEventsCount(name, date as Date);
+  const previousEventsCount = await getPreviousEventsCount(
+    name,
+    date as Date,
+    ""
+  );
   const cleanedEventName = cleanedEventUrlName(
     name,
     date as Date,
