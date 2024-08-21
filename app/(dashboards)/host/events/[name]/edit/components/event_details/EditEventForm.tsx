@@ -1,11 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import {
-  EditEventDisplayData,
-  EventDisplayData,
-  EventWithDates,
-} from "@/types/event";
+import { EditEventDisplayData } from "@/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -119,7 +115,7 @@ export default function EditEventForm({
     setSelectedTags(newTags);
   };
 
-  const { refresh } = useRouter();
+  const { refresh, replace } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -138,41 +134,49 @@ export default function EditEventForm({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     toast.loading("Updating event...");
-    const editEventForm: EditEvent = {
-      ...values,
-      ...venueLocation,
-      posterUrl: "",
-    };
+    try {
+      const editEventForm: EditEvent = {
+        ...values,
+        ...venueLocation,
+        posterUrl: "",
+      };
 
-    if (imageUrl !== event.publicPosterUrl) {
-      const { data: updatedPosterUrl, error } = await replacePoster(
-        event.poster_url,
-        values.posterUrl as File
-      );
-      if (error) {
-        toast.dismiss();
-        toast.error("Error replacing image, please try again");
-        return;
+      if (imageUrl !== event.publicPosterUrl) {
+        const { data: updatedPosterUrl, error } = await replacePoster(
+          event.poster_url,
+          values.posterUrl as File
+        );
+
+        if (error) {
+          throw new Error("Error replacing image, please try again");
+        }
+
+        if (updatedPosterUrl) {
+          editEventForm.posterUrl = updatedPosterUrl;
+        }
+      } else {
+        editEventForm.posterUrl = event.poster_url;
       }
-      if (updatedPosterUrl) {
-        editEventForm.posterUrl = updatedPosterUrl;
+
+      const { addError, removeError } = await updateTags();
+
+      if (addError || removeError) {
+        throw new Error("Error updating tags, please try again");
       }
-    } else {
-      editEventForm.posterUrl = event.poster_url;
-    }
 
-    const { error } = await updateEvent(editEventForm, event.id);
-    const { addError, removeError } = await updateTags();
+      const { data } = await updateEvent(editEventForm, event.id);
 
-    toast.dismiss();
-    if (error) {
-      toast.error("Error updating event, please try again");
-      return;
-    } else if (addError || removeError) {
-      toast.error("Error updating tags, please try again");
+      if (!data) {
+        throw new Error("Error updating event, please try again");
+      }
+
+      replace(`/host/events/${data!.cleaned_name}/edit`);
+      toast.dismiss();
+      toast.success("Event updated successfully");
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message);
     }
-    toast.success("Event updated!");
-    refresh();
   };
 
   const updateTags = async () => {
