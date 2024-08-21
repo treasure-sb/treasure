@@ -101,7 +101,6 @@ export default function DateFiltering() {
   // For displaying the date in the button
   let from = searchParams.get("from");
   let until = searchParams.get("until");
-  let hasDateQuery = from && until;
   let dateDisplayed = "";
   if (from && until) {
     from = new Date(from).toLocaleDateString(undefined, {
@@ -119,6 +118,13 @@ export default function DateFiltering() {
     } else {
       dateDisplayed = `${from} - ${until}`;
     }
+  } else if (from) {
+    from = new Date(from).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    });
+    dateDisplayed = `${from}`;
   }
 
   return (
@@ -127,7 +133,7 @@ export default function DateFiltering() {
         <DropdownMenuTrigger asChild>
           <Button className="space-x-1">
             <CalendarIcon className="h-4 w-4" />
-            <p>{hasDateQuery ? <>{dateDisplayed}</> : "Date"}</p>
+            <p>{from ? <>{dateDisplayed}</> : "Date"}</p>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -156,7 +162,7 @@ export default function DateFiltering() {
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      {hasDateQuery && <Cancel handleCancel={handleClearDate} />}
+      {from && <Cancel handleCancel={handleClearDate} />}
     </div>
   );
 }
