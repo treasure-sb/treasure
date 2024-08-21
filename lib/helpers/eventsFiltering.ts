@@ -135,15 +135,11 @@ const buildEventsQuery = async (
     });
   }
 
-  if (from) {
-    query = query.gte("max_date", from);
-  }
-
-  if (until) {
-    query = query.lte("min_date", until);
-  }
-
-  if (!from && !until) {
+  if (from && until) {
+    query = query.gte("min_date", from).lte("max_date", until);
+  } else if (from) {
+    query = query.eq("max_date", from);
+  } else if (!from && !until) {
     query = query.gte("min_date", today);
   }
 
