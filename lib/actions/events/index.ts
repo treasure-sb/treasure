@@ -9,35 +9,8 @@ import {
   EventVendorApplication,
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
-import { getPublicPosterUrl } from "@/lib/helpers/events";
 import format from "date-fns/format";
-
-// Normalize accented characters, remove special characters, replace spaces with hyphens, and convert to lowercase
-const cleanedEventUrlName = (event_name: string, event_date: Date) => {
-  const cleanedDate = format(event_date, "MMddyyyy");
-  const cleanedName = event_name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\s]/gi, "")
-    .replace(/\s+/g, "-")
-    .toLowerCase();
-
-  return `${cleanedName}-${cleanedDate}`;
-};
-
-const checkPreviousEvents = async (event_name: string, event_date: Date) => {
-  const supabase = await createSupabaseServerClient();
-  const formattedDate = format(event_date, "yyyy-MM-dd");
-  const { data: events, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("name", event_name)
-    .eq("min_date", formattedDate);
-  if (!events || events.length === 0) {
-    return 0;
-  }
-  return events.length + 1;
-};
+import { revalidatePath } from "next/cache";
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -62,15 +35,13 @@ const createEvent = async (values: EventForm) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // check if there are previous events with the same name and same date
-  const previousEvents = await checkPreviousEvents(name, date as Date);
+  const previousEventsCount = await getPreviousEventsCount(name, date as Date);
+  const cleanedEventName = cleanedEventUrlName(
+    name,
+    date as Date,
+    previousEventsCount
+  );
 
-  // create cleaned event name
-  let cleanedEventName = cleanedEventUrlName(name, date as Date);
-  if (previousEvents > 0) {
-    cleanedEventName = `${cleanedEventName}-${previousEvents}`;
-  }
-  // create the event on supabase
   const { data, error } = await supabase
     .from("events")
     .insert([
@@ -107,7 +78,6 @@ const createEvent = async (values: EventForm) => {
       },
     ]);
 
-    const posterUrl = await getPublicPosterUrl(event);
     const eventPromises = [
       await createEventDate(event.id, date as Date, start_time, end_time),
       await createTickets(values.tickets, event.id),
@@ -307,7 +277,18 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
   );
 
   try {
-    const { error: updateError } = await supabase
+    const previousEventsCount = await getPreviousEventsCount(
+      name,
+      minDate,
+      eventId
+    );
+    const cleanedEventName = cleanedEventUrlName(
+      name,
+      minDate,
+      previousEventsCount
+    );
+
+    const { data: eventData, error: updateError } = await supabase
       .from("events")
       .update({
         name,
@@ -317,16 +298,21 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
         lng,
         city,
         state,
+        cleaned_name: cleanedEventName,
         venue_name: venueName,
         poster_url: posterUrl,
         max_date: maxDate,
         min_date: minDate,
       })
-      .eq("id", eventId);
+      .eq("id", eventId)
+      .select()
+      .single();
 
     if (updateError) {
       throw updateError;
     }
+
+    const event: Tables<"events"> = eventData;
 
     const dateUpdatePromises = dates.map((date) =>
       editEventDate(date.id, date.date, date.startTime, date.endTime)
@@ -334,9 +320,9 @@ const updateEvent = async (editEventData: EditEvent, eventId: string) => {
 
     await Promise.all(dateUpdatePromises);
 
-    return { success: true, error: null };
+    return { success: true, error: null, data: event };
   } catch (error) {
-    return { success: false, error };
+    return { success: false, error, data: null };
   }
 };
 
@@ -374,6 +360,45 @@ const editEventDate = async (
     })
     .eq("id", dateId);
   return { error };
+};
+
+// Name: Event 1, Date: 08-24-2024 -> event-1-08242024
+const cleanedEventUrlName = (
+  eventName: string,
+  eventDate: Date,
+  previousEventsCount: number
+) => {
+  const cleanedDate = format(eventDate, "MMddyyyy");
+  const cleanedName = eventName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/gi, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+
+  return previousEventsCount == 0
+    ? `${cleanedName}-${cleanedDate}`
+    : `${cleanedName}-${cleanedDate}-${previousEventsCount}`;
+};
+
+const getPreviousEventsCount = async (
+  eventName: string,
+  eventDate: Date,
+  eventId: string
+) => {
+  const supabase = await createSupabaseServerClient();
+  const formattedDate = format(eventDate, "yyyy-MM-dd");
+  const { data: eventsData } = await supabase
+    .from("events")
+    .select("name")
+    .eq("name", eventName)
+    .neq("id", eventId)
+    .eq("min_date", formattedDate);
+
+  if (!eventsData || eventsData.length === 0) {
+    return 0;
+  }
+  return eventsData.length + 1;
 };
 
 export {

@@ -12,6 +12,8 @@ async function isUserEventMemberOrAdmin(
   const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(userId);
 
+  console.log(eventName);
+
   const { event } = await getEventFromCleanedName(eventName);
   const { data: teamData } = await supabase
     .from("event_roles")
