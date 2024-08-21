@@ -16,6 +16,7 @@ import {
 } from "recharts/types/component/DefaultTooltipContent";
 import { SalesData } from "./SalesAnalytics";
 import { format, parseISO } from "date-fns";
+import { useViewportSize } from "@mantine/hooks";
 
 export default function SalesChart({
   salesData,
@@ -28,7 +29,7 @@ export default function SalesChart({
     (max, item) => Math.max(max, Math.max(item.tables, item.tickets)),
     0
   );
-
+  const { width } = useViewportSize();
   const getTickInterval = (max: number) => {
     if (max <= 1) return 0.25;
     if (max <= 5) return 1;
@@ -60,7 +61,7 @@ export default function SalesChart({
   };
 
   return (
-    <ResponsiveContainer width="100%" height="90%">
+    <ResponsiveContainer width="100%" height={width < 1280 ? "80%" : "90%"}>
       <AreaChart width={500} height={300} data={salesData}>
         <CartesianGrid
           strokeDasharray="4 1"
@@ -76,6 +77,7 @@ export default function SalesChart({
           padding={{ left: 40 }}
           tickFormatter={formatXTick}
           interval={periodLength === 7 ? 0 : 3}
+          hide={width < 1280}
         />
         <YAxis
           axisLine={false}
@@ -84,6 +86,7 @@ export default function SalesChart({
           tickFormatter={formatYTick}
           ticks={yAxisTicks}
           domain={[0, Math.max(maxYValue, 1)]}
+          hide={width < 640}
         />
         <Area
           type="monotone"

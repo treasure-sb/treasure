@@ -17,6 +17,7 @@ import {
 import { type RevenueData } from "./Revenue";
 import { format, parseISO } from "date-fns";
 import { USDollar } from "@/lib/utils";
+import { useViewportSize } from "@mantine/hooks";
 
 export default function RevenueChart({
   revenueData,
@@ -25,6 +26,7 @@ export default function RevenueChart({
   revenueData: RevenueData[];
   periodLength: number;
 }) {
+  const { width } = useViewportSize();
   const maxValue = revenueData.reduce(
     (max, item) => Math.max(max, Math.max(item.amount)),
     0
@@ -61,7 +63,7 @@ export default function RevenueChart({
   };
 
   return (
-    <ResponsiveContainer width="100%" height="90%">
+    <ResponsiveContainer width="100%" height={width < 1024 ? "80%" : "90%"}>
       <AreaChart width={500} height={300} data={revenueData}>
         <CartesianGrid
           strokeDasharray="4 1"
@@ -77,6 +79,7 @@ export default function RevenueChart({
           padding={{ left: 40 }}
           tickFormatter={formatXTick}
           interval={periodLength === 7 ? 0 : 3}
+          hide={width < 1280}
         />
         <YAxis
           axisLine={false}
@@ -85,6 +88,7 @@ export default function RevenueChart({
           tickFormatter={formatYTick}
           ticks={yAxisTicks}
           domain={[0, Math.max(maxYValue, 1)]}
+          hide={width < 1280}
         />
         <Area
           type="monotone"
