@@ -20,9 +20,6 @@ import moment from "moment";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { subscribe } from "diagnostics_channel";
-import { randomUUID } from "crypto";
-import { validateUser } from "@/lib/actions/auth";
 import { secondsToISODate } from "@/lib/helpers/stripeHelp";
 
 const cors = Cors({
@@ -73,7 +70,8 @@ const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>,
-  email: string
+  email: string,
+  fees_paid?: number
 ) => {
   const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
     checkoutSessison;
@@ -88,6 +86,7 @@ const handleTicketPurchase = async (
       amount_paid: amountPaid,
       metadata,
       promo_id,
+      fees_paid,
     })
     .returns<PurchaseTicketResult[]>();
 
@@ -110,6 +109,13 @@ const handleTicketPurchase = async (
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+  const numericAmountPaid = Number(amountPaid);
+  const numericFeesPaid = Number(fees_paid);
+
+  // Now perform the addition
+  const totalPaid = fees_paid
+    ? numericAmountPaid + numericFeesPaid
+    : numericAmountPaid;
 
   const ticketPurchaseEmailProps = {
     eventName: event_name,
@@ -119,11 +125,12 @@ const handleTicketPurchase = async (
     location: event_address,
     date: moment(event_date).format("dddd, MMM Do"),
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${amountPaid}`,
+    totalPrice: `$${totalPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
       metadata as { [key: string]: Json | undefined }
     ),
+    fees_paid: fees_paid,
   };
 
   if (profile.email) {
@@ -177,7 +184,8 @@ const handleTicketPurchase = async (
 const handleTablePurchase = async (
   checkoutSession: Tables<"checkout_sessions">,
   amountPaid: number,
-  supabase: SupabaseClient<any, "public", any>
+  supabase: SupabaseClient<any, "public", any>,
+  fees_paid?: number
 ) => {
   const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
 
@@ -189,6 +197,7 @@ const handleTablePurchase = async (
       purchase_quantity: quantity,
       amount_paid: amountPaid,
       promo_id,
+      fees_paid,
     })
     .returns<PurchaseTableResult[]>();
 
@@ -222,7 +231,12 @@ const handleTablePurchase = async (
       height: 400,
     },
   });
-
+  const numericFeesPaid = Number(fees_paid);
+  const numericAmountPaid = Number(amountPaid);
+  // Now perform the addition
+  const totalPaid = fees_paid
+    ? numericAmountPaid + numericFeesPaid
+    : numericAmountPaid;
   const tablePurchasedEmailPayload: TablePurchasedProps = {
     eventName: event_name,
     posterUrl: publicUrl,
@@ -233,7 +247,7 @@ const handleTablePurchase = async (
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
-    totalPrice: `$${amountPaid}`,
+    totalPrice: `$${totalPaid}`,
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
   };
@@ -284,12 +298,12 @@ const handleTablePurchase = async (
 const handlePaymentIntentSucceeded = async (
   event: Stripe.PaymentIntentSucceededEvent
 ) => {
+  console.log("handle payment intent");
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
 
-  const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
-    JSON.stringify(session.metadata)
-  );
+  const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
+    JSON.parse(JSON.stringify(session.metadata));
   if (session.description == "Subscription creation") {
     const invoice = await stripe.invoices.retrieve(session.invoice as string);
     const checkoutSessionMetadata = (
@@ -350,11 +364,17 @@ const handlePaymentIntentSucceeded = async (
         checkoutSession,
         priceAfterPromo,
         supabase,
-        email
+        email,
+        fees_paid
       );
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, priceAfterPromo, supabase);
+      await handleTablePurchase(
+        checkoutSession,
+        priceAfterPromo,
+        supabase,
+        fees_paid
+      );
       break;
     default:
       throw new Error("Invalid Ticket Type");

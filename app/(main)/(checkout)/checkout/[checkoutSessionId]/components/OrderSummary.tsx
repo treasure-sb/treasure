@@ -10,6 +10,7 @@ export default function OrderSummary({
   promoCode,
   event,
   ticket,
+  fee,
   subtotal,
   totalPrice,
   checkoutSession,
@@ -22,6 +23,7 @@ export default function OrderSummary({
   totalPrice: number;
   checkoutSession: Tables<"checkout_sessions">;
   metadata: SampaMetadata;
+  fee?: number;
 }) {
   const { quantity } = checkoutSession;
 
@@ -84,11 +86,21 @@ export default function OrderSummary({
               )}`}</p>
             </div>
           )}
+          {fee && (
+            <div className="flex justify-between text-muted-foreground my-1">
+              <div className="flex items-center space-x-4">
+                <p className="text-sm italic">Processing Fee</p>
+              </div>
+              <p className="text-sm italic">{`+$${fee.toFixed(2)}`}</p>
+            </div>
+          )}
           <Separator className="my-2" />
           <div>
             <div className="flex justify-between">
               <p className="font-semibold">Total</p>
-              <p className="font-semibold">{`$${totalPrice.toFixed(2)}`}</p>
+              <p className="font-semibold">{`$${
+                fee ? (totalPrice + fee).toFixed(2) : totalPrice.toFixed(2)
+              }`}</p>
             </div>
           </div>
         </div>

@@ -7,6 +7,8 @@ import { getProfile } from "@/lib/helpers/profiles";
 import { CheckoutTicketInfo } from "../../types";
 import OrderSummary from "./components/OrderSummary";
 
+import { getFeeInfo } from "@/lib/helpers/subscriptions";
+
 export type SampaMetadata = {
   dinnerSelections: string[];
   isSampa: boolean;
@@ -74,7 +76,11 @@ export default async function Page({
   const { event, eventError } = await getEventFromId(event_id);
   const eventDisplay = await getEventDisplayData(event);
   const { profile } = await getProfile(checkoutSession.user_id);
-
+  const feeInfo = await getFeeInfo(event_id);
+  const { feePercent, feeError } = {
+    feePercent: feeInfo.fee,
+    feeError: feeInfo.returnedError,
+  };
   let promoCode: Tables<"event_codes"> | null = null;
   if (promo_id) {
     const { data: promoCodeData, error: promoCodeError } = await supabase
@@ -127,7 +133,14 @@ export default async function Page({
     const fee = subtotal * 0.03;
     totalPrice += fee;
   }
+  const fee = feePercent ? totalPrice * feePercent : null;
 
+  let stripeFee: number | null = null;
+  if (!feeError) {
+    stripeFee = fee ? (totalPrice + fee) * 0.029 + 0.3 : null;
+  } else {
+    console.log(feeError);
+  }
   return (
     <main className="max-w-6xl m-auto">
       <div className="flex flex-col space-y-14 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
@@ -139,6 +152,7 @@ export default async function Page({
           totalPrice={totalPrice}
           checkoutSession={checkoutSession}
           metadata={sampaMetadata}
+          fee={fee ? (stripeFee ? fee + stripeFee : fee) : undefined}
         />
         <InitializeCheckout
           checkoutSession={checkoutSession}
@@ -148,6 +162,7 @@ export default async function Page({
           profile={profile}
           event={eventDisplay}
           promoCode={promoCode}
+          fee={fee ? (stripeFee ? fee + stripeFee : fee) : undefined}
         />
       </div>
     </main>

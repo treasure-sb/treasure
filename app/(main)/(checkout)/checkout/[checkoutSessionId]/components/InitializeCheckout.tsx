@@ -21,6 +21,7 @@ export default function InitializeCheckout({
   event,
   profile,
   promoCode,
+  fee,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
   totalPrice: number;
@@ -29,6 +30,7 @@ export default function InitializeCheckout({
   event: EventDisplayData;
   profile: Tables<"profiles">;
   promoCode: Tables<"event_codes"> | null;
+  fee?: number;
 }) {
   const [price, setPrice] = useState(totalPrice);
   const [options, setOptions] = useState({
@@ -88,6 +90,7 @@ export default function InitializeCheckout({
             subtotal={subtotal}
             priceAfterPromo={priceAfterPromo}
             promoCode={promoCode}
+            fee={fee}
           />
         </Elements>
       )}
