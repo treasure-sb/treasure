@@ -6,6 +6,13 @@ interface FeeInfoResponse {
   returnedError: PostgrestError | null;
 }
 
+type FeeData = {
+  subscription_products: {
+    name: string;
+  };
+  status: string;
+};
+
 export const getFeeInfo = async (
   event_id: string
 ): Promise<FeeInfoResponse> => {
@@ -24,7 +31,7 @@ export const getFeeInfo = async (
     .from("subscriptions")
     .select("subscription_products(name), status")
     .eq("user_id", data?.user_id)
-    .single();
+    .returns<FeeData>();
 
   if (error) {
     returnedError = error;
@@ -36,7 +43,7 @@ export const getFeeInfo = async (
   }
   console.log(feeData);
   if (feeData?.subscription_products) {
-    const firstProductName = feeData.subscription_products.name as string;
+    const firstProductName = feeData.subscription_products.name;
     console.log(firstProductName, feeData);
     switch (firstProductName) {
       case "Legacy":
