@@ -85,7 +85,11 @@ export default function FreeCheckout({
       }
 
       toast.dismiss();
-      toast.success(`Ticket${quantity > 1 ? "s" : ""} added successfully!`);
+      toast.success(
+        `${checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}${
+          quantity > 1 ? "s" : ""
+        } added successfully!`
+      );
       push(`/checkout/${checkoutSession.id}/success`);
     } catch (err: any) {
       toast.dismiss();
@@ -308,7 +312,8 @@ export default function FreeCheckout({
             disabled={isLoading}
             id="submit"
           >
-            Get Ticket{checkoutSession.quantity > 1 && "s"}
+            Get {checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}
+            {checkoutSession.quantity > 1 && "s"}
           </Button>
         </div>
       </form>
