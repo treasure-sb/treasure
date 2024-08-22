@@ -14,12 +14,23 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
-import * as z from "zod";
-import StripeInput from "./StripeInput";
-import { addEventAttendee } from "@/lib/actions/tickets";
 import { EventDisplayData } from "@/types/event";
 import { useRouter } from "next/navigation";
-import { is } from "date-fns/locale";
+import { PurchaseTicketResult } from "@/types/tickets";
+import { PurchaseTableResult } from "@/types/tables";
+import * as z from "zod";
+import StripeInput from "./StripeInput";
+import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
+import {
+  sendTablePurchasedEmail,
+  sendTicketPurchasedEmail,
+} from "@/lib/actions/emails";
+import {
+  sendAttendeeTicketPurchasedSMS,
+  sendVendorTablePurchasedSMS,
+} from "@/lib/sms";
+import { formatEmailDate } from "@/lib/utils";
+import { TablePurchasedProps } from "@/emails/TablePurchased";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -57,52 +68,197 @@ export default function FreeCheckout({
 
   const onSubmit = async () => {
     setIsLoading(true);
-    const { first_name, last_name, email } = form.getValues();
-    const { ticket_id, quantity, user_id, event_id, promo_id, ticket_type } =
-      checkoutSession;
+    try {
+      const { quantity, ticket_type } = checkoutSession;
+      await updateProfile();
+
+      toast.loading(
+        `Getting ${ticket_type === "TABLE" ? "table" : "ticket"}${
+          quantity > 1 ? "s" : ""
+        }...`
+      );
+
+      if (ticket_type === "TABLE") {
+        await handleFreeTablePurchase();
+      } else {
+        await handleFreeTicketPurchase();
+      }
+
+      toast.dismiss();
+      toast.success(
+        `${checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}${
+          quantity > 1 ? "s" : ""
+        } added successfully!`
+      );
+      push(`/checkout/${checkoutSession.id}/success`);
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateProfile = async () => {
+    const { first_name, last_name } = form.getValues();
     await supabase
       .from("profiles")
       .update({ first_name, last_name })
       .eq("id", profile.id);
+  };
 
-    toast.loading(
-      `Getting ${ticket_type === "TABLE" ? "table" : "ticket"} ${
-        quantity > 1 ? "s" : ""
-      }...`
-    );
+  const handleFreeTicketPurchase = async () => {
+    const { email } = form.getValues();
+    const { ticket_id, quantity, user_id, event_id, promo_id } =
+      checkoutSession;
 
-    const { data, error } =
-      ticket_type === "TABLE"
-        ? await supabase.rpc("purchase_table", {
-            table_id: ticket_id,
-            event_id,
-            user_id,
-            purchase_quantity: quantity,
-            amount_paid: 0,
-            promo_id,
-          })
-        : await supabase.rpc("purchase_tickets", {
-            ticket_id,
-            event_id,
-            user_id,
-            purchase_quantity: quantity,
-            email,
-            amount_paid: 0,
-            promo_id,
-          });
+    const { data, error } = await supabase
+      .rpc("purchase_tickets", {
+        ticket_id,
+        event_id,
+        user_id,
+        purchase_quantity: quantity,
+        email,
+        amount_paid: 0,
+        promo_id,
+      })
+      .returns<PurchaseTicketResult[]>();
 
     if (error) {
-      setIsLoading(false);
-      toast.dismiss();
-      toast.error("Failed to complete order");
-      return;
+      throw new Error("Failed to complete order");
     }
 
-    setIsLoading(false);
-    toast.dismiss();
-    toast.success(`Ticket${quantity > 1 ? "s" : ""} added successfully!`);
-    console.log(isLoading);
-    push(`/checkout/${checkoutSession.id}/success`);
+    const {
+      event_address,
+      event_dates,
+      event_description,
+      event_name,
+      event_poster_url,
+      event_ticket_ids,
+      ticket_name,
+    } = data[0];
+
+    const formattedEventDate = formatEmailDate(event_dates);
+    const purchasedTicketId =
+      event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
+
+    const {
+      data: { publicUrl },
+    } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
+      transform: {
+        width: 400,
+        height: 400,
+      },
+    });
+
+    const ticketPurchaseEmailProps = {
+      eventName: event_name,
+      posterUrl: publicUrl,
+      ticketType: ticket_name,
+      quantity: quantity,
+      location: event_address,
+      date: formattedEventDate,
+      guestName: `${profile.first_name} ${profile.last_name}`,
+      totalPrice: `Free`,
+      eventInfo: event_description,
+    };
+
+    if (profile.email) {
+      await sendTicketPurchasedEmail(
+        profile.email,
+        purchasedTicketId,
+        event_id,
+        ticketPurchaseEmailProps
+      );
+    }
+
+    if (profile.phone) {
+      await sendAttendeeTicketPurchasedSMS(
+        profile.phone,
+        event_name,
+        formattedEventDate
+      );
+    }
+  };
+
+  const handleFreeTablePurchase = async () => {
+    const { ticket_id, quantity, user_id, event_id, promo_id } =
+      checkoutSession;
+    const { data, error } = await supabase
+      .rpc("purchase_table", {
+        table_id: ticket_id,
+        event_id,
+        user_id,
+        purchase_quantity: quantity,
+        amount_paid: 0,
+        promo_id,
+      })
+      .returns<PurchaseTableResult[]>();
+
+    if (error) {
+      throw new Error("Failed to complete order");
+    }
+
+    const {
+      event_name,
+      event_address,
+      event_max_date,
+      event_min_date,
+      event_description,
+      event_poster_url,
+      table_section_name,
+      vendor_table_quantity,
+      vendor_first_name,
+      vendor_last_name,
+      vendor_inventory,
+      vendor_vendors_at_table,
+      vendor_business_name,
+      vendor_application_email,
+      vendor_application_phone,
+    } = data[0];
+
+    const event_dates = [event_min_date, event_max_date];
+
+    if (event_min_date === event_max_date) {
+      event_dates.pop();
+    }
+
+    const formattedEventDate = formatEmailDate(event_dates);
+
+    const {
+      data: { publicUrl },
+    } = await supabase.storage.from("posters").getPublicUrl(event_poster_url, {
+      transform: {
+        width: 400,
+        height: 400,
+      },
+    });
+
+    const tablePurchasedEmailPayload: TablePurchasedProps = {
+      eventName: event_name,
+      posterUrl: publicUrl,
+      tableType: table_section_name,
+      quantity: vendor_table_quantity,
+      location: event_address,
+      date: formattedEventDate,
+      guestName: `${vendor_first_name} ${vendor_last_name}`,
+      businessName: vendor_business_name,
+      itemInventory: vendor_inventory,
+      totalPrice: `Free`,
+      numberOfVendors: vendor_vendors_at_table,
+      eventInfo: event_description,
+    };
+
+    await sendTablePurchasedEmail(
+      vendor_application_email,
+      tablePurchasedEmailPayload
+    );
+
+    await sendVendorTablePurchasedSMS(
+      vendor_application_phone,
+      event_name,
+      formattedEventDate
+    );
   };
 
   return (
@@ -156,7 +312,8 @@ export default function FreeCheckout({
             disabled={isLoading}
             id="submit"
           >
-            Get Ticket{checkoutSession.quantity > 1 && "s"}
+            Get {checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}
+            {checkoutSession.quantity > 1 && "s"}
           </Button>
         </div>
       </form>

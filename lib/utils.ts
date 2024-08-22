@@ -73,6 +73,18 @@ export const normalizeDate = (date: Date) => {
   return adjustedDate.toISOString().slice(0, 10);
 };
 
+export const formatEmailDate = (dates: string[]) => {
+  let formattedEventDate: string = "";
+  dates.map((date, i) => {
+    if (dates.length === i + 1) {
+      formattedEventDate += moment(date).format("dddd, MMM Do");
+    } else {
+      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
+    }
+  });
+  return formattedEventDate;
+};
+
 export const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
