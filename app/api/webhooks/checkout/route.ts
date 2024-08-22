@@ -5,7 +5,7 @@ import {
 } from "@/lib/actions/emails";
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
-import { Database, Json, Tables } from "@/types/supabase";
+import { Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
@@ -16,7 +16,9 @@ import {
   sendHostTableSoldSMS,
 } from "@/lib/sms";
 import { headers } from "next/headers";
-import moment from "moment";
+import { PurchaseTicketResult } from "@/types/tickets";
+import { PurchaseTableResult } from "@/types/tables";
+import { formatEmailDate } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
@@ -33,12 +35,6 @@ if (!stripeSecret || !webhookSecret) {
 }
 
 const stripe = new Stripe(stripeSecret);
-
-type PurchaseTableResult =
-  Database["public"]["Functions"]["purchase_table"]["Returns"][number];
-
-type PurchaseTicketResult =
-  Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
 
 type DinnerSelections = {
   dinnerSelections: string[];
@@ -102,20 +98,11 @@ const handleTicketPurchase = async (
     ticket_name,
   } = data[0];
 
-  let formattedEventDate: string = "";
-
-  event_dates.map((date, i) => {
-    if (event_dates.length === i + 1) {
-      formattedEventDate += moment(date).format("dddd, MMM Do");
-    } else {
-      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
-    }
-  });
-
   const { profile } = await getProfile(user_id);
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+  const formattedEventDate = formatEmailDate(event_dates);
 
   const ticketPurchaseEmailProps = {
     eventName: event_name,
@@ -225,21 +212,13 @@ const handleTablePurchase = async (
     vendor_application_phone,
   } = data[0];
 
-  let formattedEventDate: string = "";
-
   const event_dates = [event_min_date, event_max_date];
 
   if (event_min_date === event_max_date) {
     event_dates.pop();
   }
 
-  event_dates.map((date, i) => {
-    if (event_dates.length === i + 1) {
-      formattedEventDate += moment(date).format("dddd, MMM Do");
-    } else {
-      formattedEventDate += moment(date).format("dddd, MMM Do") + " - ";
-    }
-  });
+  const formattedEventDate = formatEmailDate(event_dates);
 
   const {
     data: { publicUrl },
