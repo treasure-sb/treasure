@@ -700,13 +700,13 @@ FROM public.events
 JOIN public.categories ON categories.name = 'collectables';
 
 INSERT INTO public.subscription_products(name, service_fee, stripe_fee)
-VALUES ("Basic", 0.04, TRUE);
+VALUES ('Basic', 0.04, TRUE);
 INSERT INTO public.subscription_products(name, service_fee, stripe_fee)
-VALUES ("Legacy", 0, FALSE);
+VALUES ('Legacy', 0, FALSE);
 INSERT INTO public.subscription_products(name, service_fee, stripe_fee)
-VALUES ("Stripe", 0.0, TRUE);
+VALUES ('Stripe', 0, TRUE);
 INSERT INTO public.subscription_products(name, stripe_price_id, stripe_product_id, service_fee, stripe_fee)
-VALUES ("Pro", "price_1PjqNfHnRCFO3bhFJArayp7A", "prod_Qb2SUwqyGt8cuc", 0.02, TRUE);
+VALUES ('Pro', 'price_1PjqNfHnRCFO3bhFJArayp7A', 'prod_Qb2SUwqyGt8cuc', 0.02, TRUE);
 
 
 RESET ALL;
