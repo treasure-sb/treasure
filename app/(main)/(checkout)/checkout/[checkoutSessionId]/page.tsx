@@ -73,15 +73,14 @@ export default async function Page({
   const { event_id, ticket_id, ticket_type, quantity, promo_id, metadata } =
     checkoutSession;
 
-  const { event, eventError } = await getEventFromId(event_id);
+  const { event } = await getEventFromId(event_id);
   const eventDisplay = await getEventDisplayData(event);
   const { profile } = await getProfile(checkoutSession.user_id);
 
-  const {
-    fee: feePercent,
-    collectStripeFee,
-    returnedError: feeError,
-  } = await getFeeInfo(event_id);
+  const { data: feeData, error: feeError } = await getFeeInfo(event_id);
+
+  const feePercent = feeData?.fee || 0;
+  const collectStripeFee = feeData?.collectStripeFee || false;
 
   let promoCode: Tables<"event_codes"> | null = null;
   if (promo_id) {
