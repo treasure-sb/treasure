@@ -29,7 +29,7 @@ export const getFeeInfo = async (event_id: string) => {
     .single();
 
   if (feeError) {
-    return { feeError: true, data: null };
+    return { error: true, data: null };
   }
 
   const { service_fee, stripe_fee } = feeData.subscription_products;
