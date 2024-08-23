@@ -708,5 +708,25 @@ VALUES ('Stripe', 0, TRUE);
 INSERT INTO public.subscription_products(name, stripe_price_id, stripe_product_id, service_fee, stripe_fee)
 VALUES ('Pro', 'price_1PjqNfHnRCFO3bhFJArayp7A', 'prod_Qb2SUwqyGt8cuc', 0.02, TRUE);
 
+WITH profiles AS (
+    SELECT id
+    FROM public.profiles
+), basic_product AS (
+    SELECT id
+    FROM public.subscription_products
+    WHERE name = 'Basic'
+)
+INSERT INTO
+    public.subscriptions (
+        user_id,
+        subscribed_product_id,
+        status
+    ) (
+        SELECT
+            p.id,
+            bp.id,
+            'ACTIVE'
+        FROM profiles p, basic_product bp
+    );
 
 RESET ALL;
