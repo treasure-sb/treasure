@@ -86,7 +86,7 @@ export default function OrderSummary({
               )}`}</p>
             </div>
           )}
-          {fee && (
+          {fee !== 0 && fee && (
             <div className="flex justify-between text-muted-foreground my-1">
               <div className="flex items-center space-x-4">
                 <p className="text-sm italic">Processing Fee</p>
