@@ -3,6 +3,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { profileForm } from "@/types/profile";
+import { newProfileToBasic } from "../subscriptions";
 
 interface CreateProfileData {
   firstName: string;
@@ -45,6 +46,7 @@ const createProfile = async (createProfileData: CreateProfileData) => {
     .select();
 
   const profileData: Tables<"profiles"> | null = data ? data[0] : null;
+  await newProfileToBasic(profileData);
   return { profileData, error };
 };
 

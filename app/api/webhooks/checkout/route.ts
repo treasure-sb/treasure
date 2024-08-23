@@ -298,52 +298,11 @@ const handleTablePurchase = async (
 const handlePaymentIntentSucceeded = async (
   event: Stripe.PaymentIntentSucceededEvent
 ) => {
-  console.log("handle payment intent");
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
 
   const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
     JSON.parse(JSON.stringify(session.metadata));
-  if (session.description == "Subscription creation") {
-    const invoice = await stripe.invoices.retrieve(session.invoice as string);
-    const checkoutSessionMetadata = (
-      await stripe.checkout.sessions.list({ payment_intent: session.id })
-    ).data[0].metadata;
-    const { plan, priceId, user_id } = JSON.parse(
-      JSON.stringify(checkoutSessionMetadata)
-    );
-    const product_id = (
-      await supabase
-        .from("subscription_products")
-        .select("id")
-        .eq("stripe_price_id", "price_1PjqNfHnRCFO3bhFJArayp7A")
-        .maybeSingle()
-    ).data?.id;
-    let subscription_id = await supabase
-      .from("subscriptions")
-      .insert({
-        user_id: user_id,
-        subscribed_product_id: product_id,
-        stripe_subscription_id: invoice.subscription,
-        status: "ACTIVE",
-        start_date: secondsToISODate(invoice.lines.data[0].period.start),
-        end_date: secondsToISODate(invoice.lines.data[0].period.end),
-        created_at: invoice.lines.data[0].plan?.created
-          ? secondsToISODate(invoice.lines.data[0].plan?.created)
-          : null,
-        updated_at: null,
-      })
-      .select()
-      .maybeSingle();
-    const invoice_error = await supabase.from("subscription_invoices").insert({
-      subscription_id: subscription_id.data ? subscription_id.data.id : "",
-      stripe_invoice_id: invoice.id,
-      amount_paid: invoice.amount_paid / 100,
-      paid_on: secondsToISODate(session.created),
-    });
-    console.log(subscription_id);
-    return;
-  }
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
@@ -353,7 +312,6 @@ const handlePaymentIntentSucceeded = async (
       .single();
 
   if (checkoutSessionError || !checkoutSessionData) {
-    console.log("error");
     throw new Error("Invalid Checkout Session");
   }
 
@@ -380,33 +338,6 @@ const handlePaymentIntentSucceeded = async (
       throw new Error("Invalid Ticket Type");
   }
 };
-const handleSubscriptionRenewAttempt = async (
-  event: Stripe.CustomerSubscriptionUpdatedEvent
-) => {
-  const supabase = await createSupabaseServerClient();
-  const invoice = event.data.object.latest_invoice as Stripe.Invoice;
-  if (invoice !== null) {
-    if (invoice.status == "open") {
-      const { data, error } = await supabase
-        .from("subscription")
-        .update({
-          status: "CANCELLED",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("stripe_subscription_id", invoice.subscription);
-    } else {
-      const { data, error } = await supabase
-        .from("subscription")
-        .update({
-          updated_at: new Date().toISOString(),
-          start_date: secondsToISODate(invoice.lines.data[0].period.start),
-          end_date: secondsToISODate(invoice.lines.data[0].period.start),
-        })
-        .eq("stripe_subscription_id", invoice.subscription);
-    }
-    invoice.id;
-  }
-};
 
 export async function POST(req: Request) {
   try {
@@ -417,21 +348,12 @@ export async function POST(req: Request) {
       signature,
       webhookSecret
     );
-    if (event.type == "customer.subscription.updated") {
-      try {
-        //FINISH THIS/ REDO
-        await handleSubscriptionRenewAttempt(
-          event as Stripe.CustomerSubscriptionUpdatedEvent
-        );
-      } finally {
-      }
-    }
+
     if (event.type === "payment_intent.succeeded") {
       try {
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
-
         return NextResponse.json({
           message: "Payment Intent Succeeded",
           ok: true,

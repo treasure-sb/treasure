@@ -2,7 +2,8 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { PostgrestError } from "@supabase/supabase-js";
 
 interface FeeInfoResponse {
-  fee: number | null;
+  fee: number;
+  collectStripeFee: boolean;
   returnedError: PostgrestError | null;
 }
 
@@ -16,7 +17,8 @@ type FeeData = {
 export const getFeeInfo = async (
   event_id: string
 ): Promise<FeeInfoResponse> => {
-  let fee: number | null = null;
+  let fee: number = 0;
+  let collectStripeFee: boolean = false;
   let returnedError: PostgrestError | null = null;
 
   const supabase = await createSupabaseServerClient();
@@ -29,36 +31,22 @@ export const getFeeInfo = async (
 
   const { data: feeData, error: feeError } = await supabase
     .from("subscriptions")
-    .select("subscription_products(name), status")
+    .select("subscription_products(service_fee, stripe_fee), status")
     .eq("user_id", data?.user_id)
-    .returns<FeeData>();
+    .returns<FeeInfoResponse>();
 
   if (error) {
     returnedError = error;
-    console.log("Event roles error");
+    console.log("Event roles error", returnedError);
   } else if (feeError) {
     returnedError = feeError;
-    console.log("subscriptions error");
+    console.log("subscriptions error", returnedError);
     console.log(data.user_id);
+  } else {
+    collectStripeFee = feeData?.collectStripeFee;
+    fee = feeData?.fee;
   }
   console.log(feeData);
-  if (feeData?.subscription_products) {
-    const firstProductName = feeData.subscription_products.name;
-    console.log(firstProductName, feeData);
-    switch (firstProductName) {
-      case "Legacy":
-        fee = null;
-        break;
-      case "Pro":
-        fee = 0.02;
-        break;
-      case "Basic":
-        fee = 0.04;
-        break;
-      default:
-        fee = null;
-    }
-  }
 
-  return { fee, returnedError };
+  return { fee, collectStripeFee, returnedError };
 };
