@@ -79,10 +79,7 @@ export default function AddPromoButton({ eventId }: { eventId: string }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
-                      label="Code (case sensitive)"
-                      {...field}
-                    />
+                    <FloatingLabelInput label="Code" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
