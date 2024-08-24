@@ -36,7 +36,7 @@ export default function PromoCode({
     const { data, error } = await supabase
       .from("event_codes")
       .select("*")
-      .eq("code", promoCode)
+      .eq("code", promoCode.toUpperCase())
       .or(`event_id.eq.${event.id},event_id.is.null`)
       .single();
 
