@@ -43,7 +43,6 @@ export default function AddPromoButton() {
   const { refresh } = useRouter();
 
   const onSubmit = async (values: z.infer<typeof PromoFormSchema>) => {
-    console.log("v" + values);
     toast.loading("Adding promo code...");
 
     const { error } = await createPromoCode(null, values);
@@ -81,10 +80,7 @@ export default function AddPromoButton() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
-                      label="Code (case sensitive)"
-                      {...field}
-                    />
+                    <FloatingLabelInput label="Code" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
