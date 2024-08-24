@@ -10,10 +10,7 @@ import {
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/profile";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
-import {
-  sendVendorAppReceivedEmail,
-  sendVendorAppSubmittedEmail,
-} from "@/lib/actions/emails";
+import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { updateLink } from "@/lib/actions/links";
@@ -139,7 +136,7 @@ export default function ReviewInformation() {
       tableType: table.section_name,
       quantity: tableQuantity,
       location: event.address,
-      date: event.date,
+      date: event.dates[0].date,
       guestName: `${vendorInfo.firstName} ${vendorInfo.lastName}`,
       businessName: vendorInfo.businessName,
       itemInventory: inventory,

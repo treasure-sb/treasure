@@ -9,13 +9,12 @@ import { useState } from "react";
 import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+import { ThemeSwitch } from "@/components/shared/ThemeSwitch";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
 import Link from "next/link";
 import HostSidebarOptions from "./HostSidebarOptions";
 import VendorSidebarOptions from "./VendorSidebarOptions";
 import AdminSidebarOptions from "./AdminSidebarOptions";
-import Logo from "@/components/icons/TreasureLogo";
 
 export const ActiveTab = ({ showSidebar }: { showSidebar: boolean }) => (
   <div
@@ -53,9 +52,18 @@ export default function Sidebar() {
       <div>
         <Link
           href="/home"
-          className="font-semibold text-3xl flex items-center justify-center mb-8"
+          className="flex items-center justify-center mb-8 -space-x-1 font-bold"
         >
-          {showSidebar ? <Logo /> : <TreasureEmerald width={28} height={28} />}
+          {showSidebar ? (
+            <>
+              <TreasureEmerald width={22} height={22} />
+              <p className="text-3xl tracking-[-0.1rem] lg:tracking-[-0.14rem]">
+                Treasure
+              </p>
+            </>
+          ) : (
+            <TreasureEmerald width={28} height={28} />
+          )}
         </Link>
         <div className="space-y-6 flex flex-col">
           {type === "host" ? (
@@ -68,6 +76,11 @@ export default function Sidebar() {
         </div>
       </div>
       <div className="flex flex-col space-y-6">
+        {showSidebar && (
+          <div className="px-0">
+            <ThemeSwitch />
+          </div>
+        )}
         {showSidebar ? (
           <Button
             onClick={() => setShowSidebar(false)}

@@ -10,6 +10,7 @@ import { Check } from "lucide-react";
 import { X } from "lucide-react";
 
 export type Vendor = {
+  username: string;
   avatar_url: string | null;
   name: string;
   section: string;

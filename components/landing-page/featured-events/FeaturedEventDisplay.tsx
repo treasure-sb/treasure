@@ -18,7 +18,7 @@ export default async function FeaturedEventDisplay({
     });
 
   return (
-    <div className="relative w-full bg-foreground rounded-md group">
+    <div className="relative w-full bg-foreground rounded-md group border-[1px] border-foreground dark:border-none">
       <FeaturedEventImageLink event={event} publicUrl={data.publicUrl} />
     </div>
   );

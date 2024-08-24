@@ -16,7 +16,9 @@ import {
   sendHostTableSoldSMS,
 } from "@/lib/sms";
 import { headers } from "next/headers";
-import moment from "moment";
+import { PurchaseTicketResult } from "@/types/tickets";
+import { PurchaseTableResult } from "@/types/tables";
+import { formatEmailDate } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
@@ -34,12 +36,6 @@ if (!stripeSecret || !webhookSecret) {
 }
 
 const stripe = new Stripe(stripeSecret);
-
-type PurchaseTableResult =
-  Database["public"]["Functions"]["purchase_table"]["Returns"][number];
-
-type PurchaseTicketResult =
-  Database["public"]["Functions"]["purchase_tickets"]["Returns"][number];
 
 type DinnerSelections = {
   dinnerSelections: string[];
@@ -97,7 +93,7 @@ const handleTicketPurchase = async (
   const {
     event_address,
     event_cleaned_name,
-    event_date,
+    event_dates,
     event_description,
     event_name,
     event_poster_url,
@@ -116,6 +112,7 @@ const handleTicketPurchase = async (
   const totalPaid = fees_paid
     ? numericAmountPaid + numericFeesPaid
     : numericAmountPaid;
+  const formattedEventDate = formatEmailDate(event_dates);
 
   const ticketPurchaseEmailProps = {
     eventName: event_name,
@@ -123,7 +120,7 @@ const handleTicketPurchase = async (
     ticketType: ticket_name,
     quantity: quantity,
     location: event_address,
-    date: moment(event_date).format("dddd, MMM Do"),
+    date: formattedEventDate,
     guestName: `${profile.first_name} ${profile.last_name}`,
     totalPrice: `$${totalPaid}`,
     eventInfo: event_description,
@@ -143,7 +140,11 @@ const handleTicketPurchase = async (
   }
 
   if (profile.phone) {
-    await sendAttendeeTicketPurchasedSMS(profile.phone, event_name, event_date);
+    await sendAttendeeTicketPurchasedSMS(
+      profile.phone,
+      event_name,
+      formattedEventDate
+    );
   }
 
   const { data: teamData } = await supabase
@@ -164,7 +165,7 @@ const handleTicketPurchase = async (
       firstName: profile.first_name,
       lastName: profile.last_name,
       eventName: event_name,
-      eventDate: event_date,
+      eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
       quantity: quantity,
     };
@@ -209,7 +210,8 @@ const handleTablePurchase = async (
     event_name,
     event_address,
     event_cleaned_name,
-    event_date,
+    event_max_date,
+    event_min_date,
     event_description,
     event_poster_url,
     table_section_name,
@@ -222,6 +224,14 @@ const handleTablePurchase = async (
     vendor_application_email,
     vendor_application_phone,
   } = data[0];
+
+  const event_dates = [event_min_date, event_max_date];
+
+  if (event_min_date === event_max_date) {
+    event_dates.pop();
+  }
+
+  const formattedEventDate = formatEmailDate(event_dates);
 
   const {
     data: { publicUrl },
@@ -243,7 +253,7 @@ const handleTablePurchase = async (
     tableType: table_section_name,
     quantity: vendor_table_quantity,
     location: event_address,
-    date: moment(event_date).format("dddd, MMM Do"),
+    date: formattedEventDate,
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
@@ -260,7 +270,7 @@ const handleTablePurchase = async (
   await sendVendorTablePurchasedSMS(
     vendor_application_phone,
     event_name,
-    event_date
+    formattedEventDate
   );
 
   const { data: teamData } = await supabase
@@ -281,7 +291,7 @@ const handleTablePurchase = async (
       firstName: vendor_first_name,
       lastName: vendor_last_name,
       eventName: event_name,
-      eventDate: event_date,
+      eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);

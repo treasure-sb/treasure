@@ -51,7 +51,7 @@ export default async function Page({
     .from("tickets")
     .select("*")
     .eq("event_id", event.id)
-    .order("price", { ascending: true });
+    .order("price", { ascending: false });
   const tickets: Tables<"tickets">[] = ticketData || [];
 
   const isSampa =

@@ -42,7 +42,7 @@ export default function DateRangeFilter() {
         <PopoverTrigger asChild className="rounded-sm">
           <Button
             id="date"
-            variant={"outline"}
+            variant={"dotted"}
             className={cn(
               "w-[300px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
@@ -63,7 +63,7 @@ export default function DateRangeFilter() {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent className="w-auto p-0" align="end" side="top">
           <Calendar
             initialFocus
             mode="range"

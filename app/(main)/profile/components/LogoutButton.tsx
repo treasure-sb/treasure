@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export default function LogoutButton() {
   return (
     <Button
       onClick={async () => await handleLogout()}
-      className="w-full rounded-sm text-white flex justify-start gap-4 py-7"
+      className="w-full rounded-sm flex justify-start gap-4 py-7"
       variant={"destructive"}
     >
       <LogOut className="stroke-2" />

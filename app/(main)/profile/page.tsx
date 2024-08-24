@@ -58,19 +58,19 @@ export default async function Page() {
         </div>
         <div className="flex flex-col gap-0">
           <Link href="/profile/tickets">
-            <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+            <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
               <TicketIcon className="stroke-2" />
               <p className="font-semibold">My Tickets</p>
             </div>
           </Link>
           <Link href="/host/events">
-            <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+            <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
               <LayoutDashboardIcon className="stroke-2" />
               <p className="font-semibold">Host Dashboard</p>
             </div>
           </Link>
           <Link href="/vendor">
-            <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+            <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
               <Store className="stroke-2" />
               <p className="font-semibold">Vendor Dashboard</p>
             </div>
@@ -78,28 +78,28 @@ export default async function Page() {
           {profile.role === "admin" && (
             <>
               <Link href="/admin">
-                <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+                <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
                   <Crown className="stroke-2" />
                   <p className="font-semibold">Admin Dashboard</p>
                   <BadgeCheck className="stroke-2 text-primary" />
                 </div>
               </Link>
               <Link href="/profile/featured-events">
-                <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+                <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
                   <Megaphone className="stroke-2" />
                   <p className="font-semibold">Featured Events</p>
                   <BadgeCheck className="stroke-2 text-primary" />
                 </div>
               </Link>
               <Link href="/profile/create-profile">
-                <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+                <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
                   <Users className="stroke-2" />
                   <p className="font-semibold">Create Temporary Profile</p>
                   <BadgeCheck className="stroke-2 text-primary" />
                 </div>
               </Link>
               <Link href="/profile/assign">
-                <div className="w-full flex gap-4 text-white hover:text-primary px-4 py-4 border-b-2 items-center">
+                <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">
                   <UserCheck className="stroke-2" />
                   <p className="font-semibold">
                     Assign User to Temporary Profile
@@ -110,7 +110,6 @@ export default async function Page() {
             </>
           )}
         </div>
-
         <LogoutButton />
       </div>
     </main>

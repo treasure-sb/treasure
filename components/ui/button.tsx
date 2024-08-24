@@ -10,13 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-primary/60",
+          "bg-primary text-foreground dark:text-primary-foreground hover:bg-primary/90 disabled:bg-primary/60",
         tertiary:
-          "bg-tertiary text-primary-foreground hover:bg-tertiary/80 disabled:bg-tertiary/60",
+          "bg-tertiary text-foreground dark:text-primary-foreground hover:bg-tertiary/80 disabled:bg-tertiary/60",
         destructive:
           "bg-destructive/60 text-destructive-foreground hover:bg-destructive/30 disabled:bg-destructive/30",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground disabled:bg-background disabled:text-secondary-foreground",
+          "border border-foreground bg-background hover:bg-background/80 hover:text-accent-foreground disabled:bg-background disabled:text-secondary-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:bg-secondary/60",
         dotted:
@@ -29,6 +29,7 @@ const buttonVariants = cva(
         sm: "h-9 rounded-sm px-3",
         lg: "h-11 rounded-sm px-8",
         icon: "h-10 w-10",
+        landing: "w-auto px-4 py-2 2xl:text-lg 2xl:px-5 2xl:py-3",
       },
     },
     defaultVariants: {

@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { EventDisplayData, EventWithDates } from "@/types/event";
+import { EditEventDisplayData } from "@/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import { EditEvent, EventLocation, updateEvent } from "@/lib/actions/events";
 import { useRouter } from "next/navigation";
 import { Tables } from "@/types/supabase";
 import EventPoster from "@/components/events/shared/EventPoster";
-import Autocomplete from "@/app/(main)/profile/create-event/components/places/Autocomplete";
 import EditLocation from "./EditLocation";
 import EditTimeAndDate from "./EditTimeAndDate";
 import EditTags from "./tags/EditTags";
@@ -60,6 +59,19 @@ const replacePoster = async (posterUrl: string, newPosterFile: File) => {
   return { data: data.path, error: removeError };
 };
 
+const dateSchema = z.object({
+  id: z.string().min(1),
+  date: z.date({
+    required_error: "Date is required",
+  }),
+  startTime: z.string().refine((value) => isValidTime(value), {
+    message: "Must be a valid time (HH:mm)",
+  }),
+  endTime: z.string().refine((value) => isValidTime(value), {
+    message: "Must be a valid time (HH:mm)",
+  }),
+});
+
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
@@ -70,38 +82,22 @@ const formSchema = z.object({
   venueName: z.string().min(1, {
     message: "Location name is required",
   }),
-  date: z.date({
-    required_error: "Date is required",
-  }),
-  startTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
-  }),
-  endTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
+  dates: z.array(dateSchema).nonempty({
+    message: "At least one date is required",
   }),
   posterUrl: z.union([z.instanceof(File), z.string()]),
 });
 
-export type FormType = UseFormReturn<
-  {
-    name: string;
-    description: string;
-    venueName: string;
-    date: Date;
-    startTime: string;
-    endTime: string;
-    posterUrl: (string | File) & (string | File | undefined);
-  },
-  any,
-  undefined
->;
+type FormData = z.infer<typeof formSchema>;
+
+export type FormType = UseFormReturn<FormData>;
 
 export default function EditEventForm({
   event,
   initialTags,
   allTags,
 }: {
-  event: EventDisplayData;
+  event: EditEventDisplayData;
   initialTags: Tables<"tags">[];
   allTags: Tables<"tags">[];
 }) {
@@ -119,57 +115,68 @@ export default function EditEventForm({
     setSelectedTags(newTags);
   };
 
-  const { refresh } = useRouter();
+  const { refresh, replace } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: event.name,
       description: event.description,
       venueName: event.venue_name,
-      startTime: event.start_time.slice(0, event.start_time.lastIndexOf(":")),
-      endTime: event.end_time.slice(0, event.end_time.lastIndexOf(":")),
-      date: fixDate(event.date),
+      dates: event.dates.map((date) => ({
+        id: date.id,
+        date: fixDate(date.date),
+        startTime: date.start_time.slice(0, date.start_time.lastIndexOf(":")),
+        endTime: date.end_time.slice(0, date.end_time.lastIndexOf(":")),
+      })),
       posterUrl: event.poster_url,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     toast.loading("Updating event...");
-    const editEventForm: EditEvent = {
-      ...values,
-      ...venueLocation,
-      posterUrl: "",
-    };
+    try {
+      const editEventForm: EditEvent = {
+        ...values,
+        ...venueLocation,
+        posterUrl: "",
+      };
 
-    if (imageUrl !== event.publicPosterUrl) {
-      const { data: updatedPosterUrl, error } = await replacePoster(
-        event.poster_url,
-        values.posterUrl as File
-      );
-      if (error) {
-        toast.dismiss();
-        toast.error("Error replacing image, please try again");
-        return;
+      if (imageUrl !== event.publicPosterUrl) {
+        const { data: updatedPosterUrl, error } = await replacePoster(
+          event.poster_url,
+          values.posterUrl as File
+        );
+
+        if (error) {
+          throw new Error("Error replacing image, please try again");
+        }
+
+        if (updatedPosterUrl) {
+          editEventForm.posterUrl = updatedPosterUrl;
+        }
+      } else {
+        editEventForm.posterUrl = event.poster_url;
       }
-      if (updatedPosterUrl) {
-        editEventForm.posterUrl = updatedPosterUrl;
+
+      const { addError, removeError } = await updateTags();
+
+      if (addError || removeError) {
+        throw new Error("Error updating tags, please try again");
       }
-    } else {
-      editEventForm.posterUrl = event.poster_url;
-    }
 
-    const { error } = await updateEvent(editEventForm, event.id);
-    const { addError, removeError } = await updateTags();
+      const { data } = await updateEvent(editEventForm, event.id);
 
-    toast.dismiss();
-    if (error) {
-      toast.error("Error updating event, please try again");
-      return;
-    } else if (addError || removeError) {
-      toast.error("Error updating tags, please try again");
+      if (!data) {
+        throw new Error("Error updating event, please try again");
+      }
+
+      replace(`/host/events/${data!.cleaned_name}/edit`);
+      toast.dismiss();
+      toast.success("Event updated successfully");
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message);
     }
-    toast.success("Event updated!");
-    refresh();
   };
 
   const updateTags = async () => {

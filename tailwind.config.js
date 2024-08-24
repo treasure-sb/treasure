@@ -27,6 +27,9 @@ module.exports = {
       fontSize: {
         xxs: "0.55rem",
       },
+      fontFamily: {
+        "gt-america": ["GT America", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

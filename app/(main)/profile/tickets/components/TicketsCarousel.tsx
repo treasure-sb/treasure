@@ -86,18 +86,51 @@ export default function TicketsCarousel({
                     className="w-full h-full"
                     value={`https://ontreasure.xyz/verify-tickets/?ticket_id=${ticket.ticketId}&event_id=${eventId}`}
                   />
-                  {!ticket.valid && (
-                    <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center">
+                  {ticket.dates.length === 1 && !ticket.dates[0].valid && (
+                    <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center w-full">
                       <p className="font-semibold">Ticket Used</p>
                     </div>
                   )}
+                </div>
+
+                <div className="flex w-full justify-around mt-2 text-center">
+                  {ticket.dates.length > 1 &&
+                    ticket.dates.map((date) => (
+                      <div className="flex">
+                        {date.valid ? (
+                          <p className="font-semibold text-xxs sm:text-xs items-end">
+                            {new Date(date.date).toLocaleDateString(undefined, {
+                              day: "numeric",
+                              month: "numeric",
+                              timeZone: "UTC",
+                            })}{" "}
+                            : unused
+                          </p>
+                        ) : (
+                          <p className="font-semibold text-xxs sm:text-xs items-end text-red-500">
+                            {new Date(date.date).toLocaleDateString(undefined, {
+                              day: "numeric",
+                              month: "numeric",
+                              timeZone: "UTC",
+                            }) + " "}
+                            : used
+                          </p>
+                        )}
+                      </div>
+                    ))}
                 </div>
               </CarouselItem>
             );
           })}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {tickets.get(currentTicket)?.length === 1 ? (
+          <></>
+        ) : (
+          <>
+            <CarouselPrevious />
+            <CarouselNext />
+          </>
+        )}
       </Carousel>
       <div className="py-2 text-center text-sm text-muted-foreground">
         {currentTicket} Ticket {currentSlide} of {count}

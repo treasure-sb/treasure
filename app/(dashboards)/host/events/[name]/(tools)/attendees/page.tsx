@@ -23,13 +23,13 @@ export default async function Page({
 
   const { event, eventError } = await getEventFromCleanedName(name);
 
-  const { data } = await supabase.rpc("get_attendee_data", {
+  const { data, error } = await supabase.rpc("get_attendee_data", {
     event_id: event.id,
   });
 
   const attendeeData: AttendeeData[] = data || [];
 
-  const attendeeTableDataPromise: Promise<Attendee>[] = attendeeData.map(
+  const attendeeTicketDataPromise: Promise<Attendee>[] = attendeeData.map(
     async (attendee) => {
       const { first_name, last_name, email, phone, avatar_url } = attendee;
       const avatar = await getProfileAvatar(avatar_url);
@@ -51,7 +51,7 @@ export default async function Page({
       };
     }
   );
-  const attendeeTableData = await Promise.all(attendeeTableDataPromise);
+  const attendeeTicketData = await Promise.all(attendeeTicketDataPromise);
 
   const { data: ticketData } = await supabase
     .from("tickets")
@@ -67,13 +67,13 @@ export default async function Page({
         <h2 className="text-2xl font-semibold">
           Attendees{" "}
           <span className="text-muted-foreground">
-            {attendeeTableData.length}
+            {attendeeTicketData.length}
           </span>
         </h2>
       </div>
       <DataTable
         columns={columns}
-        data={attendeeTableData}
+        data={attendeeTicketData}
         event={event}
         tickets={ticketNames}
       />

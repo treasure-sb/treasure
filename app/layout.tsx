@@ -1,15 +1,15 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
+import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800", "900"],
+  weight: ["100", "200", "300", "400", "600", "700", "800", "900"],
   style: "normal",
 });
 
@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     "tickets",
   ],
 };
+
 export default async function RootLayout({
   children,
 }: {
@@ -40,7 +41,7 @@ export default async function RootLayout({
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme={"light"}
             enableSystem
             disableTransitionOnChange
           >

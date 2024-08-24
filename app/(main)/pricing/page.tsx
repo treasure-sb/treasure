@@ -11,7 +11,7 @@ export default async function Page() {
       <div className="flex flex-col items-center">
         <div className="mb-2 mt-0 text-center mx-auto">
           <div className="w-full flex justify-center">
-            <h1 className="sm:mb-8 text-[2.5rem] font-bold text-white">
+            <h1 className="sm:mb-8 text-[2.5rem] font-bold">
               Start <span className="text-[#73D08D]">supercharging</span> your
               <br className="hidden sm:block" /> event management & growth today
             </h1>
@@ -67,7 +67,7 @@ export default async function Page() {
       </div>
       <div className="hidden min-[1165px]:block scale-90">
         <div className="items-center flex w-[100%]">
-          <h1 className="mb-8 text-[2.5rem] font-bold text-white text-center w-[100%]">
+          <h1 className="mb-8 text-[2.5rem] font-bold text-center w-[100%]">
             Compare Features by Plan.
           </h1>
         </div>
@@ -79,7 +79,7 @@ export default async function Page() {
                 Compare Plans
               </h2>
 
-              <p className=" text-white text-sm">
+              <p className="text-sm">
                 Choose your Treasure plan according to your eventing needs
               </p>
             </div>

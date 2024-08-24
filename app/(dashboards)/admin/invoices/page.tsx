@@ -109,7 +109,6 @@ export default async function Page({
         host_type: order.event.organizer_type,
         amount: order.amount_paid,
         event_name: order.event.name,
-        event_date: order.event.date,
         event_id: order.event.id,
         date: new Date(order.created_at).toLocaleDateString(),
         poster_url: order.event.poster_url,

@@ -37,7 +37,7 @@ export default function PromoCode({
       .from("event_codes")
       .select("*")
       .eq("code", promoCode)
-      .eq("event_id", event.id)
+      .or(`event_id.eq.${event.id},event_id.is.null`)
       .single();
 
     if (!data || error) {

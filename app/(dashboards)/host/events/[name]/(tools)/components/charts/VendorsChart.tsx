@@ -14,6 +14,8 @@ import {
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { VendorBreakdownData } from "./VendorBreakdown";
+import { useViewportSize } from "@mantine/hooks";
+import { width } from "pdfkit/js/page";
 
 const COLORS = ["#eac362", "#71d08c"];
 
@@ -22,6 +24,8 @@ export default function VendorsChart({
 }: {
   vendorData: VendorBreakdownData;
 }) {
+  const { width: screenWidth } = useViewportSize();
+
   const CustomBar = (props: any) => {
     const { x, y, width, height, name, index } = props;
     const color = COLORS[index % COLORS.length];
@@ -87,6 +91,7 @@ export default function VendorsChart({
           tickMargin={10}
           width={110}
           tick={<CustomYAxisTick />}
+          hide={screenWidth < 640}
         />
         <Bar
           dataKey="vendors"
