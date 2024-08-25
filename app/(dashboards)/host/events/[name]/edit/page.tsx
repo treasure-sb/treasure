@@ -3,14 +3,14 @@ import EditState from "./components/EditState";
 import EditEventDetails from "./components/event_details/EditEventDetails";
 import { ArrowUpLeft } from "lucide-react";
 import { redirect } from "next/navigation";
-import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { getEditEventFromCleanedName } from "@/lib/helpers/events";
 
 export default async function Page({
   params: { name },
 }: {
   params: { name: string };
 }) {
-  const { event, eventError } = await getEventFromCleanedName(name);
+  const { event, eventError } = await getEditEventFromCleanedName(name);
 
   if (eventError) {
     redirect("/host/events");

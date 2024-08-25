@@ -48,7 +48,7 @@ export default function PlanCard({
                     <text className="font-bold text-4xl text-[#73D08D]">
                       ${price}
                     </text>
-                    <text className=" text-lg font- text-white"> /month</text>
+                    <text className="text-lg"> /month</text>
                   </>
                 ) : (
                   "Free"
@@ -57,14 +57,16 @@ export default function PlanCard({
               <div className="mb-2 flex items-end text-2xl font-medium text-[#73D08D]">
                 {name}{" "}
               </div>
-              <p className="mb-5 text-left text-white">{description}</p>
+              <p className="mb-5 text-left text-muted-foreground">
+                {description}
+              </p>
               <div className="mb-10 flex flex-col gap-y-2">
                 {features.map((feature) => (
                   <div
                     className="flex items-center gap-2 w-full mb-2"
                     key={feature}
                   >
-                    <CheckCircle size={20} className="w-1/10" />
+                    <CheckCircle size={20} className="w-1/10 text-white" />
                     <p className="ml-3 overflow-auto w-4/5 text-left text-white">
                       {feature}
                       {feature.includes("Mobile") && (

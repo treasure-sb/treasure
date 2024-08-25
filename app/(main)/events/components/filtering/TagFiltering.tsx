@@ -4,9 +4,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
-/**
- * A React component for filtering events based on predefined tags. It displays a series of buttons, each representing a tag.
- */
 export default function TagFiltering() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -49,8 +46,8 @@ export default function TagFiltering() {
           variant={"outline"}
           className={`${
             tag === activeTag
-              ? "bg-tertiary text-black border-tertiary hover:bg-tertiary/90 hover:text-black font-semibold"
-              : "font-medium hover:bg-background md:hover:bg-secondary"
+              ? "bg-tertiary text-black border-tertiary hover:bg-tertiary/90 font-semibold"
+              : "font-medium hover:bg-background md:hover:bg-secondary border-foreground/20"
           }`}
         >
           {tag}

@@ -7,7 +7,7 @@ type HostSoldPayload = {
   firstName: string | null;
   lastName: string | null;
   eventName: string;
-  eventDate: string;
+  eventDate: string | undefined;
   eventCleanedName: string;
   quantity?: number;
 };
@@ -19,9 +19,7 @@ const sendAttendeeTicketPurchasedSMS = async (
 ) => {
   return await sendSMS(
     phone,
-    `🙌 You’re going to ${eventName} on ${moment(eventDate).format(
-      "dddd, MMM Do"
-    )}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
+    `🙌 You’re going to ${eventName} on ${eventDate}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
   );
 };
 
@@ -32,11 +30,7 @@ const sendVendorTablePurchasedSMS = async (
 ) => {
   return await sendSMS(
     phone,
-    `🙌 Success! Your vendor payment has been received! You are now confirmed to be a vendor at ${eventName} on ${moment(
-      eventDate
-    ).format(
-      "dddd, MMM Do"
-    )}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
+    `🙌 Success! Your vendor payment has been received! You are now confirmed to be a vendor at ${eventName} on ${eventDate}. We look forward to seeing you there!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
   );
 };
 
@@ -117,9 +111,7 @@ const sendHostTicketSoldSMS = async (ticketSMSPayload: HostSoldPayload) => {
       !businessName ? `${firstName} ${lastName}` : businessName
     } just bought ${
       quantity && quantity > 1 ? `${quantity} tickets` : `a ticket`
-    } to ${eventName} on ${moment(eventDate).format(
-      "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
+    } to ${eventName} on ${eventDate}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
 };
 
@@ -137,11 +129,7 @@ const sendHostTableSoldSMS = async (tableSMSPayload: HostSoldPayload) => {
     phones,
     `💰Congrats! You received payment from ${
       !businessName ? `${firstName} ${lastName}` : businessName
-    } Their table(s) are confirmed for ${eventName} on ${moment(
-      eventDate
-    ).format(
-      "dddd, MMM Do"
-    )}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
+    } Their table(s) are confirmed for ${eventName} on ${eventDate}!\n\nView details\n\nontreasure.com/host/events/${eventCleanedName}`
   );
 };
 

@@ -33,7 +33,7 @@ export function validateEmail(email: string) {
 
 export function formatDate(date: string) {
   const formattedDate = new Date(date).toLocaleDateString(undefined, {
-    weekday: "long",
+    weekday: "short",
     day: "numeric",
     month: "short",
     timeZone: "UTC",
@@ -60,6 +60,30 @@ export function formatDates(
 export function roundPrice(price: string) {
   return parseFloat(parseFloat(price).toFixed(2));
 }
+
+export const subtractFourHours = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() - 4);
+  return newDate;
+};
+
+export const normalizeDate = (date: Date) => {
+  const adjustedDate = subtractFourHours(date);
+  adjustedDate.setHours(0, 0, 0, 0);
+  return adjustedDate.toISOString().slice(0, 10);
+};
+
+export const formatEmailDate = (dates: string[]) => {
+  let formattedEventDate: string = "";
+  dates.map((date, i) => {
+    if (dates.length === i + 1) {
+      formattedEventDate += moment(date).format("dddd, MMM Do");
+    } else {
+      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
+    }
+  });
+  return formattedEventDate;
+};
 
 export const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",

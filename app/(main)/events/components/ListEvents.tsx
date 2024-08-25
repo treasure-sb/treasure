@@ -61,7 +61,7 @@ export default function ListEvents({
 
   return (
     <>
-      <div className="space-y-8 md:hidden block">
+      <div className="space-y-6 md:hidden block">
         {allEvents?.map((event, i) => (
           <div
             key={event.id + "card"}

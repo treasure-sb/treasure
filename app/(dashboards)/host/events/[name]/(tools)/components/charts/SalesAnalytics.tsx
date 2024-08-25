@@ -1,5 +1,5 @@
 import { Tables } from "@/types/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, normalizeDate } from "@/lib/utils";
 import SalesChart from "./SalesChart";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import DateFilter from "../../views/components/DateFilter";
@@ -24,18 +24,6 @@ export type SalesData = {
   tickets: number;
   tables: number;
 }[];
-
-const subtractFourHours = (date: Date): Date => {
-  const newDate = new Date(date);
-  newDate.setHours(newDate.getHours() - 4);
-  return newDate;
-};
-
-const normalizeDate = (date: Date) => {
-  const adjustedDate = subtractFourHours(date);
-  adjustedDate.setHours(0, 0, 0, 0);
-  return adjustedDate.toISOString().slice(0, 10);
-};
 
 const MutedSalesChart = () => (
   <div className="h-full flex items-center justify-center text-muted-foreground pb-20">
@@ -102,7 +90,7 @@ export default async function SalesAnalytics({
 
   return (
     <div
-      className={`h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
+      className={`h-80 md:h-[29rem] col-span-2 bg-secondary dark:bg-[#0d0d0c] rounded-md p-6 py-4 pb-10 border-[1px] border-secondary ${
         isScanner ? "opacity-50" : ""
       }`}
     >

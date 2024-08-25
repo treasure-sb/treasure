@@ -16,6 +16,7 @@ import {
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { capitalize, cn } from "@/lib/utils";
+import { useViewportSize } from "@mantine/hooks";
 
 const STATUS_COLORS = {
   PENDING: "#ffd65b",
@@ -29,6 +30,7 @@ export default function ApplicationsChart({
 }: {
   applicationData: ApplicationData;
 }) {
+  const { width } = useViewportSize();
   const totalApplications = applicationData.reduce(
     (sum, item) => sum + item.vendors,
     0
@@ -52,7 +54,7 @@ export default function ApplicationsChart({
   }, []);
 
   const radius = Math.min(dimensions.width, dimensions.height) / 2;
-  const innerRadius = Math.max(radius * 0.5, 30);
+  const innerRadius = Math.max(radius * (width < 640 ? 0.1 : 0.5), 30);
 
   return (
     <div ref={containerRef} className="w-full h-full">

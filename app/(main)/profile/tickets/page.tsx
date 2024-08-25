@@ -19,7 +19,7 @@ import { getProfile } from "@/lib/helpers/profiles";
 
 interface TicketScanningInfo {
   ticketId: string;
-  valid: boolean;
+  dates: { date: string; valid: boolean }[];
 }
 
 export type TicketScanningMap = Map<string, TicketScanningInfo[]>;
@@ -30,6 +30,7 @@ type EventTicket = Tables<"event_tickets"> & {
   ticket: {
     name: string;
   };
+  dates: { dateT: { date: string }; valid: boolean }[];
 };
 
 type EventTable = Tables<"event_vendors"> & {
@@ -45,7 +46,7 @@ export default async function Page() {
   const { data: ticketData } = await supabase
     .from("event_tickets")
     .select(
-      "*, event:events(*,dates:event_dates!inner(date, start_time, end_time)), ticket:tickets(name)"
+      "*, event:events(*,dates:event_dates!inner(date, start_time, end_time)), ticket:tickets(name), dates:event_tickets_dates!inner(dateT:event_dates!inner(date), valid)"
     )
     .eq("attendee_id", user.id);
 
@@ -55,8 +56,10 @@ export default async function Page() {
 
   eventTickets.forEach(async (ticket) => {
     const ticketId = ticket.id;
-    const valid = ticket.valid;
     const eventId = ticket.event.id;
+    const dates = ticket.dates.map((date) => {
+      return { date: date.dateT.date, valid: date.valid };
+    });
     const ticketName = ticket.ticket.name;
 
     if (!eventTicketMap.has(eventId)) {
@@ -65,9 +68,9 @@ export default async function Page() {
 
     const ticketsMap = eventTicketMap.get(eventId)!;
     if (ticketsMap.has(ticketName)) {
-      ticketsMap.get(ticketName)!.push({ ticketId, valid });
+      ticketsMap.get(ticketName)!.push({ ticketId, dates });
     } else {
-      ticketsMap.set(ticketName, [{ ticketId, valid }]);
+      ticketsMap.set(ticketName, [{ ticketId, dates }]);
     }
   });
 

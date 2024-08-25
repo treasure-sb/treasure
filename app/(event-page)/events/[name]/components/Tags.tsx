@@ -14,10 +14,7 @@ export default async function Tags({ event }: { event: EventWithDates }) {
     tagsData && (
       <div className="flex gap-2 w-full flex-wrap">
         {tagsData.map((tag: any) => (
-          <Badge
-            className="bg-tertiary p-1 px-4 hover:bg-tertiary text-background"
-            key={tag.id}
-          >
+          <Badge variant={"tertiary"} className="p-1 px-4" key={tag.id}>
             {tag.tags.name}
           </Badge>
         ))}

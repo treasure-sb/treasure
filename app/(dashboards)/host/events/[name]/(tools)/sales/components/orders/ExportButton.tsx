@@ -2,7 +2,7 @@
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import { Button } from "@/components/ui/button";
 import { Order } from "./OrderDataColumns";
-import ExportIcon from "@/components/icons/ExportIcon";
+import { DownloadIcon } from "lucide-react";
 
 export default function ExportButton({
   salesData,
@@ -39,7 +39,7 @@ export default function ExportButton({
     <>
       {salesData && salesData.length > 0 && (
         <Button onClick={exporting} variant={"dotted"}>
-          <ExportIcon />
+          <DownloadIcon className="stroke-1" />
           <span>Export</span>
         </Button>
       )}

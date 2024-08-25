@@ -14,23 +14,26 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import Cancel from "@/components/icons/Cancel";
+import { DateRange } from "react-day-picker";
 
 export default function DateFiltering() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [isCalenderOpen, setIsCalenderOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleCalenderDateSelect = (date: Date | undefined) => {
+  const handleCalenderDateSelect = (date: DateRange | undefined) => {
     const params = new URLSearchParams(searchParams);
-    if (date) {
-      const formattedDate = format(date, "yyyy-MM-dd");
+    if (date?.from) {
+      const formattedDate = format(date.from, "yyyy-MM-dd");
       params.set("from", formattedDate);
-      params.set("until", formattedDate);
-      setDate(date);
-      setIsCalenderOpen(false);
     }
+    if (date?.to) {
+      const formattedDate = format(date.to, "yyyy-MM-dd");
+      params.set("until", formattedDate);
+    }
+    setDate(date);
     replace(`${pathname}?${params.toString()}`);
   };
 
@@ -91,13 +94,13 @@ export default function DateFiltering() {
     const params = new URLSearchParams(searchParams);
     params.delete("from");
     params.delete("until");
+    setDate(undefined);
     replace(`${pathname}?${params.toString()}`);
   };
 
   // For displaying the date in the button
   let from = searchParams.get("from");
   let until = searchParams.get("until");
-  let hasDateQuery = from && until;
   let dateDisplayed = "";
   if (from && until) {
     from = new Date(from).toLocaleDateString(undefined, {
@@ -115,6 +118,13 @@ export default function DateFiltering() {
     } else {
       dateDisplayed = `${from} - ${until}`;
     }
+  } else if (from) {
+    from = new Date(from).toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    });
+    dateDisplayed = `${from}`;
   }
 
   return (
@@ -123,10 +133,13 @@ export default function DateFiltering() {
         <DropdownMenuTrigger asChild>
           <Button className="space-x-1">
             <CalendarIcon className="h-4 w-4" />
-            <p>{hasDateQuery ? <>{dateDisplayed}</> : "Date"}</p>
+            <p>{from ? <>{dateDisplayed}</> : "Date"}</p>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="mt-1">
+        <DropdownMenuContent
+          align="start"
+          className="mt-1 h-[32rem] sm:h-auto overflow-auto"
+        >
           <div className="flex justify-center p-2">
             <DropdownMenuItem onClick={handleClickThisWeek}>
               This Week
@@ -140,15 +153,16 @@ export default function DateFiltering() {
           </div>
           <DropdownMenuSeparator />
           <Calendar
-            mode="single"
+            mode="range"
             selected={date}
-            defaultMonth={date}
-            onSelect={handleCalenderDateSelect}
+            defaultMonth={date?.from}
+            numberOfMonths={2}
+            onSelect={(e) => handleCalenderDateSelect(e)}
             className="rounded-md"
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      {hasDateQuery && <Cancel handleCancel={handleClearDate} />}
+      {from && <Cancel handleCancel={handleClearDate} />}
     </div>
   );
 }

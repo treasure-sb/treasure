@@ -18,7 +18,7 @@ export default async function Page() {
       {likes?.map((like: any) => (
         <div className="flex gap-4">
           <p>{formatDate(like.liked_on)}</p>
-          <Link href={`/${like.profiles.username}`}>
+          <Link href={`/u/${like.profiles.username}`}>
             {like.profiles.business_name !== null
               ? like.profiles.business_name
               : like.profiles.first_name + " " + like.profiles.last_name}

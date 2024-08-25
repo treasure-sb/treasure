@@ -10,11 +10,12 @@ import { Button } from "@/components/ui/button";
 import { LogOut, MenuIcon } from "lucide-react";
 import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
+import { ThemeSwitch } from "@/components/shared/ThemeSwitch";
 import HostMenuOptions from "./HostMenuOptions";
 import VendorMenuOptions from "./VendorMenuOptions";
 import Link from "next/link";
 import AdminMenuOptions from "./AdminMenuOptions";
-import Image from "next/image";
+import TreasureEmerald from "@/components/icons/TreasureEmerald";
 
 export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,17 +33,15 @@ export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
       </SheetTrigger>
       <SheetContent side={"left"}>
         <SheetHeader className="mt-6">
-          <SheetTitle>
+          <SheetTitle className="-ml-4">
             <Link
               href="/home"
-              className="font-semibold text-3xl space-x-1 flex items-center justify-center mr-6"
+              className="flex items-center justify-center -space-x-1 font-bold"
             >
-              <Image
-                src="/static/web_logo.png"
-                alt="web logo"
-                width={150}
-                height={120}
-              />
+              <TreasureEmerald width={22} height={22} />
+              <p className="text-3xl tracking-[-0.1rem] lg:tracking-[-0.14rem]">
+                Treasure
+              </p>
             </Link>
           </SheetTitle>
         </SheetHeader>
@@ -56,13 +55,16 @@ export default function Menu({ type }: { type: "host" | "vendor" | "admin" }) {
               <AdminMenuOptions setIsOpen={setIsOpen} />
             )}
           </div>
-          <Button
-            variant={"ghost"}
-            className="rounded-sm text-lg font-normal justify-start space-x-2 p-6"
-            onClick={async () => await handleLogout()}
-          >
-            <LogOut className="stroke-1" size={28} /> <p>Log out</p>
-          </Button>
+          <div className="space-y-4 w-full">
+            <ThemeSwitch />
+            <Button
+              variant={"ghost"}
+              className="rounded-sm text-lg font-normal justify-start space-x-2 p-6 w-full"
+              onClick={async () => await handleLogout()}
+            >
+              <LogOut className="stroke-1" size={28} /> <p>Log out</p>
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

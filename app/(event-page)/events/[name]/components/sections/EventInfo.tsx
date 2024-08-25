@@ -8,7 +8,7 @@ export default function EventInfo({ event }: { event: EventWithDates }) {
   let formattedDates: { date: string; start_time: string; end_time: string }[] =
     formatDates(event.dates);
 
-  const eventMonth = parseInt(event.date.split("-")[1]);
+  const eventMonth = parseInt(event.dates[0]["date"].split("-")[1]);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     event.address
   )}`;

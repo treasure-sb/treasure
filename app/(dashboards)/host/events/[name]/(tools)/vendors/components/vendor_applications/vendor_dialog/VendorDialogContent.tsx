@@ -17,12 +17,10 @@ import PhoneIcon from "@/components/icons/applications/PhoneIcon";
 import AcceptedOptions from "./AcceptedOptions";
 
 export default function VendorDialogContent({
-  avatarUrl,
   vendorData,
   eventData,
   closeDialog,
 }: {
-  avatarUrl: string;
   vendorData: EventVendorData;
   eventData: EventDisplayData;
   closeDialog: () => void;
@@ -56,7 +54,7 @@ export default function VendorDialogContent({
           </div>
           <div className="relative flex w-full justify-start gap-3 bg-secondary/30 px-2 md:px-4 pt-4 pb-6 rounded-sm items-center">
             <Avatar className="w-16 h-16 md:w-24 md:h-24">
-              <AvatarImage src={avatarUrl} />
+              <AvatarImage src={vendorData.publicAvatarUrl} />
               <AvatarFallback />
             </Avatar>
             {profile.business_name ? (
@@ -76,7 +74,7 @@ export default function VendorDialogContent({
 
             <Link
               target="_blank"
-              href={`/${profile.username}`}
+              href={`/u/${profile.username}`}
               className="absolute right-2 bottom-2 text-xs underline decoration-primary"
             >
               Full Profile
