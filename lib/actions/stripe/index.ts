@@ -85,9 +85,6 @@ const stripeLink = async (returnUrl: string) => {
     data: { user },
   } = await validateUser();
 
-  if (user) {
-    user.email == null && true; //EnterEmailModal;
-  }
   const searchData = await stripe.customers.search({
     query: `email:\'${user?.email}\'`,
   });
@@ -100,6 +97,12 @@ const stripeLink = async (returnUrl: string) => {
   } else {
     customer = searchData.data[0];
   }
+  const user_id = (await (
+    await validateUser()
+  ).data.user?.id)
+    ? (await validateUser()).data.user?.id ||
+      ((await validateUser()).data.user?.id as string)
+    : "";
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     line_items: [
@@ -113,14 +116,7 @@ const stripeLink = async (returnUrl: string) => {
     metadata: {
       plan: "Pro",
       priceId: "price_1PjqNfHnRCFO3bhFJArayp7A",
-      user_id: (
-        await validateUser()
-      ).data.user?.id
-        ? (await validateUser()).data.user?.id ||
-          ((
-            await validateUser()
-          ).data.user?.id as string)
-        : "",
+      user_id: user_id,
     },
   });
   let clientSecret = session.client_secret;

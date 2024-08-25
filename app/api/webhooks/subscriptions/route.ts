@@ -63,24 +63,17 @@ const handleSubscriptionPaymentFailed = async (
   });
 };
 
-const handleSupscriptionCreationOrRenewal = async (
+const handleSubscriptionCreationOrRenewal = async (
   session: Stripe.InvoicePaidEvent
 ) => {
   const supabase = await createSupabaseServerClient();
   const invoice = session.data.object;
-  //think this is broken
-  const payment_intent = await stripe.paymentIntents.retrieve(
-    session.data.object.payment_intent as string
-  );
-  const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
-    JSON.parse(JSON.stringify(payment_intent.metadata));
-  const checkoutSessionMetadata = (
-    await stripe.checkout.sessions.retrieve(checkoutSessionId)
-  ).metadata;
-
-  const { plan, priceId, user_id } = JSON.parse(
-    JSON.stringify(checkoutSessionMetadata)
-  );
+  const checkout_session = await stripe.checkout.sessions.list({
+    subscription: invoice.subscription as string,
+    limit: 1,
+  });
+  const metadata = checkout_session.data[0].metadata;
+  const { plan, priceId, user_id } = JSON.parse(JSON.stringify(metadata));
   const product_id = (
     await supabase
       .from("subscription_products")
@@ -97,7 +90,7 @@ const handleSupscriptionCreationOrRenewal = async (
     .then((return1) => {
       if (return1.count) {
         let isRenew = return1.count > 0 ? true : false;
-        return isRenew;
+        return true;
       } else {
         return false;
       }
@@ -105,28 +98,26 @@ const handleSupscriptionCreationOrRenewal = async (
   let subscription_id;
   if (isRenewal) {
     const { data, error } = await supabase
-      .from("subscription")
+      .from("subscriptions")
       .update({
         updated_at: new Date().toISOString(),
         start_date: secondsToISODate(invoice.lines.data[0].period.start),
-        end_date: secondsToISODate(invoice.lines.data[0].period.start),
+        end_date: secondsToISODate(invoice.lines.data[0].period.end),
       })
-      .eq("stripe_subscription_id", invoice.subscription);
-    const invoice_supabase_creation = await supabase
-      .from("subscription_invoices")
-      .insert({
-        subscription_id: subscription_id ? subscription_id : "",
-        stripe_invoice_id: invoice.id,
-        amount_paid: invoice.amount_paid / 100,
-        paid_on: secondsToISODate(session.created),
-      });
+      .eq("user_id", user_id)
+      .select("id")
+      .single();
+
+    if (data) {
+      subscription_id = data.id;
+    }
   } else {
     let duplicate_deletion = await supabase
       .from("subscriptions")
       .delete()
       .eq("user_id", user_id);
 
-    subscription_id = await supabase
+    subscription_id = await await supabase
       .from("subscriptions")
       .insert({
         user_id: user_id,
@@ -140,10 +131,9 @@ const handleSupscriptionCreationOrRenewal = async (
           : null,
         updated_at: null,
       })
-      .select()
-      .maybeSingle();
+      .select("id")
+      .single();
   }
-  subscription_id = invoice.subscription;
   const invoice_supabase_creation = await supabase
     .from("subscription_invoices")
     .insert({
@@ -152,8 +142,6 @@ const handleSupscriptionCreationOrRenewal = async (
       amount_paid: invoice.amount_paid / 100,
       paid_on: secondsToISODate(session.created),
     });
-
-  console.log(subscription_id);
 };
 
 export async function POST(req: Request) {
@@ -172,9 +160,18 @@ export async function POST(req: Request) {
       );
     } else if (event.type === "invoice.paid") {
       try {
-        handleSupscriptionCreationOrRenewal(event as Stripe.InvoicePaidEvent);
+        handleSubscriptionCreationOrRenewal(event as Stripe.InvoicePaidEvent);
+        return NextResponse.json({
+          message: "Webhook processed successfully",
+          ok: true,
+        });
       } catch (err) {
         console.error("Subscription Creation or Renewal Error");
+        return NextResponse.json({
+          message: "Webhook error:",
+          err,
+          ok: false,
+        });
       }
     } else {
       return NextResponse.json({

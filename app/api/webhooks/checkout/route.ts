@@ -300,6 +300,10 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
+  const invoice = await stripe.invoices.retrieve(session.invoice as string);
+  if (invoice.billing_reason == "subscription_create") {
+    return;
+  }
 
   const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
     JSON.parse(JSON.stringify(session.metadata));
