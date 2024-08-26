@@ -81,7 +81,7 @@ export default function PlanCard({
                 {percentFee}% Transaction Fees
               </p>
               <Button
-                className={`rounded-3xl relative bottom-3 bg-primary text-black w-fit mx-auto`}
+                className={`rounded-3xl relative bottom-3 bg-[#73D08D] text-black w-fit mx-auto`}
                 size="lg"
                 onClick={onClick}
               >
@@ -92,7 +92,7 @@ export default function PlanCard({
         </>
       ) : (
         <>
-          <div className="flex min-h-[428px] shadow-2xl shadow-primary md:w-96 full flex-col rounded-3xl p-8 md:relative bottom-6 bg-primary">
+          <div className="flex min-h-[428px] shadow-2xl shadow-primary md:w-96 full flex-col rounded-3xl p-8 md:relative bottom-6 bg-[#73D08D]">
             <div className="ml-4 flex flex-col min-h-[428px] justify-between h-full">
               {recommended && (
                 <div className="self-center h-7">

@@ -105,8 +105,12 @@ export default function Page() {
                 Basic <span className="text-[#858BA0] text-xs">free</span>
               </div>
               <div className="mt-6">
-                <Button size="lg" className="mt-2 px-16">
-                  <span className="mx-2">Choose This Plan</span>
+                <Button
+                  size="lg"
+                  className="mt-2 px-16"
+                  onClick={handleBasicClick}
+                >
+                  <span className="mx-2">Sign Up For Free</span>
                 </Button>
               </div>
             </div>
@@ -115,7 +119,11 @@ export default function Page() {
                 Pro <span className="text-[#858BA0] text-xs">$35/month</span>
               </div>
               <div className="mt-6">
-                <Button size="lg" className="mt-2 px-16">
+                <Button
+                  size="lg"
+                  className="mt-2 px-16"
+                  onClick={handleProClick}
+                >
                   <span className="mx-2">Choose This Plan</span>
                 </Button>
               </div>
@@ -126,7 +134,11 @@ export default function Page() {
                 <span className="text-[#858BA0] text-xs">$ - -/month</span>
               </div>
               <div className="mt-6">
-                <Button size="lg" className="mt-2 px-16">
+                <Button
+                  size="lg"
+                  className="mt-2 px-16"
+                  onClick={handleEnterpriseClick}
+                >
                   <span className="mx-2">Choose This Plan</span>
                 </Button>
               </div>
