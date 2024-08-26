@@ -5,10 +5,10 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import CheckoutForm from "./CheckoutForm";
 import PromoCode from "./PromoCode";
 import FreeCheckout from "./FreeCheckout";
-import { useTheme } from "next-themes";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
@@ -33,11 +33,12 @@ export default function InitializeCheckout({
   promoCode: Tables<"event_codes"> | null;
   fee?: number;
 }) {
-  const [price, setPrice] = useState(totalPrice);
+  const priceToCharge = totalPrice + (fee || 0);
+
   const { theme } = useTheme();
   const [options, setOptions] = useState({
     mode: "payment" as const,
-    amount: Math.round(price * 100),
+    amount: Math.round(priceToCharge * 100),
     currency: "usd",
     appearance: {
       theme: "night" as const,
@@ -67,18 +68,7 @@ export default function InitializeCheckout({
     }));
   }, [theme]);
 
-  const updatePrice = (newPrice: number) => {
-    setPrice(newPrice);
-  };
-
-  useEffect(() => {
-    setOptions((prevOptions) => ({
-      ...prevOptions,
-      amount: Math.round(price * 100),
-    }));
-  }, [price]);
-
-  const isFree = price === 0;
+  const isFree = priceToCharge === 0;
 
   return (
     <div className="w-full md:w-[28rem]">
@@ -89,22 +79,17 @@ export default function InitializeCheckout({
             promoApplied={promoCode}
             checkoutSession={checkoutSession}
             startingPrice={subtotal}
-            updatePrice={updatePrice}
           />
         )}
       </div>
       {isFree ? (
-        <FreeCheckout
-          event={event}
-          checkoutSession={checkoutSession}
-          profile={profile}
-        />
+        <FreeCheckout checkoutSession={checkoutSession} profile={profile} />
       ) : (
         <Elements options={options} stripe={stripePromise}>
           <CheckoutForm
             checkoutSession={checkoutSession}
             profile={profile}
-            totalPrice={price}
+            totalPrice={priceToCharge}
             subtotal={subtotal}
             priceAfterPromo={priceAfterPromo}
             promoCode={promoCode}

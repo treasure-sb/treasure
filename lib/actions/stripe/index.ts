@@ -19,11 +19,8 @@ const createPaymentIntent = async (
   promoCode: string,
   fee?: number
 ) => {
-  console.log(totalPrice);
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: fee
-      ? Math.round((totalPrice + fee) * 100)
-      : Math.round(totalPrice * 100),
+    amount: Math.round(totalPrice * 100),
     currency: "usd",
     automatic_payment_methods: {
       enabled: true,

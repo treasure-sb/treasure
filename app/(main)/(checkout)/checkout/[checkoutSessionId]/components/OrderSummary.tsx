@@ -76,16 +76,6 @@ export default function OrderSummary({
               </div>
             )}
           </div>
-          {isSampa && (
-            <div className="flex justify-between text-muted-foreground my-1">
-              <div className="flex items-center space-x-4">
-                <p className="text-sm italic">Processing Fee 3%</p>
-              </div>
-              <p className="text-sm italic">{`+$${(subtotal * 0.03).toFixed(
-                2
-              )}`}</p>
-            </div>
-          )}
           {fee !== 0 && fee && (
             <div className="flex justify-between text-muted-foreground my-1">
               <div className="flex items-center space-x-4">

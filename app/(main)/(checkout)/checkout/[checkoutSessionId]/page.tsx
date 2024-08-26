@@ -74,8 +74,8 @@ export default async function Page({
     checkoutSession;
 
   const { event } = await getEventFromId(event_id);
-  const eventDisplay = await getEventDisplayData(event);
   const { profile } = await getProfile(checkoutSession.user_id);
+  const eventDisplay = await getEventDisplayData(event);
 
   const { data: feeData, error: feeError } = await getFeeInfo(event_id);
 
@@ -124,25 +124,19 @@ export default async function Page({
   }
 
   const priceAfterPromo = totalPrice;
-
   const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
     dinnerSelections: [],
     isSampa: false,
   };
 
-  if (sampaMetadata.isSampa) {
-    const sampaFee = subtotal * 0.03;
-    totalPrice += sampaFee;
-  }
   const feeAmount = totalPrice * feePercent;
+  const stripeFee = collectStripeFee
+    ? (totalPrice + feeAmount) * 0.029 + 0.3
+    : 0;
 
-  let stripeFee: number = 0;
-  if (!feeError) {
-    stripeFee = collectStripeFee ? (totalPrice + feeAmount) * 0.029 + 0.3 : 0;
-  } else {
-    console.log(feeError);
-  }
-  const totalFee = feeAmount + stripeFee;
+  const totalFee = Math.max(feeAmount + stripeFee, 0.5);
+
+  console.log(totalFee, totalPrice);
 
   return (
     <main className="max-w-6xl m-auto">

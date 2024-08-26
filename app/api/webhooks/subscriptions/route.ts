@@ -1,28 +1,9 @@
 import { NextResponse } from "next/server";
-import {
-  sendTicketPurchasedEmail,
-  sendTablePurchasedEmail,
-} from "@/lib/actions/emails";
-import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
-import { getProfile } from "@/lib/helpers/profiles";
-import { Database, Json, Tables } from "@/types/supabase";
-import { Subscription, SupabaseClient } from "@supabase/supabase-js";
-import { TablePurchasedProps } from "@/emails/TablePurchased";
-import {
-  type HostSoldPayload,
-  sendAttendeeTicketPurchasedSMS,
-  sendHostTicketSoldSMS,
-  sendVendorTablePurchasedSMS,
-  sendHostTableSoldSMS,
-} from "@/lib/sms";
 import { headers } from "next/headers";
-import moment from "moment";
+import { secondsToISODate } from "@/lib/helpers/stripeHelp";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { secondsToISODate } from "@/lib/helpers/stripeHelp";
-import { validateUser } from "@/lib/actions/auth";
-import { date } from "zod";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
