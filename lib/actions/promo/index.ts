@@ -11,7 +11,7 @@ const createPromoCode = async (
   const supabase = await createSupabaseServerClient();
   const { code, discount, status, usageLimit, promoType } = promoForm;
   const { data, error } = await supabase.from("event_codes").insert({
-    code,
+    code: code.toUpperCase(),
     discount,
     status,
     usage_limit: usageLimit || null,
@@ -31,7 +31,7 @@ const updatePromoCode = async (
   const { data, error } = await supabase
     .from("event_codes")
     .update({
-      code,
+      code: code.toUpperCase(),
       discount,
       status,
       usage_limit: usageLimit || null,
