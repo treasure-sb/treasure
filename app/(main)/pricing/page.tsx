@@ -11,15 +11,18 @@ export default function Page() {
   const handleBasicClick = () => {
     router.push("/login?redirect=/events");
   };
+
   const handleProClick = () => {
     router.push("/pricing/checkout");
   };
+
   const handleEnterpriseClick = () => {
     var win = window.open(
       "https://app.formbricks.com/s/clzc1c26t00019q5fcdx89zyu",
       "_blank"
     );
   };
+
   return (
     <div>
       <div className="flex flex-col items-center">
@@ -90,7 +93,6 @@ export default function Page() {
         </div>
         <div className=" w-[100%]">
           <div className="flex flex-row w-[100%] border-b-2 border-[#73D08D] gap-4 pb-6">
-            {/*Column Titles*/}
             <div className="items-center w-[25%] pl-8 flex flex-col gap-4 justify-end pb-2">
               <h2 className="text-2xl font-bold text-primary text-left w-full">
                 Compare Plans

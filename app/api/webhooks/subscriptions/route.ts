@@ -98,7 +98,7 @@ const handleSubscriptionCreationOrRenewal = async (
       .delete()
       .eq("user_id", user_id);
 
-    subscription_id = await await supabase
+    subscription_id = await supabase
       .from("subscriptions")
       .insert({
         user_id: user_id,
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
     );
 
     if (event.type == "invoice.payment_failed") {
-      handleSubscriptionPaymentFailed(
+      await handleSubscriptionPaymentFailed(
         event as Stripe.InvoicePaymentFailedEvent
       );
     } else if (event.type === "invoice.paid") {
