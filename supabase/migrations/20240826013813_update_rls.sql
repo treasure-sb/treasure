@@ -8,7 +8,7 @@ set check_function_bodies = off;
 
 DROP FUNCTION IF EXISTS public.purchase_table(uuid, uuid, uuid, integer, double precision, uuid, double precision);
 
-CREATE OR REPLACE FUNCTION public.purchase_table(table_id uuid, event_id uuid, user_id uuid, purchase_quantity integer, amount_paid double precision, promo_id uuid DEFAULT NULL::uuid, fees_paid double precision DEFAULT NULL::double precision)
+CREATE OR REPLACE FUNCTION public.purchase_table(table_id uuid, event_id uuid, user_id uuid, purchase_quantity integer, amount_paid double precision, promo_id uuid DEFAULT NULL::uuid, fees_paid double precision DEFAULT 0::double precision)
  RETURNS TABLE(order_id integer, event_name text, organizer_id uuid, event_max_date timestamp with time zone, event_min_date timestamp with time zone, event_address text, event_description text, event_cleaned_name text, event_poster_url text, table_section_name text, table_price double precision, vendor_first_name text, vendor_last_name text, vendor_business_name text, vendor_application_email text, vendor_application_phone text, vendor_table_quantity integer, vendor_inventory text, vendor_vendors_at_table integer)
  LANGUAGE plpgsql
 AS $function$
@@ -123,7 +123,7 @@ $function$
 
 DROP FUNCTION IF EXISTS public.purchase_tickets(uuid, uuid, uuid, integer, text, double precision, json, uuid, double precision);
 
-CREATE OR REPLACE FUNCTION public.purchase_tickets(ticket_id uuid, event_id uuid, user_id uuid, purchase_quantity integer, email text, amount_paid double precision, metadata json DEFAULT NULL::json, promo_id uuid DEFAULT NULL::uuid, fees_paid double precision DEFAULT NULL::double precision)
+CREATE OR REPLACE FUNCTION public.purchase_tickets(ticket_id uuid, event_id uuid, user_id uuid, purchase_quantity integer, email text, amount_paid double precision, metadata json DEFAULT NULL::json, promo_id uuid DEFAULT NULL::uuid, fees_paid double precision DEFAULT 0::double precision)
  RETURNS TABLE(order_id integer, event_ticket_ids uuid[], event_name text, event_dates timestamp with time zone[], event_address text, event_description text, event_cleaned_name text, event_poster_url text, event_organizer_id uuid, ticket_name text, ticket_price double precision, attendee_first_name text, attendee_last_name text, attendee_business_name text, attendee_email text, attendee_phone text, organizer_id uuid, organizer_phone text)
  LANGUAGE plpgsql
 AS $function$

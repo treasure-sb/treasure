@@ -76,8 +76,15 @@ export default async function Page({
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const { event_id, ticket_id, ticket_type, quantity, promo_id, metadata } =
-    checkoutSession;
+  const {
+    event_id,
+    ticket_id,
+    ticket_type,
+    quantity,
+    promo_id,
+    metadata,
+    price_type,
+  } = checkoutSession;
 
   const { event } = await getEventFromId(event_id);
   const { profile } = await getProfile(checkoutSession.user_id);
@@ -139,9 +146,10 @@ export default async function Page({
     ? (priceAfterPromo + feeAmount) * 0.029 + 0.3
     : 0;
 
-  const totalFee = isLegacy
-    ? feeAmount + stripeFee
-    : Math.max(feeAmount + stripeFee, 0.5);
+  const totalFee =
+    price_type === "RSVP" || isLegacy
+      ? 0
+      : Math.max(feeAmount + stripeFee, 0.5);
 
   const priceInfo: PriceInfo = {
     subtotal,
