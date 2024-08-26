@@ -80,7 +80,7 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-const stripeLink = async (returnUrl: string) => {
+const subscriptionStripeLink = async (returnUrl: string) => {
   const {
     data: { user },
   } = await validateUser();
@@ -127,5 +127,5 @@ export {
   createPaymentIntent,
   createStripeProduct,
   updatePaymentIntent,
-  stripeLink,
+  subscriptionStripeLink as stripeLink,
 };

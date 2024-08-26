@@ -11,6 +11,7 @@ interface PlanCardProps {
   color: string;
   recommended?: boolean;
   percentFee: string;
+  onClick?: () => void;
 }
 
 export default function PlanCard({
@@ -22,6 +23,7 @@ export default function PlanCard({
   btnText = "Choose Plan",
   recommended = false,
   percentFee,
+  onClick,
 }: PlanCardProps) {
   const length = 8 - features.length * 1.5;
   return (
@@ -85,6 +87,7 @@ export default function PlanCard({
               <Button
                 className={`rounded-3xl relative bottom-3 bg-[#73D08D] text-black w-fit mx-auto`}
                 size="lg"
+                onClick={onClick}
               >
                 <text className="px-4">{btnText}</text>
               </Button>

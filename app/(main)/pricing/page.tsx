@@ -2,17 +2,31 @@
 import { Button } from "@/components/ui/button";
 import PlanCard from "./components/PlanCard";
 import ComparisonRow from "./components/ComparisonRow";
-import { validateUser } from "@/lib/actions/auth";
+import { useRouter } from "next/navigation";
 
-export default async function Page() {
+export default function Page() {
   const unicode = "&#65291";
+  const router = useRouter(); // Move this to the top level of your component
+
+  const handleBasicClick = () => {
+    router.push("/login?redirect=/events");
+  };
+  const handleProClick = () => {
+    router.push("/pricing/checkout");
+  };
+  const handleEnterpriseClick = () => {
+    var win = window.open(
+      "https://app.formbricks.com/s/clzc1c26t00019q5fcdx89zyu",
+      "_blank"
+    );
+  };
   return (
     <div className="">
       <div className="flex flex-col items-center">
         <div className="mb-2 mt-0 text-center mx-auto">
           <div className="w-full flex justify-center">
             <h1 className="sm:mb-8 text-[2.5rem] font-bold">
-              Start <span className="text-[#73D08D]">supercharging</span> your
+              Start <span className="text-[#40b461]">supercharging</span> your
               <br className="hidden sm:block" /> event management & growth today
             </h1>
           </div>
@@ -30,6 +44,8 @@ export default async function Page() {
                 "Mobile Check-in App Access",
               ]}
               percentFee="4"
+              btnText="Sign Up Free"
+              onClick={handleBasicClick}
             />
 
             <PlanCard
@@ -60,7 +76,8 @@ export default async function Page() {
               ]}
               price=" --"
               percentFee="2"
-              btnText="Contact Us for Pricing"
+              btnText="Contact Us Here"
+              onClick={handleEnterpriseClick}
             />
           </div>
         </div>
@@ -84,7 +101,7 @@ export default async function Page() {
               </p>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#73D08D] text-center">
+              <div className="text-4xl font-bold text-[#40b461] text-center">
                 Basic <span className="text-[#858BA0] text-xs">free</span>
               </div>
               <div className="mt-6">
@@ -94,7 +111,7 @@ export default async function Page() {
               </div>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#73D08D] text-center">
+              <div className="text-4xl font-bold text-[#40b461] text-center">
                 Pro <span className="text-[#858BA0] text-xs">$35/month</span>
               </div>
               <div className="mt-6">
@@ -104,7 +121,7 @@ export default async function Page() {
               </div>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#73D08D] text-center">
+              <div className="text-4xl font-bold text-[#40b461] text-center">
                 Enterprise{" "}
                 <span className="text-[#858BA0] text-xs">$ - -/month</span>
               </div>
