@@ -15,13 +15,11 @@ export default function PromoCode({
   promoApplied,
   checkoutSession,
   startingPrice,
-  updatePrice,
 }: {
   event: EventDisplayData;
   promoApplied: Tables<"event_codes"> | null;
   checkoutSession: Tables<"checkout_sessions">;
   startingPrice: number;
-  updatePrice: (newPrice: number) => void;
 }) {
   const { refresh } = useRouter();
   const [promoCode, setPromoCode] = useState("");
@@ -30,53 +28,54 @@ export default function PromoCode({
 
   const handleApplyPromo = async (e: FormEvent) => {
     e.preventDefault();
+    try {
+      toast.loading("Applying promo code...");
 
-    toast.loading("Applying promo code...");
+      const { data, error } = await supabase
+        .from("event_codes")
+        .select("*")
+        .eq("code", promoCode.toUpperCase())
+        .or(`event_id.eq.${event.id},event_id.is.null`)
+        .single();
 
-    const { data, error } = await supabase
-      .from("event_codes")
-      .select("*")
-      .eq("code", promoCode)
-      .or(`event_id.eq.${event.id},event_id.is.null`)
-      .single();
+      if (!data || error) {
+        throw new Error("Invalid promo code");
+      }
 
-    if (!data || error) {
+      const promoData: Tables<"event_codes"> = data;
+
+      if (promoData.status === "INACTIVE") {
+        throw new Error("Promo code is inactive");
+      }
+
+      if (
+        promoData.usage_limit &&
+        promoData.num_used >= promoData.usage_limit
+      ) {
+        throw new Error("Promo code has reached its usage limit");
+      }
+
+      let newAmount = 0;
+      if (promoData.type === "DOLLAR") {
+        newAmount = Math.max(startingPrice - promoData.discount, 0);
+      } else {
+        newAmount = startingPrice - (startingPrice * promoData.discount) / 100;
+      }
+
+      newAmount = parseFloat(newAmount.toFixed(2));
+
+      await supabase
+        .from("checkout_sessions")
+        .update({ promo_id: promoData.id })
+        .eq("id", checkoutSession.id);
+
       toast.dismiss();
-      toast.error("Invalid promo code");
-      return;
-    }
-
-    const promoData: Tables<"event_codes"> = data;
-
-    if (promoData.status === "INACTIVE") {
+      toast.success("Promo code applied!");
+      refresh();
+    } catch (err: any) {
       toast.dismiss();
-      toast.error("Invalid promo code");
-      return;
+      toast.error(err.message);
     }
-    if (promoData.usage_limit && promoData.num_used >= promoData.usage_limit) {
-      toast.dismiss();
-      toast.error("Promo code has reached its usage limit");
-      return;
-    }
-
-    let newAmount = 0;
-    if (promoData.type === "DOLLAR") {
-      newAmount = Math.max(startingPrice - promoData.discount, 0);
-    } else {
-      newAmount = startingPrice - (startingPrice * promoData.discount) / 100;
-    }
-
-    newAmount = parseFloat(newAmount.toFixed(2));
-
-    await supabase
-      .from("checkout_sessions")
-      .update({ promo_id: promoData.id })
-      .eq("id", checkoutSession.id);
-
-    toast.dismiss();
-    toast.success("Promo code applied!");
-    updatePrice(newAmount);
-    refresh();
   };
 
   const handleRemovePromo = async () => {
@@ -84,8 +83,6 @@ export default function PromoCode({
       .from("checkout_sessions")
       .update({ promo_id: null })
       .eq("id", checkoutSession.id);
-
-    updatePrice(startingPrice);
     refresh();
   };
 

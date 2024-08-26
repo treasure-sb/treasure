@@ -5,8 +5,8 @@ import {
 } from "@/lib/actions/emails";
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
-import { Database, Json, Tables } from "@/types/supabase";
-import { Subscription, SupabaseClient } from "@supabase/supabase-js";
+import { Json, Tables } from "@/types/supabase";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
   type HostSoldPayload,
@@ -22,7 +22,6 @@ import { formatEmailDate } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { secondsToISODate } from "@/lib/helpers/stripeHelp";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -87,6 +86,7 @@ const handleTicketPurchase = async (
     .returns<PurchaseTicketResult[]>();
 
   if (error) {
+    console.log(error);
     throw new Error("Error purchasing tickets");
   }
 
@@ -105,10 +105,10 @@ const handleTicketPurchase = async (
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+
   const numericAmountPaid = Number(amountPaid);
   const numericFeesPaid = Number(fees_paid);
 
-  // Now perform the addition
   const totalPaid = fees_paid
     ? numericAmountPaid + numericFeesPaid
     : numericAmountPaid;
@@ -172,14 +172,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  if (!profile.email || profile.role !== "admin") {
-    await sendTicketPurchasedEmail(
-      "treasure20110@gmail.com",
-      purchasedTicketId,
-      event_id,
-      ticketPurchaseEmailProps
-    );
-  }
+  // if (!profile.email || profile.role !== "admin") {
+  //   await sendTicketPurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     purchasedTicketId,
+  //     event_id,
+  //     ticketPurchaseEmailProps
+  //   );
+  // }
 };
 
 const handleTablePurchase = async (
@@ -203,6 +203,7 @@ const handleTablePurchase = async (
     .returns<PurchaseTableResult[]>();
 
   if (error) {
+    console.log(error);
     throw new Error("Error purchasing table");
   }
 
@@ -243,10 +244,11 @@ const handleTablePurchase = async (
   });
   const numericFeesPaid = Number(fees_paid);
   const numericAmountPaid = Number(amountPaid);
-  // Now perform the addition
+
   const totalPaid = fees_paid
     ? numericAmountPaid + numericFeesPaid
     : numericAmountPaid;
+
   const tablePurchasedEmailPayload: TablePurchasedProps = {
     eventName: event_name,
     posterUrl: publicUrl,
@@ -297,12 +299,12 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  if (vendor_application_email !== "treasure20110@gmail.com") {
-    await sendTablePurchasedEmail(
-      "treasure20110@gmail.com",
-      tablePurchasedEmailPayload
-    );
-  }
+  // if (vendor_application_email !== "treasure20110@gmail.com") {
+  //   await sendTablePurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     tablePurchasedEmailPayload
+  //   );
+  // }
 };
 
 const handlePaymentIntentSucceeded = async (
@@ -310,9 +312,12 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const invoice = await stripe.invoices.retrieve(session.invoice as string);
-  if (invoice.billing_reason == "subscription_create") {
-    return;
+
+  if (session.invoice) {
+    const invoice = await stripe.invoices.retrieve(session.invoice as string);
+    if (invoice.billing_reason == "subscription_create") {
+      return;
+    }
   }
 
   const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
@@ -374,6 +379,7 @@ export async function POST(req: Request) {
         });
       } catch (err) {
         await stripe.refunds.create({ payment_intent: event.data.object.id });
+        console.log("ERROR");
         console.error("Failed to process post-payment actions:", err);
         return NextResponse.json({
           message: "An error has occurred",

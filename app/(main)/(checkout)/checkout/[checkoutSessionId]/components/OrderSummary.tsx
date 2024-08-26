@@ -4,29 +4,25 @@ import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { TicketIcon, UtensilsIcon } from "lucide-react";
 import { CheckoutTicketInfo } from "../../../types";
-import { SampaMetadata } from "../page";
+import { PriceInfo, SampaMetadata } from "../page";
 
-export default function OrderSummary({
-  promoCode,
-  event,
-  ticket,
-  fee,
-  subtotal,
-  totalPrice,
-  checkoutSession,
-  metadata,
-}: {
-  promoCode: Tables<"event_codes"> | null;
+type OrderSummaryProps = {
   event: EventDisplayData;
   ticket: CheckoutTicketInfo;
-  subtotal: number;
-  totalPrice: number;
   checkoutSession: Tables<"checkout_sessions">;
   metadata: SampaMetadata;
-  fee?: number;
-}) {
-  const { quantity } = checkoutSession;
+  priceInfo: PriceInfo;
+};
 
+export default function OrderSummary({
+  event,
+  ticket,
+  checkoutSession,
+  metadata,
+  priceInfo,
+}: OrderSummaryProps) {
+  const { subtotal, promoCode, priceAfterPromo, fee } = priceInfo;
+  const { quantity } = checkoutSession;
   const isSampa = metadata.isSampa;
   const sampaDinnerSelections = metadata.dinnerSelections.join(", ");
 
@@ -71,21 +67,11 @@ export default function OrderSummary({
                   <p className="text-sm italic">Discount {promoCode.code}</p>
                 </div>
                 <p className="text-sm italic">{`-$${(
-                  subtotal - totalPrice
+                  subtotal - priceAfterPromo
                 ).toFixed(2)}`}</p>
               </div>
             )}
           </div>
-          {isSampa && (
-            <div className="flex justify-between text-muted-foreground my-1">
-              <div className="flex items-center space-x-4">
-                <p className="text-sm italic">Processing Fee 3%</p>
-              </div>
-              <p className="text-sm italic">{`+$${(subtotal * 0.03).toFixed(
-                2
-              )}`}</p>
-            </div>
-          )}
           {fee !== 0 && fee && (
             <div className="flex justify-between text-muted-foreground my-1">
               <div className="flex items-center space-x-4">
@@ -99,7 +85,9 @@ export default function OrderSummary({
             <div className="flex justify-between">
               <p className="font-semibold">Total</p>
               <p className="font-semibold">{`$${
-                fee ? (totalPrice + fee).toFixed(2) : totalPrice.toFixed(2)
+                fee
+                  ? (priceAfterPromo + fee).toFixed(2)
+                  : priceAfterPromo.toFixed(2)
               }`}</p>
             </div>
           </div>

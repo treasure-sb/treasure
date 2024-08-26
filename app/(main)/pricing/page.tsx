@@ -21,12 +21,12 @@ export default function Page() {
     );
   };
   return (
-    <div className="">
+    <div>
       <div className="flex flex-col items-center">
         <div className="mb-2 mt-0 text-center mx-auto">
           <div className="w-full flex justify-center">
             <h1 className="sm:mb-8 text-[2.5rem] font-bold">
-              Start <span className="text-[#40b461]">supercharging</span> your
+              Start <span className="text-primary">supercharging</span> your
               <br className="hidden sm:block" /> event management & growth today
             </h1>
           </div>
@@ -92,7 +92,7 @@ export default function Page() {
           <div className="flex flex-row w-[100%] border-b-2 border-[#73D08D] gap-4 pb-6">
             {/*Column Titles*/}
             <div className="items-center w-[25%] pl-8 flex flex-col gap-4 justify-end pb-2">
-              <h2 className="text-2xl font-bold text-[#73D08D] text-left w-full">
+              <h2 className="text-2xl font-bold text-primary text-left w-full">
                 Compare Plans
               </h2>
 
@@ -101,7 +101,7 @@ export default function Page() {
               </p>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#40b461] text-center">
+              <div className="text-4xl font-bold text-primary text-center">
                 Basic <span className="text-[#858BA0] text-xs">free</span>
               </div>
               <div className="mt-6">
@@ -111,7 +111,7 @@ export default function Page() {
               </div>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#40b461] text-center">
+              <div className="text-4xl font-bold text-primary text-center">
                 Pro <span className="text-[#858BA0] text-xs">$35/month</span>
               </div>
               <div className="mt-6">
@@ -121,7 +121,7 @@ export default function Page() {
               </div>
             </div>
             <div className="flex flex-col items-center w-1/4">
-              <div className="text-4xl font-bold text-[#40b461] text-center">
+              <div className="text-4xl font-bold text-primary text-center">
                 Enterprise{" "}
                 <span className="text-[#858BA0] text-xs">$ - -/month</span>
               </div>

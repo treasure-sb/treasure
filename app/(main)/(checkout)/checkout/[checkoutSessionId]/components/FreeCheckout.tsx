@@ -14,13 +14,11 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
-import { EventDisplayData } from "@/types/event";
 import { useRouter } from "next/navigation";
 import { PurchaseTicketResult } from "@/types/tickets";
 import { PurchaseTableResult } from "@/types/tables";
 import * as z from "zod";
 import StripeInput from "./StripeInput";
-import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import {
   sendTablePurchasedEmail,
   sendTicketPurchasedEmail,
@@ -45,11 +43,9 @@ const nameSchema = z.object({
 });
 
 export default function FreeCheckout({
-  event,
   checkoutSession,
   profile,
 }: {
-  event: EventDisplayData;
   checkoutSession: Tables<"checkout_sessions">;
   profile: Tables<"profiles">;
 }) {
@@ -125,6 +121,7 @@ export default function FreeCheckout({
       .returns<PurchaseTicketResult[]>();
 
     if (error) {
+      console.log(error);
       throw new Error("Failed to complete order");
     }
 
