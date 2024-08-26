@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
 import StripeInput from "./StripeInput";
 import { createPaymentIntent } from "@/lib/actions/stripe";
+import { PriceInfo } from "../page";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -35,23 +36,23 @@ const nameSchema = z.object({
   }),
 });
 
+export type CheckoutPriceInfo = PriceInfo & {
+  priceToCharge: number;
+};
+
+type CheckoutFormProps = {
+  checkoutSession: Tables<"checkout_sessions">;
+  profile: Tables<"profiles">;
+  checkoutPriceInfo: CheckoutPriceInfo;
+};
+
 export default function CheckoutForm({
   checkoutSession,
   profile,
-  totalPrice,
-  subtotal,
-  priceAfterPromo,
-  promoCode,
-  fee,
-}: {
-  checkoutSession: Tables<"checkout_sessions">;
-  profile: Tables<"profiles">;
-  totalPrice: number;
-  subtotal: number;
-  priceAfterPromo: number;
-  promoCode: Tables<"event_codes"> | null;
-  fee?: number;
-}) {
+  checkoutPriceInfo,
+}: CheckoutFormProps) {
+  const { subtotal, promoCode, priceAfterPromo, fee, priceToCharge } =
+    checkoutPriceInfo;
   const supabase = createClient();
   const stripe = useStripe();
   const elements = useElements();
@@ -88,7 +89,7 @@ export default function CheckoutForm({
     }
 
     const paymentIntent = await createPaymentIntent(
-      totalPrice,
+      priceToCharge,
       subtotal,
       priceAfterPromo,
       checkoutSession.id,

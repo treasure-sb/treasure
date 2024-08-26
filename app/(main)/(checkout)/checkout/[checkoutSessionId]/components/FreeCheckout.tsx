@@ -121,6 +121,7 @@ export default function FreeCheckout({
       .returns<PurchaseTicketResult[]>();
 
     if (error) {
+      console.log(error);
       throw new Error("Failed to complete order");
     }
 

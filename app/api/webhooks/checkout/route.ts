@@ -5,8 +5,8 @@ import {
 } from "@/lib/actions/emails";
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
-import { Database, Json, Tables } from "@/types/supabase";
-import { Subscription, SupabaseClient } from "@supabase/supabase-js";
+import { Json, Tables } from "@/types/supabase";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import {
   type HostSoldPayload,
@@ -22,7 +22,6 @@ import { formatEmailDate } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
-import { secondsToISODate } from "@/lib/helpers/stripeHelp";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],

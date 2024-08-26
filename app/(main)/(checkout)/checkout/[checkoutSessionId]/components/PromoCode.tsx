@@ -71,7 +71,6 @@ export default function PromoCode({
 
       toast.dismiss();
       toast.success("Promo code applied!");
-      // updatePrice(newAmount + (fee || 0));
       refresh();
     } catch (err: any) {
       toast.dismiss();
@@ -84,8 +83,6 @@ export default function PromoCode({
       .from("checkout_sessions")
       .update({ promo_id: null })
       .eq("id", checkoutSession.id);
-
-    // updatePrice(startingPrice);
     refresh();
   };
 

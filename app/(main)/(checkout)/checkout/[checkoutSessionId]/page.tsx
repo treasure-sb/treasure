@@ -1,17 +1,23 @@
 import InitializeCheckout from "./components/InitializeCheckout";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import OrderSummary from "./components/OrderSummary";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData, getEventFromId } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/helpers/profiles";
 import { CheckoutTicketInfo } from "../../types";
-import OrderSummary from "./components/OrderSummary";
-
 import { getFeeInfo } from "@/lib/helpers/subscriptions";
 
 export type SampaMetadata = {
   dinnerSelections: string[];
   isSampa: boolean;
+};
+
+export type PriceInfo = {
+  subtotal: number;
+  promoCode: Tables<"event_codes"> | null;
+  priceAfterPromo: number;
+  fee: number;
 };
 
 const getTicketInfo = async (ticketId: string) => {
@@ -77,7 +83,7 @@ export default async function Page({
   const { profile } = await getProfile(checkoutSession.user_id);
   const eventDisplay = await getEventDisplayData(event);
 
-  const { data: feeData, error: feeError } = await getFeeInfo(event_id);
+  const { data: feeData, isLegacy } = await getFeeInfo(event_id);
 
   const feePercent = feeData?.fee || 0;
   const collectStripeFee = feeData?.collectStripeFee || false;
@@ -110,56 +116,55 @@ export default async function Page({
   }
 
   subtotal = ticket.price * quantity;
-  let totalPrice = subtotal;
+  let priceAfterPromo = subtotal;
 
   if (promoCode) {
     if (promoCode.type === "PERCENT") {
-      totalPrice = Math.max(
+      priceAfterPromo = Math.max(
         subtotal - subtotal * (promoCode.discount / 100),
         0
       );
     } else {
-      totalPrice = Math.max(subtotal - promoCode.discount, 0);
+      priceAfterPromo = Math.max(subtotal - promoCode.discount, 0);
     }
   }
 
-  const priceAfterPromo = totalPrice;
   const sampaMetadata: SampaMetadata = (metadata as SampaMetadata) ?? {
     dinnerSelections: [],
     isSampa: false,
   };
 
-  const feeAmount = totalPrice * feePercent;
+  const feeAmount = priceAfterPromo * feePercent;
   const stripeFee = collectStripeFee
-    ? (totalPrice + feeAmount) * 0.029 + 0.3
+    ? (priceAfterPromo + feeAmount) * 0.029 + 0.3
     : 0;
 
-  const totalFee = Math.max(feeAmount + stripeFee, 0.5);
+  const totalFee = isLegacy
+    ? feeAmount + stripeFee
+    : Math.max(feeAmount + stripeFee, 0.5);
 
-  console.log(totalFee, totalPrice);
+  const priceInfo: PriceInfo = {
+    subtotal,
+    promoCode,
+    priceAfterPromo,
+    fee: totalFee,
+  };
 
   return (
     <main className="max-w-6xl m-auto">
       <div className="flex flex-col space-y-14 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
         <OrderSummary
-          promoCode={promoCode}
           event={eventDisplay}
           ticket={ticket}
-          subtotal={subtotal}
-          totalPrice={totalPrice}
           checkoutSession={checkoutSession}
           metadata={sampaMetadata}
-          fee={totalFee}
+          priceInfo={priceInfo}
         />
         <InitializeCheckout
           checkoutSession={checkoutSession}
-          totalPrice={totalPrice}
-          subtotal={subtotal}
-          priceAfterPromo={priceAfterPromo}
           profile={profile}
           event={eventDisplay}
-          promoCode={promoCode}
-          fee={totalFee}
+          priceInfo={priceInfo}
         />
       </div>
     </main>

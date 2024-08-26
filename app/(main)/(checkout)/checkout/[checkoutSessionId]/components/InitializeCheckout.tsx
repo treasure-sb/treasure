@@ -6,7 +6,8 @@ import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import CheckoutForm from "./CheckoutForm";
+import { PriceInfo } from "../page";
+import CheckoutForm, { CheckoutPriceInfo } from "./CheckoutForm";
 import PromoCode from "./PromoCode";
 import FreeCheckout from "./FreeCheckout";
 
@@ -14,26 +15,22 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export default function InitializeCheckout({
-  checkoutSession,
-  totalPrice,
-  subtotal,
-  priceAfterPromo,
-  event,
-  profile,
-  promoCode,
-  fee,
-}: {
+type InitializeCheckoutProps = {
   checkoutSession: Tables<"checkout_sessions">;
-  totalPrice: number;
-  subtotal: number;
-  priceAfterPromo: number;
   event: EventDisplayData;
   profile: Tables<"profiles">;
-  promoCode: Tables<"event_codes"> | null;
-  fee?: number;
-}) {
-  const priceToCharge = totalPrice + (fee || 0);
+  priceInfo: PriceInfo;
+};
+
+export default function InitializeCheckout({
+  checkoutSession,
+  event,
+  profile,
+  priceInfo,
+}: InitializeCheckoutProps) {
+  const { subtotal, promoCode, priceAfterPromo, fee } = priceInfo;
+  const priceToCharge = priceAfterPromo + (fee || 0);
+  const isFree = priceToCharge === 0;
 
   const { theme } = useTheme();
   const [options, setOptions] = useState({
@@ -68,7 +65,7 @@ export default function InitializeCheckout({
     }));
   }, [theme]);
 
-  const isFree = priceToCharge === 0;
+  const checkoutPriceInfo: CheckoutPriceInfo = { ...priceInfo, priceToCharge };
 
   return (
     <div className="w-full md:w-[28rem]">
@@ -89,11 +86,7 @@ export default function InitializeCheckout({
           <CheckoutForm
             checkoutSession={checkoutSession}
             profile={profile}
-            totalPrice={priceToCharge}
-            subtotal={subtotal}
-            priceAfterPromo={priceAfterPromo}
-            promoCode={promoCode}
-            fee={fee}
+            checkoutPriceInfo={checkoutPriceInfo}
           />
         </Elements>
       )}
