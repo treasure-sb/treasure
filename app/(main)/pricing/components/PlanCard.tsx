@@ -149,7 +149,7 @@ export default function PlanCard({
                   className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`}
                   size="lg"
                 >
-                  <text className="px-4">{btnText}</text>
+                  <text className="px-4 text-white">{btnText}</text>
                 </Button>
               </Link>
             </div>
