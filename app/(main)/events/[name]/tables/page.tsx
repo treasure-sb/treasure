@@ -60,8 +60,6 @@ export default async function Page({
   const inventoryDataSingle: Tables<"event_vendors"> =
     inventoryData === null ? {} : inventoryData[0];
 
-  console.log("event_id", inventoryDataSingle?.event_id);
-
   const { data: profileTagsData } = await supabase
     .from("event_vendor_tags")
     .select("tags(id,name)")
