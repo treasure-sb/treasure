@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+
 interface PlanCardProps {
   name: string;
   description: string;
@@ -9,6 +11,7 @@ interface PlanCardProps {
   color: string;
   recommended?: boolean;
   percentFee: string;
+  onClick?: () => void;
 }
 
 export default function PlanCard({
@@ -20,8 +23,8 @@ export default function PlanCard({
   btnText = "Choose Plan",
   recommended = false,
   percentFee,
+  onClick,
 }: PlanCardProps) {
-  const length = 8 - features.length * 1.5;
   return (
     <>
       {color === "black" ? (
@@ -30,20 +33,17 @@ export default function PlanCard({
             <div className="ml-4 flex flex-col min-h-[428px] justify-between h-full">
               {recommended && (
                 <div className="self-center h-7">
-                  <Button
-                    className="rounded-3xl relative -right-20 -top-4 text-black bg-black"
-                    size="sm"
-                  >
-                    <text className="text-xs text-[#73D08D] font-bold">
+                  <div className="rounded-3xl relative -right-20 -top-4 text-black bg-black p-1 px-3">
+                    <text className="text-xs text-primary font-bold">
                       MOST POPULAR
                     </text>
-                  </Button>
+                  </div>
                 </div>
               )}
-              <h2 className="mb-5 text-4xl font-bold text-left text-[#73D08D]">
+              <h2 className="mb-5 text-4xl font-bold text-left text-primary">
                 {price ? (
                   <>
-                    <text className="font-bold text-4xl text-[#73D08D]">
+                    <text className="font-bold text-4xl text-primary">
                       ${price}
                     </text>
                     <text className="text-lg"> /month</text>
@@ -52,7 +52,7 @@ export default function PlanCard({
                   "Free"
                 )}
               </h2>
-              <div className="mb-2 flex items-end text-2xl font-medium text-[#73D08D]">
+              <div className="mb-2 flex items-end text-2xl font-medium text-primary">
                 {name}{" "}
               </div>
               <p className="mb-5 text-left text-muted-foreground">
@@ -81,8 +81,9 @@ export default function PlanCard({
                 {percentFee}% Transaction Fees
               </p>
               <Button
-                className={`rounded-3xl relative bottom-3 bg-[#73D08D] text-black`}
+                className={`rounded-3xl relative bottom-3 bg-primary text-black w-fit mx-auto`}
                 size="lg"
+                onClick={onClick}
               >
                 <text className="px-4">{btnText}</text>
               </Button>
@@ -91,18 +92,15 @@ export default function PlanCard({
         </>
       ) : (
         <>
-          <div className="flex min-h-[428px] shadow-2xl shadow-[#78df95] md:w-96 full flex-col rounded-3xl p-8 md:relative bottom-6 bg-[#73D08D] ">
+          <div className="flex min-h-[428px] shadow-2xl shadow-primary md:w-96 full flex-col rounded-3xl p-8 md:relative bottom-6 bg-primary">
             <div className="ml-4 flex flex-col min-h-[428px] justify-between h-full">
               {recommended && (
                 <div className="self-center h-7">
-                  <Button
-                    className="rounded-3xl relative -right-20 -top-4 text-black bg-black"
-                    size="sm"
-                  >
-                    <text className="text-xs text-[#73D08D] font-bold">
+                  <div className="rounded-3xl relative -right-20 -top-4 text-black bg-black p-2 px-4">
+                    <text className="text-xs text-primary font-bold">
                       MOST POPULAR
                     </text>
-                  </Button>
+                  </div>
                 </div>
               )}
               <h2 className="mb-5 text-4xl font-bold text-left text-black">
@@ -146,12 +144,14 @@ export default function PlanCard({
               <p className="text-left mb-8 text-black">
                 {percentFee}% Transaction Fees
               </p>
-              <Button
-                className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`}
-                size="lg"
-              >
-                <text className="px-4">{btnText}</text>
-              </Button>
+              <Link href="/pricing/checkout">
+                <Button
+                  className={`rounded-3xl relative bottom-3 bg-black text-white hover:bg-opacity-80 hover:bg-black`}
+                  size="lg"
+                >
+                  <text className="px-4 text-white">{btnText}</text>
+                </Button>
+              </Link>
             </div>
           </div>
         </>

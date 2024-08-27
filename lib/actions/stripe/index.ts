@@ -1,5 +1,6 @@
 "use server";
 import { Stripe } from "stripe";
+import { validateUser } from "@/lib/actions/auth";
 
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY as string);
 
@@ -15,7 +16,8 @@ const createPaymentIntent = async (
   priceAfterPromo: number,
   checkoutSessionId: string,
   email: string,
-  promoCode: string
+  promoCode: string,
+  fee: number
 ) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalPrice * 100),
@@ -25,10 +27,11 @@ const createPaymentIntent = async (
     },
     metadata: {
       checkoutSessionId,
-      subtotal: subtotal,
+      subtotal,
       priceAfterPromo,
-      promoCode: promoCode,
+      promoCode,
       email,
+      fees_paid: fee.toFixed(2),
     },
   });
 
@@ -74,4 +77,56 @@ const createStripeProduct = async (ticket: Ticket) => {
   return product;
 };
 
-export { createPaymentIntent, createStripeProduct, updatePaymentIntent };
+const subscriptionStripeLink = async (returnUrl: string) => {
+  const {
+    data: { user },
+  } = await validateUser();
+
+  const searchData = await stripe.customers.search({
+    query: `email:\'${user?.email}\'`,
+  });
+
+  let customer: Stripe.Customer;
+  if (searchData && searchData.data.length == 0) {
+    customer = await stripe.customers.create({
+      email: user?.email,
+      phone: user?.phone,
+    });
+  } else {
+    customer = searchData.data[0];
+  }
+
+  const user_id = user?.id || "";
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [
+      {
+        price:
+          process.env.NODE_ENV === "development"
+            ? "price_1PjqNfHnRCFO3bhFJArayp7A"
+            : "price_1PjPhmHnRCFO3bhFbMk9u5Uz",
+        quantity: 1,
+      },
+    ],
+    ui_mode: "embedded",
+    return_url: returnUrl,
+    metadata: {
+      plan: "Pro",
+      priceId:
+        process.env.NODE_ENV === "development"
+          ? "price_1PjqNfHnRCFO3bhFJArayp7A"
+          : "price_1PjPhmHnRCFO3bhFbMk9u5Uz",
+      user_id: user_id,
+    },
+  });
+
+  let clientSecret = session.client_secret;
+  return clientSecret;
+};
+
+export {
+  createPaymentIntent,
+  createStripeProduct,
+  updatePaymentIntent,
+  subscriptionStripeLink as stripeLink,
+};

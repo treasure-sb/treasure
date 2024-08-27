@@ -13,7 +13,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tables } from "@/types/supabase";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
 import StripeInput from "./StripeInput";
 import { createPaymentIntent } from "@/lib/actions/stripe";
+import { PriceInfo } from "../page";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -35,25 +36,28 @@ const nameSchema = z.object({
   }),
 });
 
+export type CheckoutPriceInfo = PriceInfo & {
+  priceToCharge: number;
+};
+
+type CheckoutFormProps = {
+  checkoutSession: Tables<"checkout_sessions">;
+  profile: Tables<"profiles">;
+  checkoutPriceInfo: CheckoutPriceInfo;
+};
+
 export default function CheckoutForm({
   checkoutSession,
   profile,
-  totalPrice,
-  subtotal,
-  priceAfterPromo,
-  promoCode,
-}: {
-  checkoutSession: Tables<"checkout_sessions">;
-  profile: Tables<"profiles">;
-  totalPrice: number;
-  subtotal: number;
-  priceAfterPromo: number;
-  promoCode: Tables<"event_codes"> | null;
-}) {
+  checkoutPriceInfo,
+}: CheckoutFormProps) {
+  const { subtotal, promoCode, priceAfterPromo, fee, priceToCharge } =
+    checkoutPriceInfo;
   const supabase = createClient();
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
+  const [isStripeComplete, setIsStripeComplete] = useState(false);
 
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -63,6 +67,21 @@ export default function CheckoutForm({
       email: profile.email || "",
     },
   });
+
+  useEffect(() => {
+    if (!elements) return;
+
+    const element = elements.getElement("payment");
+    if (!element) return;
+
+    element.on("change", (event) => {
+      setIsStripeComplete(event.complete);
+    });
+
+    return () => {
+      element.off("change");
+    };
+  }, [elements]);
 
   const onSubmit = async () => {
     const { first_name, last_name, email } = form.getValues();
@@ -82,16 +101,18 @@ export default function CheckoutForm({
     if (submitError) {
       toast.dismiss();
       toast.error(submitError.message);
+      setIsLoading(false);
       return;
     }
 
     const paymentIntent = await createPaymentIntent(
-      totalPrice,
+      priceToCharge,
       subtotal,
       priceAfterPromo,
       checkoutSession.id,
       email,
-      promoCode?.code || ""
+      promoCode?.code || "",
+      fee
     );
     const clientSecret = paymentIntent?.clientSecret || "";
 
@@ -116,6 +137,8 @@ export default function CheckoutForm({
 
     setIsLoading(false);
   };
+
+  const isFormValid = form.formState.isValid;
 
   return (
     <Form {...form}>
@@ -166,7 +189,13 @@ export default function CheckoutForm({
         <div className="w-full flex items-center justify-center">
           <Button
             className={`rounded-sm ${isLoading && "bg-primary/60"}`}
-            disabled={isLoading || !stripe || !elements}
+            disabled={
+              isLoading ||
+              !stripe ||
+              !elements ||
+              !isFormValid ||
+              !isStripeComplete
+            }
             id="submit"
           >
             Purchase{" "}

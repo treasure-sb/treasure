@@ -65,7 +65,8 @@ const handleTicketPurchase = async (
   checkoutSessison: Tables<"checkout_sessions">,
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>,
-  email: string
+  email: string,
+  fees_paid?: number
 ) => {
   const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
     checkoutSessison;
@@ -80,10 +81,12 @@ const handleTicketPurchase = async (
       amount_paid: amountPaid,
       metadata,
       promo_id,
+      fees_paid,
     })
     .returns<PurchaseTicketResult[]>();
 
   if (error) {
+    console.log(error);
     throw new Error("Error purchasing tickets");
   }
 
@@ -102,6 +105,13 @@ const handleTicketPurchase = async (
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
   const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+
+  const numericAmountPaid = Number(amountPaid);
+  const numericFeesPaid = Number(fees_paid);
+
+  const totalPaid = fees_paid
+    ? numericAmountPaid + numericFeesPaid
+    : numericAmountPaid;
   const formattedEventDate = formatEmailDate(event_dates);
 
   const ticketPurchaseEmailProps = {
@@ -112,11 +122,12 @@ const handleTicketPurchase = async (
     location: event_address,
     date: formattedEventDate,
     guestName: `${profile.first_name} ${profile.last_name}`,
-    totalPrice: `$${amountPaid}`,
+    totalPrice: `$${totalPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
       metadata as { [key: string]: Json | undefined }
     ),
+    fees_paid: fees_paid,
   };
 
   if (profile.email) {
@@ -161,20 +172,21 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  if (!profile.email || profile.role !== "admin") {
-    await sendTicketPurchasedEmail(
-      "treasure20110@gmail.com",
-      purchasedTicketId,
-      event_id,
-      ticketPurchaseEmailProps
-    );
-  }
+  // if (!profile.email || profile.role !== "admin") {
+  //   await sendTicketPurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     purchasedTicketId,
+  //     event_id,
+  //     ticketPurchaseEmailProps
+  //   );
+  // }
 };
 
 const handleTablePurchase = async (
   checkoutSession: Tables<"checkout_sessions">,
   amountPaid: number,
-  supabase: SupabaseClient<any, "public", any>
+  supabase: SupabaseClient<any, "public", any>,
+  fees_paid?: number
 ) => {
   const { event_id, user_id, quantity, ticket_id, promo_id } = checkoutSession;
 
@@ -186,10 +198,12 @@ const handleTablePurchase = async (
       purchase_quantity: quantity,
       amount_paid: amountPaid,
       promo_id,
+      fees_paid,
     })
     .returns<PurchaseTableResult[]>();
 
   if (error) {
+    console.log(error);
     throw new Error("Error purchasing table");
   }
 
@@ -228,6 +242,12 @@ const handleTablePurchase = async (
       height: 400,
     },
   });
+  const numericFeesPaid = Number(fees_paid);
+  const numericAmountPaid = Number(amountPaid);
+
+  const totalPaid = fees_paid
+    ? numericAmountPaid + numericFeesPaid
+    : numericAmountPaid;
 
   const tablePurchasedEmailPayload: TablePurchasedProps = {
     eventName: event_name,
@@ -239,7 +259,7 @@ const handleTablePurchase = async (
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
-    totalPrice: `$${amountPaid}`,
+    totalPrice: `$${totalPaid}`,
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
   };
@@ -279,12 +299,12 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  if (vendor_application_email !== "treasure20110@gmail.com") {
-    await sendTablePurchasedEmail(
-      "treasure20110@gmail.com",
-      tablePurchasedEmailPayload
-    );
-  }
+  // if (vendor_application_email !== "treasure20110@gmail.com") {
+  //   await sendTablePurchasedEmail(
+  //     "treasure20110@gmail.com",
+  //     tablePurchasedEmailPayload
+  //   );
+  // }
 };
 
 const handlePaymentIntentSucceeded = async (
@@ -292,9 +312,16 @@ const handlePaymentIntentSucceeded = async (
 ) => {
   const supabase = await createSupabaseServerClient();
   const session = event.data.object;
-  const { checkoutSessionId, priceAfterPromo, email, promoCode } = JSON.parse(
-    JSON.stringify(session.metadata)
-  );
+
+  if (session.invoice) {
+    const invoice = await stripe.invoices.retrieve(session.invoice as string);
+    if (invoice.billing_reason == "subscription_create") {
+      return;
+    }
+  }
+
+  const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
+    JSON.parse(JSON.stringify(session.metadata));
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
@@ -314,11 +341,17 @@ const handlePaymentIntentSucceeded = async (
         checkoutSession,
         priceAfterPromo,
         supabase,
-        email
+        email,
+        fees_paid
       );
       break;
     case "TABLE":
-      await handleTablePurchase(checkoutSession, priceAfterPromo, supabase);
+      await handleTablePurchase(
+        checkoutSession,
+        priceAfterPromo,
+        supabase,
+        fees_paid
+      );
       break;
     default:
       throw new Error("Invalid Ticket Type");
@@ -340,13 +373,13 @@ export async function POST(req: Request) {
         await handlePaymentIntentSucceeded(
           event as Stripe.PaymentIntentSucceededEvent
         );
-
         return NextResponse.json({
           message: "Payment Intent Succeeded",
           ok: true,
         });
       } catch (err) {
         await stripe.refunds.create({ payment_intent: event.data.object.id });
+        console.log("ERROR");
         console.error("Failed to process post-payment actions:", err);
         return NextResponse.json({
           message: "An error has occurred",

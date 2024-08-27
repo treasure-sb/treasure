@@ -5,37 +5,37 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
 import { useEffect, useState } from "react";
-import CheckoutForm from "./CheckoutForm";
+import { useTheme } from "next-themes";
+import { PriceInfo } from "../page";
+import CheckoutForm, { CheckoutPriceInfo } from "./CheckoutForm";
 import PromoCode from "./PromoCode";
 import FreeCheckout from "./FreeCheckout";
-import { useTheme } from "next-themes";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export default function InitializeCheckout({
-  checkoutSession,
-  totalPrice,
-  subtotal,
-  priceAfterPromo,
-  event,
-  profile,
-  promoCode,
-}: {
+type InitializeCheckoutProps = {
   checkoutSession: Tables<"checkout_sessions">;
-  totalPrice: number;
-  subtotal: number;
-  priceAfterPromo: number;
   event: EventDisplayData;
   profile: Tables<"profiles">;
-  promoCode: Tables<"event_codes"> | null;
-}) {
-  const [price, setPrice] = useState(totalPrice);
+  priceInfo: PriceInfo;
+};
+
+export default function InitializeCheckout({
+  checkoutSession,
+  event,
+  profile,
+  priceInfo,
+}: InitializeCheckoutProps) {
+  const { subtotal, promoCode, priceAfterPromo, fee } = priceInfo;
+  const priceToCharge = priceAfterPromo + (fee || 0);
+  const isFree = priceToCharge === 0;
+
   const { theme } = useTheme();
   const [options, setOptions] = useState({
     mode: "payment" as const,
-    amount: Math.round(price * 100),
+    amount: Math.round(priceToCharge * 100),
     currency: "usd",
     appearance: {
       theme: "night" as const,
@@ -65,18 +65,7 @@ export default function InitializeCheckout({
     }));
   }, [theme]);
 
-  const updatePrice = (newPrice: number) => {
-    setPrice(newPrice);
-  };
-
-  useEffect(() => {
-    setOptions((prevOptions) => ({
-      ...prevOptions,
-      amount: Math.round(price * 100),
-    }));
-  }, [price]);
-
-  const isFree = price === 0;
+  const checkoutPriceInfo: CheckoutPriceInfo = { ...priceInfo, priceToCharge };
 
   return (
     <div className="w-full md:w-[28rem]">
@@ -87,25 +76,17 @@ export default function InitializeCheckout({
             promoApplied={promoCode}
             checkoutSession={checkoutSession}
             startingPrice={subtotal}
-            updatePrice={updatePrice}
           />
         )}
       </div>
       {isFree ? (
-        <FreeCheckout
-          event={event}
-          checkoutSession={checkoutSession}
-          profile={profile}
-        />
+        <FreeCheckout checkoutSession={checkoutSession} profile={profile} />
       ) : (
         <Elements options={options} stripe={stripePromise}>
           <CheckoutForm
             checkoutSession={checkoutSession}
             profile={profile}
-            totalPrice={price}
-            subtotal={subtotal}
-            priceAfterPromo={priceAfterPromo}
-            promoCode={promoCode}
+            checkoutPriceInfo={checkoutPriceInfo}
           />
         </Elements>
       )}
