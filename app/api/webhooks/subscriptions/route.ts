@@ -58,14 +58,12 @@ const handleSubscriptionCreationOrRenewal = async (
   });
   const metadata = checkout_session.data[0].metadata;
   const { plan, priceId, user_id } = JSON.parse(JSON.stringify(metadata));
-  const product_id = (
-    await supabase
-      .from("subscription_products")
-      .select("id")
-      .eq("name", "Pro")
-      .single()
-  ).data?.id;
-
+  const { data: ProductIdData, error: ProductIdError } = await supabase
+    .from("subscription_products")
+    .select("id")
+    .eq("name", "Pro")
+    .single();
+  const product_id = ProductIdData?.id;
   const isRenewal = await supabase
     .from("subscriptions")
     .select("*", { count: "exact" })
@@ -73,7 +71,6 @@ const handleSubscriptionCreationOrRenewal = async (
     .eq("subscribed_product_id", product_id)
     .then((return1) => {
       if (return1.count) {
-        let isRenew = return1.count > 0 ? true : false;
         return true;
       } else {
         return false;
