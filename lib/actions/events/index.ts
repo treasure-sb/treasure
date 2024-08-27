@@ -118,6 +118,16 @@ const createTags = async (tags: EventFormTag[], event_id: string) => {
 
 const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
   const supabase = await createSupabaseServerClient();
+
+  const { data } = await supabase
+    .from("event_dates")
+    .select("id")
+    .eq("event_id", event_id);
+
+  const eventDateId = data ? data[0].id : null;
+
+  console.log(eventDateId);
+
   const ticketsPromise = tickets.map(async (ticket) => {
     const { ticket_price, ticket_quantity, ticket_name } = ticket;
 
@@ -127,6 +137,13 @@ const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
         quantity: ticket_quantity,
         name: ticket_name,
         event_id,
+      },
+    ]);
+
+    const { data, error } = await supabase.from("ticket_dates").insert([
+      {
+        ticket_id: ticket_name,
+        event_date_id: eventDateId,
       },
     ]);
   });
