@@ -2,7 +2,7 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import type { EventTagData, Link, ProfileWithInstagram } from "./types";
+import type { EventTagData, Link, ProfileWithApplicationInfo } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TableFlowConsumer from "./components/TableFlowConsumer";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
@@ -51,18 +51,55 @@ export default async function Page({
     .select("username, application")
     .eq("user_id", user?.id);
 
-  const profile: Tables<"profiles"> = profileData;
-  const links: Link[] = linksData || [];
+  const { data: inventoryData, error: err } = await supabase
+    .from("event_vendors")
+    .select("*")
+    .eq("vendor_id", user?.id)
+    .order("created_at", { ascending: false });
 
-  let profileWithInstagram: ProfileWithInstagram | null = null;
+  const inventoryDataSingle: Tables<"event_vendors"> =
+    inventoryData === null ? {} : inventoryData[0];
+
+  console.log("event_id", inventoryDataSingle?.event_id);
+
+  const { data: profileTagsData } = await supabase
+    .from("event_vendor_tags")
+    .select("tags(id,name)")
+    .eq("vendor_id", user?.id)
+    .eq("event_id", inventoryDataSingle?.event_id);
+
+  let profile: Tables<"profiles"> = profileData;
+
+  const links: Link[] = linksData || [];
+  const inventory: string = inventoryDataSingle?.inventory || "";
+  const userTags: Tables<"tags">[] =
+    profileTagsData?.map((tag) => {
+      // @ts-ignore
+      return { id: tag.tags.id, name: tag.tags.name };
+    }) || [];
+
+  let profileWithApplicationInfo: ProfileWithApplicationInfo | null = null;
 
   if (profile) {
-    profileWithInstagram = {
+    profile.phone =
+      profile?.phone === null
+        ? inventoryDataSingle.application_phone
+        : profile.phone;
+    profile.email =
+      profile?.email === null
+        ? inventoryDataSingle.application_email
+        : profile.email;
+
+    profileWithApplicationInfo = {
       ...profile,
       instagram: links.find((link) => link.application === "Instagram")
         ?.username,
+      inventory: inventory,
+      tags: userTags,
     };
   }
+
+  console.log("profileWithApplicationInfo", profileWithApplicationInfo);
 
   const { event, eventError } = await getEventFromCleanedName(params.name);
   const eventDisplayData = await getEventDisplayData(event);
@@ -107,7 +144,7 @@ export default async function Page({
       generalVendorInfo={vendorInfo}
       terms={terms}
       tags={tags}
-      profile={profileWithInstagram}
+      profile={profileWithApplicationInfo}
     />
   );
 }

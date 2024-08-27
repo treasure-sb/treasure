@@ -7,10 +7,10 @@ import { validateUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { useVendorApplication } from "../../../context/VendorApplicationContext";
 import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
-import type { Link, ProfileWithInstagram } from "../../../types";
+import type { Link, ProfileWithApplicationInfo } from "../../../types";
 
 export default function Login() {
-  const { flowDispatch } = useVendorFlow();
+  const { tags, flowDispatch } = useVendorFlow();
   const { applicationDispatch } = useVendorApplication();
 
   const onLoginComplete = async () => {
@@ -35,15 +35,50 @@ export default function Login() {
       .select("username, application")
       .eq("user_id", user?.id);
 
-    const profile: Tables<"profiles"> = profileData;
+    const { data: inventoryData, error: err } = await supabase
+      .from("event_vendors")
+      .select("*")
+      .eq("vendor_id", user?.id)
+      .order("created_at", { ascending: false });
+
+    const inventoryDataSingle: Tables<"event_vendors"> =
+      inventoryData === null ? {} : inventoryData[0];
+
+    console.log("event_id", inventoryDataSingle?.event_id);
+
+    const { data: profileTagsData } = await supabase
+      .from("event_vendor_tags")
+      .select("tags(id,name)")
+      .eq("vendor_id", user?.id)
+      .eq("event_id", inventoryDataSingle?.event_id);
+
+    let profile: Tables<"profiles"> = profileData;
+    profile.phone =
+      profile.phone === null
+        ? inventoryDataSingle.application_phone
+        : profile.phone;
+    profile.email =
+      profile.email === null
+        ? inventoryDataSingle.application_email
+        : profile.email;
+
     const links: Link[] = linksData || [];
-    const profileWithInstagram: ProfileWithInstagram | null = {
+    const inventory: string = inventoryDataSingle?.inventory || "";
+    const userTags: Tables<"tags">[] =
+      profileTagsData?.map((tag) => {
+        // @ts-ignore
+        return { id: tag.tags.id, name: tag.tags.name };
+      }) || [];
+
+    const profileWithApplicationInfo: ProfileWithApplicationInfo | null = {
       ...profile,
       instagram: links.find((link) => link.application === "Instagram")
         ?.username,
+      inventory: inventory,
+      tags: userTags,
     };
 
-    flowDispatch({ type: "setProfile", payload: profileWithInstagram });
+    flowDispatch({ type: "setProfile", payload: profileWithApplicationInfo });
 
     const vendorInfo = {
       phone: formatPhoneNumber(
@@ -53,9 +88,19 @@ export default function Login() {
       firstName: profile.first_name,
       lastName: profile.last_name,
       businessName: profile.business_name,
-      instagram: profileWithInstagram.instagram,
+      instagram: profileWithApplicationInfo.instagram,
     };
+
+    let autoFillTags: Tables<"tags">[] = [];
+    profileWithApplicationInfo.tags?.forEach((pTag) => {
+      tags.forEach((eTag) => {
+        if (pTag.id === eTag.id) autoFillTags.push(eTag);
+      });
+    });
+
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
+    applicationDispatch({ type: "setInventory", payload: inventory });
+    applicationDispatch({ type: "setVendorTags", payload: autoFillTags });
   };
 
   return (

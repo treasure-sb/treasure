@@ -14,8 +14,10 @@ type EventTagData = {
   }[];
 };
 
-type ProfileWithInstagram = Tables<"profiles"> & {
+type ProfileWithApplicationInfo = Tables<"profiles"> & {
   instagram?: string;
+  inventory?: string;
+  tags?: Tables<"tags">[];
 };
 
 type VendorFlowState = {
@@ -24,7 +26,7 @@ type VendorFlowState = {
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   tags: Tables<"tags">[];
-  profile: ProfileWithInstagram | null;
+  profile: ProfileWithApplicationInfo | null;
   tables: Tables<"tables">[];
 };
 
@@ -64,7 +66,7 @@ type VendorApplication = {
 export type {
   Link,
   EventTagData,
-  ProfileWithInstagram,
+  ProfileWithApplicationInfo,
   VendorFlowState,
   VendorApplicationState,
   VendorInfo,
