@@ -85,11 +85,7 @@ const handleTicketPurchase = async (
     })
     .returns<PurchaseTicketResult[]>();
 
-  console.log("DATA", data, error);
-
   if (!data || error) {
-    console.log("ERROR WITH TICKETS");
-    console.log(error);
     throw new Error("Error purchasing tickets");
   }
 
