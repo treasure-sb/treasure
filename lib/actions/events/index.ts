@@ -81,9 +81,8 @@ const createEvent = async (values: EventForm) => {
         status: "ACTIVE",
       },
     ]);
-
+    await createEventDate(event.id, date as Date, start_time, end_time);
     const eventPromises = [
-      await createEventDate(event.id, date as Date, start_time, end_time),
       await createTickets(values.tickets, event.id),
       await createTableTicket(values.tables, event.id),
       await createApplicationInfo(
@@ -126,23 +125,25 @@ const createTickets = async (tickets: EventFormTicket[], event_id: string) => {
 
   const eventDateId = data ? data[0].id : null;
 
-  console.log(eventDateId);
-
   const ticketsPromise = tickets.map(async (ticket) => {
     const { ticket_price, ticket_quantity, ticket_name } = ticket;
 
-    await supabase.from("tickets").insert([
-      {
-        price: ticket_price,
-        quantity: ticket_quantity,
-        name: ticket_name,
-        event_id,
-      },
-    ]);
+    const { data: datatickets } = await supabase
+      .from("tickets")
+      .insert([
+        {
+          price: ticket_price,
+          quantity: ticket_quantity,
+          name: ticket_name,
+          event_id,
+        },
+      ])
+      .select("*")
+      .single();
 
     const { data, error } = await supabase.from("ticket_dates").insert([
       {
-        ticket_id: ticket_name,
+        ticket_id: datatickets?.id,
         event_date_id: eventDateId,
       },
     ]);
