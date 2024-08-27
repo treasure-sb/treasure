@@ -25,7 +25,10 @@ type RecipientData = {
 };
 
 type AttendeeData = {
-  profiles: RecipientData[];
+  email: string | null;
+  profiles: {
+    phone: string | null;
+  }[];
 };
 
 export default function Message({
@@ -202,15 +205,16 @@ export default function Message({
       case Recipients.ALL_ATTENDEES:
         const { data: allAttendeesData } = await supabase
           .from("event_tickets")
-          .select("profiles(phone, email)")
+          .select("email, profiles(phone)")
           .eq("event_id", event.id);
 
         const attendeeProfiles: AttendeeData[] = allAttendeesData || [];
         const allAttendees: RecipientData[] = attendeeProfiles.flatMap(
           (item) => {
-            return item.profiles;
+            return { phone: item.profiles[0]?.phone, email: item.email };
           }
         );
+
         return allAttendees;
 
       case Recipients.ALL_VENDORS:
@@ -277,9 +281,6 @@ export default function Message({
         placeholder="Your message..."
       />
       <div className="flex gap-4">
-        <Button className="w-40" onClick={handleSendText} type="button">
-          Send Text
-        </Button>
         <Button className="w-40" onClick={handleSendEmail} type="button">
           Send Email
         </Button>

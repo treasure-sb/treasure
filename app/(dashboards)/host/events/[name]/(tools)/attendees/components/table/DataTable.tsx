@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Attendee } from "./AttendeeDataColumns";
-import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import AttendeeDialogContent from "../attendee_dialog/AttendeeDialogContent";

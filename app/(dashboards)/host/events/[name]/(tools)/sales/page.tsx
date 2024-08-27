@@ -1,6 +1,4 @@
 import { redirect } from "next/navigation";
-import { Tables } from "@/types/supabase";
-import createSupabaseServerClient from "@/utils/supabase/server";
 import TabState from "./components/TabState";
 import Orders from "./components/orders/Orders";
 import PromoCodes from "./components/promo/PromoCodes";
@@ -13,8 +11,6 @@ export default async function Page({
   params: { name: string };
   searchParams: { from?: string; to?: string };
 }) {
-  const supabase = await createSupabaseServerClient();
-
   const { event, eventError } = await getEventFromCleanedName(name);
 
   if (eventError) {
