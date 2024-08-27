@@ -127,6 +127,12 @@ export default function VendorInformation() {
           onChange={(e) => handleSetVendorInfo(e.target.value, "instagram")}
           label="Instagram (Optional)"
         />
+        <VendorTags tags={tags} />
+        <Textarea
+          value={inventory}
+          onChange={(e) => handleSetInventory(e.target.value)}
+          placeholder="Tell us a little bit more about your inventory.*"
+        />
         <div className="flex items-center justify-between">
           <p>Vendors at Table</p>
           <Select
@@ -139,12 +145,6 @@ export default function VendorInformation() {
             <SelectContent>{vendorsOptions}</SelectContent>
           </Select>
         </div>
-        <VendorTags tags={tags} />
-        <Textarea
-          value={inventory}
-          onChange={(e) => handleSetInventory(e.target.value)}
-          placeholder="Tell us a little bit more about your inventory.*"
-        />
         <Textarea
           value={comments}
           onChange={(e) => handleSetComments(e.target.value)}

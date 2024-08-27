@@ -5,7 +5,7 @@ import { Tables } from "@/types/supabase";
 import { VendorFlowProvider, TableView } from "../context/VendorFlowContext";
 import { VendorApplicationProvider } from "../context/VendorApplicationContext";
 import type {
-  ProfileWithInstagram,
+  ProfileWithApplicationInfo,
   VendorFlowState,
   VendorApplicationState,
   VendorInfo,
@@ -25,7 +25,7 @@ export default function TableFlowConsumer({
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   tags: Tables<"tags">[];
-  profile: ProfileWithInstagram | null;
+  profile: ProfileWithApplicationInfo | null;
 }) {
   const initialVendorFlowState: VendorFlowState = {
     currentView: TableView.Table,

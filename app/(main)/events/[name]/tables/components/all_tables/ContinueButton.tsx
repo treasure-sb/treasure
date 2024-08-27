@@ -13,7 +13,7 @@ export default function ContinueButton({
   table: Tables<"tables">;
   tableCount: number;
 }) {
-  const { profile, event, flowDispatch } = useVendorFlow();
+  const { profile, event, tags, flowDispatch } = useVendorFlow();
   const { applicationDispatch } = useVendorApplication();
 
   const areApplicationsOpen =
@@ -24,6 +24,8 @@ export default function ContinueButton({
 
   const autofillVendorInfo = () => {
     let vendorInfo: VendorInfo = {} as VendorInfo;
+    let inventory = "";
+    let autoFillTags: Tables<"tags">[] = [];
     if (profile) {
       vendorInfo = {
         phone: formatPhoneNumber(
@@ -35,8 +37,18 @@ export default function ContinueButton({
         lastName: profile.last_name,
         instagram: profile.instagram,
       };
+      inventory = profile.inventory || "";
+
+      profile.tags?.forEach((pTag) => {
+        tags.forEach((eTag) => {
+          if (pTag.id === eTag.id) autoFillTags.push(eTag);
+        });
+      });
     }
+
     applicationDispatch({ type: "setVendorInfo", payload: vendorInfo });
+    applicationDispatch({ type: "setInventory", payload: inventory });
+    applicationDispatch({ type: "setVendorTags", payload: autoFillTags });
   };
 
   const handleCheckout = async () => {
