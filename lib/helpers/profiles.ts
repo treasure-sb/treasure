@@ -2,13 +2,21 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 
-const getProfile = async (id: string | undefined) => {
+const getProfile = async (id: string | undefined | null) => {
+  if (!id) {
+    return { profile: null, error: null };
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", id)
     .single();
+
+  if (!data || error) {
+    return { profile: null, error };
+  }
 
   const profile: Tables<"profiles"> = data;
   return { profile, error };

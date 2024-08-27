@@ -16,12 +16,12 @@ export default async function Page() {
 
   const {
     data: { publicUrl },
-  } = await supabase.storage.from("avatars").getPublicUrl(profile.avatar_url);
+  } = await supabase.storage.from("avatars").getPublicUrl(profile!.avatar_url);
 
   const { data } = await supabase
     .from("links")
     .select("username, application, type")
-    .eq("user_id", profile.id);
+    .eq("user_id", profile!.id);
   const linksData: Partial<Tables<"links">>[] = data || [];
 
   return (
@@ -29,13 +29,13 @@ export default async function Page() {
       <div>
         <h2 className="font-semibold text-2xl mb-4">My Profile</h2>
         <EditProfileForm
-          profile={profile}
+          profile={profile!}
           avatarUrl={publicUrl}
           userLinks={linksData}
         />
       </div>
-      <Phone profile={profile} />
-      <Email profile={profile} />
+      <Phone profile={profile!} />
+      <Email profile={profile!} />
     </main>
   );
 }

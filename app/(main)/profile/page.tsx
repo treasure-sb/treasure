@@ -30,7 +30,7 @@ export default async function Page() {
     <main className="m-auto max-w-lg">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl m-auto font-semibold text-center">
-          Welcome, {profile.first_name}!
+          Welcome, {profile!.first_name}!
         </h1>
         <p className="font-semibold bg-gradient-to-r from-primary to bg-green-200 text-transparent bg-clip-text text-center">
           Joined Treasure {formattedDate}
@@ -75,7 +75,7 @@ export default async function Page() {
               <p className="font-semibold">Vendor Dashboard</p>
             </div>
           </Link>
-          {profile.role === "admin" && (
+          {profile!.role === "admin" && (
             <>
               <Link href="/admin">
                 <div className="w-full flex gap-4 hover:text-primary px-4 py-4 border-b-2 items-center">

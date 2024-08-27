@@ -6,7 +6,7 @@ interface CheckoutSession {
   event_id: string;
   ticket_id: string;
   ticket_type: string;
-  user_id: string;
+  user_id: string | null;
   quantity: number;
   price_type?: string;
   metadata?: any;
@@ -21,6 +21,7 @@ const createCheckoutSession = async (session: CheckoutSession) => {
     .single();
 
   if (error) {
+    console.log(error);
     return { data: null, error };
   }
 

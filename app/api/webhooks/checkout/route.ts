@@ -121,7 +121,7 @@ const handleTicketPurchase = async (
     quantity: quantity,
     location: event_address,
     date: formattedEventDate,
-    guestName: `${profile.first_name} ${profile.last_name}`,
+    guestName: `${profile!.first_name} ${profile!.last_name}`,
     totalPrice: `$${totalPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
@@ -130,18 +130,18 @@ const handleTicketPurchase = async (
     fees_paid: fees_paid,
   };
 
-  if (profile.email) {
+  if (profile!.email) {
     await sendTicketPurchasedEmail(
-      profile.email,
+      profile!.email,
       purchasedTicketId,
       event_id,
       ticketPurchaseEmailProps
     );
   }
 
-  if (profile.phone) {
+  if (profile!.phone) {
     await sendAttendeeTicketPurchasedSMS(
-      profile.phone,
+      profile!.phone,
       event_name,
       formattedEventDate
     );
@@ -161,9 +161,9 @@ const handleTicketPurchase = async (
   if (teamPhoneNumbers.length > 0) {
     const hostSMSPayload: HostSoldPayload = {
       phones: teamPhoneNumbers,
-      businessName: profile.business_name,
-      firstName: profile.first_name,
-      lastName: profile.last_name,
+      businessName: profile!.business_name,
+      firstName: profile!.first_name,
+      lastName: profile!.last_name,
       eventName: event_name,
       eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,

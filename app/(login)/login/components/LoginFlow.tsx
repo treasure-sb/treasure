@@ -31,6 +31,7 @@ export default function LoginFlow({
   action,
   redirect,
 }: LoginFlowProps) {
+  const [loading, setLoading] = useState(false);
   const [method, setMethod] = useState(SubmitMethod.PHONE);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -41,11 +42,13 @@ export default function LoginFlow({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     if (usePhone) {
       handlePhoneSubmit();
     } else {
       handleEmailSubmit();
     }
+    setLoading(false);
   };
 
   const handlePhoneSubmit = async () => {
@@ -163,7 +166,11 @@ export default function LoginFlow({
                 </p>
               </div>
             )}
-            <Button className="w-full rounded-md" type="submit">
+            <Button
+              className="w-full rounded-md"
+              disabled={loading}
+              type="submit"
+            >
               Continue
             </Button>
           </motion.form>
