@@ -55,11 +55,11 @@ export default function Login() {
     let profile: Tables<"profiles"> = profileData;
     profile.phone =
       profile.phone === null
-        ? inventoryDataSingle.application_phone
+        ? inventoryDataSingle?.application_phone
         : profile.phone;
     profile.email =
       profile.email === null
-        ? inventoryDataSingle.application_email
+        ? inventoryDataSingle?.application_email
         : profile.email;
 
     const links: Link[] = linksData || [];
