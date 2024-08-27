@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const user: User = userData.user as User;
   const { profile: loggedInProfile } = await getProfile(user.id);
 
-  if (loggedInProfile.role !== "admin") {
+  if (loggedInProfile!.role !== "admin") {
     redirect(`/u/${username}`);
   }
 

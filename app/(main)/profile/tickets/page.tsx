@@ -231,12 +231,12 @@ export default async function Page() {
                         <div className="flex space-x-2">
                           <p className="font-semibold">Name: </p>
                           <p>
-                            {profile.first_name} {profile.last_name}
+                            {profile!.first_name} {profile!.last_name}
                           </p>
                         </div>
                         <div className="flex space-x-2">
                           <p className="font-semibold">Business Name: </p>
-                          <p>{profile.business_name || "N/A"}</p>
+                          <p>{profile!.business_name || "N/A"}</p>
                         </div>
                         <div className="flex space-x-2">
                           <p className="font-semibold">Table Section: </p>

@@ -12,8 +12,6 @@ async function isUserEventMemberOrAdmin(
   const supabase = await createSupabaseServerClient();
   const { profile } = await getProfile(userId);
 
-  console.log(eventName);
-
   const { event } = await getEventFromCleanedName(eventName);
   const { data: teamData } = await supabase
     .from("event_roles")
@@ -27,7 +25,7 @@ async function isUserEventMemberOrAdmin(
 
   const isAllowed: boolean = Boolean(
     event &&
-      (profile.role === "admin" ||
+      (profile!.role === "admin" ||
         (teamRole &&
           (teamRole === "STAFF" ||
             teamRole === "HOST" ||

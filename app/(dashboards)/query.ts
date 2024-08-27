@@ -15,7 +15,7 @@ export const useProfile = () => {
         data: { publicUrl },
       } = await supabase.storage
         .from("avatars")
-        .getPublicUrl(profile.avatar_url);
+        .getPublicUrl(profile!.avatar_url);
       return { profile, publicUrl };
     },
     enabled: !!user,

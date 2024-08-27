@@ -31,7 +31,7 @@ export default async function Page({
   filteredLinks.forEach((link) => {
     paymentMethods.push([link.application, link.username]);
   });
-  const vendor = profile;
+  const vendor = profile!;
   const {
     data: { publicUrl },
   } = await supabase.storage.from("avatars").getPublicUrl(vendor.avatar_url);
