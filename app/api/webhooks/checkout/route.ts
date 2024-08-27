@@ -129,9 +129,9 @@ const handleTicketPurchase = async (
     fees_paid: fees_paid,
   };
 
-  if (profile!.email) {
+  if (email) {
     await sendTicketPurchasedEmail(
-      profile!.email,
+      email,
       purchasedTicketId,
       event_id,
       ticketPurchaseEmailProps
@@ -171,14 +171,14 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
-  // if (!profile.email || profile.role !== "admin") {
-  //   await sendTicketPurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     purchasedTicketId,
-  //     event_id,
-  //     ticketPurchaseEmailProps
-  //   );
-  // }
+  if (!profile!.email || profile!.role !== "admin") {
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
+  }
 };
 
 const handleTablePurchase = async (
@@ -298,12 +298,12 @@ const handleTablePurchase = async (
     await sendHostTableSoldSMS(hostSMSPayload);
   }
 
-  // if (vendor_application_email !== "treasure20110@gmail.com") {
-  //   await sendTablePurchasedEmail(
-  //     "treasure20110@gmail.com",
-  //     tablePurchasedEmailPayload
-  //   );
-  // }
+  if (vendor_application_email !== "treasure20110@gmail.com") {
+    await sendTablePurchasedEmail(
+      "treasure20110@gmail.com",
+      tablePurchasedEmailPayload
+    );
+  }
 };
 
 const handlePaymentIntentSucceeded = async (
