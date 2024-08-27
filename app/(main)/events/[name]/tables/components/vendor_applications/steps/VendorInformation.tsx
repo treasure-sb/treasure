@@ -134,7 +134,7 @@ export default function VendorInformation() {
           placeholder="Tell us a little bit more about your inventory.*"
         />
         <div className="flex items-center justify-between">
-          <p>Vendors at Table</p>
+          <p>Vendors at Table *</p>
           <Select
             value={vendorsAtTable > 0 ? vendorsAtTable.toString() : undefined}
             onValueChange={(value) => handleSetVendorsAtTable(value)}

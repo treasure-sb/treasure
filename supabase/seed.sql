@@ -457,7 +457,7 @@ BEGIN
                         1,
                         2,
                         'Sports Cards, Memorabilia, Autographs',
-                        '555-555-5555',
+                        '+15555555555',
                         sp.email
                     FROM selected_profile sp, vendor_application_status vas
                     RETURNING vendor_id INTO inserted_vendor_id;
