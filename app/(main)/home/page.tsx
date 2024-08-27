@@ -25,7 +25,7 @@ export default function Page() {
         <div className="max-w-[var(--container-width)] m-auto space-y-20 md:space-y-20">
           <AllYourAttendees />
           <Grid />
-          <LetsGetPeople />
+          {/* <LetsGetPeople /> */}
         </div>
         <Join />
       </div>
