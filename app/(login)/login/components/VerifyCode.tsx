@@ -33,7 +33,7 @@ export default function VerifyCode({
   action,
   redirect,
 }: VerifyCodeProps) {
-  const { replace } = useRouter();
+  const { replace, refresh } = useRouter();
   const [code, setCode] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);

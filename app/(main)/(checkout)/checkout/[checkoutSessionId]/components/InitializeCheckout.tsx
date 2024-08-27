@@ -18,7 +18,7 @@ const stripePromise = loadStripe(
 type InitializeCheckoutProps = {
   checkoutSession: Tables<"checkout_sessions">;
   event: EventDisplayData;
-  profile: Tables<"profiles">;
+  profile: Tables<"profiles"> | null;
   priceInfo: PriceInfo;
 };
 

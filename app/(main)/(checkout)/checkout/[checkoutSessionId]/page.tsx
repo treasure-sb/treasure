@@ -84,12 +84,13 @@ export default async function Page({
     promo_id,
     metadata,
     price_type,
+    user_id,
   } = checkoutSession;
 
   const { event } = await getEventFromId(event_id);
-  const { profile } = await getProfile(checkoutSession.user_id);
-  const eventDisplay = await getEventDisplayData(event);
+  const { profile } = await getProfile(user_id);
 
+  const eventDisplay = await getEventDisplayData(event);
   const { data: feeData, isLegacy } = await getFeeInfo(event_id);
 
   const feePercent = feeData?.fee || 0;

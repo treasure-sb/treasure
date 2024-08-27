@@ -8,7 +8,6 @@ import { createCheckoutSession } from "@/lib/actions/checkout";
 import { useRouter } from "next/navigation";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
-import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 
 export default function TicketCounter({
   ticket,
@@ -40,15 +39,12 @@ export default function TicketCounter({
   };
 
   const handleCheckout = async () => {
-    if (!user) {
-      return;
-    }
     setCreatingCheckout(true);
     const { data, error } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      user_id: user.id,
+      user_id: user?.id || null,
       quantity: ticketCount,
     });
 
@@ -62,16 +58,13 @@ export default function TicketCounter({
   };
 
   const handleRSVP = async () => {
-    if (!user) {
-      return;
-    }
     setCreatingCheckout(true);
 
     const { data, error } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      user_id: user.id,
+      user_id: user?.id || null,
       quantity: ticketCount,
       price_type: "RSVP",
     });
@@ -129,17 +122,7 @@ export default function TicketCounter({
           +
         </Button>
       </div>
-      {user ? (
-        isTicketFree ? (
-          RSVPButton
-        ) : (
-          checkoutButton
-        )
-      ) : isTicketFree ? (
-        <LoginFlowDialog trigger={RSVPButton} />
-      ) : (
-        <LoginFlowDialog trigger={checkoutButton} />
-      )}
+      {isTicketFree ? RSVPButton : checkoutButton}
     </div>
   );
 }

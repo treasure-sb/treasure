@@ -23,6 +23,8 @@ import { createClient } from "@/utils/supabase/client";
 import StripeInput from "./StripeInput";
 import { createPaymentIntent } from "@/lib/actions/stripe";
 import { PriceInfo } from "../page";
+import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
+import { validateUser } from "@/lib/actions/auth";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -42,7 +44,7 @@ export type CheckoutPriceInfo = PriceInfo & {
 
 type CheckoutFormProps = {
   checkoutSession: Tables<"checkout_sessions">;
-  profile: Tables<"profiles">;
+  profile: Tables<"profiles"> | null;
   checkoutPriceInfo: CheckoutPriceInfo;
 };
 
@@ -62,9 +64,17 @@ export default function CheckoutForm({
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
     defaultValues: {
-      first_name: profile.first_name === "Anonymous" ? "" : profile.first_name,
-      last_name: profile.first_name === "Anonymous" ? "" : profile.last_name,
-      email: profile.email || "",
+      first_name: !profile
+        ? ""
+        : profile.first_name === "Anonymous"
+        ? ""
+        : profile.first_name,
+      last_name: !profile
+        ? ""
+        : profile.first_name === "Anonymous"
+        ? ""
+        : profile.last_name,
+      email: (profile && profile.email) || "",
     },
   });
 
@@ -84,6 +94,8 @@ export default function CheckoutForm({
   }, [elements]);
 
   const onSubmit = async () => {
+    if (!profile) return;
+
     const { first_name, last_name, email } = form.getValues();
     await supabase
       .from("profiles")
@@ -140,6 +152,32 @@ export default function CheckoutForm({
 
   const isFormValid = form.formState.isValid;
 
+  const PurchaseButton = (
+    <Button
+      className={`rounded-sm ${isLoading && "bg-primary/60"}`}
+      disabled={
+        isLoading || !stripe || !elements || !isFormValid || !isStripeComplete
+      }
+      id="submit"
+    >
+      Purchase {checkoutSession.ticket_type === "TABLE" ? "Table" : "Ticket"}
+      {checkoutSession.quantity > 1 ? "s" : ""}
+    </Button>
+  );
+
+  const onLoginSuccess = async () => {
+    const {
+      data: { user },
+    } = await validateUser();
+
+    if (!user) return;
+
+    await supabase
+      .from("checkout_sessions")
+      .update({ user_id: user.id })
+      .eq("id", checkoutSession.id);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -187,20 +225,14 @@ export default function CheckoutForm({
         </div>
         <PaymentElement id="payment-element" />
         <div className="w-full flex items-center justify-center">
-          <Button
-            className={`rounded-sm ${isLoading && "bg-primary/60"}`}
-            disabled={
-              isLoading ||
-              !stripe ||
-              !elements ||
-              !isFormValid ||
-              !isStripeComplete
-            }
-            id="submit"
-          >
-            Purchase{" "}
-            {checkoutSession.ticket_type === "TABLE" ? "Table" : "Ticket"}
-          </Button>
+          {profile ? (
+            PurchaseButton
+          ) : (
+            <LoginFlowDialog
+              trigger={PurchaseButton}
+              onLoginSuccess={onLoginSuccess}
+            />
+          )}
         </div>
       </form>
     </Form>

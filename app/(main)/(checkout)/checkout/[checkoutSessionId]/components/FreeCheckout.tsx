@@ -29,6 +29,8 @@ import {
 } from "@/lib/sms";
 import { formatEmailDate } from "@/lib/utils";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
+import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
+import { validateUser } from "@/lib/actions/auth";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -47,7 +49,7 @@ export default function FreeCheckout({
   profile,
 }: {
   checkoutSession: Tables<"checkout_sessions">;
-  profile: Tables<"profiles">;
+  profile: Tables<"profiles"> | null;
 }) {
   const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,13 +58,23 @@ export default function FreeCheckout({
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
     defaultValues: {
-      first_name: profile.first_name === "Anonymous" ? "" : profile.first_name,
-      last_name: profile.first_name === "Anonymous" ? "" : profile.last_name,
-      email: profile.email || "",
+      first_name: !profile
+        ? ""
+        : profile.first_name === "Anonymous"
+        ? ""
+        : profile.first_name,
+      last_name: !profile
+        ? ""
+        : profile.first_name === "Anonymous"
+        ? ""
+        : profile.last_name,
+      email: (profile && profile.email) || "",
     },
   });
 
   const onSubmit = async () => {
+    if (!profile) return;
+
     setIsLoading(true);
     try {
       const { quantity, ticket_type } = checkoutSession;
@@ -96,6 +108,8 @@ export default function FreeCheckout({
   };
 
   const updateProfile = async () => {
+    if (!profile) return;
+
     const { first_name, last_name } = form.getValues();
     await supabase
       .from("profiles")
@@ -104,7 +118,9 @@ export default function FreeCheckout({
   };
 
   const handleFreeTicketPurchase = async () => {
-    const { email } = form.getValues();
+    if (!profile) return;
+
+    const { email, first_name, last_name } = form.getValues();
     const { ticket_id, quantity, user_id, event_id, promo_id } =
       checkoutSession;
 
@@ -155,7 +171,7 @@ export default function FreeCheckout({
       quantity: quantity,
       location: event_address,
       date: formattedEventDate,
-      guestName: `${profile.first_name} ${profile.last_name}`,
+      guestName: `${first_name} ${last_name}`,
       totalPrice: `Free`,
       eventInfo: event_description,
     };
@@ -258,6 +274,32 @@ export default function FreeCheckout({
     );
   };
 
+  const isValid = form.formState.isValid;
+
+  const onLoginSuccess = async () => {
+    const {
+      data: { user },
+    } = await validateUser();
+
+    if (!user) return;
+
+    await supabase
+      .from("checkout_sessions")
+      .update({ user_id: user.id })
+      .eq("id", checkoutSession.id);
+  };
+
+  const RSVPButton = (
+    <Button
+      className={`rounded-sm ${isLoading && "bg-primary/60"}`}
+      disabled={isLoading || !isValid}
+      id="submit"
+    >
+      Get {checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}
+      {checkoutSession.quantity > 1 && "s"}
+    </Button>
+  );
+
   return (
     <Form {...form}>
       <form
@@ -304,14 +346,14 @@ export default function FreeCheckout({
           />
         </div>
         <div className="w-full flex items-center justify-center">
-          <Button
-            className={`rounded-sm ${isLoading && "bg-primary/60"}`}
-            disabled={isLoading}
-            id="submit"
-          >
-            Get {checkoutSession.ticket_type === "TABLE" ? `Table` : "Ticket"}
-            {checkoutSession.quantity > 1 && "s"}
-          </Button>
+          {profile ? (
+            RSVPButton
+          ) : (
+            <LoginFlowDialog
+              trigger={RSVPButton}
+              onLoginSuccess={onLoginSuccess}
+            />
+          )}
         </div>
       </form>
     </Form>
