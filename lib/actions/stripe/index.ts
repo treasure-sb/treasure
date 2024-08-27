@@ -101,7 +101,10 @@ const subscriptionStripeLink = async (returnUrl: string) => {
     mode: "subscription",
     line_items: [
       {
-        price: "price_1PjqNfHnRCFO3bhFJArayp7A",
+        price:
+          process.env.NODE_ENV === "development"
+            ? "price_1PjqNfHnRCFO3bhFJArayp7A"
+            : "price_1PjPhmHnRCFO3bhFbMk9u5Uz",
         quantity: 1,
       },
     ],
@@ -109,7 +112,10 @@ const subscriptionStripeLink = async (returnUrl: string) => {
     return_url: returnUrl,
     metadata: {
       plan: "Pro",
-      priceId: "price_1PjqNfHnRCFO3bhFJArayp7A",
+      priceId:
+        process.env.NODE_ENV === "development"
+          ? "price_1PjqNfHnRCFO3bhFJArayp7A"
+          : "price_1PjPhmHnRCFO3bhFbMk9u5Uz",
       user_id: user_id,
     },
   });
