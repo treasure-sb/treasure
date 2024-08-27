@@ -82,12 +82,12 @@ export default async function Page({
 
   if (profile) {
     profile.phone =
-      profile?.phone === null
-        ? inventoryDataSingle.application_phone
-        : profile.phone;
+      profile?.phone !== null
+        ? profile.phone
+        : inventoryDataSingle?.application_phone;
     profile.email =
       profile?.email === null
-        ? inventoryDataSingle.application_email
+        ? inventoryDataSingle?.application_email
         : profile.email;
 
     profileWithApplicationInfo = {
