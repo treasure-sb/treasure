@@ -13,10 +13,8 @@ export async function newProfileToBasic(
     .single();
   const { data, error } = await supabase.from("subscriptions").insert({
     user_id: profileData?.id,
-    start_date: new Date().toISOString,
     end_date: null,
-    created_at: new Date().toISOString,
     status: "ACTIVE",
-    subscribed_product_id: product_id,
+    subscribed_product_id: product_id.data?.id,
   });
 }
