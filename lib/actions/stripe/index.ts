@@ -81,10 +81,12 @@ const subscriptionStripeLink = async (returnUrl: string) => {
   const {
     data: { user },
   } = await validateUser();
-
-  const searchData = await stripe.customers.search({
-    query: `email:\'${user?.email}\'`,
-  });
+  let searchData;
+  if (user?.email && user) {
+    searchData = await stripe.customers.search({
+      query: `email:\'${user?.email}\'`,
+    });
+  }
 
   let customer: Stripe.Customer;
   if (searchData && searchData.data.length == 0) {
@@ -92,7 +94,7 @@ const subscriptionStripeLink = async (returnUrl: string) => {
       email: user?.email,
       phone: user?.phone,
     });
-  } else {
+  } else if (searchData) {
     customer = searchData.data[0];
   }
 
