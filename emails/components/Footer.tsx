@@ -6,7 +6,7 @@ export default function Footer() {
       <Row>
         <Column className="text-left">
           <Img
-            src="https://www.ontreasure.xyz/static/logo.png"
+            src="https://www.ontreasure.com/static/logo.png"
             alt="logo"
             width="120"
             height="auto"

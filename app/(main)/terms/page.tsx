@@ -114,7 +114,7 @@ export default function Page() {
         purpose whatsoever, without our express prior written permission. If you
         wish to make any use of the Services, Content, or Marks other than as
         set out in this section or elsewhere in our Legal Terms, please address
-        your request to: contact@ontreasure.xyz. If we ever grant you the
+        your request to: contact@ontreasure.com. If we ever grant you the
         permission to post, reproduce, or publicly display any part of our
         Services or Content, you must identify us as the owners or licensors of
         the Services, Content, or Marks and ensure that any copyright or

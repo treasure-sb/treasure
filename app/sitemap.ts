@@ -1,7 +1,7 @@
 import { getAllEventCleanedNames } from "@/lib/actions/events";
 
 export default async function sitemap() {
-  const baseUrl = "https://ontreasure.xyz";
+  const baseUrl = "https://ontreasure.com";
   const { data } = await getAllEventCleanedNames();
 
   const generateEventUrls = (event: any) => [

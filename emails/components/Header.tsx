@@ -5,7 +5,7 @@ export default function Header() {
     <Section>
       <Img
         className="mx-auto"
-        src="https://www.ontreasure.xyz/static/logo.png"
+        src="https://www.ontreasure.com/static/logo.png"
         alt="logo"
         width="180"
         height="auto"

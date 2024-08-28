@@ -34,7 +34,7 @@ export default function Welcome({ firstName = "John" }: { firstName: string }) {
             <Section className="text-center my-6">
               <Button
                 className="bg-primary ml-auto p-4 rounded-full text-background"
-                href="https://ontreasure.xyz/events"
+                href="https://ontreasure.com/events"
               >
                 Explore Events
               </Button>

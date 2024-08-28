@@ -54,7 +54,7 @@ export default function VendorAppReceived({
               </Heading>
               <Button
                 className="bg-primary ml-auto p-4 px-6 rounded-sm text-foreground"
-                href={`https://ontreasure.xyz/host/events/${cleanedEventName}/vendors`}
+                href={`https://ontreasure.com/host/events/${cleanedEventName}/vendors`}
               >
                 View Application
               </Button>
