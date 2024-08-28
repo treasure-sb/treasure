@@ -84,7 +84,7 @@ export default function TicketsCarousel({
                 <div className="relative w-48 h-48 md:w-80 md:h-80 m-auto">
                   <QrCode
                     className="w-full h-full"
-                    value={`https://ontreasure.xyz/verify-tickets/?ticket_id=${ticket.ticketId}&event_id=${eventId}`}
+                    value={`https://ontreasure.com/verify-tickets/?ticket_id=${ticket.ticketId}&event_id=${eventId}`}
                   />
                   {ticket.dates.length === 1 && !ticket.dates[0].valid && (
                     <div className="absolute inset-0 bg-black bg-opacity-90 flex items-center justify-center w-full">

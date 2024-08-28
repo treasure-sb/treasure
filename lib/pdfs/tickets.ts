@@ -75,11 +75,11 @@ const generateTicketReceipt = async (
   // generate QR code and embed it in the pdf
   if (typeof ticketId == "string") {
     qrCodeUrl = await QRCode.toDataURL(
-      `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
+      `https://ontreasure.com/verify-tickets/?ticket_id=${ticketId}&event_id=${eventId}`
     );
   } else {
     qrCodeUrl = await QRCode.toDataURL(
-      `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId[0]}&event_id=${eventId}`
+      `https://ontreasure.com/verify-tickets/?ticket_id=${ticketId[0]}&event_id=${eventId}`
     );
   }
   const qrCodeImage = await doc.embedPng(qrCodeUrl);
@@ -145,7 +145,7 @@ const generateTicketReceipt = async (
       // generate QR code and embed it in the pdf
 
       let qrCodeUrl = await QRCode.toDataURL(
-        `https://ontreasure.xyz/verify-tickets/?ticket_id=${ticketId[j]}&event_id=${eventId}`
+        `https://ontreasure.com/verify-tickets/?ticket_id=${ticketId[j]}&event_id=${eventId}`
       );
       const qrCodeImage = await doc.embedPng(qrCodeUrl);
       page.drawImage(qrCodeImage, {

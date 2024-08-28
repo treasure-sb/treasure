@@ -117,7 +117,7 @@ export default function Message({
 
     const phoneList = [...phoneNumbers];
 
-    const smsMessage = `📣 The host of ${event.name} sent you a message - \n\n"${message}"\n\nEvent details 👇\n\nwww.ontreasure.xyz/events/${event.cleaned_name}`;
+    const smsMessage = `📣 The host of ${event.name} sent you a message - \n\n"${message}"\n\nEvent details 👇\n\nwww.ontreasure.com/events/${event.cleaned_name}`;
 
     const response = await sendNotifications(phoneList, smsMessage);
     if (!response.success) {

@@ -14,8 +14,8 @@ export default function Page() {
       <ul className="list-disc ml-8">
         <li>
           Visit our website at{" "}
-          <Link href="http://www.ontreasure.xyz" className="text-blue-500">
-            http://www.ontreasure.xyz
+          <Link href="http://www.ontreasure.com" className="text-blue-500">
+            http://www.ontreasure.com
           </Link>
           , or any website of ours that links to this privacy notice
         </li>
@@ -987,8 +987,8 @@ export default function Page() {
       </ul>
       <p>
         To exercise these rights, you can contact us by submitting a data
-        subject access request, by email at contact@ontreasure.xyz, by visiting
-        ontreasure.xyz/contact, or by referring to the contact details at the
+        subject access request, by email at contact@ontreasure.com, by visiting
+        ontreasure.com/contact, or by referring to the contact details at the
         bottom of this document. If you have a complaint about how we handle
         your data, we would like to hear from you.
       </p>

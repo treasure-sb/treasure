@@ -55,7 +55,7 @@ export default function TeamInvite({
                 Click the button below to accept the invitation.
               </Text>
               <Button
-                href={`https://www.ontreasure.xyz/invite/team/${inviteToken}`}
+                href={`https://www.ontreasure.com/invite/team/${inviteToken}`}
                 className="bg-primary ml-auto p-4 px-6 rounded-sm text-foreground"
               >
                 View Invitation
