@@ -201,6 +201,8 @@ const handleTablePurchase = async (
     })
     .returns<PurchaseTableResult[]>();
 
+  console.log(data, error);
+
   if (error) {
     console.log(error);
     throw new Error("Error purchasing table");
@@ -391,9 +393,9 @@ export async function POST(req: Request) {
         ok: false,
       });
     }
-  } catch (err) {
+  } catch (err: any) {
     return NextResponse.json({
-      message: "An error has occurred",
+      message: `An error has occurred: ${err.message}`,
       ok: false,
     });
   }
