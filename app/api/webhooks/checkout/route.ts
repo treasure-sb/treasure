@@ -395,7 +395,7 @@ export async function POST(req: Request) {
     }
   } catch (err: any) {
     return NextResponse.json({
-      message: `An error has occurred: ${err.message}`,
+      message: `An error has occurred: ${err}`,
       ok: false,
     });
   }
