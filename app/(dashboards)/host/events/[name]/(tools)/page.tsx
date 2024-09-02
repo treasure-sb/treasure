@@ -132,6 +132,7 @@ export default async function Page({
       Icon: UsersIcon,
       href: `${name}/attendees`,
       stat: ticketCount.toString(),
+      subtext: "tickets sold",
     },
     {
       title: "Total Sales",
