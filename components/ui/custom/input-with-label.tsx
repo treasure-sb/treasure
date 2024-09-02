@@ -20,8 +20,8 @@ export function InputWithLabel({
   ...props
 }: LabelInputProps) {
   return (
-    <div className="grid w-full items-center gap-1.5">
-      <Label htmlFor={props.id} className={cn(labelClassName)}>
+    <div className="grid w-full items-center gap-2">
+      <Label htmlFor={props.id} className={cn("text-[13px]", labelClassName)}>
         {label}
       </Label>
       <Input className={cn(inputClassName)} {...props} />

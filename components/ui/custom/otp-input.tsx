@@ -130,7 +130,7 @@ export default function OTPInput({
   };
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 mt-2">
       {valueItems.map((digit, idx) => {
         return (
           <Input

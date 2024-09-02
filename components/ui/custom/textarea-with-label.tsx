@@ -10,8 +10,10 @@ type LabelTextareaProps = TextareaProps & { label: string };
 
 export function TextareaWithLabel({ label, ...props }: LabelTextareaProps) {
   return (
-    <div className="grid w-full gap-1.5">
-      <Label htmlFor={props.id}>{label}</Label>
+    <div className="grid w-full gap-2">
+      <Label htmlFor={props.id} className="text-[13px]">
+        {label}
+      </Label>
       <Textarea {...props} />
     </div>
   );

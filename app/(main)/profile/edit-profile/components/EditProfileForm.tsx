@@ -16,8 +16,6 @@ import { useState } from "react";
 import { updateProfile } from "@/lib/actions/profile";
 import { createLinks, updateLinks, deleteLinks } from "@/lib/actions/links";
 import { createClient } from "@/utils/supabase/client";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -25,6 +23,8 @@ import { UpdateProfile } from "@/lib/actions/profile";
 import PaymentLinks from "./PaymentLinks";
 import AvatarEdit from "./AvatarEdit";
 import SocialLinks from "./SocialLinks";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 
 const LinkSchema = z.object({
   username: z.string().min(1, {
@@ -194,7 +194,7 @@ export default function EditProfileForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <FloatingLabelInput label="First Name" {...field} />
+                        <InputWithLabel label="First Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -206,7 +206,7 @@ export default function EditProfileForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <FloatingLabelInput label="Last Name" {...field} />
+                        <InputWithLabel label="Last Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -218,7 +218,7 @@ export default function EditProfileForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <FloatingLabelInput label="Username" {...field} />
+                        <InputWithLabel label="Username" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -230,7 +230,7 @@ export default function EditProfileForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <FloatingLabelInput label="Business Name" {...field} />
+                        <InputWithLabel label="Business Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -242,7 +242,8 @@ export default function EditProfileForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea
+                        <TextareaWithLabel
+                          label="Bio"
                           id="bio"
                           rows={4}
                           placeholder="Share a little about yourself"

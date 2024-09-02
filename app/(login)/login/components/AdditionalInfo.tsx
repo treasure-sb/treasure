@@ -10,13 +10,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { addAdditionalInfo } from "@/lib/actions/profile";
 import { validateUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 const formSchema = z.object({
   firstName: z.string().min(1, {
@@ -77,9 +77,10 @@ export default function AdditionalInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput
+                  <InputWithLabel
                     id="first-name"
                     label="First Name"
+                    placeholder="John"
                     {...field}
                   />
                 </FormControl>
@@ -93,9 +94,10 @@ export default function AdditionalInfo() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput
+                  <InputWithLabel
                     id="last-name"
                     label="Last Name"
+                    placeholder="Smith"
                     {...field}
                   />
                 </FormControl>

@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useFieldArray } from "react-hook-form";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { motion } from "framer-motion";
 import { createTickets, updateTickets } from "@/lib/actions/tickets";
 import { toast } from "sonner";
