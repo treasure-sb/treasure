@@ -23,13 +23,12 @@ import { PlusIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
