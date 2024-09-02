@@ -136,7 +136,7 @@ export default function LocationFiltering() {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="w-fit justify-between space-x-1"
+          className="w-fit justify-between space-x-1 rounded-full"
         >
           <MapPinIcon className="h-4 w-4" />
           <p>{buttonLabel}</p>

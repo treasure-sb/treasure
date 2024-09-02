@@ -42,7 +42,7 @@ export default function SeeTickets({
             href={`/events/${eventDisplayData.cleaned_name}/tickets`}
             className="relative"
           >
-            <Button className="border-primary w-32">
+            <Button className="border-primary w-32 rounded-full">
               {isTicketFree ? "RSVP" : "Buy Now"}
             </Button>
             {numTicketsLeft < 50 && (

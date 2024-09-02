@@ -44,7 +44,7 @@ export default function TagFiltering() {
           key={i}
           onClick={() => handleClick(tag)}
           variant={"outline"}
-          className={`${
+          className={`rounded-full ${
             tag === activeTag
               ? "bg-tertiary text-black border-tertiary hover:bg-tertiary/90 font-semibold"
               : "font-medium hover:bg-background md:hover:bg-secondary border-foreground/20"

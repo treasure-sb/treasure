@@ -145,7 +145,8 @@ export default function EditTablesForm({
           originalTable &&
           (table.section_name !== originalTable.section_name ||
             Number(table.price) !== originalTable.price ||
-            Number(table.quantity) !== originalTable.quantity || Number(table.total_tables) !== originalTable.total_tables ||
+            Number(table.quantity) !== originalTable.quantity ||
+            Number(table.total_tables) !== originalTable.total_tables ||
             Number(table.space_allocated) !== originalTable.space_allocated ||
             table.table_provided !== originalTable.table_provided)
         );
@@ -376,7 +377,7 @@ export default function EditTablesForm({
             type="button"
             variant={"link"}
             onClick={addTable}
-            className="text-white"
+            className="text-foreground"
           >
             + Add Table
           </Button>

@@ -112,6 +112,7 @@ export default async function LoggedInHeader({
           </PopoverTrigger>
           <PopoverContent
             align="end"
+            autoFocus={false}
             className="flex flex-col dark:bg-black mt-4 p-2 overflow-hidden"
           >
             {popoverLinks.map(({ href, text, Icon }) => (

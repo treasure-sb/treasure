@@ -38,7 +38,7 @@ export default function SeeTables({
                 href={`/events/${event.cleaned_name}/tables`}
                 className="relative"
               >
-                <Button className="border-primary w-32">
+                <Button className="border-primary w-32 rounded-full">
                   {sayWaitlist ? "Waitlist Now" : "Register Now"}
                 </Button>
                 {numTablesLeft < 20 && (

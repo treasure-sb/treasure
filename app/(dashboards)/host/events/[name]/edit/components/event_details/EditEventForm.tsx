@@ -233,8 +233,8 @@ export default function EditEventForm({
                   {imageUrl && (
                     <div className="w-full group max-w-xl relative z-10">
                       <EventPoster posterUrl={imageUrl} />
-                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-60 transition duration-500 flex items-center justify-center">
-                        <p className="hidden group-hover:block">
+                      <div className="absolute inset-0 rounded-xl hover:bg-black hover:bg-opacity-30 transition duration-500 flex items-center justify-center">
+                        <p className="hidden group-hover:block text-white">
                           Replace Poster
                         </p>
                       </div>

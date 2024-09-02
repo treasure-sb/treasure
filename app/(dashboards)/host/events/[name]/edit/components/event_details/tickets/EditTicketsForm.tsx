@@ -113,7 +113,7 @@ export default function EditTicketsForm({
         quantity: ticket.quantity,
         total_tickets: ticket.total_tickets,
         name: ticket.name,
-        event_id: eventId
+        event_id: eventId,
       }));
 
     const updatedTickets = formTickets
@@ -125,7 +125,8 @@ export default function EditTicketsForm({
           originalTicket &&
           (ticket.name !== originalTicket.name ||
             Number(ticket.price) !== originalTicket.price ||
-            Number(ticket.quantity) !== originalTicket.quantity || Number(ticket.total_tickets) !== originalTicket.total_tickets)
+            Number(ticket.quantity) !== originalTicket.quantity ||
+            Number(ticket.total_tickets) !== originalTicket.total_tickets)
         );
       })
       .map((ticket) => ({
@@ -133,7 +134,7 @@ export default function EditTicketsForm({
         quantity: ticket.quantity,
         total_tickets: ticket.total_tickets,
         name: ticket.name,
-        id: ticket.db_id
+        id: ticket.db_id,
       }));
 
     const [createResult, updateResult] = await Promise.allSettled([
@@ -286,7 +287,7 @@ export default function EditTicketsForm({
             type="button"
             variant={"link"}
             onClick={addTicket}
-            className="text-white"
+            className="text-foreground"
           >
             + Add Ticket
           </Button>
