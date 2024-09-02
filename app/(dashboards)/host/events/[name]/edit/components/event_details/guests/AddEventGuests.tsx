@@ -17,9 +17,17 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
 import { EventWithDates } from "@/types/event";
+import { PlusIcon } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -78,12 +86,24 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex gap-4">
-          <div className="w-fit">
-            <AvatarEdit setAvatarFile={setAvatarFile} />
-          </div>
-          <div className="flex flex-col gap-2 w-full">
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            className="w-full p-8 rounded-none bg-slate-500/5 hover:cursor-pointer hover:bg-slate-400/5 transition duration-500 text-muted-foreground dark:text-muted-forground hover:text-foreground"
+            type="button"
+          >
+            <PlusIcon className="mr-2" />
+            <p>Add Guest</p>
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader className="mb-6">
+            <SheetTitle>Add Guest</SheetTitle>
+          </SheetHeader>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="w-fit">
+              <AvatarEdit setAvatarFile={setAvatarFile} />
+            </div>
             <FormField
               control={form.control}
               name="name"
@@ -108,12 +128,12 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
                 </FormItem>
               )}
             />
-          </div>
-        </div>
-        <Button className="px-10" type="submit">
-          Add Guest
-        </Button>
-      </form>
+            <Button className="rounded-sm w-full" type="submit">
+              Add Guest
+            </Button>
+          </form>
+        </SheetContent>
+      </Sheet>
     </Form>
   );
 }
