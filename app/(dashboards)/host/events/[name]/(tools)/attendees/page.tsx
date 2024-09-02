@@ -72,7 +72,7 @@ export default async function Page({
         </h2>
         <span className="hidden md:block text-muted-foreground">|</span>
         <h2 className="text-2xl font-semibold">
-          Total Tickets{" "}
+          Tickets Sold{" "}
           <span className="text-muted-foreground">
             {attendeeTicketData.reduce((acc, attendee) => {
               return acc + attendee.quantity;
