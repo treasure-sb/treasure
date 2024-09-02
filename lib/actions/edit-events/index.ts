@@ -2,6 +2,7 @@
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { EditEventForm, EventFormTag } from "@/types/event";
+import { EditGuestForm } from "@/app/(dashboards)/host/events/[name]/edit/components/event_details/guests/EditEventGuests";
 
 const editEvent = async (
   values: EditEventForm,
@@ -81,4 +82,17 @@ const addGuest = async (values: {
   return { data, error: userError };
 };
 
-export { editEvent, addGuest };
+const editGuest = async (guest: EditGuestForm) => {
+  const supabase = await createSupabaseServerClient();
+  const { name, bio, avatar_url, id } = guest;
+
+  const { data, error } = await supabase
+    .from("event_guests")
+    .update({ name, bio, avatar_url })
+    .eq("id", id)
+    .select();
+
+  return { data, error };
+};
+
+export { editEvent, addGuest, editGuest };
