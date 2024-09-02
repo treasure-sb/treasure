@@ -186,7 +186,7 @@ export default function EditEventGuest({ guest }: { guest: Guest }) {
             </SheetHeader>
             <form
               onSubmit={form.handleSubmit(handleEdit)}
-              className="space-y-8"
+              className="space-y-6"
             >
               <div className="w-fit">
                 <AvatarEdit

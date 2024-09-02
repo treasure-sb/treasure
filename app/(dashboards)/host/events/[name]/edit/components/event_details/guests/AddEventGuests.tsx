@@ -99,7 +99,7 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
           <SheetHeader className="mb-6">
             <SheetTitle>Add Guest</SheetTitle>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="w-fit">
               <AvatarEdit setAvatarFile={setAvatarFile} />
             </div>
