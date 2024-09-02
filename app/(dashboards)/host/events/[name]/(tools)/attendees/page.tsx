@@ -63,14 +63,14 @@ export default async function Page({
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex space-x-2 mb-4 mt-8 items-center">
+      <div className="flex flex-col space-y-2 items-start md:flex-row md:space-x-2 md:space-y-0 mb-4 mt-8 md:items-center">
         <h2 className="text-2xl font-semibold">
           Attendees{" "}
           <span className="text-muted-foreground">
             {attendeeTicketData.length}
           </span>
         </h2>
-        <span className="text-muted-foreground">|</span>
+        <span className="hidden md:block text-muted-foreground">|</span>
         <h2 className="text-2xl font-semibold">
           Total Tickets{" "}
           <span className="text-muted-foreground">

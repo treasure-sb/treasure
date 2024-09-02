@@ -119,18 +119,19 @@ export default async function Page({
 
   const viewCount = lastPeriodViewsCount || 0;
 
-  const { data } = await supabase.rpc("get_attendee_count", {
-    event_id: event.id,
-  });
+  const { count: totalTicketsBought } = await supabase
+    .from("event_tickets")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", event.id);
 
-  const attendeeCount: AttendeeCountData = data || 0;
+  const ticketCount = totalTicketsBought || 0;
 
   const hostToolsOptions = [
     {
       title: "Attendees",
       Icon: UsersIcon,
       href: `${name}/attendees`,
-      stat: attendeeCount.toString(),
+      stat: ticketCount.toString(),
     },
     {
       title: "Total Sales",
