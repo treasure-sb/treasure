@@ -113,8 +113,8 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
                   <FormControl>
                     <InputWithLabel
                       label="Name"
-                      {...field}
                       placeholder="John Smith"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -129,7 +129,7 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
                   <FormControl>
                     <TextareaWithLabel
                       label="Bio"
-                      placeholder="Tell us a bit about your guest"
+                      placeholder="Tell us a bit about your guest..."
                       {...field}
                     />
                   </FormControl>

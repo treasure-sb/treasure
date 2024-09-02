@@ -5,7 +5,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import {
   Popover,
   PopoverContent,
@@ -21,6 +20,7 @@ import { convertToStandardTime, formatDate } from "@/lib/utils";
 import { PencilIcon, EyeIcon } from "lucide-react";
 import { format } from "date-fns";
 import EventCalendar from "@/components/ui/custom/event-calendar";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 export default function EditTimeAndDate({
   form,
@@ -46,7 +46,7 @@ export default function EditTimeAndDate({
 
   return edit ? (
     <div>
-      <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0 md:items-center">
+      <div className="flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0 md:items-end">
         <FormField
           control={form.control}
           name={`dates.${0}.date`}
@@ -56,9 +56,9 @@ export default function EditTimeAndDate({
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={"dotted"}
                       className={cn(
-                        "flex justify-between w-60 pl-4 bg-transparent text-left font-normal",
+                        "flex justify-between w-60 pl-4 bg-transparent text-left font-normal border-solid",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -97,8 +97,7 @@ export default function EditTimeAndDate({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput
-                    className="border-none"
+                  <InputWithLabel
                     label="Start Time"
                     type="time"
                     {...field}
@@ -108,7 +107,9 @@ export default function EditTimeAndDate({
                     }}
                   />
                 </FormControl>
-                <FormMessage />
+                <div className="h-1">
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
@@ -117,17 +118,20 @@ export default function EditTimeAndDate({
             name={`dates.${0}.endTime`}
             render={({ field }) => (
               <FormItem>
-                <FloatingLabelInput
-                  className="border-none"
-                  type="time"
-                  label="End Time"
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setCurrentEndTime(e.target.value);
-                  }}
-                />
-                <FormMessage />
+                <FormControl>
+                  <InputWithLabel
+                    label="End Time"
+                    type="time"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setCurrentEndTime(e.target.value);
+                    }}
+                  />
+                </FormControl>
+                <div className="h-1">
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />

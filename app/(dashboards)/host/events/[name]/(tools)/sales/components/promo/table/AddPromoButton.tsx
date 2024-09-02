@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { createPromoCode } from "@/lib/actions/promo";
 import { useState } from "react";
 import { PromoFormSchema } from "../../../types";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 export default function AddPromoButton({ eventId }: { eventId: string }) {
   const [open, setOpen] = useState(false);
@@ -79,23 +79,27 @@ export default function AddPromoButton({ eventId }: { eventId: string }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput label="Code" {...field} />
+                    <InputWithLabel
+                      label="Code"
+                      placeholder="Enter promo code"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex items-center space-x-4">
+            <div className="flex items-end space-x-4">
               <FormField
                 control={form.control}
                 name="discount"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FloatingLabelInput
+                      <InputWithLabel
                         label="Discount"
+                        placeholder="Enter discount"
                         {...field}
-                        className="w-full"
                       />
                     </FormControl>
                     <FormMessage className="h-2" />
@@ -152,7 +156,11 @@ export default function AddPromoButton({ eventId }: { eventId: string }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput label="Usage Limit" {...field} />
+                    <InputWithLabel
+                      label="Usage Limit"
+                      placeholder="Enter usage limit"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage className="h-2" />
                 </FormItem>
