@@ -158,10 +158,12 @@ export default function EditEventForm({
         editEventForm.posterUrl = event.poster_url;
       }
 
-      const { addError, removeError } = await updateTags();
+      if (initialTags) {
+        const { addError, removeError } = await updateTags();
 
-      if (addError || removeError) {
-        throw new Error("Error updating tags, please try again");
+        if (addError || removeError) {
+          throw new Error("Error updating tags, please try again");
+        }
       }
 
       const { data } = await updateEvent(editEventForm, event.id);

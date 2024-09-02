@@ -83,7 +83,7 @@ const TagInput: React.FC<tagsInputProps> = ({
         <div className="flex gap-2 flex-wrap scrollbar-hidden">
           {filteredTags.map((tag) => (
             <Badge
-              variant={"secondary"}
+              variant={"tertiary"}
               className="flex-shrink-0 hover:cursor-pointer"
               onClick={() => handleTagAdd(tag)}
               key={tag.id}
