@@ -41,7 +41,7 @@ export default function EditTickets({
           </motion.p>
           <MotionButton
             layout="position"
-            className="w-24"
+            className="w-24 rounded-full"
             type="button"
             onClick={toggleEdit}
           >

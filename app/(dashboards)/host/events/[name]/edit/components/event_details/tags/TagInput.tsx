@@ -62,7 +62,7 @@ const TagInput: React.FC<tagsInputProps> = ({
           <Badge
             key={keyword.id}
             onClick={() => removeKeyword(index)}
-            variant={"eventTag"}
+            variant={"tertiary"}
             className="cursor-pointer"
           >
             {keyword.name}

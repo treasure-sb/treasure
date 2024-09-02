@@ -38,7 +38,7 @@ export default function EditTables({
           </motion.p>
           <MotionButton
             layout="position"
-            className="w-24"
+            className="w-24 rounded-full"
             type="button"
             onClick={toggleEdit}
           >

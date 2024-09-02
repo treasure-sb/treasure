@@ -131,7 +131,7 @@ export default function DateFiltering() {
     <div className="flex space-x-1 items-center">
       <DropdownMenu open={isCalenderOpen} onOpenChange={setIsCalenderOpen}>
         <DropdownMenuTrigger asChild>
-          <Button className="space-x-1">
+          <Button className="space-x-1 rounded-full">
             <CalendarIcon className="h-4 w-4" />
             <p>{from ? <>{dateDisplayed}</> : "Date"}</p>
           </Button>

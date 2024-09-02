@@ -21,9 +21,9 @@ export default async function Page({
 }) {
   const supabase = await createSupabaseServerClient();
 
-  const { event, eventError } = await getEventFromCleanedName(name);
+  const { event } = await getEventFromCleanedName(name);
 
-  const { data, error } = await supabase.rpc("get_attendee_data", {
+  const { data } = await supabase.rpc("get_attendee_data", {
     event_id: event.id,
   });
 
@@ -63,11 +63,20 @@ export default async function Page({
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4 mt-8">
+      <div className="flex space-x-2 mb-4 mt-8 items-center">
         <h2 className="text-2xl font-semibold">
           Attendees{" "}
           <span className="text-muted-foreground">
             {attendeeTicketData.length}
+          </span>
+        </h2>
+        <span className="text-muted-foreground">|</span>
+        <h2 className="text-2xl font-semibold">
+          Total Tickets{" "}
+          <span className="text-muted-foreground">
+            {attendeeTicketData.reduce((acc, attendee) => {
+              return acc + attendee.quantity;
+            }, 0)}
           </span>
         </h2>
       </div>

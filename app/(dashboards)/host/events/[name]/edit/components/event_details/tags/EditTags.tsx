@@ -33,7 +33,7 @@ export default function EditTags({
   ) : (
     <div className="flex gap-2 w-full flex-wrap">
       {selectedTags.map((tag) => (
-        <Badge variant={"eventTag"} key={tag.id}>
+        <Badge variant={"tertiary"} key={tag.id}>
           {tag.name}
         </Badge>
       ))}

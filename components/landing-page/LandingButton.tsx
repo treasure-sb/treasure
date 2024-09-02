@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { LucideArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function LandingButton({
   href,
@@ -22,11 +23,21 @@ export default function LandingButton({
         <p>{text}</p>
         <LucideArrowUpRight
           size={26}
-          className="hidden md:block group-hover:text-foreground/80 dark:group-hover:text-background/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
+          className={cn(
+            "hidden md:block group-hover:text-foreground/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300",
+            variant === "outline"
+              ? "dark:group-hover:text-foreground/80"
+              : "dark:group-hover:text-background/80"
+          )}
         />
         <LucideArrowUpRight
           size={20}
-          className="block md:hidden group-hover:text-foreground/80 dark:group-hover:text-background/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300"
+          className={cn(
+            "block md:hidden group-hover:text-foreground/80 group-hover:translate-x-[0.1rem] group-hover:-translate-y-[0.1rem] transition duration-300",
+            variant === "outline"
+              ? "dark:group-hover:text-foreground/80"
+              : "dark:group-hover:text-background/80"
+          )}
         />
       </Link>
     </Button>
