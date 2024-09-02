@@ -1,8 +1,8 @@
 import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
+import { EventDisplayData } from "@/types/event";
 import AddEventGuests from "./AddEventGuests";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { EventDisplayData } from "@/types/event";
 import EditEventGuest from "./EditEventGuests";
 
 export type Guest = Tables<"event_guests"> & { publicUrl: string };
