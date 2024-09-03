@@ -130,7 +130,7 @@ export default function OTPInput({
   };
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 mt-2">
       {valueItems.map((digit, idx) => {
         return (
           <Input
@@ -146,6 +146,7 @@ export default function OTPInput({
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
+            className="border-0 border-b bg-transparent dark:bg-transparent rounded-none focus-visible:outline-none focus-visible:border-primary pl-[22px]"
           />
         );
       })}

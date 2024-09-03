@@ -1,6 +1,6 @@
 "use client";
 
-import { FloatingLabelInput } from "../floating-label-input";
+import { InputWithLabel } from "./input-with-label";
 
 export function filterPhoneNumber(phoneNumber: string) {
   return phoneNumber.replace(/\D/g, "");
@@ -48,7 +48,7 @@ export default function PhoneInput({
   };
 
   return (
-    <FloatingLabelInput
+    <InputWithLabel
       className={className}
       id="phone"
       type="tel"

@@ -13,15 +13,11 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useFieldArray } from "react-hook-form";
-import {
-  FloatingLabelInput,
-  FloatingInput,
-  FloatingLabel,
-} from "@/components/ui/floating-label-input";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormTable, createTables, updateTables } from "@/lib/actions/tables";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 export const tableSchema = z.object({
   db_id: z.string().optional(),
@@ -228,17 +224,17 @@ export default function EditTablesForm({
                 )}
               </div>
               <div className="flex items-center">
-                <div key={field.id} className="grid grid-cols-3">
+                <div key={field.id} className="grid grid-cols-3 gap-3">
                   <FormField
                     control={form.control}
                     name={`tables.${index}.section_name`}
                     render={({ field }) => (
-                      <FormItem className="row-span-2">
+                      <FormItem>
                         <FormControl>
-                          <FloatingLabelInput
+                          <InputWithLabel
                             label="Name"
+                            labelClassName="text-xs text-muted-foreground"
                             {...field}
-                            className="border-none"
                           />
                         </FormControl>
                         <div className="h-1">
@@ -253,8 +249,9 @@ export default function EditTablesForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <FloatingLabelInput
+                          <InputWithLabel
                             label="Price"
+                            labelClassName="text-xs text-muted-foreground"
                             {...field}
                             value={`$${field.value}`}
                             onChange={(e) => {
@@ -264,8 +261,35 @@ export default function EditTablesForm({
                               );
                               field.onChange(value);
                             }}
-                            className="border-none"
                           />
+                        </FormControl>
+                        <div className="h-1">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`tables.${index}.space_allocated`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative hover:cursor-text w-full">
+                            <InputWithLabel
+                              label="Space Allocated"
+                              labelClassName="text-xs text-muted-foreground"
+                              {...field}
+                              value={`${field.value}ft`}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(
+                                  /[^0-9.]/g,
+                                  ""
+                                );
+                                field.onChange(value);
+                              }}
+                            />
+                          </div>
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />
@@ -279,10 +303,10 @@ export default function EditTablesForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <FloatingLabelInput
+                          <InputWithLabel
                             label="Total Tables For Sale"
+                            labelClassName="text-xs text-muted-foreground"
                             {...field}
-                            className="border-none"
                           />
                         </FormControl>
                         <div className="h-1">
@@ -297,10 +321,10 @@ export default function EditTablesForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <FloatingLabelInput
+                          <InputWithLabel
                             label="Total Tables Available"
+                            labelClassName="text-xs text-muted-foreground"
                             {...field}
-                            className="border-none"
                           />
                         </FormControl>
                         <div className="h-1">
@@ -325,40 +349,6 @@ export default function EditTablesForm({
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
-                        </FormControl>
-                        <div className="h-1">
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`tables.${index}.space_allocated`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative hover:cursor-text w-full">
-                            <FloatingInput
-                              id="space-input"
-                              {...field}
-                              value={`${field.value}ft`}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(
-                                  /[^0-9.]/g,
-                                  ""
-                                );
-                                field.onChange(value);
-                              }}
-                              className="border-none"
-                            />
-                            <FloatingLabel
-                              className="whitespace-nowrap"
-                              htmlFor="space-input"
-                            >
-                              Space Allocated
-                            </FloatingLabel>
-                          </div>
                         </FormControl>
                         <div className="h-1">
                           <FormMessage />

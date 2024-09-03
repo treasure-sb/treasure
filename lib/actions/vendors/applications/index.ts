@@ -107,7 +107,10 @@ const sendVendorReceivedEmail = async (
     event.cleaned_name
   );
 
-  if (!hostEmails.includes("treasure20110@gmail.com")) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    !hostEmails.includes("treasure20110@gmail.com")
+  ) {
     await sendVendorAppReceivedEmail(
       ["treasure20110@gmail.com"],
       eventPosterUrl,

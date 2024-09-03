@@ -1,7 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import {
   Select,
   SelectContent,
@@ -17,6 +15,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tables } from "@/types/supabase";
 import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/custom/phone-input";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 
 export default function VendorInformation() {
   const { profile, tags } = useVendorFlow();
@@ -92,13 +92,13 @@ export default function VendorInformation() {
           />
         )}
         {profile?.email ? (
-          <FloatingLabelInput
+          <InputWithLabel
             readOnly
             label="Email"
             value={vendorInfo.email as string}
           />
         ) : (
-          <FloatingLabelInput
+          <InputWithLabel
             label="Email"
             type="email"
             value={vendorInfo.email || ""}
@@ -106,35 +106,36 @@ export default function VendorInformation() {
           />
         )}
         <div className="flex space-x-4">
-          <FloatingLabelInput
+          <InputWithLabel
             value={vendorInfo.firstName || ""}
             onChange={(e) => handleSetVendorInfo(e.target.value, "firstName")}
             label="First Name"
           />
-          <FloatingLabelInput
+          <InputWithLabel
             value={vendorInfo.lastName || ""}
             onChange={(e) => handleSetVendorInfo(e.target.value, "lastName")}
             label="Last Name"
           />
         </div>
-        <FloatingLabelInput
+        <InputWithLabel
           value={vendorInfo.businessName || ""}
           onChange={(e) => handleSetVendorInfo(e.target.value, "businessName")}
           label="Business Name (Optional)"
         />
-        <FloatingLabelInput
+        <InputWithLabel
           value={vendorInfo.instagram || ""}
           onChange={(e) => handleSetVendorInfo(e.target.value, "instagram")}
           label="Instagram (Optional)"
         />
         <VendorTags tags={tags} />
-        <Textarea
+        <TextareaWithLabel
+          label="Inventory (Required)"
           value={inventory}
           onChange={(e) => handleSetInventory(e.target.value)}
           placeholder="Tell us a little bit more about your inventory.*"
         />
         <div className="flex items-center justify-between">
-          <p>Vendors at Table *</p>
+          <p className="text-sm">Vendors at Table (Required)</p>
           <Select
             value={vendorsAtTable > 0 ? vendorsAtTable.toString() : undefined}
             onValueChange={(value) => handleSetVendorsAtTable(value)}
@@ -145,7 +146,8 @@ export default function VendorInformation() {
             <SelectContent>{vendorsOptions}</SelectContent>
           </Select>
         </div>
-        <Textarea
+        <TextareaWithLabel
+          label="Comments"
           value={comments}
           onChange={(e) => handleSetComments(e.target.value)}
           placeholder="Do you have any additional comments?"
@@ -176,7 +178,7 @@ function VendorTags({ tags }: { tags: Tables<"tags">[] }) {
       <div className="mb-4">
         <p>Tags</p>
         <p className="text-sm text-muted-foreground">
-          Please select tags that best fit your inventory.*
+          Please select tags that best fit your inventory. (Required)
         </p>
       </div>
       <div className="space-y-1">

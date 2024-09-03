@@ -40,7 +40,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-6 lg:space-y-12 mb-14 lg:mb-0 lg:pr-8 mx-auto">
-          <h1 className="text-xl sm:text-2xl md:text-5xl lg:text-6xl 2xl:text-[5.25rem] font-semibold text-left 2xl:leading-[1.05]">
+          <h1 className="text-xl sm:text-2xl md:text-5xl lg:text-6xl 3xl:text-[5.25rem] font-semibold text-left 2xl:leading-[1.05]">
             Find More Hobby Events You Love{" "}
             <span className="text-[#2AAA88] dark:text-primary">
               Every Weekend

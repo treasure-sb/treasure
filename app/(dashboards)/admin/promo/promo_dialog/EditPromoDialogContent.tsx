@@ -4,7 +4,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +20,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { updatePromoCode } from "@/lib/actions/promo";
 import { PromoFormSchema } from "@/app/(dashboards)/host/events/[name]/(tools)/sales/types";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 export default function EditPromoDialogContent({
   promoCode,
@@ -74,7 +74,11 @@ export default function EditPromoDialogContent({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput label="Code" {...field} />
+                  <InputWithLabel
+                    label="Code"
+                    placeholder="Enter promo code"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,10 +91,10 @@ export default function EditPromoDialogContent({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
+                    <InputWithLabel
                       label="Discount"
+                      placeholder="Enter discount"
                       {...field}
-                      className="w-full"
                     />
                   </FormControl>
                   <FormMessage className="h-2" />
@@ -147,7 +151,11 @@ export default function EditPromoDialogContent({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <FloatingLabelInput label="Usage Limit" {...field} />
+                  <InputWithLabel
+                    label="Usage Limit"
+                    placeholder="Enter usage limit"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage className="h-2" />
               </FormItem>

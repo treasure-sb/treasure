@@ -27,6 +27,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 
 export const formSchema = z.object({
   name: z.string().min(1, {
@@ -99,7 +101,7 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
           <SheetHeader className="mb-6">
             <SheetTitle>Add Guest</SheetTitle>
           </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="w-fit">
               <AvatarEdit setAvatarFile={setAvatarFile} />
             </div>
@@ -109,7 +111,11 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Name" {...field} />
+                    <InputWithLabel
+                      label="Name"
+                      placeholder="John Smith"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,7 +127,11 @@ export default function AddEventGuests({ event }: { event: EventWithDates }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea placeholder="Bio" {...field} />
+                    <TextareaWithLabel
+                      label="Bio"
+                      placeholder="Tell us a bit about your guest..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,15 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +25,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { createClient } from "@/utils/supabase/client";
 import AvatarEdit from "@/app/(main)/profile/edit-profile/components/AvatarEdit";
 import { Tables } from "@/types/supabase";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 const TempVendorSchema = z.object({
   business_name: z.string().min(1, {
@@ -159,7 +157,11 @@ export default function CreateTempVendor({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput label="Business Name" {...field} />
+                    <InputWithLabel
+                      label="Business Name"
+                      placeholder="John's Card Collection"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -171,10 +173,10 @@ export default function CreateTempVendor({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
+                    <InputWithLabel
                       label="Email (optional)"
+                      placeholder="john@gmail.com"
                       {...field}
-                      className="w-full"
                     />
                   </FormControl>
                   <FormMessage className="h-2" />
@@ -187,10 +189,10 @@ export default function CreateTempVendor({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <FloatingLabelInput
+                    <InputWithLabel
                       label="Instagram (optional)"
+                      placeholder="johnscards"
                       {...field}
-                      className="w-full"
                     />
                   </FormControl>
                   <FormMessage className="h-2" />

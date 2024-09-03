@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { signUpUser } from "@/lib/actions/auth";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateEmail } from "@/lib/utils";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import VerifyCode from "./VerifyCode";
 import PhoneInput from "@/components/ui/custom/phone-input";
 
@@ -140,8 +140,10 @@ export default function LoginFlow({
             {usePhone ? (
               <div className="space-y-2">
                 <PhoneInput
+                  className="bg-transparent dark:bg-transparent"
                   phoneNumber={phoneNumber}
                   updatePhoneNumber={handleUpdatePhoneNumber}
+                  placeholder="(555) 555-5555"
                 />
                 <p
                   onClick={() => setUsePhone(false)}
@@ -152,9 +154,11 @@ export default function LoginFlow({
               </div>
             ) : (
               <div className="space-y-2">
-                <FloatingLabelInput
+                <InputWithLabel
+                  className="bg-transparent dark:bg-transparent"
                   id="email"
                   label="Email"
+                  placeholder="johnsmith@gmail.com"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                 />

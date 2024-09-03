@@ -125,7 +125,10 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
         Manage the phone number you use to login to Treasure and receive SMS
         updates.
       </p>
-      <form className="flex max-w-md" onSubmit={(e) => handleUpdate(e)}>
+      <form
+        className="flex max-w-md items-end space-x-2"
+        onSubmit={(e) => handleUpdate(e)}
+      >
         <PhoneInput
           phoneNumber={phoneNumber}
           updatePhoneNumber={handleUpdatePhone}

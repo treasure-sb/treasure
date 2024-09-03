@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { updateProfile } from "@/lib/actions/profile";
 import { updateUserEmail, verifyEmailChangeOTP } from "@/lib/actions/auth";
-import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { validateEmail } from "@/lib/utils";
 import OTPInput from "@/components/ui/custom/otp-input";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
 export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
   const [email, setEmail] = useState(profile.email || "");
@@ -102,8 +102,11 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
     <div className="max-w-xl md:max-w-6xl space-y-4">
       <h3 className="font-semibold text-xl mb-4">Email</h3>
       <p>Manage the email you use to login to Treasure and receive updates.</p>
-      <form className="flex max-w-md" onSubmit={(e) => handleUpdate(e)}>
-        <FloatingLabelInput
+      <form
+        className="flex max-w-md items-end space-x-2"
+        onSubmit={(e) => handleUpdate(e)}
+      >
+        <InputWithLabel
           id="email"
           label="Email"
           onChange={(e) => setEmail(e.target.value)}

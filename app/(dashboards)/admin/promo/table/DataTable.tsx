@@ -21,13 +21,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { Tables } from "@/types/supabase";
 import { Dialog } from "@/components/ui/dialog";
 import Filters from "./Filters";
 import AddPromoButton from "./AddPromoButton";
 import EditPromoDialogContent from "../promo_dialog/EditPromoDialogContent";
 import { PromoCode } from "./PromoDataColumns";
-import { EventWithDates } from "@/types/event";
 import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
