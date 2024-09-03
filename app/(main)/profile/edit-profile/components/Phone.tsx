@@ -13,11 +13,16 @@ import {
 } from "@/components/ui/dialog";
 import { updateProfile } from "@/lib/actions/profile";
 import { updateUserPhone, verifyPhoneChangeOTP } from "@/lib/actions/auth";
-import OTPInput from "@/components/ui/custom/otp-input";
 import PhoneInput, {
   filterPhoneNumber,
   formatPhoneNumber,
 } from "@/components/ui/custom/phone-input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
   const phoneLength = profile.phone?.length || 0;
@@ -153,12 +158,21 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
               <span className="font-semibold">{phoneNumber}</span>.
             </DialogDescription>
           </DialogHeader>
-          <OTPInput
+          <InputOTP
+            maxLength={6}
+            pattern={REGEXP_ONLY_DIGITS}
             value={otp}
-            verifying={verifying}
             onChange={handleUpdateOTP}
-            valueLength={6}
-          />
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
         </DialogContent>
       </Dialog>
     </div>

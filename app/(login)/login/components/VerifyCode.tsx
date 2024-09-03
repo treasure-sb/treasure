@@ -1,13 +1,18 @@
 "use client";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
 import { verifyUser } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 import { SubmitMethod } from "./LoginFlow";
-import OTPInput from "@/components/ui/custom/otp-input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
 import AdditionalInfo from "./AdditionalInfo";
 import Welcome from "./Welcome";
 import BackButton from "@/components/ui/custom/back-button";
@@ -123,7 +128,7 @@ export default function VerifyCode({
           }}
         >
           <BackButton onClick={goBack} />
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             <h1 className="text-2xl text-left font-semibold">Enter code</h1>
             <p className="text-sm text-gray-400">
               Enter the code we sent to{" "}
@@ -132,12 +137,21 @@ export default function VerifyCode({
               </span>
             </p>
           </div>
-          <OTPInput
-            verifying={verifying}
+          <InputOTP
+            maxLength={6}
+            pattern={REGEXP_ONLY_DIGITS}
             value={code}
-            valueLength={6}
             onChange={handleChange}
-          />
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
         </motion.div>
       )}
     </AnimatePresence>

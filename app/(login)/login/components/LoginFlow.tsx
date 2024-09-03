@@ -140,6 +140,7 @@ export default function LoginFlow({
             {usePhone ? (
               <div className="space-y-2">
                 <PhoneInput
+                  className="bg-transparent dark:bg-transparent"
                   phoneNumber={phoneNumber}
                   updatePhoneNumber={handleUpdatePhoneNumber}
                   placeholder="(555) 555-5555"
@@ -154,6 +155,7 @@ export default function LoginFlow({
             ) : (
               <div className="space-y-2">
                 <InputWithLabel
+                  className="bg-transparent dark:bg-transparent"
                   id="email"
                   label="Email"
                   placeholder="johnsmith@gmail.com"
