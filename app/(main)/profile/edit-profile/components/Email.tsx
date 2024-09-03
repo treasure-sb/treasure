@@ -14,13 +14,8 @@ import {
 import { updateProfile } from "@/lib/actions/profile";
 import { updateUserEmail, verifyEmailChangeOTP } from "@/lib/actions/auth";
 import { validateEmail } from "@/lib/utils";
+import OTPInput from "@/components/ui/custom/otp-input";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
   const [email, setEmail] = useState(profile.email || "");
@@ -137,21 +132,12 @@ export default function Phone({ profile }: { profile: Tables<"profiles"> }) {
               <span className="font-semibold">{email}</span>
             </DialogDescription>
           </DialogHeader>
-          <InputOTP
-            maxLength={6}
-            pattern={REGEXP_ONLY_DIGITS}
+          <OTPInput
             value={otp}
+            verifying={verifying}
             onChange={handleUpdateOTP}
-          >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
+            valueLength={6}
+          />
         </DialogContent>
       </Dialog>
     </div>

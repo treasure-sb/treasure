@@ -146,6 +146,7 @@ export default function OTPInput({
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
+            className="border-0 border-b bg-transparent dark:bg-transparent rounded-none focus-visible:outline-none focus-visible:border-primary pl-[22px]"
           />
         );
       })}
