@@ -31,6 +31,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
+    --field: 60 33% 97%;
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.7rem;
     --scroll-bar-color: #c5c5c5;
@@ -64,6 +65,7 @@
     --destructive-foreground: 0 85.7% 97.3%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 18.9%;
+    --field: 20, 14%, 4%;
     --ring: 142.4 71.8% 29.2%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;

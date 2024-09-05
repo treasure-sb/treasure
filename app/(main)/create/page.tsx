@@ -1,5 +1,5 @@
-import CreateEvent from "./components/CreateEvent";
+import CreateEventForm from "./components/CreateEventForm";
 
 export default function Page() {
-  return <CreateEvent />;
+  return <CreateEventForm />;
 }

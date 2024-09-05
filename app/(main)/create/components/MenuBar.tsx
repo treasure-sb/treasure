@@ -15,10 +15,18 @@ export default function MenuBar() {
     <div className="-mx-4 sm:-mx-8 w-full bg-background fixed bottom-0">
       <ProgressBar />
       <div className="px-0 py-0 flex space-x-0 h-12">
-        <Button variant={"tertiary"} className="w-full h-full rounded-none">
+        <Button
+          type="button"
+          variant={"tertiary"}
+          className="w-full h-full rounded-none"
+        >
           Save Draft
         </Button>
-        <Button variant={"default"} className="w-full h-full rounded-none">
+        <Button
+          type="button"
+          variant={"default"}
+          className="w-full h-full rounded-none"
+        >
           Continue
         </Button>
       </div>

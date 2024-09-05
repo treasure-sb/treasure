@@ -45,9 +45,12 @@ const tableSchema = z.object({
 });
 
 const dateSchema = z.object({
-  date: z.date({
-    required_error: "Date is required",
-  }),
+  date: z
+    .date()
+    .optional()
+    .refine((date) => date !== undefined, {
+      message: "Date is required for submission",
+    }),
   startTime: z.string().refine((value) => isValidTime(value), {
     message: "Must be a valid time (HH:mm)",
   }),
@@ -65,11 +68,11 @@ const eventSchema = z.object({
   tables: z.array(tableSchema),
 });
 
-type Event = z.infer<typeof eventSchema>;
+type CreateEvent = z.infer<typeof eventSchema>;
 type BasicDetails = z.infer<typeof basicDetailsSchema>;
 type Ticket = z.infer<typeof ticketSchema>;
 type Table = z.infer<typeof tableSchema>;
 type Date = z.infer<typeof dateSchema>;
 
 export { eventSchema };
-export type { Event, BasicDetails, Ticket, Table, Date };
+export type { CreateEvent, BasicDetails, Ticket, Table, Date };
