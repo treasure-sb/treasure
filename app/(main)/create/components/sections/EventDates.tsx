@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import CreateEventCard from "./CreateEventCard";
+import CreateEventCard from "../CreateEventCard";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { PlusIcon } from "lucide-react";
 

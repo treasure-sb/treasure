@@ -1,6 +1,6 @@
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
-import CreateEventCard from "./CreateEventCard";
+import CreateEventCard from "../CreateEventCard";
 
 export default function EventDetails() {
   return (
