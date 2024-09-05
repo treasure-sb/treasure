@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import BackButton from "@/components/ui/custom/back-button";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import BackButton from "@/components/ui/custom/back-button";
 import Link from "next/link";
 
 export default function Exit() {
