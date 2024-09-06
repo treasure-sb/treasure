@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { CalendarIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import CreateEventCard from "../CreateEventCard";
+import CreateEventCard from "../../CreateEventCard";
 import {
   Popover,
   PopoverContent,
@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { CreateEvent } from "../../schema";
+import { CreateEvent } from "../../../schema";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import format from "date-fns/format";
 
 export default function EventDates() {
-  const { control, watch, getValues } = useFormContext<CreateEvent>();
+  const { control, watch } = useFormContext<CreateEvent>();
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "dates",

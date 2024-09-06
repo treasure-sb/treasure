@@ -1,20 +1,19 @@
-import { InputWithLabel } from "@/components/ui/custom/input-with-label";
-import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import CreateEventCard from "../CreateEventCard";
+import CreateEventCard from "../../CreateEventCard";
+import { CreateEvent } from "../../../schema";
 import { useFormContext } from "react-hook-form";
-import { CreateEvent } from "../../schema";
+import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
-export default function EventDetails() {
+export default function EventVendorInfo() {
   const { control } = useFormContext<CreateEvent>();
 
   return (
-    <CreateEventCard title="Event Details">
+    <CreateEventCard title="Vendor Information">
       <div className="space-y-2">
         <FormField
           control={control}
@@ -42,21 +41,6 @@ export default function EventDetails() {
                   label="Venue Name"
                   placeholder="Enter the venue name"
                   {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="basicDetails.description"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <TextareaWithLabel
-                  label="Description"
-                  placeholder="Add a description of your event"
                 />
               </FormControl>
               <FormMessage />
