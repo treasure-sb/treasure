@@ -40,7 +40,7 @@ export default function CreateEventForm() {
     <CreateEventProvider>
       <FormProvider {...form}>
         <Form {...form}>
-          <form className="pb-10">
+          <form className="pb-10 lg:pb-20">
             <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
               <Exit />
               <CreateEventFormSections />

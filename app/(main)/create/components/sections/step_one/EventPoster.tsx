@@ -9,7 +9,7 @@ export default function EventPoster() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   return (
-    <div className="w-full lg:w-3/4 max-w-5xl mx-auto">
+    <>
       <Label
         className="hover:cursor-pointer relative group block w-full aspect-w-16 aspect-h-16"
         htmlFor="poster"
@@ -48,6 +48,6 @@ export default function EventPoster() {
         multiple={false}
         accept="image/png, image/jpeg"
       />
-    </div>
+    </>
   );
 }

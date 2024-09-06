@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CurrentStep, useCreateEvent } from "../context/CreateEventContext";
+import { useEffect } from "react";
 
 const ProgressCell = ({ active }: { active: boolean }) => {
   return (
@@ -32,6 +33,13 @@ export default function MenuBar() {
           ? CurrentStep.STEP_TWO
           : CurrentStep.STEP_THREE,
     });
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
   return (
