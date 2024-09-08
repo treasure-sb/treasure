@@ -27,16 +27,19 @@ import AddPromoButton from "./AddPromoButton";
 import EditPromoDialogContent from "../promo_dialog/EditPromoDialogContent";
 import { PromoCode } from "./PromoDataColumns";
 import { Button } from "@/components/ui/button";
+import { Tables } from "@/types/supabase";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData, TValue, Other> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  events: Tables<"events">[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData, TValue, Other>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  events,
+}: DataTableProps<TData, TValue, Other>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [promoClicked, setPromoClicked] = useState<PromoCode | null>(null);
   const [open, setOpen] = useState(false);
@@ -78,7 +81,7 @@ export function DataTable<TData, TValue>({
           statusFilter={statusFilter}
           updateStatusFilter={updateStatusFilter}
         />
-        <AddPromoButton />
+        <AddPromoButton events={events} />
       </div>
       <div className="rounded-md border w-full mx-auto">
         <Table>
