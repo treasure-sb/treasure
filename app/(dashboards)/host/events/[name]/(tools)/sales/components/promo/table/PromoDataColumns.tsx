@@ -11,9 +11,14 @@ type Discount = {
   type: PromoType;
 };
 
+type Code = {
+  code: string;
+  treasure_sponsored: boolean;
+};
+
 export type PromoCode = {
   id: string;
-  code: string;
+  code: Code;
   discount: Discount;
   status: Status;
   num_used: number;
@@ -74,10 +79,17 @@ const DateCell = ({ cell }: CellContext<PromoCode, any>) => {
   );
 };
 
-const codeCell = ({ cell }: CellContext<PromoCode, any>) => {
-  const code = cell.getValue() as string;
+const codeCell = ({ row }: CellContext<PromoCode, any>) => {
+  const code = row.getValue("code") as Code;
 
-  return <span className="font-bold">{code}</span>;
+  return (
+    <div className="flex flex-col">
+      <p className="font-bold">{code.code}</p>
+      {code.treasure_sponsored === true ? (
+        <p className="text-muted-foreground">Treasure Sponsored</p>
+      ) : null}
+    </div>
+  );
 };
 
 const usesCell = ({ row }: CellContext<PromoCode, any>) => {

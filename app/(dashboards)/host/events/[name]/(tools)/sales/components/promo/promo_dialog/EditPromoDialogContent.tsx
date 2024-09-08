@@ -35,7 +35,7 @@ export default function EditPromoDialogContent({
     resolver: zodResolver(PromoFormSchema),
     defaultValues: {
       id: promoCode.id,
-      code: promoCode.code,
+      code: promoCode.code.code,
       discount: promoCode.discount.amount.toString(),
       usageLimit: promoCode.usage_limit?.toString() || undefined,
       status: promoCode.status,

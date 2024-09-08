@@ -68,6 +68,7 @@ export function DataTable<TData, TValue>({
   };
 
   const showPromoInfo = (row: Row<TData>) => {
+    if ((row.original as PromoCode).code.treasure_sponsored === true) return;
     setPromoClicked(row.original as PromoCode);
     setOpen(true);
   };

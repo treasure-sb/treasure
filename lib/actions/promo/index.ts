@@ -6,7 +6,8 @@ import { PromoFormSchema } from "@/app/(dashboards)/host/events/[name]/(tools)/s
 
 const createPromoCode = async (
   eventId: string | null,
-  promoForm: z.infer<typeof PromoFormSchema>
+  promoForm: z.infer<typeof PromoFormSchema>,
+  admin?: boolean
 ) => {
   const supabase = await createSupabaseServerClient();
   const { code, discount, status, usageLimit, promoType } = promoForm;
@@ -17,6 +18,7 @@ const createPromoCode = async (
     usage_limit: usageLimit || null,
     type: promoType,
     event_id: eventId || null,
+    treasure_sponsored: admin ? true : false,
   });
 
   return { data, error };

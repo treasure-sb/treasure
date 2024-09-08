@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { Check, ChevronsUpDown, PlusIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -19,19 +19,40 @@ import {
   FormField,
   FormItem,
   FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createPromoCode } from "@/lib/actions/promo";
 import { useState } from "react";
-import { PromoFormSchema } from "@/app/(dashboards)/host/events/[name]/(tools)/sales/types";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { PromoFormSchema } from "../types";
+import { Tables } from "@/types/supabase";
+import { cn } from "@/lib/utils";
 
-export default function AddPromoButton() {
+export default function AddPromoButton({
+  events,
+}: {
+  events: Tables<"events">[];
+}) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof PromoFormSchema>>({
     resolver: zodResolver(PromoFormSchema),
     defaultValues: {
+      event: "",
       code: "",
       discount: "",
       usageLimit: undefined,
@@ -45,7 +66,11 @@ export default function AddPromoButton() {
   const onSubmit = async (values: z.infer<typeof PromoFormSchema>) => {
     toast.loading("Adding promo code...");
 
-    const { error } = await createPromoCode(null, values);
+    const { error } = await createPromoCode(
+      values.event === "000" ? null : values.event,
+      values,
+      true
+    );
     console.log(error);
 
     if (error) {
@@ -74,6 +99,85 @@ export default function AddPromoButton() {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="event"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Event</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {!field.value
+                            ? "Select Event"
+                            : field.value === "000"
+                            ? "Global (All Events)"
+                            : events.find((event) => event.id === field.value)
+                                ?.name}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput placeholder="Search event..." />
+                        <CommandList>
+                          <CommandEmpty>No event found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value={"Global (All Events)"}
+                              key={"000"}
+                              onSelect={() => {
+                                form.setValue("event", "000");
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  "000" === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {"Global (All Events)"}
+                            </CommandItem>
+                            {events.map((event) => (
+                              <CommandItem
+                                value={event.name}
+                                key={event.id}
+                                onSelect={() => {
+                                  form.setValue("event", event.id);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    event.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {event.name + " (" + event.cleaned_name + ")"}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="code"
