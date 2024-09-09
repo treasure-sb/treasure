@@ -52,10 +52,10 @@ const dateSchema = z.object({
       message: "Date is required for submission",
     }),
   startTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
+    message: "Start time is required",
   }),
   endTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
+    message: "End time is required",
   }),
 });
 
@@ -67,7 +67,7 @@ const termSchema = z.object({
 
 const vendorInfoSchema = z.object({
   checkInTime: z.string().refine((value) => isValidTime(value), {
-    message: "Must be a valid time (HH:mm)",
+    message: "Check-in time is required",
   }),
   checkInLocation: z.string().min(1, {
     message: "Location is required",

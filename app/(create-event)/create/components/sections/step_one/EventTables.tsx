@@ -43,7 +43,7 @@ export default function EventTables() {
     append({
       name: "",
       description: "",
-      price: "0",
+      price: "0.00",
       quantity: "100",
       spaceAllocated: "",
       numberVendorsAllowed: "",

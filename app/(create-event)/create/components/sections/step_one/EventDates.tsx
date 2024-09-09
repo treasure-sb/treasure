@@ -88,6 +88,7 @@ export default function EventDates() {
       </Button>
     </div>
   );
+
   return (
     <CreateEventCard title="Event Dates" footer={EventDatesFooter}>
       <div className="space-y-6">
@@ -148,7 +149,7 @@ export default function EventDates() {
                         <InputWithLabel
                           type="time"
                           label="Start Time"
-                          className="w-full"
+                          className="min-w-[90%]"
                           {...field}
                         />
                       </FormControl>
@@ -165,7 +166,7 @@ export default function EventDates() {
                         <InputWithLabel
                           type="time"
                           label="End Time"
-                          className="w-full"
+                          className="min-w-[90%]"
                           {...field}
                         />
                       </FormControl>

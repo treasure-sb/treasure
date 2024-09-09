@@ -54,18 +54,6 @@ export default function EventVendorInfo() {
       <div className="space-y-2">
         <FormField
           control={control}
-          name="vendorInfo.checkInTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <InputWithLabel label="Check-in Time" type="time" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
           name="vendorInfo.checkInLocation"
           render={({ field }) => (
             <FormItem>
@@ -73,6 +61,23 @@ export default function EventVendorInfo() {
                 <InputWithLabel
                   label="Check-in Location"
                   placeholder="Enter the location for vendor check-in"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="vendorInfo.checkInTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <InputWithLabel
+                  label="Check-in Time"
+                  type="time"
+                  className="min-w-[94.5%]"
                   {...field}
                 />
               </FormControl>

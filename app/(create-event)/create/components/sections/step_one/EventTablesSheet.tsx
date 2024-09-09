@@ -54,10 +54,18 @@ export default function EventTablesSheet({
               <FormItem className="w-full">
                 <FormControl>
                   <InputWithLabel
-                    inputMode="numeric"
                     label="Price"
                     className="w-full"
                     {...field}
+                    value={`$${field.value}`}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9.]/g, "");
+                      field.onChange(value);
+                    }}
+                    onBlur={() => {
+                      const value = parseFloat(field.value);
+                      field.onChange(value.toFixed(2));
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -88,9 +96,19 @@ export default function EventTablesSheet({
               <FormItem className="w-full">
                 <FormControl>
                   <InputWithLabel
+                    inputMode="numeric"
                     label="Space Allocated"
                     className="w-full"
                     {...field}
+                    value={`${field.value} ft²`}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9.]/g, "");
+                      field.onChange(value);
+                    }}
+                    onBlur={() => {
+                      const value = parseFloat(field.value);
+                      field.onChange(Number.isNaN(value) ? "0.00" : value);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -104,6 +122,7 @@ export default function EventTablesSheet({
               <FormItem className="w-full">
                 <FormControl>
                   <InputWithLabel
+                    inputMode="numeric"
                     label="Number of Vendors Allowed"
                     className="w-full"
                     {...field}
@@ -120,7 +139,8 @@ export default function EventTablesSheet({
               <FormItem className="w-full">
                 <FormControl>
                   <TextareaWithLabel
-                    label="Additional Information"
+                    label="Additional Information (optional)"
+                    placeholder="Enter any additional information for vendors for this table tier"
                     className="w-full"
                     {...field}
                   />

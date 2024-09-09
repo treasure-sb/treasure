@@ -54,10 +54,20 @@ export default function EventTicketsSheet({
               <FormItem className="w-full">
                 <FormControl>
                   <InputWithLabel
-                    inputMode="numeric"
                     label="Price"
                     className="w-full"
                     {...field}
+                    value={`$${field.value}`}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9.]/g, "");
+                      field.onChange(value);
+                    }}
+                    onBlur={() => {
+                      const value = parseFloat(field.value);
+                      field.onChange(
+                        Number.isNaN(value) ? "0.00" : value.toFixed(2)
+                      );
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
