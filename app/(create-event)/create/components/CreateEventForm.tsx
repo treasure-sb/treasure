@@ -5,6 +5,8 @@ import { Form } from "@/components/ui/form";
 import { eventSchema, type CreateEvent } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { sectionVariants } from "./CreateEventFormSections";
 import Exit from "./sections/Exit";
 import MenuBar from "./MenuBar";
 import CreateEventFormSections from "./CreateEventFormSections";
@@ -29,6 +31,13 @@ export default function CreateEventForm() {
         additionalInformation: "",
       },
     ],
+    vendorInfo: {
+      checkInTime: "",
+      checkInLocation: "",
+      wifiAvailability: false,
+      additionalInfo: "",
+      terms: [{ term: "" }],
+    },
   };
 
   const form = useForm<CreateEvent>({
@@ -40,9 +49,16 @@ export default function CreateEventForm() {
     <CreateEventProvider>
       <FormProvider {...form}>
         <Form {...form}>
-          <form className="pb-10 lg:pb-20">
+          <form className="pb-14 lg:pb-20">
             <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
-              <Exit />
+              <div className="h-1" />
+              <motion.div
+                variants={sectionVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <Exit />
+              </motion.div>
               <CreateEventFormSections />
             </div>
             <MenuBar />

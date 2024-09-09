@@ -59,6 +59,26 @@ const dateSchema = z.object({
   }),
 });
 
+const termSchema = z.object({
+  term: z.string().min(1, {
+    message: "Term and Condition Required",
+  }),
+});
+
+const vendorInfoSchema = z.object({
+  checkInTime: z.string().refine((value) => isValidTime(value), {
+    message: "Must be a valid time (HH:mm)",
+  }),
+  checkInLocation: z.string().min(1, {
+    message: "Location is required",
+  }),
+  wifiAvailability: z.boolean().default(false),
+  additionalInfo: z.string().optional(),
+  terms: z.array(termSchema).nonempty({
+    message: "At least one term is required",
+  }),
+});
+
 const eventSchema = z.object({
   basicDetails: basicDetailsSchema,
   dates: z.array(dateSchema).nonempty({
@@ -66,6 +86,7 @@ const eventSchema = z.object({
   }),
   tickets: z.array(ticketSchema),
   tables: z.array(tableSchema),
+  vendorInfo: vendorInfoSchema,
 });
 
 type CreateEvent = z.infer<typeof eventSchema>;
@@ -73,6 +94,7 @@ type BasicDetails = z.infer<typeof basicDetailsSchema>;
 type Ticket = z.infer<typeof ticketSchema>;
 type Table = z.infer<typeof tableSchema>;
 type Date = z.infer<typeof dateSchema>;
+type VendorInfo = z.infer<typeof vendorInfoSchema>;
 
 export { eventSchema };
-export type { CreateEvent, BasicDetails, Ticket, Table, Date };
+export type { CreateEvent, BasicDetails, Ticket, Table, Date, VendorInfo };

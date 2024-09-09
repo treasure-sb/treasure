@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCreateEvent } from "../context/CreateEventContext";
 import { customLandingEase } from "@/components/landing-page/Free";
 
-const sectionVariants = {
+export const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
