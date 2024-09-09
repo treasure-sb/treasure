@@ -20,7 +20,7 @@ export default function EventTickets() {
   const tickets = watch("tickets");
 
   const handleAppend = () => {
-    append({ name: "GA", description: "", price: "0", quantity: "100" });
+    append({ name: "", description: "", price: "0", quantity: "100" });
   };
 
   const handleSelectTicket = (index: number) => {
@@ -59,7 +59,13 @@ export default function EventTickets() {
                     size={24}
                     className="text-tertiary mr-4 stroke-1"
                   />
-                  <p className="mr-2">{tickets[index].name}</p>
+                  <p className="mr-2">
+                    {tickets[index].name === "" ? (
+                      <span className="italic">Enter Ticket Name</span>
+                    ) : (
+                      tickets[index].name
+                    )}
+                  </p>
                   <p>{USDollar.format(parseFloat(tickets[index].price))}</p>
                 </div>
                 <Edit2Icon

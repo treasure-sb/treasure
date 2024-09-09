@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EventVendorInfo() {
@@ -48,12 +48,6 @@ export default function EventVendorInfo() {
       </Button>
     </div>
   );
-
-  // <Trash2Icon
-  //   size={16}
-  //   className="text-muted-foreground ml-auto hover:text-destructive transition hover:cursor-pointer"
-  //   onClick={() => remove(index)}
-  // />;
 
   return (
     <CreateEventCard title="Vendor Information" footer={EventVendorInfoFooter}>
@@ -122,7 +116,7 @@ export default function EventVendorInfo() {
         <FormLabel>Terms for Vendors</FormLabel>
         <ul className="list-disc list-outside ml-5 space-y-2">
           {fields.map((field, index) => (
-            <li key={field.id} className="flex">
+            <li key={field.id} className="relative">
               <FormField
                 control={control}
                 name={`vendorInfo.terms.${index}.term`}
@@ -130,6 +124,7 @@ export default function EventVendorInfo() {
                   <FormItem>
                     <FormControl>
                       <Textarea
+                        className="w-[90%] md:w-[95%]"
                         placeholder="Enter the terms for vendors"
                         {...field}
                       />
@@ -138,6 +133,13 @@ export default function EventVendorInfo() {
                   </FormItem>
                 )}
               />
+              <div className="absolute right-0 top-1/2">
+                <Trash2Icon
+                  size={16}
+                  className="text-muted-foreground ml-auto hover:text-destructive transition hover:cursor-pointer"
+                  onClick={() => handleRemove(index)}
+                />
+              </div>
             </li>
           ))}
         </ul>

@@ -4,10 +4,11 @@ import EventPoster from "./sections/step_one/EventPoster";
 import EventTables from "./sections/step_one/EventTables";
 import EventTickets from "./sections/step_one/EventTickets";
 import EventVendorInfo from "./sections/step_two/EventVendorInfo";
-import EventTablesInfo from "./sections/step_two/EventTablesInfo";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCreateEvent } from "../context/CreateEventContext";
 import { customLandingEase } from "@/components/landing-page/Free";
+import EventGuests from "./sections/step_two/EventGuests";
+import EventHighlights from "./sections/step_two/EventHighlights";
 
 export const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -57,18 +58,8 @@ export default function CreateEventFormSections() {
               className="space-y-4 lg:space-y-10"
             >
               <EventVendorInfo />
-              <EventTablesInfo />
-            </motion.div>
-          )}
-          {currentStep === 3 && (
-            <motion.div
-              key="step3"
-              variants={sectionVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-4 lg:space-y-10"
-            >
-              <h1>final step</h1>
+              <EventGuests />
+              <EventHighlights />
             </motion.div>
           )}
         </AnimatePresence>

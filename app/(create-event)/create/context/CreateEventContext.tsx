@@ -3,7 +3,6 @@ import React, { createContext, useContext, useReducer } from "react";
 export enum CurrentStep {
   STEP_ONE = 1,
   STEP_TWO = 2,
-  STEP_THREE = 3,
 }
 
 type CreateEventState = {

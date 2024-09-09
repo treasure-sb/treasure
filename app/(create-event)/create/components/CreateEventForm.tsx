@@ -19,12 +19,12 @@ export default function CreateEventForm() {
       description: "",
     },
     dates: [{ date: undefined, startTime: "", endTime: "" }],
-    tickets: [{ name: "GA", description: "", price: "0", quantity: "100" }],
+    tickets: [{ name: "", description: "", price: "0", quantity: "100" }],
     tables: [
       {
         name: "",
-        price: "",
-        quantity: "",
+        price: "0",
+        quantity: "100",
         tableProvided: false,
         spaceAllocated: "",
         numberVendorsAllowed: "",

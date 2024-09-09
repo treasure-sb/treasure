@@ -1,15 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { CurrentStep, useCreateEvent } from "../context/CreateEventContext";
-import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { useFormContext } from "react-hook-form";
+import { CreateEvent } from "../schema";
 
 const ProgressCell = ({ active }: { active: boolean }) => {
-  return (
-    <div
-      className={`w-full transition duration-300 ${
-        active ? "bg-primary" : "bg-gray-300"
-      }`}
-    />
-  );
+  return <div className={`w-full ${active ? "bg-primary" : "bg-gray-300"}`} />;
 };
 
 const ProgressBar = ({ currentStep }: { currentStep: CurrentStep }) => {
@@ -17,29 +13,34 @@ const ProgressBar = ({ currentStep }: { currentStep: CurrentStep }) => {
     <div className="flex h-1.5">
       <ProgressCell active={currentStep >= 1} />
       <ProgressCell active={currentStep >= 2} />
-      <ProgressCell active={currentStep >= 3} />
     </div>
   );
 };
 
 export default function MenuBar() {
   const { currentStep, dispatch } = useCreateEvent();
+  const form = useFormContext<CreateEvent>();
 
-  const handleContinue = () => {
-    dispatch({
-      type: "setCurrentStep",
-      payload:
-        currentStep === CurrentStep.STEP_ONE
-          ? CurrentStep.STEP_TWO
-          : CurrentStep.STEP_THREE,
-    });
+  const onSubmit = async (values: CreateEvent) => {
+    console.log(values);
+  };
 
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
+  const handleContinue = async () => {
+    if (currentStep === CurrentStep.STEP_ONE) {
+      dispatch({
+        type: "setCurrentStep",
+        payload: CurrentStep.STEP_TWO,
       });
-    }, 100);
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 100);
+    } else {
+      form.handleSubmit(onSubmit)();
+    }
   };
 
   return (
@@ -49,6 +50,9 @@ export default function MenuBar() {
         <Button
           type="button"
           variant={"tertiary"}
+          onClick={() =>
+            dispatch({ type: "setCurrentStep", payload: CurrentStep.STEP_ONE })
+          }
           className="w-full h-full rounded-none"
         >
           Save Draft
@@ -57,9 +61,15 @@ export default function MenuBar() {
           type="button"
           variant={"default"}
           onClick={handleContinue}
-          className="w-full h-full rounded-none"
+          className={cn(
+            "w-full h-full rounded-none relative overflow-hidden",
+            currentStep === CurrentStep.STEP_TWO &&
+              "bg-purple-400 hover:bg-purple-500"
+          )}
         >
-          Continue
+          <span className="relative z-10">
+            {currentStep === CurrentStep.STEP_TWO ? "Create Event" : "Continue"}
+          </span>
         </Button>
       </div>
     </div>
