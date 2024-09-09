@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
+import { Button } from "@/components/ui/button";
 
 type EventTicketsSheetProps = {
   openSheet: boolean;
@@ -34,7 +35,7 @@ export default function EventTicketsSheet({
         <SheetHeader className="mb-4">
           <SheetTitle>Edit Ticket</SheetTitle>
         </SheetHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 mb-4">
           <FormField
             control={control}
             name={`tickets.${index}.name`}
@@ -108,6 +109,13 @@ export default function EventTicketsSheet({
             )}
           />
         </div>
+        <Button
+          type="button"
+          onClick={() => setOpenSheet(false)}
+          className="w-full"
+        >
+          Save
+        </Button>
       </SheetContent>
     </Sheet>
   );
