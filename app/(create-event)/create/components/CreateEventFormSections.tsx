@@ -55,6 +55,7 @@ export default function CreateEventFormSections() {
               variants={sectionVariants}
               initial="hidden"
               animate="visible"
+              exit="exit"
               className="space-y-4 lg:space-y-10"
             >
               <EventVendorInfo />
