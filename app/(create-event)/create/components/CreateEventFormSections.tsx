@@ -9,6 +9,7 @@ import { useCreateEvent } from "../context/CreateEventContext";
 import { customLandingEase } from "@/components/landing-page/Free";
 import EventGuests from "./sections/step_two/EventGuests";
 import EventHighlights from "./sections/step_two/EventHighlights";
+import EventVenueMap from "./sections/step_one/EventVenueMap";
 
 export const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -26,12 +27,13 @@ export default function CreateEventFormSections() {
   return (
     <div className="w-full flex flex-col space-y-4 lg:flex-row-reverse lg:space-y-0 lg:justify-between">
       <motion.div
-        className="w-full lg:w-3/4 max-w-5xl mx-auto"
+        className="w-full lg:w-3/4 max-w-5xl mx-auto space-y-4"
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
       >
         <EventPoster />
+        <EventVenueMap />
       </motion.div>
       <div className="space-y-4 w-full lg:pr-10 lg:space-y-10">
         <AnimatePresence mode="wait">

@@ -8,6 +8,7 @@ import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -60,7 +61,7 @@ export default function EventTicketsSheet({
             <Button
               key={i}
               type="button"
-              variant={isActive ? "default" : "outline"}
+              variant={isActive ? "default" : "ghost"}
               onClick={() => {
                 const newDates = isActive
                   ? selectedDates.filter(
@@ -161,7 +162,16 @@ export default function EventTicketsSheet({
           />
           <FormItem>
             <FormLabel>Valid For</FormLabel>
-            {datesSelect()}
+            {dates[0] && dates[0].date === undefined ? (
+              <FormDescription>No dates available</FormDescription>
+            ) : (
+              <>
+                <FormDescription>
+                  Please select dates for your ticket
+                </FormDescription>
+                {datesSelect()}
+              </>
+            )}
           </FormItem>
         </div>
         <Button

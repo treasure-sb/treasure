@@ -51,20 +51,22 @@ export default function CreateEventForm() {
     <CreateEventProvider>
       <FormProvider {...form}>
         <Form {...form}>
-          <form className="pb-14 lg:pb-20">
-            <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
-              <div className="h-1" />
-              <motion.div
-                variants={sectionVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                <Exit />
-              </motion.div>
-              <CreateEventFormSections />
-            </div>
-            <MenuBar />
-          </form>
+          <main>
+            <form className="pb-14 lg:pb-20">
+              <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
+                <div className="h-1" />
+                <motion.div
+                  variants={sectionVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <Exit />
+                </motion.div>
+                <CreateEventFormSections />
+              </div>
+              <MenuBar />
+            </form>
+          </main>
         </Form>
       </FormProvider>
     </CreateEventProvider>
