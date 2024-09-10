@@ -23,13 +23,14 @@ import { toast } from "sonner";
 import format from "date-fns/format";
 
 export default function EventDates() {
-  const { control, watch } = useFormContext<CreateEvent>();
+  const { control, watch, setValue } = useFormContext<CreateEvent>();
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "dates",
   });
 
   const dates = watch("dates");
+  const tickets = watch("tickets");
 
   const handleAppend = () => {
     if (fields.length >= 5) {
@@ -38,11 +39,11 @@ export default function EventDates() {
     }
 
     if (!dates[0].date) {
-      append({ date: undefined, startTime: "", endTime: "" });
+      append({ date: undefined, startTime: "09:30", endTime: "16:30" });
     } else {
       const newDate = new Date(dates[dates.length - 1].date!);
       newDate.setDate(newDate.getDate() + 1);
-      append({ date: newDate, startTime: "", endTime: "" });
+      append({ date: newDate, startTime: "09:30", endTime: "16:30" });
     }
   };
 
@@ -52,12 +53,17 @@ export default function EventDates() {
       return;
     }
 
-    for (let i = fields.length - 1; i >= index; i--) {
-      remove(i);
-    }
+    const startIndex = index === 0 ? 0 : fields.length - 1;
 
-    if (index === 0) {
-      append({ date: undefined, startTime: "", endTime: "" });
+    for (let i = startIndex; i >= index; i--) {
+      const dateToRemove = dates[i].date;
+      tickets.forEach((ticket, ticketIndex) => {
+        const updatedDates = ticket.dates.filter(
+          (d) => d.getTime() !== dateToRemove?.getTime()
+        );
+        setValue(`tickets.${ticketIndex}.dates`, updatedDates);
+      });
+      remove(i);
     }
   };
 

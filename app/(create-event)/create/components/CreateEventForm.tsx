@@ -18,8 +18,10 @@ export default function CreateEventForm() {
       venueName: "",
       description: "",
     },
-    dates: [{ date: undefined, startTime: "", endTime: "" }],
-    tickets: [{ name: "", description: "", price: "0.00", quantity: "100" }],
+    dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
+    tickets: [
+      { name: "", description: "", price: "0.00", quantity: "100", dates: [] },
+    ],
     tables: [
       {
         name: "",

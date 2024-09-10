@@ -29,7 +29,7 @@ export default function EventPoster() {
           </div>
         ) : (
           <CreateEventCard className="bg-opacity-40 h-full flex flex-col items-center justify-center px-10 lg:px-2 hover:bg-opacity-60 transition duration-300">
-            <p className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center leading-[1.3] mb-4 lg:mb-10">
+            <p className="text-4xl md:text-5xl font-extrabold text-center leading-[1.3] mb-4 lg:mb-10">
               DESIGN YOUR EVENT PAGE
             </p>
             <p className="text-center text-muted-foreground leading-6">

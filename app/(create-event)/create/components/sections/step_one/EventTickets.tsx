@@ -20,7 +20,13 @@ export default function EventTickets() {
   const tickets = watch("tickets");
 
   const handleAppend = () => {
-    append({ name: "", description: "", price: "0.00", quantity: "100" });
+    append({
+      name: "",
+      description: "",
+      price: "0.00",
+      quantity: "100",
+      dates: [],
+    });
   };
 
   const handleSelectTicket = (index: number) => {
