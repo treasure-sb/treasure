@@ -70,7 +70,7 @@ export default async function Orders({
         : order.metadata.dinnerSelections.toString();
 
     let amountPaid = order.amount_paid;
-    if (order.amount_paid === 19.8) console.log("hello", order);
+
     if (order.code?.treasure_sponsored === true) {
       amountPaid =
         order.code.type === "PERCENT"
