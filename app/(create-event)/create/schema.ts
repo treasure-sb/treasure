@@ -37,7 +37,12 @@ const ticketSchema = z.object({
   quantity: z.string().refine(isPositiveNumber, {
     message: "Quantity must be a positive number",
   }),
-  dates: z.array(z.date()),
+  dates: z
+    .array(z.date())
+    .default([])
+    .refine((dates) => dates.length > 0, {
+      message: "At least one daye must be selected",
+    }),
 });
 
 const tableSchema = z.object({

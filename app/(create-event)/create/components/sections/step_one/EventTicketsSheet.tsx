@@ -18,6 +18,7 @@ import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 type EventTicketsSheetProps = {
   openSheet: boolean;
@@ -61,7 +62,6 @@ export default function EventTicketsSheet({
           const isActive = selectedDates.some(
             (d) => d.getTime() === date.date!.getTime()
           );
-
           return (
             <Button
               key={i}
@@ -178,7 +178,12 @@ export default function EventTicketsSheet({
               <FormDescription>No dates available</FormDescription>
             ) : (
               <>
-                <FormDescription>
+                <FormDescription
+                  className={cn(
+                    "",
+                    errors.tickets?.[index]?.dates && "text-destructive"
+                  )}
+                >
                   Please select dates for your ticket
                 </FormDescription>
                 {datesSelect()}
