@@ -96,6 +96,8 @@ const vendorInfoSchema = z.object({
 });
 
 const eventSchema = z.object({
+  poster: z.union([z.instanceof(File), z.string()]).optional(),
+  venueMap: z.union([z.instanceof(File), z.string()]).optional(),
   basicDetails: basicDetailsSchema,
   dates: z.array(dateSchema).nonempty({
     message: "At least one date is required",
