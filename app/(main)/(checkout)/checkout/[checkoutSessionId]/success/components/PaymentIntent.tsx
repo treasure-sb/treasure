@@ -102,9 +102,12 @@ export default function PaymentIntent({
                 <div className="text-center mb-10 text-foreground dark:text-background">
                   <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
                   <h2 className="font-bold text-3xl md:text-5xl">
-                    {status === "success"
-                      ? "You're Going!"
-                      : "Please try again"}
+                    {status === "failure"
+                      ? "Please try again"
+                      : eventDisplay.id ===
+                        "035855c5-f2f3-49ba-aeac-671ce0bc8f01"
+                      ? "Good Luck!"
+                      : "You're Going!"}
                   </h2>
                 </div>
                 <div className="text-center text-foreground dark:text-background">
