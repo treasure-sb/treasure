@@ -8,6 +8,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,11 @@ import { motion } from "framer-motion";
 import { createTickets, updateTickets } from "@/lib/actions/tickets";
 import { toast } from "sonner";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { TicketDetails } from "../EditEventDetails";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
+import { create } from "domain";
 
 export const ticketSchema = z.object({
   db_id: z.string().optional(),
@@ -36,18 +42,18 @@ export const ticketSchema = z.object({
       message: "Must be a valid ticket quantity",
     }
   ),
-  total_tickets: z.string().refine(
-    (num) => {
+  total_tickets: z
+    .string()
+    .refine((num) => {
       const number = Number(num);
       return !isNaN(number) && Number.isInteger(number) && number > 0;
-    },
-    {
-      message: "Must be a valid total number of tickets available",
-    }
-  ),
+    })
+    .optional(),
+  ticket_dates: z.array(z.string()),
   name: z.string().min(1, {
     message: "Ticket name is required",
   }),
+  description: z.string(),
   status: z.enum(["added", "unchanged"]),
 });
 
@@ -57,10 +63,12 @@ const formSchema = z.object({
 
 export default function EditTicketsForm({
   tickets,
+  eventDates,
   eventId,
   toggleEdit,
 }: {
-  tickets: Tables<"tickets">[];
+  tickets: TicketDetails[];
+  eventDates: Tables<"event_dates">[];
   eventId: string;
   toggleEdit: () => void;
 }) {
@@ -70,8 +78,10 @@ export default function EditTicketsForm({
       db_id: ticket.id,
       price: ticket.price.toFixed(2),
       quantity: ticket.quantity.toString(),
-      total_tickets: ticket.total_tickets.toString(),
+      total_tickets: ticket.quantity.toString(),
+      ticket_dates: ticket.ticket_dates.map((date) => date.event_date_id),
       name: ticket.name,
+      description: ticket.description || "",
       status: "unchanged" as const,
     })
   );
@@ -93,7 +103,8 @@ export default function EditTicketsForm({
       price: "",
       quantity: "",
       name: "",
-      total_tickets: "",
+      ticket_dates: [],
+      description: "",
       status: "added",
     });
   };
@@ -111,7 +122,8 @@ export default function EditTicketsForm({
       .map((ticket) => ({
         price: ticket.price,
         quantity: ticket.quantity,
-        total_tickets: ticket.total_tickets,
+        description: ticket.description,
+        ticket_dates: ticket.ticket_dates,
         name: ticket.name,
         event_id: eventId,
       }));
@@ -126,13 +138,15 @@ export default function EditTicketsForm({
           (ticket.name !== originalTicket.name ||
             Number(ticket.price) !== originalTicket.price ||
             Number(ticket.quantity) !== originalTicket.quantity ||
-            Number(ticket.total_tickets) !== originalTicket.total_tickets)
+            (ticket.description !== originalTicket.description &&
+              null !== originalTicket.description))
         );
       })
       .map((ticket) => ({
         price: ticket.price,
         quantity: ticket.quantity,
-        total_tickets: ticket.total_tickets,
+        description: ticket.description,
+        ticket_dates: ticket.ticket_dates,
         name: ticket.name,
         id: ticket.db_id,
       }));
@@ -154,7 +168,7 @@ export default function EditTicketsForm({
         : updateResult.value.error;
 
     if (createError || updateError) {
-      toast.error("Error updating tickets, please try again");
+      toast.error("Failed to update tickets");
       return;
     }
 
@@ -202,12 +216,105 @@ export default function EditTicketsForm({
                   </Button>
                 )}
               </div>
+
               <div key={field.id} className="grid grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name={`tickets.${index}.ticket_dates`}
+                  render={() => (
+                    <FormItem className="col-span-2">
+                      <FormLabel className="font-normal">Dates</FormLabel>
+                      {field.db_id ? (
+                        <div className="flex w-full justify-start gap-4">
+                          {eventDates.map((date) => (
+                            <FormField
+                              key={date.id}
+                              control={form.control}
+                              name={`tickets.${index}.ticket_dates`}
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={date.id}
+                                    className="flex flex-row items-center space-x-3 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        disabled={true}
+                                        checked={field.value?.includes(date.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                date.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== date.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      {date.date}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex w-full justify-start gap-4">
+                          {eventDates.map((date) => (
+                            <FormField
+                              key={date.id}
+                              control={form.control}
+                              name={`tickets.${index}.ticket_dates`}
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={date.id}
+                                    className="flex flex-row items-center space-x-3 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        disabled={false}
+                                        checked={field.value?.includes(date.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                date.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== date.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      {date.date}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name={`tickets.${index}.name`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="col-span-2">
                       <FormControl>
                         <InputWithLabel
                           label="Name"
@@ -221,6 +328,7 @@ export default function EditTicketsForm({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name={`tickets.${index}.price`}
@@ -267,12 +375,12 @@ export default function EditTicketsForm({
                 />
                 <FormField
                   control={form.control}
-                  name={`tickets.${index}.total_tickets`}
+                  name={`tickets.${index}.description`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="col-span-2">
                       <FormControl>
-                        <InputWithLabel
-                          label="Total Tickets"
+                        <TextareaWithLabel
+                          label="Description"
                           labelClassName="text-xs text-muted-foreground"
                           {...field}
                         />

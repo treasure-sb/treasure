@@ -7,9 +7,11 @@ type Ticket = {
   name: string;
   price: string;
   quantity: string;
-  total_tickets: string;
+  total_tickets?: string;
   event_id?: string;
   id?: string;
+  ticket_dates: string[];
+  description: string;
 };
 
 const addEventAttendee = async (
@@ -33,10 +35,17 @@ const addEventAttendee = async (
 const createTickets = async (tickets: Ticket[]) => {
   const supabase = await createSupabaseServerClient();
   const roundedTickets = tickets.map((ticket) => ({
-    ...ticket,
+    name: ticket.name,
+    quantity: ticket.quantity,
     price: roundPrice(ticket.price),
+    event_id: ticket.event_id,
+    description: ticket.description === "" ? null : ticket.description,
+    total_tickets: ticket.quantity,
+    ticket_dates: ticket.ticket_dates,
   }));
-  const { error } = await supabase.from("tickets").insert(roundedTickets);
+  const { data, error } = await supabase.rpc("insert_multiple_tickets", {
+    ticket_info_array: roundedTickets,
+  });
   return { error };
 };
 
@@ -49,7 +58,11 @@ const updateTickets = async (tickets: Ticket[]) => {
         price: roundPrice(ticket.price),
         quantity: ticket.quantity,
         name: ticket.name,
-        total_tickets: ticket.total_tickets,
+        total_tickets:
+          parseInt(
+            ticket.total_tickets === undefined ? "0" : ticket.total_tickets
+          ) + ticket.quantity,
+        description: ticket.description === "" ? null : ticket.description,
       })
       .eq("id", ticket.id);
 
