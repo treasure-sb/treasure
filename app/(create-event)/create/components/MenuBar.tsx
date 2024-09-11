@@ -16,7 +16,7 @@ const menuVariants = {
     y: 0,
     transition: {
       ease: customLandingEase,
-      duration: 1.75,
+      duration: 1,
       delay: 0.25,
     },
   },

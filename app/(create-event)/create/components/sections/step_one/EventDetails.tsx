@@ -4,11 +4,12 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
-import CreateEventCard from "../../CreateEventCard";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
+import CreateEventCard from "../../CreateEventCard";
+import Autocomplete from "./Autocomplete";
 
 export default function EventDetails() {
   const {
@@ -46,6 +47,21 @@ export default function EventDetails() {
                   placeholder="Enter the venue name"
                   {...field}
                   error={errors.basicDetails?.venueName}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="basicDetails.venueAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-foreground">Venue Address</FormLabel>
+              <FormControl>
+                <Autocomplete
+                  onChange={field.onChange}
+                  error={errors.basicDetails?.venueAddress?.address}
                 />
               </FormControl>
             </FormItem>

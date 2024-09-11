@@ -17,6 +17,13 @@ export default function CreateEventForm() {
       name: "",
       venueName: "",
       description: "",
+      venueAddress: {
+        address: "",
+        lat: 0,
+        lng: 0,
+        city: "",
+        state: "",
+      },
     },
     dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
     tickets: [
@@ -52,7 +59,7 @@ export default function CreateEventForm() {
       <FormProvider {...form}>
         <Form {...form}>
           <main className="min-h-screen flex flex-col">
-            <form className="pb-14 lg:pb-28">
+            <form className="pb-14 md:pb-28">
               <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
                 <div className="h-1" />
                 <motion.div

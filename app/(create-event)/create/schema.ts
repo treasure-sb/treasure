@@ -15,6 +15,15 @@ const basicDetailsSchema = z.object({
   venueName: z.string().min(1, {
     message: "Venue name is required",
   }),
+  venueAddress: z.object({
+    address: z.string().min(1, {
+      message: "Venue address is required",
+    }),
+    lat: z.number(),
+    lng: z.number(),
+    city: z.string(),
+    state: z.string(),
+  }),
 });
 
 const ticketSchema = z.object({
