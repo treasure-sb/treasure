@@ -29,10 +29,10 @@ export default function EventVenueMap() {
           </div>
         ) : (
           <CreateEventCard className="bg-opacity-40 h-full flex flex-col items-center justify-center px-10 lg:px-2 hover:bg-opacity-60 transition duration-300">
-            <p className="text-2xl md:text-3xl font-extrabold text-center leading-[1.3] mb-4 lg:mb-2">
+            <p className="text-2xl md:text-3xl font-extrabold text-center leading-[1.3] mb-1 lg:mb-2">
               DESIGN YOUR VENUE MAP
             </p>
-            <p className="text-center text-muted-foreground leading-6">
+            <p className="text-center text-muted-foreground leading-6 text-xs lg:text-sm">
               Don't have a venue map yet?
               <br />
               Upload one later

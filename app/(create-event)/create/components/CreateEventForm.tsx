@@ -51,7 +51,7 @@ export default function CreateEventForm() {
     <CreateEventProvider>
       <FormProvider {...form}>
         <Form {...form}>
-          <main>
+          <main className="min-h-screen flex flex-col">
             <form className="pb-14 lg:pb-20">
               <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
                 <div className="h-1" />
@@ -64,8 +64,8 @@ export default function CreateEventForm() {
                 </motion.div>
                 <CreateEventFormSections />
               </div>
-              <MenuBar />
             </form>
+            <MenuBar />
           </main>
         </Form>
       </FormProvider>

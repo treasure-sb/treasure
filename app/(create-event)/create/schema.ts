@@ -1,15 +1,21 @@
 import { isValidTime } from "@/lib/utils";
 import { z } from "zod";
 
-const basicDetailsSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  venueName: z.string(),
-});
-
 const isPositiveNumber = (value: string) => {
   return !isNaN(parseFloat(value)) && parseFloat(value) >= 0;
 };
+
+const basicDetailsSchema = z.object({
+  name: z.string().min(1, {
+    message: "Event name is required",
+  }),
+  description: z.string().min(1, {
+    message: "Event description is required",
+  }),
+  venueName: z.string().min(1, {
+    message: "Venue name is required",
+  }),
+});
 
 const ticketSchema = z.object({
   name: z.string().min(1, {

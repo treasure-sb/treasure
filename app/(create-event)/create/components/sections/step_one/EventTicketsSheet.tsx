@@ -36,7 +36,12 @@ export default function EventTicketsSheet({
   setOpenSheet,
   index,
 }: EventTicketsSheetProps) {
-  const { control, watch, setValue } = useFormContext<CreateEvent>();
+  const {
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
   const dates = watch("dates");
   const tickets = watch("tickets");
 
@@ -93,9 +98,13 @@ export default function EventTicketsSheet({
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
-                  <InputWithLabel label="Name" className="w-full" {...field} />
+                  <InputWithLabel
+                    label="Name"
+                    className="w-full"
+                    {...field}
+                    error={errors.tickets?.[index]?.name}
+                  />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -120,9 +129,9 @@ export default function EventTicketsSheet({
                         Number.isNaN(value) ? "0.00" : value.toFixed(2)
                       );
                     }}
+                    error={errors.tickets?.[index]?.price}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -137,9 +146,13 @@ export default function EventTicketsSheet({
                     label="Quantity"
                     className="w-full"
                     {...field}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(value);
+                    }}
+                    error={errors.tickets?.[index]?.quantity}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -156,7 +169,6 @@ export default function EventTicketsSheet({
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />

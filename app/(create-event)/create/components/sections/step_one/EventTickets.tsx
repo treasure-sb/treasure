@@ -3,7 +3,7 @@ import { Edit2Icon, PlusIcon, Trash2Icon } from "lucide-react";
 import { TicketIcon } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
-import { USDollar } from "@/lib/utils";
+import { USDollar, cn } from "@/lib/utils";
 import { useState } from "react";
 import CreateEventCard from "../../CreateEventCard";
 import EventTicketsSheet from "./EventTicketsSheet";
@@ -11,7 +11,11 @@ import EventTicketsSheet from "./EventTicketsSheet";
 export default function EventTickets() {
   const [openSheet, setOpenSheet] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
-  const { control, watch } = useFormContext<CreateEvent>();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tickets",
@@ -58,7 +62,11 @@ export default function EventTickets() {
                 type="button"
                 variant={"field"}
                 onClick={() => handleSelectTicket(index)}
-                className="w-full p-4 py-6 bg-field font-semibold relative group"
+                className={cn(
+                  "w-full p-4 py-6 bg-field font-semibold relative group",
+                  errors?.tickets?.[index]?.name &&
+                    "border border-destructive hover:border-destructive bg-red-100"
+                )}
               >
                 <div className="flex mr-auto items-center">
                   <TicketIcon

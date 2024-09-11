@@ -11,7 +11,10 @@ import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
 
 export default function EventDetails() {
-  const { control } = useFormContext<CreateEvent>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
 
   return (
     <CreateEventCard title="Event Details">
@@ -26,9 +29,9 @@ export default function EventDetails() {
                   label="Event Name"
                   placeholder="Enter the event name"
                   {...field}
+                  error={errors.basicDetails?.name}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -42,9 +45,9 @@ export default function EventDetails() {
                   label="Venue Name"
                   placeholder="Enter the venue name"
                   {...field}
+                  error={errors.basicDetails?.venueName}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -58,9 +61,9 @@ export default function EventDetails() {
                   label="Description"
                   placeholder="Add a description of your event"
                   {...field}
+                  error={errors.basicDetails?.description}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />

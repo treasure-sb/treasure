@@ -3,9 +3,7 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+import { InputProps } from "@/components/ui/input";
 
 type LabelInputProps = InputProps & {
   label: string;
@@ -17,6 +15,7 @@ export function InputWithLabel({
   label,
   labelClassName,
   inputClassName,
+  error,
   ...props
 }: LabelInputProps) {
   return (
@@ -24,7 +23,7 @@ export function InputWithLabel({
       <Label htmlFor={props.id} className={cn("text-[13px]", labelClassName)}>
         {label}
       </Label>
-      <Input className={cn(inputClassName)} {...props} />
+      <Input className={cn(inputClassName)} {...props} error={error} />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function CreateEventCard({
   return (
     <Card
       className={cn(
-        "border-2 border-primary p-0 bg-[#80A193] bg-opacity-20 w-full max-w-2xl",
+        "border-2 border-primary p-0 bg-[#6c9f8a] bg-opacity-20 w-full max-w-2xl",
         className
       )}
     >

@@ -17,7 +17,10 @@ import { PlusIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EventVendorInfo() {
-  const { control } = useFormContext<CreateEvent>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
   const { append, remove, fields } = useFieldArray({
     control,
     name: "vendorInfo.terms",
@@ -61,10 +64,10 @@ export default function EventVendorInfo() {
                 <InputWithLabel
                   label="Check-in Location"
                   placeholder="Enter the location for vendor check-in"
+                  error={errors.vendorInfo?.checkInLocation}
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -79,9 +82,9 @@ export default function EventVendorInfo() {
                   type="time"
                   className="min-w-[94.5%]"
                   {...field}
+                  error={errors.vendorInfo?.checkInTime}
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -92,7 +95,7 @@ export default function EventVendorInfo() {
             <FormItem>
               <FormControl>
                 <TextareaWithLabel
-                  label="Additional Information"
+                  label="Additional Information (optional)"
                   placeholder="Enter any additional information for vendors"
                   {...field}
                 />
@@ -118,7 +121,7 @@ export default function EventVendorInfo() {
             </FormItem>
           )}
         />
-        <FormLabel>Terms for Vendors</FormLabel>
+        <FormLabel>Terms and Conditions for Vendors</FormLabel>
         <ul className="list-disc list-outside ml-5 space-y-2">
           {fields.map((field, index) => (
             <li key={field.id} className="relative">
@@ -131,10 +134,10 @@ export default function EventVendorInfo() {
                       <Textarea
                         className="w-[90%] md:w-[95%]"
                         placeholder="Enter the terms for vendors"
+                        error={errors.vendorInfo?.terms?.[index]?.term}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

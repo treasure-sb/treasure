@@ -27,7 +27,10 @@ export default function EventTablesSheet({
   setOpenSheet,
   index,
 }: EventTablesSheetProps) {
-  const { control } = useFormContext<CreateEvent>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
 
   return (
     <Sheet open={openSheet} onOpenChange={setOpenSheet}>
@@ -42,9 +45,13 @@ export default function EventTablesSheet({
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
-                  <InputWithLabel label="Name" className="w-full" {...field} />
+                  <InputWithLabel
+                    label="Name"
+                    className="w-full"
+                    {...field}
+                    error={errors?.tables?.[index]?.name}
+                  />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -67,9 +74,9 @@ export default function EventTablesSheet({
                       const value = parseFloat(field.value);
                       field.onChange(value.toFixed(2));
                     }}
+                    error={errors?.tables?.[index]?.price}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -84,9 +91,9 @@ export default function EventTablesSheet({
                     label="Quantity"
                     className="w-full"
                     {...field}
+                    error={errors?.tables?.[index]?.quantity}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -108,11 +115,13 @@ export default function EventTablesSheet({
                     }}
                     onBlur={() => {
                       const value = parseFloat(field.value);
-                      field.onChange(Number.isNaN(value) ? "0.00" : value);
+                      field.onChange(
+                        Number.isNaN(value) ? "0" : value.toString()
+                      );
                     }}
+                    error={errors?.tables?.[index]?.spaceAllocated}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -127,9 +136,9 @@ export default function EventTablesSheet({
                     label="Number of Vendors Allowed"
                     className="w-full"
                     {...field}
+                    error={errors?.tables?.[index]?.numberVendorsAllowed}
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />

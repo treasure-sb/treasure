@@ -25,9 +25,9 @@ export default function CreateEventFormSections() {
   const { currentStep } = useCreateEvent();
 
   return (
-    <div className="w-full flex flex-col space-y-4 lg:flex-row-reverse lg:space-y-0 lg:justify-between">
+    <div className="w-full h-full flex flex-col space-y-4 lg:flex-row-reverse lg:space-y-0 lg:justify-between">
       <motion.div
-        className="w-full lg:w-3/4 max-w-5xl mx-auto space-y-4"
+        className="h-fit w-full lg:w-3/4 max-w-5xl mx-auto space-y-4 lg:space-y-10 lg:sticky lg:top-0"
         variants={sectionVariants}
         initial="hidden"
         animate="visible"

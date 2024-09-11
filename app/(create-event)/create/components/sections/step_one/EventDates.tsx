@@ -23,7 +23,12 @@ import { toast } from "sonner";
 import format from "date-fns/format";
 
 export default function EventDates() {
-  const { control, watch, setValue } = useFormContext<CreateEvent>();
+  const {
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<CreateEvent>();
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "dates",
@@ -109,7 +114,9 @@ export default function EventDates() {
                 name={`dates.${index}.date`}
                 render={({ field }) => (
                   <FormItem className="w-full flex flex-col">
-                    <FormLabel>Event Date</FormLabel>
+                    <FormLabel className="text-foreground">
+                      Event Date
+                    </FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -118,7 +125,9 @@ export default function EventDates() {
                             disabled={index > 0}
                             className={cn(
                               "w-full pl-3 text-left font-normal disabled:cursor-not-allowed",
-                              !field.value && "text-muted-foreground"
+                              !field.value && "text-muted-foreground",
+                              errors.dates?.[index]?.date &&
+                                "border-destructive bg-red-100 hover:border-destructive"
                             )}
                           >
                             {field.value ? (
@@ -141,7 +150,6 @@ export default function EventDates() {
                         />
                       </PopoverContent>
                     </Popover>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -157,6 +165,7 @@ export default function EventDates() {
                           label="Start Time"
                           className="min-w-[90%]"
                           {...field}
+                          error={errors.dates?.[index]?.startTime}
                         />
                       </FormControl>
                       <FormMessage />
@@ -174,6 +183,7 @@ export default function EventDates() {
                           label="End Time"
                           className="min-w-[90%]"
                           {...field}
+                          error={errors.dates?.[index]?.endTime}
                         />
                       </FormControl>
                       <FormMessage />

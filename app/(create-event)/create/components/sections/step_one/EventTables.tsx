@@ -4,29 +4,17 @@ import TableIcon from "@/components/icons/TableIcon";
 import CreateEventCard from "../../CreateEventCard";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { useState } from "react";
-import { USDollar } from "@/lib/utils";
+import { USDollar, cn } from "@/lib/utils";
 import EventTablesSheet from "./EventTablesSheet";
-
-const EventTicketDisplay = () => {
-  return (
-    <div className="p-4 bg-background rounded-sm font-semibold border hover:bg-secondary hover:cursor-pointer duration-300 transition relative group">
-      <div className="flex">
-        <TableIcon className="text-tertiary mr-4" />
-        <p className="mr-2">GA</p>
-        <p>$0.00</p>
-      </div>
-      <Edit2Icon
-        size={16}
-        className="absolute ml-auto top-2 right-2 text-muted-foreground group-hover:text-foreground duration-300 transition"
-      />
-    </div>
-  );
-};
 
 export default function EventTables() {
   const [openSheet, setOpenSheet] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
-  const { control, watch } = useFormContext();
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tables",
@@ -76,7 +64,11 @@ export default function EventTables() {
                 type="button"
                 variant={"field"}
                 onClick={() => handleSelectTable(index)}
-                className="w-full p-4 py-6 bg-field font-semibold relative group"
+                className={cn(
+                  "w-full p-4 py-6 bg-field font-semibold relative group",
+                  (errors?.tables as any)?.[index]?.name &&
+                    "border border-destructive hover:border-destructive bg-red-100"
+                )}
               >
                 <div className="flex mr-auto items-center">
                   <TableIcon className="text-tertiary mr-4" />

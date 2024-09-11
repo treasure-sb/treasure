@@ -3,6 +3,7 @@ import { CurrentStep, useCreateEvent } from "../context/CreateEventContext";
 import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../schema";
+import { useMediaQuery } from "@mantine/hooks";
 
 const ProgressCell = ({ active }: { active: boolean }) => {
   return <div className={`w-full ${active ? "bg-primary" : "bg-gray-300"}`} />;
@@ -20,6 +21,7 @@ const ProgressBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 export default function MenuBar() {
   const { currentStep, dispatch } = useCreateEvent();
   const form = useFormContext<CreateEvent>();
+  const isMobile = useMediaQuery("(min-width: 768px)");
 
   const onSubmit = async (values: CreateEvent) => {
     console.log(values);
