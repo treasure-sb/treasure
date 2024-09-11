@@ -6,12 +6,16 @@ import { useState } from "react";
 import EditTables from "./tables/EditTables";
 import EditTickets from "./tickets/EditTickets";
 
+import { TicketDetails } from "./EditEventDetails";
+
 export default function EditTicketTables({
   tickets,
+  eventDates,
   tables,
   eventId,
 }: {
-  tickets: Tables<"tickets">[];
+  tickets: TicketDetails[];
+  eventDates: Tables<"event_dates">[];
   tables: Tables<"tables">[];
   eventId: string;
 }) {
@@ -28,6 +32,7 @@ export default function EditTicketTables({
     >
       <EditTickets
         tickets={tickets}
+        eventDates={eventDates}
         setParentEdit={handleParentEdit}
         eventId={eventId}
       />
