@@ -22,6 +22,7 @@ export type PromoCode = {
   num_used: number;
   usage_limit: number | null;
   created_at: Date;
+  event: string;
 };
 
 const StatusCell = ({ cell }: CellContext<PromoCode, any>) => {
@@ -123,6 +124,12 @@ const UsesHeader = ({ column }: { column: any }) => {
   );
 };
 
+const EventCell = ({ cell }: CellContext<PromoCode, any>) => {
+  const event = cell.getValue() as string;
+
+  return <span className="font-bold">{event}</span>;
+};
+
 export const promoColumns: ColumnDef<PromoCode, any>[] = [
   {
     accessorKey: "code",
@@ -155,5 +162,10 @@ export const promoColumns: ColumnDef<PromoCode, any>[] = [
     accessorKey: "created_at",
     header: DateHeader,
     cell: DateCell,
+  },
+  {
+    accessorKey: "event",
+    header: "Event",
+    cell: EventCell,
   },
 ];

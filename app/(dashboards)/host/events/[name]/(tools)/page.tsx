@@ -28,6 +28,8 @@ type ToolOptionButtonProps = {
   subtext?: string;
 };
 
+type Orders = { amount_paid: number; code: Tables<"event_codes"> | null };
+
 const ToolOptionButton = ({
   title,
   Icon,
@@ -101,11 +103,23 @@ export default async function Page({
 
   const { data: ordersData } = await supabase
     .from("orders")
-    .select("amount_paid")
+    .select("*, code:event_codes(*)")
     .eq("event_id", event.id);
 
-  const totalSales =
-    ordersData?.reduce((acc, order) => acc + order.amount_paid, 0) || 0;
+  const ordersDataTyped: Orders[] = ordersData || [];
+
+  let totalSales = 0;
+  ordersDataTyped.map((order) => {
+    if (order.code?.treasure_sponsored) {
+      let amountBeforeTreasureSponsored =
+        order.code.type === "PERCENT"
+          ? order.amount_paid / (1 - order.code.discount / 100)
+          : order.amount_paid + order.code.discount;
+      totalSales += amountBeforeTreasureSponsored;
+    } else {
+      totalSales += order.amount_paid;
+    }
+  });
 
   const today = new Date();
   const lastWeekStartDate = new Date(today);

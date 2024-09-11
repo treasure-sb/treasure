@@ -16,7 +16,10 @@ export default async function PromoCodes({ event }: { event: EventWithDates }) {
   const tableData: PromoCode[] = promoCodes.map((promoCode) => {
     return {
       id: promoCode.id,
-      code: promoCode.code,
+      code: {
+        code: promoCode.code,
+        treasure_sponsored: promoCode.treasure_sponsored,
+      },
       discount: {
         amount: promoCode.discount,
         type: promoCode.type,

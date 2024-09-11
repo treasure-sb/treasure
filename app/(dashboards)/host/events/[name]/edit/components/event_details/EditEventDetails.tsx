@@ -10,6 +10,10 @@ import { getEditEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
 import { EditEventWithDates } from "@/types/event";
 
+export type TicketDetails = Tables<"tickets"> & {
+  ticket_dates: Tables<"ticket_dates">[];
+};
+
 export default async function EditEventDetails({
   event,
 }: {
@@ -20,11 +24,18 @@ export default async function EditEventDetails({
 
   const { data: ticketsData } = await supabase
     .from("tickets")
-    .select("*")
+    .select("*, ticket_dates(*)")
     .eq("event_id", event.id)
     .order("price", { ascending: true });
 
-  const tickets: Tables<"tickets">[] = ticketsData || [];
+  const tickets: TicketDetails[] = ticketsData || [];
+
+  const { data: eventDatesData } = await supabase
+    .from("event_dates")
+    .select("*")
+    .eq("event_id", event.id);
+
+  const eventDates: Tables<"event_dates">[] = eventDatesData || [];
 
   const { data: tablesData } = await supabase
     .from("tables")
@@ -86,6 +97,7 @@ export default async function EditEventDetails({
         <div className="w-full max-w-xl md:max-w-2xl relative z-20 space-y-3 mx-auto md:mx-0">
           <EditTicketTables
             tickets={tickets}
+            eventDates={eventDates}
             tables={tables}
             eventId={eventDisplayData.id}
           />

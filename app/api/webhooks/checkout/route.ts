@@ -34,6 +34,13 @@ if (!stripeSecret || !webhookSecret) {
   throw new Error("Stripe environment variables are not set.");
 }
 
+class RefundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RefundError";
+  }
+}
+
 const stripe = new Stripe(stripeSecret);
 
 type DinnerSelections = {
@@ -86,7 +93,7 @@ const handleTicketPurchase = async (
     .returns<PurchaseTicketResult[]>();
 
   if (!data || error) {
-    throw new Error("Error purchasing tickets");
+    throw new RefundError("Error purchasing tickets");
   }
 
   const {
@@ -205,7 +212,7 @@ const handleTablePurchase = async (
 
   if (error) {
     console.log(error);
-    throw new Error("Error purchasing table");
+    throw new RefundError("Error purchasing table");
   }
 
   const {
@@ -379,13 +386,16 @@ export async function POST(req: Request) {
           ok: true,
         });
       } catch (err) {
-        await stripe.refunds.create({ payment_intent: event.data.object.id });
         console.log("ERROR");
         console.error("Failed to process post-payment actions:", err);
-        return NextResponse.json({
-          message: "An error has occurred",
-          ok: false,
-        });
+
+        if (err instanceof RefundError) {
+          await stripe.refunds.create({ payment_intent: event.data.object.id });
+          return NextResponse.json({
+            message: "An error has occurred",
+            ok: false,
+          });
+        }
       }
     } else {
       return NextResponse.json({

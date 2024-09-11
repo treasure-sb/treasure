@@ -6,6 +6,7 @@ import { CustomerData } from "../types";
 import { ArrowUpDown, TicketIcon } from "lucide-react";
 import TableIcon from "@/components/icons/TableIcon";
 import { Button } from "@/components/ui/button";
+import { Tables } from "@/types/supabase";
 
 export type Order = {
   orderID: number;
@@ -15,6 +16,7 @@ export type Order = {
   type: "TABLE" | "TICKET";
   itemName: string;
   customer: CustomerData;
+  promoCode: Tables<"event_codes"> | null;
 };
 
 const CustomerCell = ({ row }: CellContext<Order, any>) => {
@@ -90,7 +92,24 @@ const OrderIDCell = ({ cell }: CellContext<Order, any>) => {
 
 const AmountPaidCell = ({ cell }: CellContext<Order, any>) => {
   const amountPaid = cell.getValue() as number;
-  return <p className="text-muted-foreground">${amountPaid.toFixed(2)}</p>;
+  return <p>${amountPaid.toFixed(2)}</p>;
+};
+
+const PromoCodeCell = ({ row }: CellContext<Order, any>) => {
+  const promoCode =
+    (row.getValue("promoCode") as Tables<"event_codes">) || null;
+
+  return promoCode === null ? null : (
+    <div className="text-left">
+      <p>{promoCode.code}</p>
+      <p className="text-muted-foreground">
+        {(promoCode.type === "DOLLAR"
+          ? "$" + promoCode.discount + " off"
+          : promoCode.discount + "% off") +
+          (promoCode.treasure_sponsored ? " • Admin" : "")}
+      </p>
+    </div>
+  );
 };
 
 const AmountPaidHeader = ({ column }: { column: any }) => {
@@ -160,6 +179,11 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "amountPaid",
     header: AmountPaidHeader,
     cell: AmountPaidCell,
+  },
+  {
+    accessorKey: "promoCode",
+    header: "Promo Code",
+    cell: PromoCodeCell,
   },
   {
     accessorKey: "purchaseDate",

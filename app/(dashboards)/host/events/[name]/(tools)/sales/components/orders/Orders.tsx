@@ -13,7 +13,7 @@ type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
 } & {
   line_items: Tables<"line_items">[];
-};
+} & { code: Tables<"event_codes"> | null };
 
 export default async function Orders({
   event,
@@ -28,7 +28,7 @@ export default async function Orders({
 
   let orderQuery = supabase
     .from("orders")
-    .select("*, profile:profiles(*), line_items(*)")
+    .select("*, profile:profiles(*), line_items(*), code:event_codes(*)")
     .eq("event_id", event.id)
     .order("created_at", { ascending: false });
 
@@ -69,10 +69,19 @@ export default async function Orders({
         ? null // @ts-ignore
         : order.metadata.dinnerSelections.toString();
 
+    let amountPaid = order.amount_paid;
+
+    if (order.code?.treasure_sponsored === true) {
+      amountPaid =
+        order.code.type === "PERCENT"
+          ? order.amount_paid / (1 - order.code.discount / 100)
+          : order.amount_paid + order.code.discount;
+    }
+
     return {
       orderID: order.id,
       quantity: order.line_items[0].quantity,
-      amountPaid: order.amount_paid,
+      amountPaid: amountPaid,
       type: order.line_items[0].item_type,
       purchaseDate: new Date(order.created_at),
       itemName: itemName,

@@ -3,13 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/supabase";
 import { useState } from "react";
 import EditTicketsForm from "./EditTicketsForm";
+import { TicketDetails } from "../EditEventDetails";
 
 export default function EditTickets({
   tickets,
+  eventDates,
   eventId,
   setParentEdit,
 }: {
-  tickets: Tables<"tickets">[];
+  tickets: TicketDetails[];
+  eventDates: Tables<"event_dates">[];
   eventId: string;
   setParentEdit: (toggle: boolean) => void;
 }) {
@@ -29,6 +32,7 @@ export default function EditTickets({
       {edit ? (
         <EditTicketsForm
           tickets={tickets}
+          eventDates={eventDates}
           toggleEdit={toggleEdit}
           eventId={eventId}
         />

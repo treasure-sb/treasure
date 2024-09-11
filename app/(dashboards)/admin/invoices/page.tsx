@@ -9,12 +9,27 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import SalesAnalytics from "./components/charts/SalesAnalytics";
 import Image from "next/image";
 import { EventWithDates } from "@/types/event";
+import { formatDates } from "@/lib/utils";
 
 type OrderData = Tables<"orders"> & {
   profile: Tables<"profiles">;
 } & {
   line_items: Tables<"line_items">[];
-} & { event: EventWithDates };
+} & { event: EventWithDates } & { code: Tables<"event_codes"> | null };
+
+type Payout = {
+  host_id: string;
+  host_type: string;
+  amount: number;
+  event_name: string;
+  event_id: string;
+  event_dates: string;
+  dateForOrdering: number;
+  date: string;
+  poster_url: string;
+  payout_location: string;
+  payout_info: string;
+};
 
 type invoice = {
   host: string;
@@ -23,25 +38,28 @@ type invoice = {
   date: string;
   username: string;
   contact: string;
-  event_date: string;
+  event_dates: string;
   avatar_url: string;
   payout_location: string;
   payout_info: string;
 };
 
 export default async function Page({
-  searchParams: { from, to },
+  searchParams: { from, to, period },
 }: {
-  searchParams: { from?: string; to?: string };
+  searchParams: { from?: string; to?: string; period?: string };
 }) {
   const supabase = await createSupabaseServerClient();
+  const length = period === "30d" ? 30 : 7;
 
-  let payouts: any[] = [];
+  let payouts: Payout[] = [];
   let gmv = 0;
 
   let orderQuery = supabase
     .from("orders")
-    .select("*, profile:profiles(*), line_items(*), event:events(*)")
+    .select(
+      "*, profile:profiles(*), line_items(*), event:events(*,dates:event_dates(date, start_time, end_time)), code:event_codes(*)"
+    )
     .order("created_at", { ascending: false });
 
   if (from) {
@@ -63,7 +81,15 @@ export default async function Page({
     const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
     const customer: CustomerData = { ...order.profile, publicAvatarUrl };
     const item = order.line_items[0];
-    let event = {};
+
+    let amountPaid = order.amount_paid;
+
+    if (order.code?.treasure_sponsored === true) {
+      amountPaid =
+        order.code.type === "PERCENT"
+          ? order.amount_paid / (1 - order.code.discount / 100)
+          : order.amount_paid + order.code.discount;
+    }
 
     let itemName = "";
     if (item.item_type === "TICKET") {
@@ -90,7 +116,7 @@ export default async function Page({
         payout.event_id === order.event.id &&
         payout.date === new Date(order.created_at).toLocaleDateString()
       ) {
-        payouts[i].amount += order.amount_paid;
+        payouts[i].amount += amountPaid;
         index = i;
       }
     });
@@ -101,16 +127,24 @@ export default async function Page({
         invoice_location === null
           ? []
           : invoice_location?.filter(
-              (person) => person.user_id === order.event.organizer_id,
+              (person) => person.user_id === order.event.organizer_id
             );
+
+      let tempDates = formatDates(order.event.dates);
+      let formattedDate = new Date(order.created_at).toLocaleDateString();
 
       payouts.push({
         host_id: order.event.organizer_id,
         host_type: order.event.organizer_type,
-        amount: order.amount_paid,
+        amount: amountPaid,
         event_name: order.event.name,
         event_id: order.event.id,
-        date: new Date(order.created_at).toLocaleDateString(),
+        event_dates:
+          tempDates.length > 1
+            ? `${tempDates[0].date} - ${tempDates[tempDates.length - 1].date}`
+            : tempDates[0].date,
+        dateForOrdering: new Date(formattedDate).getTime(),
+        date: formattedDate,
         poster_url: order.event.poster_url,
         payout_location:
           organizerInvoiceInfo.length > 0
@@ -123,25 +157,24 @@ export default async function Page({
       });
     }
 
-    gmv += order.amount_paid;
+    gmv += amountPaid;
 
     return {
       orderID: order.id,
       quantity: order.line_items[0].quantity,
-      amountPaid: order.amount_paid,
+      amountPaid: amountPaid,
       type: order.line_items[0].item_type,
       purchaseDate: new Date(order.created_at),
       itemName: itemName,
       customer: customer,
+      promoCode: order.code,
     };
   });
 
   const tableData = await Promise.all(tableDataPromise);
 
   payouts.sort(
-    (a, b) =>
-      parseInt(b.date.split("/").join("")) -
-      parseInt(a.date.split("/").join("")),
+    (a, b) => b.dateForOrdering - a.dateForOrdering || b.amount - a.amount
   );
 
   const payoutsPromise: Promise<invoice>[] = payouts.map(async (payout) => {
@@ -190,18 +223,14 @@ export default async function Page({
       }),
       username: username,
       contact: contact,
-      event_date: new Date(payout.date).toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "short",
-      }),
+      event_dates: payout.event_dates,
       avatar_url: publicAvatarUrl,
       payout_location: payout.payout_location,
       payout_info: payout.payout_info,
     };
   });
 
-  const invoices = (await Promise.all(payoutsPromise)).slice(0, 5);
+  const invoices = (await Promise.all(payoutsPromise)).slice(0, 10);
 
   return (
     <div className="max-w-7xl mx-auto py-10 flex flex-col gap-10">
@@ -219,7 +248,7 @@ export default async function Page({
                 <div className="col-span-1 font-semibold">{invoice.date}</div>
                 <div className="text-left col-span-2">
                   <p className="font-semibold">{invoice.event}</p>
-                  <p className="text-sm">{invoice.event_date}</p>
+                  <p className="text-sm">{invoice.event_dates}</p>
                 </div>
                 <div className="flex gap-4 items-center col-span-2">
                   <div
@@ -256,7 +285,7 @@ export default async function Page({
           })}
         </div>
       </div>
-      <SalesAnalytics />
+      <SalesAnalytics periodLength={length} />
       <div>
         <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between mb-4">
           <h1 className="text-2xl font-semibold">

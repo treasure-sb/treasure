@@ -1,72 +1,113 @@
 "use client";
 
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   TooltipProps,
+  AreaChart,
+  Area,
 } from "recharts";
 import {
   ValueType,
   NameType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { SalesData } from "./SalesAnalytics";
+import { format, parseISO } from "date-fns";
+import { useViewportSize } from "@mantine/hooks";
 
-export default function SalesChart({ salesData }: { salesData: SalesData }) {
+export default function SalesChart({
+  salesData,
+  periodLength,
+}: {
+  salesData: SalesData;
+  periodLength: number;
+}) {
   const maxValue = salesData.reduce(
     (max, item) => Math.max(max, Math.max(item.tables, item.tickets)),
     0
   );
+  const { width } = useViewportSize();
+  const getTickInterval = (max: number) => {
+    if (max <= 1) return 0.25;
+    if (max <= 5) return 1;
+    if (max <= 10) return 2;
+    if (max <= 100) return 20;
+    if (max <= 300) return 50;
+    if (max <= 500) return 100;
+    if (max <= 1000) return 200;
+    return Math.pow(10, Math.floor(Math.log10(max)) - 1);
+  };
 
-  const formatTick = (value: string) => {
+  const tickInterval = getTickInterval(maxValue);
+  const maxYValue =
+    maxValue < 1
+      ? Math.ceil(maxValue / 0.25) * 0.25
+      : Math.ceil(maxValue / tickInterval) * tickInterval;
+
+  const yAxisTicks = Array.from(
+    { length: Math.max(Math.floor(maxYValue / tickInterval) + 1, 4) },
+    (_, i) => Number((i * tickInterval).toFixed(2))
+  );
+
+  const formatYTick = (value: string) => {
     return `$${value}`;
   };
 
+  const formatXTick = (day: string) => {
+    return format(parseISO(day), "M/d");
+  };
+
   return (
-    <div className="h-80 md:h-[29rem] col-span-2 bg-[#0d0d0c]/20 rounded-md p-6 border-2 border-secondary">
-      <div className="flex space-x-2 items-end justify-between mb-4">
-        <h3 className="text-2xl font-semibold">Sales Analytics</h3>
-        <p className="text-sm md:text-base font-semibold text-muted-foreground">
-          Last 30 days
-        </p>
-      </div>
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart width={500} height={300} data={salesData}>
-          <CartesianGrid
-            strokeDasharray="4 1"
-            stroke="#27272a"
-            vertical={false}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <XAxis
-            dataKey="day"
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            padding={{ left: 40 }}
-            interval={3}
-          />
-          <YAxis
-            axisLine={false}
-            tickSize={0}
-            tickMargin={16}
-            tickFormatter={formatTick}
-            ticks={Array.from({ length: maxValue + 3 }, (_, i) => i)}
-          />
-          <Line type="monotone" dataKey="tables" stroke="#eac362" dot={false} />
-          <Line
-            type="monotone"
-            dataKey="tickets"
-            stroke="#71d08c"
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={width < 1280 ? "80%" : "90%"}>
+      <AreaChart width={500} height={300} data={salesData}>
+        <CartesianGrid
+          strokeDasharray="4 1"
+          stroke="#27272a"
+          vertical={false}
+        />
+        <Tooltip cursor={false} content={<CustomTooltip />} />
+        <XAxis
+          dataKey="normalizedDate"
+          axisLine={false}
+          tickSize={0}
+          tickMargin={16}
+          padding={{ left: 40 }}
+          tickFormatter={formatXTick}
+          interval={periodLength === 7 ? 0 : 3}
+          hide={width < 1280}
+        />
+        <YAxis
+          axisLine={false}
+          tickSize={0}
+          tickMargin={16}
+          tickFormatter={formatYTick}
+          ticks={yAxisTicks}
+          domain={[0, Math.max(maxYValue, 1)]}
+          hide={width < 640}
+        />
+        <Area
+          type="monotone"
+          dataKey="tables"
+          fill="#71d08c"
+          stroke="#71d08c"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"a"}
+        />
+        <Area
+          type="monotone"
+          dataKey="tickets"
+          fill="#eac362"
+          stroke="#eac362"
+          dot={false}
+          fillOpacity={0.4}
+          stackId={"b"}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }
 
@@ -80,16 +121,20 @@ const CustomTooltip = ({
     const tableSales = payload[0].payload.tables;
     const formattedDate = payload[0].payload.formattedDate;
     return (
-      <div className="p-4 bg-background flex flex-col gap-4 rounded-md border-[1px]">
-        <p className="text-medium text-lg">{formattedDate}</p>
-        <p className="text-sm text-primary">
-          Ticket Sales:
-          <span className="ml-2">${ticketSales.toFixed(2)}</span>
+      <div className="p-4 bg-background flex flex-col gap-2 rounded-md border-[1px]">
+        <p className="text-base">
+          Ticket Sales
+          <span className="ml-2 bg-tertiary/10 text-yellow-500 rounded-[3px] p-1">
+            ${ticketSales.toFixed(2)}
+          </span>
         </p>
-        <p className="text-sm text-tertiary">
-          Table Sales:
-          <span className="ml-2">${tableSales.toFixed(2)}</span>
+        <p className="text-base">
+          Table Sales
+          <span className="ml-2 bg-primary/10 text-green-500 rounded-[3px] p-1">
+            ${tableSales.toFixed(2)}
+          </span>
         </p>
+        <p className="text-sm text-muted-foreground">{formattedDate}</p>
       </div>
     );
   }
