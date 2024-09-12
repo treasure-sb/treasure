@@ -13,14 +13,6 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import Image from "next/image";
 
-type EventQueryData = EventWithDates & {
-  roles: {
-    user_id: string;
-    role: string;
-    status: string;
-  }[];
-};
-
 const EventLink = ({ event }: { event: EventDisplayData }) => {
   return (
     <Link
@@ -53,23 +45,15 @@ export default async function UpcomingEvents({ user }: { user: User }) {
   const today = new Date();
   const { data } = await supabase
     .from("events")
-    .select(
-      "*, dates:event_dates(date, start_time, end_time), roles:event_roles!inner(user_id, role, status)"
-    )
-    .eq("roles.user_id", user.id)
-    .eq("roles.status", "ACTIVE")
-    .in("roles.role", ["HOST", "COHOST", "STAFF", "SCANNER"])
+    .select("*, dates:event_dates(date, start_time, end_time), event_roles(*)")
+    .eq("event_roles.user_id", user.id)
+    .eq("event_roles.status", "ACTIVE")
+    .in("event_roles.role", ["HOST", "COHOST", "STAFF", "SCANNER"])
     .gte("max_date", today.toISOString())
     .order("min_date", { ascending: true })
     .limit(4);
 
-  const events: EventQueryData[] = data || [];
-  const eventsWithDates: EventWithDates[] = events.map((event) => {
-    const { roles, ...rest } = event;
-    return {
-      ...rest,
-    };
-  });
+  const eventsWithDates: EventWithDates[] = data || [];
   const eventsDisplay = await eventDisplayData(eventsWithDates);
 
   return (

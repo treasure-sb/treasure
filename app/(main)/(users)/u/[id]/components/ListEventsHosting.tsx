@@ -18,7 +18,7 @@ export default async function ListEventsHosting({
   const { data: eventData } = await supabase
     .from("events")
     .select(
-      "*, dates:event_dates(date, start_time, end_time), temporary_hosts!inner(event_id)"
+      "*, dates:event_dates(date, start_time, end_time), event_roles(*), temporary_hosts!inner(event_id)"
     )
     .eq("temporary_hosts.host_id", user.id);
 

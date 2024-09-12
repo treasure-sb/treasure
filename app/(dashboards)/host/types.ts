@@ -9,13 +9,7 @@ type EventVendorQueryData = {
     last_name: string;
     business_name: string;
   };
-  event: EventWithDates & {
-    roles: {
-      user_id: string;
-      role: string;
-      status: string;
-    }[];
-  };
+  event: EventWithDates;
 };
 
 type EventVendorData = {

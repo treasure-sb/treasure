@@ -19,7 +19,6 @@ type OrderData = Tables<"orders"> & {
 
 type Payout = {
   host_id: string;
-  host_type: string;
   amount: number;
   event_name: string;
   event_id: string;
@@ -58,7 +57,7 @@ export default async function Page({
   let orderQuery = supabase
     .from("orders")
     .select(
-      "*, profile:profiles(*), line_items(*), event:events(*,dates:event_dates(date, start_time, end_time)), code:event_codes(*)"
+      "*, profile:profiles(*), line_items(*), event:events(*,dates:event_dates(date, start_time, end_time), event_roles(*)), code:event_codes(*)"
     )
     .order("created_at", { ascending: false });
 
@@ -69,7 +68,7 @@ export default async function Page({
     orderQuery = orderQuery.lte("created_at", to);
   }
 
-  const { data: orderData } = await orderQuery;
+  const { data: orderData, error: err } = await orderQuery;
   const orders: OrderData[] = orderData || [];
 
   const { data: invoice_location, error } = await supabase
@@ -123,19 +122,24 @@ export default async function Page({
 
     // create new payout if it doesn't exist
     if (index === -1) {
+      let organizerID = "";
+      order.event.event_roles.map((role) => {
+        if (role.role === "HOST") organizerID = role.user_id;
+      });
+
+      // filter links to see if we know where to pay host out to (venmo, paypal, etc)
       let organizerInvoiceInfo: any[] =
         invoice_location === null
           ? []
           : invoice_location?.filter(
-              (person) => person.user_id === order.event.organizer_id
+              (person) => person.user_id === organizerID
             );
 
       let tempDates = formatDates(order.event.dates);
       let formattedDate = new Date(order.created_at).toLocaleDateString();
 
       payouts.push({
-        host_id: order.event.organizer_id,
-        host_type: order.event.organizer_type,
+        host_id: organizerID,
         amount: amountPaid,
         event_name: order.event.name,
         event_id: order.event.id,
@@ -183,35 +187,23 @@ export default async function Page({
     let contact = "";
     let publicAvatarUrl = "";
 
-    if (payout.host_type === "profile") {
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", payout.host_id)
-        .single();
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", payout.host_id)
+      .single();
 
-      host =
-        profileData.business_name === null
-          ? profileData.first_name + " " + profileData.last_name
-          : profileData.business_name;
-      username = profileData.username;
-      contact = profileData.email ? profileData.email : "";
-      contact = profileData.phone_number
-        ? contact + " " + profileData.phone_number
-        : contact;
-      publicAvatarUrl = await getProfileAvatar(profileData.avatar_url);
-    } else {
-      const { data: profileData } = await supabase
-        .from("temporary_profiles")
-        .select("*")
-        .eq("id", payout.host_id)
-        .single();
+    host =
+      profileData.business_name === null
+        ? profileData.first_name + " " + profileData.last_name
+        : profileData.business_name;
+    username = profileData.username;
+    contact = profileData.email ? profileData.email : "";
+    contact = profileData.phone_number
+      ? contact + " " + profileData.phone_number
+      : contact;
+    publicAvatarUrl = await getProfileAvatar(profileData.avatar_url);
 
-      host = profileData.business_name;
-      username = profileData.username;
-      contact = profileData.instagram;
-      publicAvatarUrl = await getProfileAvatar(profileData.avatar_url);
-    }
     return {
       host: host,
       amount: payout.amount,
