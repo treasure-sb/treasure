@@ -44,18 +44,18 @@ export default async function VerifiedVendors({ user }: { user: User }) {
         <CardDescription>{}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
-        {verifiedVendorEventData.length === 0 ? (
-          <p className="text-muted-foreground text-sm mt-40 text-center">
-            You don't have any verified vendors.
-          </p>
-        ) : (
+        {/* {verifiedVendorEventData.length === 0 ? ( */}
+        <p className="text-muted-foreground text-sm mt-40 text-center">
+          You don't have any verified vendors.
+        </p>
+        {/* ) : (
           verifiedVendorEventData.map((vendor, index) => (
             <>
               <VendorLink key={index} vendorData={vendor} status={"ACCEPTED"} />
               {index < verifiedVendorEventData.length - 1 && <Separator />}
             </>
           ))
-        )}
+        )} */}
       </CardContent>
     </Card>
   );
