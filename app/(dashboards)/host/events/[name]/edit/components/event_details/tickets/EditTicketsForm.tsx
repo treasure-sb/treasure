@@ -49,7 +49,9 @@ export const ticketSchema = z.object({
       return !isNaN(number) && Number.isInteger(number) && number > 0;
     })
     .optional(),
-  ticket_dates: z.array(z.string()),
+  ticket_dates: z.array(z.string()).min(1, {
+    message: "Ticket date is required",
+  }),
   name: z.string().min(1, {
     message: "Ticket name is required",
   }),
