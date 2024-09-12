@@ -45,7 +45,9 @@ export default async function UpcomingEvents({ user }: { user: User }) {
   const today = new Date();
   const { data } = await supabase
     .from("events")
-    .select("*, dates:event_dates(date, start_time, end_time), event_roles(*)")
+    .select(
+      "*, dates:event_dates(date, start_time, end_time), event_roles!inner(*)"
+    )
     .eq("event_roles.user_id", user.id)
     .eq("event_roles.status", "ACTIVE")
     .in("event_roles.role", ["HOST", "COHOST", "STAFF", "SCANNER"])
