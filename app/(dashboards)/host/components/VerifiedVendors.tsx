@@ -20,7 +20,7 @@ export default async function VerifiedVendors({ user }: { user: User }) {
     .select(
       `application_status, 
        profile:profiles(avatar_url, username, first_name, last_name, business_name), 
-       event:events!inner(*, dates:event_dates(date, start_time, end_time), event_roles(*))`
+       event:events!inner(*, dates:event_dates(date, start_time, end_time), event_roles!inner(*))`
     )
     .eq("application_status", "ACCEPTED")
     .eq("event.event_roles.user_id", user.id)
@@ -44,18 +44,18 @@ export default async function VerifiedVendors({ user }: { user: User }) {
         <CardDescription>{}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2 min-h-[300px] flex flex-col items-center">
-        {/* {verifiedVendorEventData.length === 0 ? ( */}
-        <p className="text-muted-foreground text-sm mt-40 text-center">
-          You don't have any verified vendors.
-        </p>
-        {/* ) : (
+        {verifiedVendorEventData.length === 0 ? (
+          <p className="text-muted-foreground text-sm mt-40 text-center">
+            You don't have any verified vendors.
+          </p>
+        ) : (
           verifiedVendorEventData.map((vendor, index) => (
             <>
               <VendorLink key={index} vendorData={vendor} status={"ACCEPTED"} />
               {index < verifiedVendorEventData.length - 1 && <Separator />}
             </>
           ))
-        )} */}
+        )}
       </CardContent>
     </Card>
   );

@@ -49,7 +49,7 @@ export default async function PendingVendors({ user }: { user: User }) {
     .select(
       `application_status, 
        profile:profiles(avatar_url, username, first_name, last_name, business_name), 
-       event:events!inner(*, dates:event_dates(date, start_time, end_time), event_roles(*))`
+       event:events!inner(*, dates:event_dates(date, start_time, end_time), event_roles!inner(*))`
     )
     .eq("application_status", "PENDING")
     .eq("event.event_roles.user_id", user.id)
