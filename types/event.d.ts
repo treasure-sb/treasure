@@ -109,6 +109,7 @@ export interface SearchParams {
 
 export type EventWithDates = Tables<"events"> & {
   dates: { date: string; start_time: string; end_time: string }[];
+  event_roles: Tables<"event_roles">[];
 };
 
 export type EditEventWithDates = Tables<"events"> & {
