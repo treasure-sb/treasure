@@ -57,7 +57,7 @@ export default async function Page({
     await supabase
       .from("checkout_sessions")
       .select(
-        "*, event:events(*, dates:event_dates(date, start_time, end_time)), ticket_id, profile:profiles(email), promo:event_codes(*)"
+        "*, event:events(*, dates:event_dates(date, start_time, end_time), event_roles(*)), ticket_id, profile:profiles(email), promo:event_codes(*)"
       )
       .eq("id", checkoutSessionId)
       .single();
