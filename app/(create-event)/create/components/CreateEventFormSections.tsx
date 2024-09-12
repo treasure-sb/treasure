@@ -10,6 +10,7 @@ import { customLandingEase } from "@/components/landing-page/Free";
 import EventGuests from "./sections/step_two/EventGuests";
 import EventHighlights from "./sections/step_two/EventHighlights";
 import EventVenueMap from "./sections/step_one/EventVenueMap";
+import EventTags from "./sections/step_two/EventTags";
 
 export const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -61,8 +62,9 @@ export default function CreateEventFormSections() {
               className="space-y-4 lg:space-y-10"
             >
               <EventVendorInfo />
-              <EventGuests />
-              <EventHighlights />
+              <EventTags />
+              {/* <EventGuests />
+              <EventHighlights /> */}
             </motion.div>
           )}
         </AnimatePresence>

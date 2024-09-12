@@ -1,3 +1,4 @@
+import { Tables } from "@/types/supabase";
 import React, { createContext, useContext, useReducer } from "react";
 
 export enum CurrentStep {
@@ -5,8 +6,9 @@ export enum CurrentStep {
   STEP_TWO = 2,
 }
 
-type CreateEventState = {
+export type CreateEventState = {
   currentStep: CurrentStep;
+  tags: Tables<"tags">[];
 };
 type CreateEventActions = { type: "setCurrentStep"; payload: CurrentStep };
 
@@ -17,6 +19,7 @@ type CreateEventContextType = {
 
 const initialState = {
   currentStep: CurrentStep.STEP_ONE,
+  tags: [],
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {
@@ -35,8 +38,10 @@ const CreateEventContext = createContext<CreateEventContextType>({
 
 export const CreateEventProvider = ({
   children,
+  initialState,
 }: {
   children: React.ReactNode;
+  initialState: CreateEventState;
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 

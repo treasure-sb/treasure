@@ -1,17 +1,22 @@
 "use client";
 
-import { CreateEventProvider } from "../context/CreateEventContext";
+import {
+  CreateEventProvider,
+  CreateEventState,
+  CurrentStep,
+} from "../context/CreateEventContext";
 import { Form } from "@/components/ui/form";
 import { eventSchema, type CreateEvent } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { sectionVariants } from "./CreateEventFormSections";
+import { Tables } from "@/types/supabase";
 import Exit from "./sections/Exit";
 import MenuBar from "./MenuBar";
 import CreateEventFormSections from "./CreateEventFormSections";
 
-export default function CreateEventForm() {
+export default function CreateEventForm({ tags }: { tags: Tables<"tags">[] }) {
   const initialState: CreateEvent = {
     basicDetails: {
       name: "",
@@ -24,6 +29,7 @@ export default function CreateEventForm() {
         city: "",
         state: "",
       },
+      tags: [],
     },
     dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
     tickets: [
@@ -54,8 +60,13 @@ export default function CreateEventForm() {
     defaultValues: initialState,
   });
 
+  const initalCreateEventState: CreateEventState = {
+    currentStep: CurrentStep.STEP_ONE,
+    tags: tags,
+  };
+
   return (
-    <CreateEventProvider>
+    <CreateEventProvider initialState={initalCreateEventState}>
       <FormProvider {...form}>
         <Form {...form}>
           <main className="min-h-screen flex flex-col">

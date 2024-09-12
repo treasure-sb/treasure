@@ -77,8 +77,8 @@ export default function MenuBar() {
       });
 
       setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
+        window.scrollBy({
+          top: window.innerHeight,
           behavior: "smooth",
         });
       }, 100);
@@ -102,7 +102,7 @@ export default function MenuBar() {
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
           <div className="flex space-x-2">
-            <Button
+            {/* <Button
               type="button"
               variant={"tertiary"}
               onClick={() =>
@@ -114,7 +114,7 @@ export default function MenuBar() {
               className="w-full h-10 rounded-md"
             >
               Save Draft
-            </Button>
+            </Button> */}
             <Button
               type="button"
               variant={"default"}
@@ -146,7 +146,7 @@ export default function MenuBar() {
     >
       <ProgressBar currentStep={currentStep} />
       <div className="px-0 py-0 flex space-x-0 h-12">
-        <Button
+        {/* <Button
           type="button"
           variant={"tertiary"}
           onClick={() =>
@@ -155,7 +155,7 @@ export default function MenuBar() {
           className="w-full h-full rounded-none"
         >
           Save Draft
-        </Button>
+        </Button> */}
         <Button
           type="button"
           variant={"default"}

@@ -24,6 +24,7 @@ const basicDetailsSchema = z.object({
     city: z.string(),
     state: z.string(),
   }),
+  tags: z.array(z.string()),
 });
 
 const ticketSchema = z.object({
