@@ -79,7 +79,7 @@ const getEventFromCleanedName = async (cleanedName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("* , dates:event_dates(date, start_time, end_time)")
+    .select("* , dates:event_dates(date, start_time, end_time), event_roles(*)")
     .eq("cleaned_name", cleanedName)
     .order("date", { referencedTable: "dates", ascending: true })
     .single();
@@ -92,7 +92,9 @@ const getEditEventFromCleanedName = async (cleanedName: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("* , dates:event_dates(id, date, start_time, end_time)")
+    .select(
+      "* , dates:event_dates(id, date, start_time, end_time), event_roles(*)"
+    )
     .eq("cleaned_name", cleanedName)
     .order("date", { referencedTable: "dates", ascending: true })
     .single();
@@ -105,7 +107,7 @@ const getEventFromId = async (id: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: eventData, error: eventError } = await supabase
     .from("events")
-    .select("* , dates:event_dates(date, start_time, end_time)")
+    .select("* , dates:event_dates(date, start_time, end_time), event_roles(*)")
     .eq("id", id)
     .order("date", { referencedTable: "dates", ascending: true })
     .single();
