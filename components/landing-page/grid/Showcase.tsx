@@ -36,7 +36,7 @@ export default function Showcase() {
           </p>
           <LandingButton
             variant="tertiary"
-            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+            href="/create"
             text="Create Your Event"
           />
         </div>

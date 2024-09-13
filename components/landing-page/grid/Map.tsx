@@ -36,7 +36,7 @@ export default function Send() {
             </p>
             <LandingButton
               className="bg-[#7DD9E8] hover:bg-[#7DD9E8]/90"
-              href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+              href="/create"
               text="Create Your Event"
             />
           </div>

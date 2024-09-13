@@ -48,7 +48,7 @@ export default function TrackSales() {
           <div className="flex space-x-4 justify-start md:justify-end lg:justify-start 2xl:justify-end w-full">
             <LandingButton
               variant="tertiary"
-              href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
+              href="/create"
               text="Create Your Event"
             />
             <LandingButton
