@@ -7,6 +7,9 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { customLandingEase } from "@/components/landing-page/Free";
+import { toast } from "sonner";
+import { createClient } from "@/utils/supabase/client";
+import { updatedCreateEvent } from "@/lib/actions/events";
 
 const menuVariants = {
   hidden: {
@@ -58,6 +61,7 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 export default function MenuBar() {
   const { currentStep, dispatch } = useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
+  const supabase = createClient();
   const form = useFormContext<CreateEvent>();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -66,7 +70,9 @@ export default function MenuBar() {
   }, []);
 
   const onSubmit = async (values: CreateEvent) => {
-    console.log(values);
+    form.setValue("poster", "poster_coming_soon");
+    const { data, error } = await updatedCreateEvent(values);
+    console.log(data, error);
   };
 
   const handleContinue = async () => {
@@ -83,7 +89,9 @@ export default function MenuBar() {
         });
       }, 100);
     } else {
-      form.handleSubmit(onSubmit)();
+      form.handleSubmit(onSubmit, () => {
+        toast.error("Please fill in all required fields");
+      })();
     }
   };
 

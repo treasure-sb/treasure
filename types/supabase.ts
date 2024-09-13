@@ -252,7 +252,6 @@ export type Database = {
           id: string
           num_used: number
           status: Database["public"]["Enums"]["Promo Code Status"]
-          treasure_sponsored: boolean
           type: Database["public"]["Enums"]["Promo Code Type"]
           usage_limit: number | null
         }
@@ -264,7 +263,6 @@ export type Database = {
           id?: string
           num_used?: number
           status?: Database["public"]["Enums"]["Promo Code Status"]
-          treasure_sponsored?: boolean
           type?: Database["public"]["Enums"]["Promo Code Type"]
           usage_limit?: number | null
         }
@@ -276,7 +274,6 @@ export type Database = {
           id?: string
           num_used?: number
           status?: Database["public"]["Enums"]["Promo Code Status"]
-          treasure_sponsored?: boolean
           type?: Database["public"]["Enums"]["Promo Code Type"]
           usage_limit?: number | null
         }
@@ -777,7 +774,7 @@ export type Database = {
           max_date: string
           min_date: string
           name: string
-          organizer_id: string
+          organizer_id: string | null
           organizer_type: string
           poster_url: string
           sales_status: Database["public"]["Enums"]["Event Ticket Status"]
@@ -799,9 +796,9 @@ export type Database = {
           max_date?: string
           min_date?: string
           name: string
-          organizer_id: string
+          organizer_id?: string | null
           organizer_type?: string
-          poster_url: string
+          poster_url?: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
           state?: string
           vendor_exclusivity?: Database["public"]["Enums"]["Vendor Exclusivity"]
@@ -821,7 +818,7 @@ export type Database = {
           max_date?: string
           min_date?: string
           name?: string
-          organizer_id?: string
+          organizer_id?: string | null
           organizer_type?: string
           poster_url?: string
           sales_status?: Database["public"]["Enums"]["Event Ticket Status"]
@@ -1514,6 +1511,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_event:
+        | {
+            Args: {
+              event_data: Json
+              cleaned_name: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              event_data: Json
+              user_id: string
+              cleaned_name: string
+            }
+            Returns: string
+          }
+      create_host: {
+        Args: {
+          event_id: string
+          user_id: string
+        }
+        Returns: string
+      }
       create_order: {
         Args: {
           user_id: string
@@ -1577,6 +1597,16 @@ export type Database = {
           promo_id: string
         }
         Returns: number
+      }
+      insert_event: {
+        Args: {
+          event_details: Json
+          event_poster_url: string
+          event_venue_map_url: string
+          event_cleaned_name: string
+          event_dates: Json
+        }
+        Returns: string
       }
       purchase_table: {
         Args: {
@@ -1819,7 +1849,6 @@ export type Database = {
           owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
-          user_metadata: Json | null
           version: string | null
         }
         Insert: {
@@ -1833,7 +1862,6 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
-          user_metadata?: Json | null
           version?: string | null
         }
         Update: {
@@ -1847,7 +1875,6 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
-          user_metadata?: Json | null
           version?: string | null
         }
         Relationships: [
@@ -1869,7 +1896,6 @@ export type Database = {
           key: string
           owner_id: string | null
           upload_signature: string
-          user_metadata: Json | null
           version: string
         }
         Insert: {
@@ -1880,7 +1906,6 @@ export type Database = {
           key: string
           owner_id?: string | null
           upload_signature: string
-          user_metadata?: Json | null
           version: string
         }
         Update: {
@@ -1891,7 +1916,6 @@ export type Database = {
           key?: string
           owner_id?: string | null
           upload_signature?: string
-          user_metadata?: Json | null
           version?: string
         }
         Relationships: [

@@ -18,7 +18,7 @@ export default function EventTags() {
     <CreateEventCard title="Event Tags">
       <FormField
         control={control}
-        name="basicDetails.tags"
+        name="tags"
         render={({ field }) => (
           <FormItem>
             <FormControl>

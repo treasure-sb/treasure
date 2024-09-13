@@ -24,7 +24,6 @@ const basicDetailsSchema = z.object({
     city: z.string(),
     state: z.string(),
   }),
-  tags: z.array(z.string()),
 });
 
 const ticketSchema = z.object({
@@ -111,6 +110,12 @@ const eventSchema = z.object({
   tickets: z.array(ticketSchema),
   tables: z.array(tableSchema),
   vendorInfo: vendorInfoSchema,
+  tags: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+    })
+  ),
 });
 
 type CreateEvent = z.infer<typeof eventSchema>;

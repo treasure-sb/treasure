@@ -14,7 +14,6 @@ import Autocomplete from "./Autocomplete";
 export default function EventDetails() {
   const {
     control,
-    watch,
     formState: { errors },
   } = useFormContext<CreateEvent>();
 

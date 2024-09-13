@@ -29,7 +29,6 @@ export default function CreateEventForm({ tags }: { tags: Tables<"tags">[] }) {
         city: "",
         state: "",
       },
-      tags: [],
     },
     dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
     tickets: [
@@ -53,6 +52,7 @@ export default function CreateEventForm({ tags }: { tags: Tables<"tags">[] }) {
       additionalInfo: "",
       terms: [{ term: "" }],
     },
+    tags: [],
   };
 
   const form = useForm<CreateEvent>({

@@ -6,8 +6,8 @@ import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
 
 interface tagsInputProps {
-  initialTags?: Tables<"tags">[] | string[];
-  allTags: Tables<"tags">[] | string[];
+  initialTags?: Tables<"tags">[];
+  allTags: Tables<"tags">[];
   onTagsChange: (tags: any) => void;
 }
 
@@ -16,20 +16,13 @@ const TagInput: React.FC<tagsInputProps> = ({
   allTags = [],
   onTagsChange,
 }) => {
-  const isString = (tag: Tables<"tags"> | string): tag is string =>
-    typeof tag === "string";
-
   const [inputValue, setInputValue] = useState<string>("");
   const initialTagNames = new Set(
-    initialTags.map((tag) =>
-      isString(tag) ? tag : tag.name.toLocaleLowerCase()
-    )
+    initialTags.map((tag) => tag.name.toLocaleLowerCase())
   );
 
   const filteredTags = allTags.filter((tag) => {
-    const tagNameLower = isString(tag)
-      ? tag.toLocaleLowerCase()
-      : tag.name.toLocaleLowerCase();
+    const tagNameLower = tag.name.toLocaleLowerCase();
     return (
       tagNameLower.includes(inputValue.toLocaleLowerCase()) &&
       !initialTagNames.has(tagNameLower)
@@ -75,7 +68,7 @@ const TagInput: React.FC<tagsInputProps> = ({
               variant={"tertiary"}
               className="cursor-pointer"
             >
-              {isString(keyword) ? keyword : keyword.name}
+              {keyword.name}
               <X size={14} className="ml-2 cursor-pointer" />
             </Badge>
           ))}
@@ -102,7 +95,7 @@ const TagInput: React.FC<tagsInputProps> = ({
               onClick={() => handleTagAdd(tag)}
               key={index}
             >
-              {isString(tag) ? tag : tag.name}
+              {tag.name}
             </Badge>
           ))}
         </div>
