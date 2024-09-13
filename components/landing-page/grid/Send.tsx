@@ -49,10 +49,7 @@ export default function Send() {
             Most emails don’t get opened. Send texts with emails to best
             re-engage customers.
           </p>
-          <LandingButton
-            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
-            text="Create Your Event"
-          />
+          <LandingButton href="/create" text="Create Your Event" />
         </div>
       </div>
     </motion.div>

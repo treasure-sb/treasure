@@ -52,10 +52,7 @@ export default function Hero() {
             We make getting tickets and tables easy.
           </p>
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <LandingButton
-              href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
-              text="Get Started Now"
-            />
+            <LandingButton href="/create" text="Create Your Event" />
             <LandingButton
               href="/events"
               text="Browse Events"

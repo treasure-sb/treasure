@@ -121,6 +121,7 @@ export default function MenuBar() {
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
+      console.log(err);
       toast("An error occurred. Please try again later.");
     } finally {
       setLoading(false);

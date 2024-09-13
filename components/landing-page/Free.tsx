@@ -32,10 +32,7 @@ export default function Free() {
           any sale for organizers. Launch your event in under 5 minutes.
         </p>
         <div className="flex space-x-4">
-          <LandingButton
-            href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
-            text="Create Your Event"
-          />
+          <LandingButton href="/create" text="Create Your Event" />
           <LandingButton
             href="/events"
             text="Browse Events"

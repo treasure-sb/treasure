@@ -66,7 +66,8 @@ export default function EventTicketsSheet({
             <Button
               key={i}
               type="button"
-              variant={isActive ? "default" : "ghost"}
+              variant={isActive ? "default" : "outline"}
+              className="border"
               onClick={() => {
                 const newDates = isActive
                   ? selectedDates.filter(
