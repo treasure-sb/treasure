@@ -6,6 +6,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { useState } from "react";
 import { USDollar, cn } from "@/lib/utils";
 import EventTablesSheet from "./EventTablesSheet";
+import { toast } from "sonner";
 
 export default function EventTables() {
   const [openSheet, setOpenSheet] = useState(false);
@@ -25,6 +26,14 @@ export default function EventTables() {
   const handleSelectTable = (index: number) => {
     setEditIndex(index);
     setOpenSheet(true);
+  };
+
+  const handleRemove = (index: number) => {
+    if (fields.length === 1) {
+      toast.error("You must have at least one table");
+      return;
+    }
+    remove(index);
   };
 
   const handleAppend = () => {
@@ -90,7 +99,7 @@ export default function EventTables() {
               <Trash2Icon
                 size={16}
                 className="text-muted-foreground ml-auto hover:text-destructive transition hover:cursor-pointer"
-                onClick={() => remove(index)}
+                onClick={() => handleRemove(index)}
               />
             </div>
           ))}

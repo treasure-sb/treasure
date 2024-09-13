@@ -5,6 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
 import { USDollar, cn } from "@/lib/utils";
 import { useState } from "react";
+import { toast } from "sonner";
 import CreateEventCard from "../../CreateEventCard";
 import EventTicketsSheet from "./EventTicketsSheet";
 
@@ -36,6 +37,14 @@ export default function EventTickets() {
   const handleSelectTicket = (index: number) => {
     setEditIndex(index);
     setOpenSheet(true);
+  };
+
+  const handleRemove = (index: number) => {
+    if (fields.length === 1) {
+      toast.error("You must have at least one ticket");
+      return;
+    }
+    remove(index);
   };
 
   const EventTicketsFooter = (
@@ -90,7 +99,7 @@ export default function EventTickets() {
               <Trash2Icon
                 size={16}
                 className="text-muted-foreground ml-auto hover:text-destructive transition hover:cursor-pointer"
-                onClick={() => remove(index)}
+                onClick={() => handleRemove(index)}
               />
             </div>
           ))}
