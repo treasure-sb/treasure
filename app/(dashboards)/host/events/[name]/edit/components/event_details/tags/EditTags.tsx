@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { PencilIcon, EyeIcon } from "lucide-react";
 import { Tables } from "@/types/supabase";
-import TagInput from "./TagInput";
+import TagInput from "@/components/events/shared/TagInput";
 
 export default function EditTags({
   allTags,

@@ -22,7 +22,10 @@ const buttonVariants = cva(
         dotted:
           "border-dotted border-[1px] rounded-sm hover:bg-accent hover:text-accent-foreground flex items-center space-x-2",
         ghost: "hover:bg-accent hover:text-accent-foreground",
+        accent: "bg-accent text-accent-foreground hover:bg-accent/90",
         link: "text-primary underline-offset-4 hover:underline",
+        field:
+          "bg-field border border-input hover:border-primary transition duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",

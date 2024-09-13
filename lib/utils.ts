@@ -10,6 +10,11 @@ export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function isValidTime(value: string) {
+  const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+  return regex.test(value);
+}
+
 export function capitalizeSentence(string: string) {
   return string
     .split(" ")

@@ -228,8 +228,7 @@ BEGIN
             sales_status,
             vendor_exclusivity,
             min_date,
-            max_date,
-            organizer_id
+            max_date
         ) VALUES (
             gen_random_uuid(),
             current_timestamp,
@@ -257,8 +256,7 @@ BEGIN
             'SELLING_ALL',
             'APPLICATIONS',
             future_date,
-            future_date,
-            random_profile_id
+            future_date
         ) RETURNING id INTO e_event_id;
 
         -- Insert event date

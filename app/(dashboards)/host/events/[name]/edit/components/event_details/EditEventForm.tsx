@@ -26,6 +26,7 @@ import EditTimeAndDate from "./EditTimeAndDate";
 import EditTags from "./tags/EditTags";
 import EditAbout from "./EditAbout";
 import { EventTag, addEventTags, removeEventTags } from "@/lib/actions/tags";
+import { isValidTime } from "@/lib/utils";
 
 const fixDate = (time: string) => {
   let fixedTime = time
@@ -33,11 +34,6 @@ const fixDate = (time: string) => {
     .concat("-" + time.slice(0, time.indexOf("-")));
   fixedTime = fixedTime.replaceAll("-", "/");
   return new Date(fixedTime);
-};
-
-const isValidTime = (value: string) => {
-  const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-  return regex.test(value);
 };
 
 const replacePoster = async (posterUrl: string, newPosterFile: File) => {

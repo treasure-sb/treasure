@@ -9,8 +9,34 @@ import {
   EventVendorApplication,
 } from "@/types/event";
 import { Tables } from "@/types/supabase";
+import { CreateEvent } from "@/app/(create-event)/create/schema";
 import format from "date-fns/format";
-import { revalidatePath } from "next/cache";
+
+const updatedCreateEvent = async (values: CreateEvent) => {
+  const supabase = await createSupabaseServerClient();
+
+  const previousEventsCount = await getPreviousEventsCount(
+    values.basicDetails.name,
+    values.dates[0].date!
+  );
+  const cleanedEventName = cleanedEventUrlName(
+    values.basicDetails.name,
+    values.dates[0].date!,
+    previousEventsCount
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase.rpc("create_event", {
+    event_data: values,
+    cleaned_name: cleanedEventName,
+    user_id: user!.id,
+  });
+
+  return { data, error };
+};
 
 const createEvent = async (values: EventForm) => {
   const supabase = await createSupabaseServerClient();
@@ -405,16 +431,21 @@ const cleanedEventUrlName = (
 const getPreviousEventsCount = async (
   eventName: string,
   eventDate: Date,
-  eventId: string
+  eventId?: string
 ) => {
   const supabase = await createSupabaseServerClient();
   const formattedDate = format(eventDate, "yyyy-MM-dd");
-  const { data: eventsData } = await supabase
+  let query = supabase
     .from("events")
     .select("name")
     .eq("name", eventName)
-    .neq("id", eventId)
     .eq("min_date", formattedDate);
+
+  if (eventId) {
+    query = query.neq("id", eventId);
+  }
+
+  const { data: eventsData } = await query;
 
   if (!eventsData || eventsData.length === 0) {
     return 0;
@@ -428,6 +459,9 @@ export {
   unlikeEvent,
   getAllEventCleanedNames,
   updateEvent,
+  getPreviousEventsCount,
+  cleanedEventUrlName,
+  updatedCreateEvent,
   type EditEvent,
   type EventLocation,
 };
