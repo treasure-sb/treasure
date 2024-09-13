@@ -8,6 +8,7 @@ alter table "public"."events" add constraint "events_cleaned_name_key" UNIQUE us
 
 set check_function_bodies = off;
 
+DROP FUNCTION IF EXISTS public.create_event(event_data json, user_id uuid, cleaned_name text);
 CREATE OR REPLACE FUNCTION public.create_event(event_data json, user_id uuid, cleaned_name text)
  RETURNS text
  LANGUAGE plpgsql
