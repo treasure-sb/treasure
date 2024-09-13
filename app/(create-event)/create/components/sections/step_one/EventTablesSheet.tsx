@@ -105,10 +105,9 @@ export default function EventTablesSheet({
                 <FormControl>
                   <InputWithLabel
                     inputMode="numeric"
-                    label="Space Allocated"
+                    label="Space Allocated (sq ft)"
                     className="w-full"
                     {...field}
-                    value={`${field.value} ft²`}
                     onChange={(e) => {
                       const value = e.target.value.replace(/[^0-9.]/g, "");
                       field.onChange(value);
