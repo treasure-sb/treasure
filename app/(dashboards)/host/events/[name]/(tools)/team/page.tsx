@@ -2,7 +2,10 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import AddMember from "./components/AddMember";
 import ListMembers from "./components/ListMembers";
 import RolesDescription from "./components/RolesDescription";
-import { getEventDisplayData } from "@/lib/helpers/events";
+import {
+  getEventFromCleanedName,
+  getEventDisplayData,
+} from "@/lib/helpers/events";
 import { EventWithDates } from "@/types/event";
 
 export default async function Page({
@@ -11,14 +14,9 @@ export default async function Page({
   params: { name: string };
 }) {
   const supabase = await createSupabaseServerClient();
-  const { data: eventsData } = await supabase
-    .from("events")
-    .select("*, dates:event_dates(date, start_time, end_time)")
-    .eq("cleaned_name", name)
-    .single();
 
-  const eventData: EventWithDates = eventsData;
-  const eventDisplay = await getEventDisplayData(eventData);
+  const { event, eventError } = await getEventFromCleanedName(name);
+  const eventDisplay = await getEventDisplayData(event);
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
