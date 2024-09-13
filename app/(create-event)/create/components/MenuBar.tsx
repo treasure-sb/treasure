@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { updatedCreateEvent } from "@/lib/actions/events";
 import { useRouter } from "next/navigation";
+import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
+import { validateUser } from "@/lib/actions/auth";
 
 const menuVariants = {
   hidden: {
@@ -60,13 +62,14 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 };
 
 export default function MenuBar() {
-  const { currentStep, dispatch } = useCreateEvent();
+  const { currentStep, user, dispatch } = useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const form = useFormContext<CreateEvent>();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isLoggedIn = user !== null;
 
   useEffect(() => {
     setIsMounted(true);
@@ -134,7 +137,9 @@ export default function MenuBar() {
       }, 100);
     } else {
       form.handleSubmit(onSubmit, () => {
-        toast.error("Please fill in all required fields");
+        if (isLoggedIn) {
+          toast.error("Please fill in all required fields");
+        }
       })();
     }
   };
@@ -142,6 +147,46 @@ export default function MenuBar() {
   if (!isMounted) {
     return null;
   }
+
+  const MenuButton = ({ className = "" }: { className?: string } = {}) => {
+    return (
+      <Button
+        type="button"
+        variant={"default"}
+        disabled={loading}
+        onClick={handleContinue}
+        className={cn(
+          "w-full h-full rounded-none relative overflow-hidden",
+          currentStep === CurrentStep.STEP_TWO &&
+            "bg-purple-400 hover:bg-purple-500 disabled:bg-purple-400/80",
+          className,
+          isDesktop && "rounded-sm"
+        )}
+      >
+        <span className="relative z-10">
+          {currentStep === CurrentStep.STEP_TWO ? "Create Event" : "Continue"}
+        </span>
+      </Button>
+    );
+  };
+
+  const onLoggedIn = async () => {
+    const {
+      data: { user },
+    } = await validateUser();
+
+    dispatch({
+      type: "setUser",
+      payload: user,
+    });
+  };
+
+  const LoggedMenuButton =
+    !isLoggedIn && currentStep === CurrentStep.STEP_TWO ? (
+      <LoginFlowDialog trigger={MenuButton()} onLoginSuccess={onLoggedIn} />
+    ) : (
+      <MenuButton />
+    );
 
   const desktopMenuBar = (
     <motion.div
@@ -153,38 +198,7 @@ export default function MenuBar() {
       <div className="rounded-lg bg-background w-full max-w-2xl lg:max-w-5xl p-4 border border-foreground h-24 flex items-center justify-center">
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
-          <div className="flex space-x-2">
-            {/* <Button
-              type="button"
-              variant={"tertiary"}
-              onClick={() =>
-                dispatch({
-                  type: "setCurrentStep",
-                  payload: CurrentStep.STEP_ONE,
-                })
-              }
-              className="w-full h-10 rounded-md"
-            >
-              Save Draft
-            </Button> */}
-            <Button
-              type="button"
-              variant={"default"}
-              disabled={loading}
-              onClick={handleContinue}
-              className={cn(
-                "w-full h-10 rounded-md relative overflow-hidden",
-                currentStep === CurrentStep.STEP_TWO &&
-                  "bg-purple-400 hover:bg-purple-500 disabled:bg-purple-400/80"
-              )}
-            >
-              <span className="relative z-10">
-                {currentStep === CurrentStep.STEP_TWO
-                  ? "Create Event"
-                  : "Continue"}
-              </span>
-            </Button>
-          </div>
+          <div className="flex space-x-2">{LoggedMenuButton}</div>
         </div>
       </div>
     </motion.div>
@@ -198,33 +212,7 @@ export default function MenuBar() {
       className="-mx-4 sm:-mx-8 w-full bg-background fixed bottom-0"
     >
       <ProgressBar currentStep={currentStep} />
-      <div className="px-0 py-0 flex space-x-0 h-12">
-        {/* <Button
-          type="button"
-          variant={"tertiary"}
-          onClick={() =>
-            dispatch({ type: "setCurrentStep", payload: CurrentStep.STEP_ONE })
-          }
-          className="w-full h-full rounded-none"
-        >
-          Save Draft
-        </Button> */}
-        <Button
-          type="button"
-          variant={"default"}
-          disabled={loading}
-          onClick={handleContinue}
-          className={cn(
-            "w-full h-full rounded-none relative overflow-hidden",
-            currentStep === CurrentStep.STEP_TWO &&
-              "bg-purple-400 hover:bg-purple-500 disabled:bg-purple-400/80"
-          )}
-        >
-          <span className="relative z-10">
-            {currentStep === CurrentStep.STEP_TWO ? "Create Event" : "Continue"}
-          </span>
-        </Button>
-      </div>
+      <div className="px-0 py-0 flex space-x-0 h-12">{LoggedMenuButton}</div>
     </motion.div>
   );
 

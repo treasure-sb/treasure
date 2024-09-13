@@ -15,8 +15,15 @@ import { Tables } from "@/types/supabase";
 import Exit from "./sections/Exit";
 import MenuBar from "./MenuBar";
 import CreateEventFormSections from "./CreateEventFormSections";
+import { User } from "@supabase/supabase-js";
 
-export default function CreateEventForm({ tags }: { tags: Tables<"tags">[] }) {
+export default function CreateEventForm({
+  tags,
+  user,
+}: {
+  tags: Tables<"tags">[];
+  user: User | null;
+}) {
   const initialState: CreateEvent = {
     basicDetails: {
       name: "",
@@ -63,6 +70,7 @@ export default function CreateEventForm({ tags }: { tags: Tables<"tags">[] }) {
   const initalCreateEventState: CreateEventState = {
     currentStep: CurrentStep.STEP_ONE,
     tags: tags,
+    user: user,
   };
 
   return (

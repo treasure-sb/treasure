@@ -1,4 +1,5 @@
 import { Tables } from "@/types/supabase";
+import { User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useReducer } from "react";
 
 export enum CurrentStep {
@@ -9,8 +10,11 @@ export enum CurrentStep {
 export type CreateEventState = {
   currentStep: CurrentStep;
   tags: Tables<"tags">[];
+  user: User | null;
 };
-type CreateEventActions = { type: "setCurrentStep"; payload: CurrentStep };
+type CreateEventActions =
+  | { type: "setCurrentStep"; payload: CurrentStep }
+  | { type: "setUser"; payload: User | null };
 
 type CreateEventContextType = {
   state: CreateEventState;
@@ -20,12 +24,15 @@ type CreateEventContextType = {
 const initialState = {
   currentStep: CurrentStep.STEP_ONE,
   tags: [],
+  user: null,
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {
   switch (action.type) {
     case "setCurrentStep":
       return { ...state, currentStep: action.payload };
+    case "setUser":
+      return { ...state, user: action.payload };
     default:
       return state;
   }
