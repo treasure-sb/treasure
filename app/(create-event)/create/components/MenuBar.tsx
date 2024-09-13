@@ -91,6 +91,8 @@ export default function MenuBar() {
 
   const onSubmit = async (values: CreateEvent) => {
     try {
+      toast.loading("Creating event...");
+
       setLoading(true);
       let updatedValues = { ...values };
       updatedValues.venueMap = "venue_map_coming_soon";
@@ -113,9 +115,12 @@ export default function MenuBar() {
         throw error;
       }
       const eventUrl: string = data;
+
+      toast.dismiss();
       toast("Event created successfully");
       push(`/events/${eventUrl}`);
     } catch (err) {
+      toast.dismiss();
       toast("An error occurred. Please try again later.");
     } finally {
       setLoading(false);
