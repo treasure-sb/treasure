@@ -63,7 +63,6 @@ const createEvent = async (values: EventForm) => {
         sales_status,
         poster_url,
         venue_map_url,
-        organizer_id: user!.id,
         max_date: date,
         min_date: date,
       },
