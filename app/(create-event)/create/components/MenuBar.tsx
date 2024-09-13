@@ -10,6 +10,7 @@ import { customLandingEase } from "@/components/landing-page/Free";
 import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { updatedCreateEvent } from "@/lib/actions/events";
+import { useRouter } from "next/navigation";
 
 const menuVariants = {
   hidden: {
@@ -61,6 +62,8 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 export default function MenuBar() {
   const { currentStep, dispatch } = useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
+  const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
   const supabase = createClient();
   const form = useFormContext<CreateEvent>();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -69,10 +72,51 @@ export default function MenuBar() {
     setIsMounted(true);
   }, []);
 
+  const uploadFileToBucket = async (file: File, storageFolder: string) => {
+    if (file) {
+      const fileExtension = file.name.split(".").pop();
+      const { data } = await supabase.storage
+        .from(storageFolder)
+        .upload(`${storageFolder}${Date.now()}.${fileExtension}`, file);
+
+      if (data) {
+        return data.path;
+      }
+    }
+    return null;
+  };
+
   const onSubmit = async (values: CreateEvent) => {
-    form.setValue("poster", "poster_coming_soon");
-    const { data, error } = await updatedCreateEvent(values);
-    console.log(data, error);
+    try {
+      setLoading(true);
+      let updatedValues = { ...values };
+      updatedValues.venueMap = "venue_map_coming_soon";
+      updatedValues.poster = "poster_coming_soon";
+
+      if (values.poster instanceof File) {
+        const posterPath = await uploadFileToBucket(values.poster, "posters");
+        updatedValues.poster = posterPath || "poster_coming_soon";
+      }
+
+      if (values.venueMap instanceof File) {
+        const venueMapPath = await uploadFileToBucket(
+          values.venueMap,
+          "venue_maps"
+        );
+        updatedValues.venueMap = venueMapPath || "venue_map_coming_soon";
+      }
+      const { data, error } = await updatedCreateEvent(updatedValues);
+      if (error) {
+        throw error;
+      }
+      const eventUrl: string = data;
+      toast("Event created successfully");
+      push(`/events/${eventUrl}`);
+    } catch (err) {
+      toast("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleContinue = async () => {
@@ -126,11 +170,12 @@ export default function MenuBar() {
             <Button
               type="button"
               variant={"default"}
+              disabled={loading}
               onClick={handleContinue}
               className={cn(
                 "w-full h-10 rounded-md relative overflow-hidden",
                 currentStep === CurrentStep.STEP_TWO &&
-                  "bg-purple-400 hover:bg-purple-500"
+                  "bg-purple-400 hover:bg-purple-500 disabled:bg-purple-400/80"
               )}
             >
               <span className="relative z-10">
@@ -167,11 +212,12 @@ export default function MenuBar() {
         <Button
           type="button"
           variant={"default"}
+          disabled={loading}
           onClick={handleContinue}
           className={cn(
             "w-full h-full rounded-none relative overflow-hidden",
             currentStep === CurrentStep.STEP_TWO &&
-              "bg-purple-400 hover:bg-purple-500"
+              "bg-purple-400 hover:bg-purple-500 disabled:bg-purple-400/80"
           )}
         >
           <span className="relative z-10">

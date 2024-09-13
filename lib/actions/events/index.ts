@@ -13,14 +13,11 @@ import { CreateEvent } from "@/app/(create-event)/create/schema";
 import format from "date-fns/format";
 
 const updatedCreateEvent = async (values: CreateEvent) => {
-  // loop through each tag and insert into table (event_tags)
-
   const supabase = await createSupabaseServerClient();
 
   const previousEventsCount = await getPreviousEventsCount(
     values.basicDetails.name,
-    values.dates[0].date!,
-    ""
+    values.dates[0].date!
   );
   const cleanedEventName = cleanedEventUrlName(
     values.basicDetails.name,
@@ -435,16 +432,21 @@ const cleanedEventUrlName = (
 const getPreviousEventsCount = async (
   eventName: string,
   eventDate: Date,
-  eventId: string
+  eventId?: string
 ) => {
   const supabase = await createSupabaseServerClient();
   const formattedDate = format(eventDate, "yyyy-MM-dd");
-  const { data: eventsData } = await supabase
+  let query = supabase
     .from("events")
     .select("name")
     .eq("name", eventName)
-    .neq("id", eventId)
     .eq("min_date", formattedDate);
+
+  if (eventId) {
+    query = query.neq("id", eventId);
+  }
+
+  const { data: eventsData } = await query;
 
   if (!eventsData || eventsData.length === 0) {
     return 0;

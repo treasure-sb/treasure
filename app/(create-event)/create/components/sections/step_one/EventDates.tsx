@@ -95,7 +95,7 @@ export default function EventDates() {
         onClick={handleAppend}
       >
         <PlusIcon size={18} />
-        <span>Add Second Day</span>
+        <span>Add Another Day</span>
       </Button>
     </div>
   );

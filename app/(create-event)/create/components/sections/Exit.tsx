@@ -38,7 +38,6 @@ export default function Exit() {
                 <Link href="/home">Exit</Link>
               </Button>
             </div>
-            <Button>Save and Exit</Button>
           </div>
         </DialogContent>
       </Dialog>
