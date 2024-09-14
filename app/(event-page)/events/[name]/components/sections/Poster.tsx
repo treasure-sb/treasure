@@ -1,9 +1,8 @@
-import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { User } from "@supabase/supabase-js";
+import { EventWithDates } from "@/types/event";
 import LikeButton from "@/components/events/shared/LikeButton";
 import EventPoster from "@/components/events/shared/EventPoster";
-import { EventWithDates } from "@/types/event";
 
 export default async function Poster({
   event,
