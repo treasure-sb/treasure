@@ -1,6 +1,6 @@
 create extension if not exists "uuid-ossp" with schema "public" version '1.1';
 
-drop type "public"."eventwithdates";
+drop type "public"."eventwithdates" cascade;
 
 set check_function_bodies = off;
 
