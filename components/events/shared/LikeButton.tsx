@@ -19,7 +19,6 @@ export default function LikeButton({
   user?: User | null;
   isDisplay?: boolean;
 }) {
-  console.log(isDisplay);
   const queryClient = useQueryClient();
   const { push } = useRouter();
   const { data } = useQuery({
@@ -68,8 +67,6 @@ export default function LikeButton({
       <HeartIcon />
     </div>
   );
-
-  console.log(isDisplay);
 
   return data ? (
     <div
