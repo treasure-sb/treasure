@@ -13,6 +13,7 @@ import { updatedCreateEvent } from "@/lib/actions/events";
 import { useRouter } from "next/navigation";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
+import { sendEventCreatedEmail } from "@/lib/actions/emails";
 
 const menuVariants = {
   hidden: {
@@ -117,7 +118,9 @@ export default function MenuBar() {
       const eventUrl: string = data;
 
       toast.dismiss();
-      toast("Event created successfully");
+      // toast("Event created successfully");
+      await sendEventCreatedEmail(values.basicDetails.name);
+      toast("Event and email sent successfully");
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
