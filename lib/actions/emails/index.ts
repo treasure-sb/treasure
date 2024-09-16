@@ -206,7 +206,6 @@ const sendTicketPurchasedEmail = async (
 
 const sendEventCreatedEmail = async (eventName: string) => {
   try {
-    console.log("Sending event created email");
     await resend.emails.send({
       from: "Treasure <noreply@ontreasure.xyz",
       to: "treasure20110@gmail.com",

@@ -118,9 +118,8 @@ export default function MenuBar() {
       const eventUrl: string = data;
 
       toast.dismiss();
-      // toast("Event created successfully");
+      toast("Event created successfully");
       await sendEventCreatedEmail(values.basicDetails.name);
-      toast("Event and email sent successfully");
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
