@@ -8,10 +8,7 @@ export default function Join() {
         <p className="text-[30px] md:text-4xl lg:text-6xl font-semibold text-center leading-10 md:leading-[1.5] lg:leading-[1.5]">
           Join the Fastest Growing Community for Card Shows and Hobby Events
         </p>
-        <LandingButton
-          href="https://app.formbricks.com/s/clz90def600006xxfp1ewje9i"
-          text="Create Your Event with Treasure"
-        />
+        <LandingButton href="/create" text="Create Your Event with Treasure" />
       </div>
     </div>
   );

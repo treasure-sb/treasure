@@ -20,7 +20,7 @@
     --popover-foreground: 240 10% 3.9%;
     --primary: 164 60% 42%;
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 4.8% 97.9%;
+    --secondary: 60 60% 97%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -31,6 +31,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
+    --field: 60 33% 97%;
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.7rem;
     --scroll-bar-color: #c5c5c5;
@@ -64,6 +65,7 @@
     --destructive-foreground: 0 85.7% 97.3%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 18.9%;
+    --field: 20, 14%, 4%;
     --ring: 142.4 71.8% 29.2%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -84,6 +86,7 @@
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     scrollbar-gutter: stable;
   }

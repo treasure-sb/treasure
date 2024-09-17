@@ -6,7 +6,6 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { User } from "@supabase/supabase-js";
 import { EventDisplayData, EventWithDates } from "@/types/event";
 import { likeEvent, unlikeEvent } from "@/lib/actions/events";
-import { Tables } from "@/types/supabase";
 import FilledHeartIcon from "@/components/icons/FilledHeartIcon";
 import HeartIcon from "@/components/icons/HeartIcon";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
@@ -14,9 +13,11 @@ import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 export default function LikeButton({
   event,
   user,
+  isDisplay = false,
 }: {
   event: EventDisplayData | EventWithDates;
   user?: User | null;
+  isDisplay?: boolean;
 }) {
   const queryClient = useQueryClient();
   const { push } = useRouter();
@@ -79,7 +80,7 @@ export default function LikeButton({
       onClick={async () => await handleLike()}
       className="flex-shrink-0 hover:cursor-pointer"
     >
-      <HeartIcon />
+      <HeartIcon className={isDisplay ? "fill-white" : ""} />
     </div>
   ) : (
     <LoginFlowDialog trigger={loginDialogTrigger} />

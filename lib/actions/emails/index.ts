@@ -204,6 +204,19 @@ const sendTicketPurchasedEmail = async (
   }
 };
 
+const sendEventCreatedEmail = async (eventName: string) => {
+  try {
+    await resend.emails.send({
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: "treasure20110@gmail.com",
+      subject: `Event Created: ${eventName}`,
+      html: `<p>Event Created: ${eventName}<p>`,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   sendWelcomeEmail,
   sendVendorAppReceivedEmail,
@@ -216,4 +229,5 @@ export {
   sendTablePurchasedEmail,
   sendReminderVendorAppAcceptedEmail,
   sendHostMessageEmail,
+  sendEventCreatedEmail,
 };

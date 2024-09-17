@@ -37,7 +37,7 @@ export default async function Page({
   const { data, error } = await supabase
     .from("event_roles_invite_tokens")
     .select(
-      "role, event:events(*, dates:event_dates(date, start_time, end_time)), profile:profiles(id, first_name, last_name)"
+      "role, event:events(*, dates:event_dates(date, start_time, end_time), event_roles(*)), profile:profiles(id, first_name, last_name)"
     )
     .eq("id", id)
     .single();

@@ -20,12 +20,12 @@ export default async function VerifiedVendors({ user }: { user: User }) {
     .select(
       `application_status, 
        profile:profiles(avatar_url, username, first_name, last_name, business_name), 
-       event:events!inner(*, dates:event_dates(date, start_time, end_time), roles:event_roles!inner(user_id, role, status))`
+       event:events!inner(*, dates:event_dates(date, start_time, end_time), event_roles!inner(*))`
     )
     .eq("application_status", "ACCEPTED")
-    .eq("event.roles.user_id", user.id)
-    .in("event.roles.role", ["HOST", "COHOST", "STAFF"])
-    .eq("event.roles.status", "ACTIVE")
+    .eq("event.event_roles.user_id", user.id)
+    .in("event.event_roles.role", ["HOST", "COHOST", "STAFF"])
+    .eq("event.event_roles.status", "ACTIVE")
     .gte("event.max_date", today.toISOString())
     .returns<EventVendorQueryData[]>()
     .limit(6);

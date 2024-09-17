@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tables } from "@/types/supabase";
+import { Separator } from "@/components/ui/separator";
 
 interface tagsInputProps {
   initialTags?: Tables<"tags">[];
   allTags: Tables<"tags">[];
-  onTagsChange: (tags: Tables<"tags">[]) => void;
+  onTagsChange: (tags: any) => void;
 }
 
 const TagInput: React.FC<tagsInputProps> = ({
@@ -19,6 +20,7 @@ const TagInput: React.FC<tagsInputProps> = ({
   const initialTagNames = new Set(
     initialTags.map((tag) => tag.name.toLocaleLowerCase())
   );
+
   const filteredTags = allTags.filter((tag) => {
     const tagNameLower = tag.name.toLocaleLowerCase();
     return (
@@ -42,7 +44,7 @@ const TagInput: React.FC<tagsInputProps> = ({
     setInputValue(event.target.value);
   };
 
-  const handleTagAdd = (tag: Tables<"tags">) => {
+  const handleTagAdd = (tag: Tables<"tags"> | string) => {
     const newTags = [...initialTags, tag];
     onTagsChange(newTags);
   };
@@ -54,39 +56,44 @@ const TagInput: React.FC<tagsInputProps> = ({
 
   return (
     <div>
-      <div
-        className="flex flex-wrap gap-2 overflow-y-auto items-center"
-        style={{ maxHeight: "300px" }}
-      >
-        {initialTags.map((keyword, index) => (
-          <Badge
-            key={keyword.id}
-            onClick={() => removeKeyword(index)}
-            variant={"tertiary"}
-            className="cursor-pointer"
-          >
-            {keyword.name}
-            <X size={14} className="ml-2 cursor-pointer" />
-          </Badge>
-        ))}
-        <Input
-          type="text"
-          value={inputValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          className="my-1 flex-1 text-base h-fit placeholder:text-sm outline-none border-none"
-          placeholder="Search for tags..."
-        />
+      <div className="space-y-3">
+        <div
+          className="flex flex-wrap gap-2 overflow-y-auto items-center"
+          style={{ maxHeight: "300px" }}
+        >
+          {initialTags.map((keyword, index) => (
+            <Badge
+              key={index}
+              onClick={() => removeKeyword(index)}
+              variant={"tertiary"}
+              className="cursor-pointer"
+            >
+              {keyword.name}
+              <X size={14} className="ml-2 cursor-pointer" />
+            </Badge>
+          ))}
+        </div>
+        <div className="px-3 flex items-center bg-field rounded-sm">
+          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+          <Input
+            type="text"
+            value={inputValue}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            className="flex-1 text-base h-fit placeholder:text-sm outline-none border-none px-0"
+            placeholder="Search for tags or select from below..."
+          />
+        </div>
       </div>
+      <Separator className="my-4" />
       <div className="flex space-x-2 mt-2">
-        <p className="font-semibold">Tags:</p>
         <div className="flex gap-2 flex-wrap scrollbar-hidden">
-          {filteredTags.map((tag) => (
+          {filteredTags.map((tag, index) => (
             <Badge
               variant={"tertiary"}
-              className="flex-shrink-0 hover:cursor-pointer"
+              className="flex-shrink-0 hover:cursor-pointer opacity-60"
               onClick={() => handleTagAdd(tag)}
-              key={tag.id}
+              key={index}
             >
               {tag.name}
             </Badge>
