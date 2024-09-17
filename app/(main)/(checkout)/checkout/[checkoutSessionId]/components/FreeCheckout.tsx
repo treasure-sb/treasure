@@ -125,19 +125,22 @@ export default function FreeCheckout({
       checkoutSession;
 
     const { data, error } = await supabase
-      .rpc("purchase_tickets", {
+      .rpc("purchase_tickets_new", {
         ticket_id,
         event_id,
         user_id,
         purchase_quantity: quantity,
-        email,
         amount_paid: 0,
         promo_id,
+        fees_paid: 0,
+        first_name,
+        last_name,
+        phone: null,
+        email,
       })
       .returns<PurchaseTicketResult[]>();
 
     if (error) {
-      console.log(error);
       throw new Error("Failed to complete order");
     }
 

@@ -16,10 +16,12 @@ export default function AllTickets({
   event,
   tickets,
   user,
+  embed,
 }: {
   event: EventDisplayData;
   tickets: Tables<"tickets">[];
   user: User | null;
+  embed: boolean;
 }) {
   const ticketsOptions = tickets.map((ticket, index) => (
     <AccordionItem
@@ -34,7 +36,12 @@ export default function AllTickets({
         {ticket.description !== null && (
           <p className="text-black text-left flex mb-4">{ticket.description}</p>
         )}
-        <TicketCounter ticket={ticket} user={user} event={event} />
+        <TicketCounter
+          ticket={ticket}
+          user={user}
+          event={event}
+          embed={embed}
+        />
       </AccordionContent>
     </AccordionItem>
   ));

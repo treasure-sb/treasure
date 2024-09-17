@@ -69,30 +69,37 @@ function formatDinnerSelections(metadata: {
 }
 
 const handleTicketPurchase = async (
-  checkoutSessison: Tables<"checkout_sessions">,
+  checkoutSession: Tables<"checkout_sessions">,
   amountPaid: number,
   supabase: SupabaseClient<any, "public", any>,
+  first_name: string,
+  last_name: string,
+  phone: string,
   email: string,
   fees_paid?: number
 ) => {
   const { event_id, ticket_id, user_id, quantity, promo_id, metadata } =
-    checkoutSessison;
+    checkoutSession;
 
   const { data, error } = await supabase
-    .rpc("purchase_tickets", {
+    .rpc("purchase_tickets_new", {
       ticket_id,
       event_id,
       user_id,
       purchase_quantity: quantity,
-      email,
       amount_paid: amountPaid,
       metadata,
       promo_id,
       fees_paid,
+      first_name,
+      last_name,
+      phone,
+      email,
     })
     .returns<PurchaseTicketResult[]>();
 
   if (!data || error) {
+    console.log(error);
     throw new RefundError("Error purchasing tickets");
   }
 
@@ -127,7 +134,7 @@ const handleTicketPurchase = async (
     quantity: quantity,
     location: event_address,
     date: formattedEventDate,
-    guestName: `${profile!.first_name} ${profile!.last_name}`,
+    guestName: `${first_name} ${last_name}`,
     totalPrice: `$${totalPaid}`,
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
@@ -144,8 +151,9 @@ const handleTicketPurchase = async (
       ticketPurchaseEmailProps
     );
   }
-
-  if (profile!.phone) {
+  if (phone.length > 0) {
+    await sendAttendeeTicketPurchasedSMS(phone, event_name, formattedEventDate);
+  } else if (profile!.phone) {
     await sendAttendeeTicketPurchasedSMS(
       profile!.phone,
       event_name,
@@ -328,8 +336,16 @@ const handlePaymentIntentSucceeded = async (
     }
   }
 
-  const { checkoutSessionId, priceAfterPromo, promoCode, email, fees_paid } =
-    JSON.parse(JSON.stringify(session.metadata));
+  const {
+    checkoutSessionId,
+    priceAfterPromo,
+    promoCode,
+    first_name,
+    last_name,
+    phone,
+    email,
+    fees_paid,
+  } = JSON.parse(JSON.stringify(session.metadata));
 
   const { data: checkoutSessionData, error: checkoutSessionError } =
     await supabase
@@ -343,12 +359,16 @@ const handlePaymentIntentSucceeded = async (
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
+
   switch (checkoutSession.ticket_type) {
     case "TICKET":
       await handleTicketPurchase(
         checkoutSession,
         priceAfterPromo,
         supabase,
+        first_name,
+        last_name,
+        phone,
         email,
         fees_paid
       );

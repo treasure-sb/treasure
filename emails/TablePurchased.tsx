@@ -43,7 +43,7 @@ export default function TablePurchased({
   location = "8868 1st St, Los Angeles, CA 90048 United States of America",
   date = "Sat, March 3",
   guestName = "John Ventura",
-  businessName = "John's Cards",
+  businessName = null,
   itemInventory = "Pokemon, Yu-Gi-Oh, Magic the Gathering",
   totalPrice = "$3.00",
   numberOfVendors = 2,

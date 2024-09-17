@@ -13,10 +13,12 @@ export default function TicketCounter({
   ticket,
   user,
   event,
+  embed,
 }: {
   ticket: Tables<"tickets">;
   user: User | null;
   event: EventDisplayData;
+  embed: boolean;
 }) {
   const { push } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
@@ -39,18 +41,23 @@ export default function TicketCounter({
   };
 
   const handleCheckout = async () => {
+    console.log(embed);
     setCreatingCheckout(true);
     const { data, error } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      user_id: user?.id || null,
+      // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
+      user_id:
+        user?.id || embed ? "18a31b64-1b75-4c8b-b663-0dc6e4a01988" : null,
       quantity: ticketCount,
     });
 
+    console.log(data, error);
+
     if (data && !error) {
       const checkoutSession: Tables<"checkout_sessions"> = data;
-      push(`/checkout/${checkoutSession.id}`);
+      push(`/${embed ? "embed-" : ""}checkout/${checkoutSession.id}`);
     } else {
       toast.error("Error creating checkout session");
       setCreatingCheckout(false);
@@ -64,14 +71,16 @@ export default function TicketCounter({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      user_id: user?.id || null,
+      // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
+      user_id:
+        user?.id || embed ? "18a31b64-1b75-4c8b-b663-0dc6e4a01988" : null,
       quantity: ticketCount,
       price_type: "RSVP",
     });
 
     if (data && !error) {
       const checkoutSession: Tables<"checkout_sessions"> = data;
-      push(`/checkout/${checkoutSession.id}`);
+      push(`/${embed ? "embed-" : ""}checkout/${checkoutSession.id}`);
     } else {
       toast.error("Error creating checkout session");
       setCreatingCheckout(false);
