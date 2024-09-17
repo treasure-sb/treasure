@@ -23,6 +23,10 @@ import StripeInput from "./StripeInput";
 import { createPaymentIntent } from "@/lib/actions/stripe";
 import { PriceInfo } from "../page";
 import { createClient } from "@/utils/supabase/client";
+import PhoneInput, {
+  filterPhoneNumber,
+  formatPhoneNumber,
+} from "@/components/ui/custom/phone-input";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -101,15 +105,14 @@ export default function CheckoutForm({
 
     const { first_name, last_name, phone, email } = form.getValues();
 
+    const phoneWithCountryCode = `+1${phone}`;
+
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("*")
-      .or(`phone.eq.${phone}, email.eq.${email}`)
+      .or(`phone.eq.${phoneWithCountryCode}, email.eq.${email}`)
       .limit(1)
       .single();
-
-    console.log(profile);
-    console.log(first_name, last_name, phone, email);
 
     if (profile) {
       await supabase
@@ -127,7 +130,7 @@ export default function CheckoutForm({
       fee,
       first_name,
       last_name,
-      phone,
+      phoneWithCountryCode,
       email
     );
     const clientSecret = paymentIntent?.clientSecret || "";
@@ -155,6 +158,10 @@ export default function CheckoutForm({
   };
 
   const isFormValid = form.formState.isValid;
+
+  const setPhone = (phoneNumber: string) => {
+    form.setValue("phone", filterPhoneNumber(phoneNumber));
+  };
 
   return (
     <Form {...form}>
@@ -193,9 +200,13 @@ export default function CheckoutForm({
             name="phone"
             render={({ field }) => (
               <FormItem className="space-y-0">
-                <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <StripeInput placeholder="555-555-5555" {...field} />
+                  <PhoneInput
+                    className="shadow-[0px_2px_4px_rgba(0,0,0,0.5),0px_1px_6px_rgba(0,0,0,0.2)] border-[1px] rounded-[5px] p-3 bg-[#fafaf5] dark:bg-[#0c0a09] placeholder:text-[#808080] placeholder:text-sm border-[#f1f1e5] dark:border-[#28211e] focus-visible:border-primary/30"
+                    phoneNumber={formatPhoneNumber(field.value)}
+                    updatePhoneNumber={setPhone}
+                    placeholder="(555) 555-5555"
+                  />
                 </FormControl>
               </FormItem>
             )}
