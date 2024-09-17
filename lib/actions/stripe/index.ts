@@ -59,7 +59,6 @@ const updatePaymentIntent = async (
       }
     );
 
-    console.log(updatedPaymentIntent);
     return {
       clientSecret: updatedPaymentIntent.client_secret,
       id: updatedPaymentIntent.id,

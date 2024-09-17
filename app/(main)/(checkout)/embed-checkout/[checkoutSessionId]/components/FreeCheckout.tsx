@@ -29,7 +29,6 @@ const nameSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
-  phone: z.string().min(10, { message: "Invalid phone number" }),
   email: z.string().email({
     message: "Invalid email address",
   }),
@@ -49,7 +48,6 @@ export default function FreeCheckout({
     defaultValues: {
       first_name: "",
       last_name: "",
-      phone: "",
       email: "",
     },
   });
@@ -75,18 +73,18 @@ export default function FreeCheckout({
   };
 
   const handleFreeTicketPurchase = async () => {
-    const { first_name, last_name, phone, email } = form.getValues();
+    const { first_name, last_name, email } = form.getValues();
     const { ticket_id, quantity, event_id, promo_id } = checkoutSession;
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("*")
-      .or(`phone.eq.${phone}, email.eq.${email}`)
+      .eq("email", email)
       .limit(1)
       .single();
 
     // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
-    const user_id = profile?.user_id || "18a31b64-1b75-4c8b-b663-0dc6e4a01988";
+    const user_id = profile?.id || "18a31b64-1b75-4c8b-b663-0dc6e4a01988";
 
     if (profile) {
       await supabase
@@ -96,19 +94,22 @@ export default function FreeCheckout({
     }
 
     const { data, error } = await supabase
-      .rpc("purchase_tickets", {
+      .rpc("purchase_tickets_new", {
         ticket_id,
         event_id,
         user_id,
         purchase_quantity: quantity,
-        email,
         amount_paid: 0,
         promo_id,
+        fees_paid: 0,
+        first_name,
+        last_name,
+        phone: null,
+        email,
       })
       .returns<PurchaseTicketResult[]>();
 
     if (error) {
-      console.log(error);
       throw new Error("Failed to complete order");
     }
 
@@ -153,14 +154,6 @@ export default function FreeCheckout({
         purchasedTicketId,
         event_id,
         ticketPurchaseEmailProps
-      );
-    }
-
-    if (phone) {
-      await sendAttendeeTicketPurchasedSMS(
-        phone,
-        event_name,
-        formattedEventDate
       );
     }
   };
