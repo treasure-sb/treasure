@@ -19,12 +19,10 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/utils/supabase/client";
 import StripeInput from "./StripeInput";
 import { createPaymentIntent } from "@/lib/actions/stripe";
 import { PriceInfo } from "../page";
-import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
-import { validateUser } from "@/lib/actions/auth";
+import { createClient } from "@/utils/supabase/client";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -33,6 +31,7 @@ const nameSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required",
   }),
+  phone: z.string().min(10, { message: "Invalid phone number" }),
   email: z.string().email({
     message: "Invalid email address",
   }),
@@ -44,13 +43,11 @@ export type CheckoutPriceInfo = PriceInfo & {
 
 type CheckoutFormProps = {
   checkoutSession: Tables<"checkout_sessions">;
-  profile: Tables<"profiles"> | null;
   checkoutPriceInfo: CheckoutPriceInfo;
 };
 
 export default function CheckoutForm({
   checkoutSession,
-  profile,
   checkoutPriceInfo,
 }: CheckoutFormProps) {
   const { subtotal, promoCode, priceAfterPromo, fee, priceToCharge } =
@@ -64,17 +61,10 @@ export default function CheckoutForm({
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
     defaultValues: {
-      first_name: !profile
-        ? ""
-        : profile.first_name === "Anonymous"
-        ? ""
-        : profile.first_name,
-      last_name: !profile
-        ? ""
-        : profile.first_name === "Anonymous"
-        ? ""
-        : profile.last_name,
-      email: (profile && profile.email) || "",
+      first_name: "",
+      last_name: "",
+      phone: "",
+      email: "",
     },
   });
 
@@ -94,14 +84,6 @@ export default function CheckoutForm({
   }, [elements]);
 
   const onSubmit = async () => {
-    if (!profile) return;
-
-    const { first_name, last_name, email } = form.getValues();
-    await supabase
-      .from("profiles")
-      .update({ first_name, last_name })
-      .eq("id", profile.id);
-
     if (!stripe || !elements) {
       return;
     }
@@ -117,6 +99,25 @@ export default function CheckoutForm({
       return;
     }
 
+    const { first_name, last_name, phone, email } = form.getValues();
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .or(`phone.eq.${phone}, email.eq.${email}`)
+      .limit(1)
+      .single();
+
+    console.log(profile);
+    console.log(first_name, last_name, phone, email);
+
+    if (profile) {
+      await supabase
+        .from("checkout_sessions")
+        .update({ user_id: profile.id })
+        .eq("id", checkoutSession.id);
+    }
+
     const paymentIntent = await createPaymentIntent(
       priceToCharge,
       subtotal,
@@ -126,7 +127,7 @@ export default function CheckoutForm({
       fee,
       first_name,
       last_name,
-      profile.phone || "",
+      phone,
       email
     );
     const clientSecret = paymentIntent?.clientSecret || "";
@@ -135,7 +136,7 @@ export default function CheckoutForm({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${window.location.origin}/checkout/${checkoutSession.id}/success`,
+        return_url: `${window.location.origin}/embed-checkout/${checkoutSession.id}/success`,
       },
     });
 
@@ -154,32 +155,6 @@ export default function CheckoutForm({
   };
 
   const isFormValid = form.formState.isValid;
-
-  const PurchaseButton = (
-    <Button
-      className={`rounded-sm ${isLoading && "bg-primary/60"}`}
-      disabled={
-        isLoading || !stripe || !elements || !isFormValid || !isStripeComplete
-      }
-      id="submit"
-    >
-      Purchase {checkoutSession.ticket_type === "TABLE" ? "Table" : "Ticket"}
-      {checkoutSession.quantity > 1 ? "s" : ""}
-    </Button>
-  );
-
-  const onLoginSuccess = async () => {
-    const {
-      data: { user },
-    } = await validateUser();
-
-    if (!user) return;
-
-    await supabase
-      .from("checkout_sessions")
-      .update({ user_id: user.id })
-      .eq("id", checkoutSession.id);
-  };
 
   return (
     <Form {...form}>
@@ -215,6 +190,18 @@ export default function CheckoutForm({
           />
           <FormField
             control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <StripeInput placeholder="555-555-5555" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem className="space-y-0">
@@ -228,14 +215,20 @@ export default function CheckoutForm({
         </div>
         <PaymentElement id="payment-element" />
         <div className="w-full flex items-center justify-center">
-          {profile ? (
-            PurchaseButton
-          ) : (
-            <LoginFlowDialog
-              trigger={PurchaseButton}
-              onLoginSuccess={onLoginSuccess}
-            />
-          )}
+          <Button
+            className={`rounded-sm ${isLoading && "bg-primary/60"}`}
+            disabled={
+              isLoading ||
+              !stripe ||
+              !elements ||
+              !isFormValid ||
+              !isStripeComplete
+            }
+            id="submit"
+          >
+            Purchase Ticket
+            {checkoutSession.quantity > 1 ? "s" : ""}
+          </Button>
         </div>
       </form>
     </Form>

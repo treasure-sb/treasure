@@ -15,9 +15,12 @@ const createPaymentIntent = async (
   subtotal: number,
   priceAfterPromo: number,
   checkoutSessionId: string,
-  email: string,
   promoCode: string,
-  fee: number
+  fee: number,
+  first_name: string,
+  last_name: string,
+  phone: string,
+  email: string
 ) => {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: Math.round(totalPrice * 100),
@@ -30,8 +33,11 @@ const createPaymentIntent = async (
       subtotal,
       priceAfterPromo,
       promoCode,
-      email,
       fees_paid: fee.toFixed(2),
+      first_name,
+      last_name,
+      phone,
+      email,
     },
   });
 

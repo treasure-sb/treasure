@@ -29,9 +29,13 @@ export async function generateMetadata({
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: {
     name: string;
+  };
+  searchParams: {
+    embed?: string;
   };
 }) {
   const supabase = await createSupabaseServerClient();
@@ -66,7 +70,12 @@ export default async function Page({
           user={user}
         />
       ) : (
-        <AllTickets event={eventDisplayData} tickets={tickets} user={user} />
+        <AllTickets
+          event={eventDisplayData}
+          tickets={tickets}
+          user={user}
+          embed={searchParams.embed ? true : false}
+        />
       )}
     </main>
   );
