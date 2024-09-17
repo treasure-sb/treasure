@@ -49,7 +49,7 @@ export default function TicketCounter({
       ticket_type: "TICKET",
       // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
       user_id:
-        user?.id || embed ? "18a31b64-1b75-4c8b-b663-0dc6e4a01988" : null,
+        user?.id || embed ? "735d404d-ba70-4084-9967-5f778a8e1403" : null,
       quantity: ticketCount,
     });
 
@@ -73,7 +73,7 @@ export default function TicketCounter({
       ticket_type: "TICKET",
       // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
       user_id:
-        user?.id || embed ? "18a31b64-1b75-4c8b-b663-0dc6e4a01988" : null,
+        user?.id || embed ? "735d404d-ba70-4084-9967-5f778a8e1403" : null,
       quantity: ticketCount,
       price_type: "RSVP",
     });

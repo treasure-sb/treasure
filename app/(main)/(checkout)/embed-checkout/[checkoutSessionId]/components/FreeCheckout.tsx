@@ -84,7 +84,7 @@ export default function FreeCheckout({
       .single();
 
     // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
-    const user_id = profile?.id || "18a31b64-1b75-4c8b-b663-0dc6e4a01988";
+    const user_id = profile?.id || "735d404d-ba70-4084-9967-5f778a8e1403";
 
     if (profile) {
       await supabase
