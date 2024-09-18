@@ -107,9 +107,9 @@ export default function CheckoutForm({
 
     const phoneWithCountryCode = `+1${phone}`;
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id")
       .or(`phone.eq.${phoneWithCountryCode}, email.eq.${email}`)
       .limit(1)
       .single();
@@ -153,7 +153,6 @@ export default function CheckoutForm({
       toast.dismiss();
       toast.error("An error occurred. Please try again.");
     }
-
     setIsLoading(false);
   };
 

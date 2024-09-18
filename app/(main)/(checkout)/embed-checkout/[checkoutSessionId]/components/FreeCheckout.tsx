@@ -21,6 +21,7 @@ import StripeInput from "./StripeInput";
 import { sendTicketPurchasedEmail } from "@/lib/actions/emails";
 import { sendAttendeeTicketPurchasedSMS } from "@/lib/sms";
 import { formatEmailDate } from "@/lib/utils";
+import { TicketPurchasedProps } from "@/emails/TicketPurchased";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -76,15 +77,20 @@ export default function FreeCheckout({
     const { first_name, last_name, email } = form.getValues();
     const { ticket_id, quantity, event_id, promo_id } = checkoutSession;
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id")
       .eq("email", email)
       .limit(1)
       .single();
 
-    // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
-    const user_id = profile?.id || "735d404d-ba70-4084-9967-5f778a8e1403";
+    const { data: guestProfileData } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("guest", true)
+      .single();
+
+    const user_id: string = profile?.id || guestProfileData?.id;
 
     if (profile) {
       await supabase
@@ -136,7 +142,7 @@ export default function FreeCheckout({
       },
     });
 
-    const ticketPurchaseEmailProps = {
+    const ticketPurchaseEmailProps: TicketPurchasedProps = {
       eventName: event_name,
       posterUrl: publicUrl,
       ticketType: ticket_name,
@@ -146,6 +152,7 @@ export default function FreeCheckout({
       guestName: `${first_name} ${last_name}`,
       totalPrice: `Free`,
       eventInfo: event_description,
+      isGuestCheckout: !profile,
     };
 
     if (email) {

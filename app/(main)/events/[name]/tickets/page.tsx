@@ -61,6 +61,14 @@ export default async function Page({
   const isSampa =
     eventDisplayData.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3";
 
+  const { data: guestProfileData } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("guest", true)
+    .single();
+
+  const guestProfileId: string = guestProfileData?.id || "";
+
   return (
     <main className="max-w-lg m-auto">
       {isSampa ? (
@@ -75,6 +83,7 @@ export default async function Page({
           tickets={tickets}
           user={user}
           embed={searchParams.embed ? true : false}
+          guestProfileId={guestProfileId}
         />
       )}
     </main>

@@ -43,11 +43,40 @@ const createProfile = async (createProfileData: CreateProfileData) => {
         ...rest,
       },
     ])
-    .select();
+    .select()
+    .single();
 
-  const profileData: Tables<"profiles"> | null = data ? data[0] : null;
+  if (error) {
+    return { profileData: null, error };
+  }
+
+  const profileData: Tables<"profiles"> = data;
   await newProfileToBasic(profileData);
+  await assignGuestTickets(profileData.id || "", createProfileData);
   return { profileData, error };
+};
+
+const assignGuestTickets = async (
+  profileId: string,
+  createProfileData: CreateProfileData
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { phone, email } = createProfileData;
+  const { data: guestProfileData } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("guest", true)
+    .single();
+
+  const guestProfileId: string = guestProfileData?.id || "";
+
+  const { error } = await supabase
+    .from("event_tickets")
+    .update({ attendee_id: profileId })
+    .or(`phone.eq.${phone}, email.eq.${email}`)
+    .eq("attendee_id", guestProfileId);
+
+  return { error };
 };
 
 const updateProfile = async (

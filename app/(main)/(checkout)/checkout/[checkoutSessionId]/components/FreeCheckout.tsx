@@ -31,6 +31,7 @@ import { formatEmailDate } from "@/lib/utils";
 import { TablePurchasedProps } from "@/emails/TablePurchased";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
+import { TicketPurchasedProps } from "@/emails/TicketPurchased";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -167,7 +168,7 @@ export default function FreeCheckout({
       },
     });
 
-    const ticketPurchaseEmailProps = {
+    const ticketPurchaseEmailProps: TicketPurchasedProps = {
       eventName: event_name,
       posterUrl: publicUrl,
       ticketType: ticket_name,
@@ -177,6 +178,7 @@ export default function FreeCheckout({
       guestName: `${first_name} ${last_name}`,
       totalPrice: `Free`,
       eventInfo: event_description,
+      isGuestCheckout: false,
     };
 
     if (profile.email) {
@@ -192,7 +194,8 @@ export default function FreeCheckout({
       await sendAttendeeTicketPurchasedSMS(
         profile.phone,
         event_name,
-        formattedEventDate
+        formattedEventDate,
+        false
       );
     }
   };

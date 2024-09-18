@@ -149,6 +149,9 @@ INSERT INTO
         FROM random_names rn
     );
 
+-- create guest profile
+UPDATE public.profiles SET guest = true WHERE email = 'user100@example.com';
+
 -- create tags
 INSERT INTO public.tags(id, name) VALUES 
 	(gen_random_uuid(), 'One-Piece'), 

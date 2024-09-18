@@ -15,12 +15,20 @@ type HostSoldPayload = {
 const sendAttendeeTicketPurchasedSMS = async (
   phone: string,
   eventName: string,
-  eventDate: string
+  eventDate: string,
+  isGuestCheckout: boolean
 ) => {
-  return await sendSMS(
-    phone,
-    `🙌 You’re going to ${eventName} on ${eventDate}!\n\nView details and your tickets\n\n🎟️ontreasure.com/profile/tickets`
-  );
+  if (isGuestCheckout) {
+    return await sendSMS(
+      phone,
+      `🙌 You’re going to ${eventName} on ${eventDate}!\n\nTo access your tickets, check your inbox or sign up.\n\n🎟️www.ontreasure.com/login`
+    );
+  } else {
+    return await sendSMS(
+      phone,
+      `🙌 You’re going to ${eventName} on ${eventDate}!\n\nView details and your tickets.\n\n🎟️www.ontreasure.com/profile/tickets`
+    );
+  }
 };
 
 const sendVendorTablePurchasedSMS = async (
