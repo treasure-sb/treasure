@@ -65,44 +65,35 @@ const logoutUser = async () => {
 };
 
 const signUpUser = async ({ phone, email, signupInviteToken }: SignUpProps) => {
-  const supabase = await createSupabaseServerClient();
+  try {
+    const supabase = await createSupabaseServerClient();
 
-  if (!phone && !email) {
+    if (!phone && !email) {
+      throw new Error("Either phone or email must be provided.");
+    }
+
+    const signInPayload = phone ? { phone } : email ? { email } : null;
+
+    if (!signInPayload) {
+      throw new Error("Either phone or email must be provided.");
+    }
+
+    const { error } = await supabase.auth.signInWithOtp(signInPayload);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return { success: true };
+  } catch (err: any) {
     return {
       success: false,
       error: {
-        type: "input_validation_error",
-        message: "Either phone or email must be provided.",
+        type: "validation_error",
+        message: err.message,
       },
     };
   }
-
-  const signInPayload = phone ? { phone } : email ? { email } : null;
-  if (!signInPayload) {
-    return {
-      success: false,
-      error: {
-        type: "input_validation_error",
-        message: "Either phone or email must be provided.",
-      },
-    };
-  }
-
-  const { error } = await supabase.auth.signInWithOtp(signInPayload);
-
-  console.log(error);
-
-  if (error) {
-    return {
-      success: false,
-      error: {
-        type: "create_user_error",
-        message: "There was an error creating the user",
-      },
-    };
-  }
-
-  return { success: true };
 };
 
 const verifyUser = async ({ phone, email, code }: VerificationProps) => {
