@@ -192,8 +192,8 @@ const handleTicketPurchase = async (
     const hostSMSPayload: HostSoldPayload = {
       phones: teamPhoneNumbers,
       businessName: profile!.business_name,
-      firstName: profile!.first_name,
-      lastName: profile!.last_name,
+      firstName: first_name,
+      lastName: last_name,
       eventName: event_name,
       eventDate: formattedEventDate,
       eventCleanedName: event_cleaned_name,
