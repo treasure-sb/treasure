@@ -162,12 +162,18 @@ const handleTicketPurchase = async (
     );
   }
   if (phone.length > 0) {
-    await sendAttendeeTicketPurchasedSMS(phone, event_name, formattedEventDate);
+    await sendAttendeeTicketPurchasedSMS(
+      phone,
+      event_name,
+      formattedEventDate,
+      isGuestCheckout
+    );
   } else if (profile!.phone) {
     await sendAttendeeTicketPurchasedSMS(
       profile!.phone,
       event_name,
-      formattedEventDate
+      formattedEventDate,
+      isGuestCheckout
     );
   }
 

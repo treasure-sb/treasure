@@ -73,7 +73,7 @@ const assignGuestTickets = async (
   const { error } = await supabase
     .from("event_tickets")
     .update({ attendee_id: profileId })
-    .or(`email.eq.${email}`)
+    .or(`phone.eq.${phone}, email.eq.${email}`)
     .eq("attendee_id", guestProfileId);
 
   return { error };
