@@ -14,11 +14,13 @@ export default function TicketCounter({
   user,
   event,
   embed,
+  guestProfileId,
 }: {
   ticket: Tables<"tickets">;
   user: User | null;
   event: EventDisplayData;
   embed: boolean;
+  guestProfileId: string;
 }) {
   const { push } = useRouter();
   const [ticketCount, setTicketCount] = useState(1);
@@ -41,18 +43,14 @@ export default function TicketCounter({
   };
 
   const handleCheckout = async () => {
-    console.log(embed);
+    console.log(embed, guestProfileId);
     setCreatingCheckout(true);
     const { data, error } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
       // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
-      user_id: user
-        ? user.id
-        : embed
-        ? "735d404d-ba70-4084-9967-5f778a8e1403"
-        : null,
+      user_id: user ? user.id : embed ? guestProfileId : null,
       quantity: ticketCount,
     });
 
@@ -75,11 +73,7 @@ export default function TicketCounter({
       ticket_id: ticket.id,
       ticket_type: "TICKET",
       // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
-      user_id: user
-        ? user.id
-        : embed
-        ? "735d404d-ba70-4084-9967-5f778a8e1403"
-        : null,
+      user_id: user ? user.id : embed ? guestProfileId : null,
       quantity: ticketCount,
       price_type: "RSVP",
     });

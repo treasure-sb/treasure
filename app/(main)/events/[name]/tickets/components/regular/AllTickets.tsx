@@ -17,11 +17,13 @@ export default function AllTickets({
   tickets,
   user,
   embed,
+  guestProfileId,
 }: {
   event: EventDisplayData;
   tickets: Tables<"tickets">[];
   user: User | null;
   embed: boolean;
+  guestProfileId: string;
 }) {
   const ticketsOptions = tickets.map((ticket, index) => (
     <AccordionItem
@@ -41,6 +43,7 @@ export default function AllTickets({
           user={user}
           event={event}
           embed={embed}
+          guestProfileId={guestProfileId}
         />
       </AccordionContent>
     </AccordionItem>
