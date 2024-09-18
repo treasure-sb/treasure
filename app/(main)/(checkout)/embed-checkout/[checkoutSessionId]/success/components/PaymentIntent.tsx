@@ -143,9 +143,9 @@ export default function PaymentIntent({
                     </div>
                   </div>
                   <div className="flex justify-center">
-                    <Link href="/profile/tickets">
-                      <Button className="rounded-sm w-32 md:w-40">
-                        View {"Tickets"}
+                    <Link href="/login">
+                      <Button className="rounded-sm w-fit">
+                        Sign up to access your tickets
                       </Button>
                     </Link>
                   </div>

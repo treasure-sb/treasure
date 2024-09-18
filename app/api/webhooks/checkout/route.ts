@@ -18,10 +18,11 @@ import {
 import { headers } from "next/headers";
 import { PurchaseTicketResult } from "@/types/tickets";
 import { PurchaseTableResult } from "@/types/tables";
-import { formatEmailDate } from "@/lib/utils";
+import { USDollar, formatEmailDate } from "@/lib/utils";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
+import { TicketPurchasedProps } from "@/emails/TicketPurchased";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -103,6 +104,14 @@ const handleTicketPurchase = async (
     throw new RefundError("Error purchasing tickets");
   }
 
+  const { data: guestProfileData } = await supabase
+    .from("profiles")
+    .select("guest")
+    .eq("id", user_id)
+    .single();
+
+  const isGuestCheckout: boolean = guestProfileData?.guest || false;
+
   const {
     event_address,
     event_cleaned_name,
@@ -127,7 +136,7 @@ const handleTicketPurchase = async (
     : numericAmountPaid;
   const formattedEventDate = formatEmailDate(event_dates);
 
-  const ticketPurchaseEmailProps = {
+  const ticketPurchaseEmailProps: TicketPurchasedProps = {
     eventName: event_name,
     posterUrl,
     ticketType: ticket_name,
@@ -135,12 +144,13 @@ const handleTicketPurchase = async (
     location: event_address,
     date: formattedEventDate,
     guestName: `${first_name} ${last_name}`,
-    totalPrice: `$${totalPaid}`,
+    totalPrice: USDollar.format(totalPaid),
     eventInfo: event_description,
     dinnerSelection: formatDinnerSelections(
       metadata as { [key: string]: Json | undefined }
     ),
     fees_paid: fees_paid,
+    isGuestCheckout,
   };
 
   if (email) {
@@ -275,7 +285,7 @@ const handleTablePurchase = async (
     guestName: `${vendor_first_name} ${vendor_last_name}`,
     businessName: vendor_business_name,
     itemInventory: vendor_inventory,
-    totalPrice: `$${totalPaid}`,
+    totalPrice: USDollar.format(totalPaid),
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
   };

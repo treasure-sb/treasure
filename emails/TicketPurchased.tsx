@@ -31,6 +31,7 @@ export interface TicketPurchasedProps {
   eventInfo: string;
   dinnerSelection?: string;
   fees_paid?: number | null;
+  isGuestCheckout: boolean;
 }
 
 export default function TicketPurchased({
@@ -44,7 +45,7 @@ export default function TicketPurchased({
   totalPrice = "$3.00",
   eventInfo = "Round 2 was the best one yet of our shows! They just get bigger and bigger and round 3 will be no exception. 3/3/24 will have free public street parking and food set up in the back of the show which includes bagel with cream cheese, butter, peanut butter and hot dogs for lunch at an affordable rate. We will have over 60 vendors showcasing the very best of their products including Pokemon, plush, one piece, yugioh and many more! Best place to spend your tax refund! The first show was inspired by corocoro mew and our tee shirt design was made and finalized. Round 3 is inspired by the world renowned classic game",
   dinnerSelection,
-  fees_paid = null,
+  isGuestCheckout,
 }: TicketPurchasedProps) {
   return (
     <Html>
@@ -74,9 +75,15 @@ export default function TicketPurchased({
               </Heading>
               <Button
                 className="bg-primary text-foreground font-normal rounded-sm px-6 py-4"
-                href="https://www.ontreasure.com/profile/tickets"
+                href={
+                  isGuestCheckout
+                    ? "https://www.ontreasure.com/login"
+                    : "https://www.ontreasure.com/profile/tickets"
+                }
               >
-                View Tickets
+                {isGuestCheckout
+                  ? "Sign up to access your tickets"
+                  : "View Tickets"}
               </Button>
               <Heading className="text-foreground/80 font-normal" as="h5">
                 Also attached below for offline access
