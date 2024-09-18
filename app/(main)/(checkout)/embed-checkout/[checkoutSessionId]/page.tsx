@@ -6,6 +6,7 @@ import { getEventDisplayData, getEventFromId } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { CheckoutTicketInfo } from "../../types";
 import { getFeeInfo } from "@/lib/helpers/subscriptions";
+import Back from "./components/Back";
 
 export type PriceInfo = {
   subtotal: number;
@@ -148,6 +149,7 @@ export default async function Page({
 
   return (
     <main className="max-w-6xl m-auto">
+      <Back cleanedName={event.cleaned_name} />
       <div className="flex flex-col space-y-14 items-center md:flex-row md:items-start md:justify-center md:space-x-20 md:space-y-0">
         <OrderSummary
           event={eventDisplay}
