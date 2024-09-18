@@ -43,18 +43,14 @@ export default function TicketCounter({
   };
 
   const handleCheckout = async () => {
-    console.log(embed, guestProfileId);
     setCreatingCheckout(true);
     const { data, error } = await createCheckoutSession({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
       user_id: user ? user.id : embed ? guestProfileId : null,
       quantity: ticketCount,
     });
-
-    console.log(data, error);
 
     if (data && !error) {
       const checkoutSession: Tables<"checkout_sessions"> = data;
@@ -72,7 +68,6 @@ export default function TicketCounter({
       event_id: event.id,
       ticket_id: ticket.id,
       ticket_type: "TICKET",
-      // prod dummy account id: "735d404d-ba70-4084-9967-5f778a8e1403"
       user_id: user ? user.id : embed ? guestProfileId : null,
       quantity: ticketCount,
       price_type: "RSVP",

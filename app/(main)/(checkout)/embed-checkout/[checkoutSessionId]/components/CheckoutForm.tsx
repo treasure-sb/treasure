@@ -109,7 +109,7 @@ export default function CheckoutForm({
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id")
       .or(`phone.eq.${phoneWithCountryCode}, email.eq.${email}`)
       .limit(1)
       .single();
