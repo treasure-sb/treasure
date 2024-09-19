@@ -152,9 +152,10 @@ const buildEventsQuery = async (
       .order("featured", { ascending: false })
       .order("min_date")
       .order("date", { ascending: true, referencedTable: "dates" })
+      .order("id", { ascending: true })
       .range(startIndex, endIndex);
   } else {
-    query = query.range(startIndex, endIndex);
+    query = query.order("id", { ascending: true }).range(startIndex, endIndex);
   }
 
   const { data, error } = await query;
