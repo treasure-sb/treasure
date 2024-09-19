@@ -136,7 +136,7 @@ export default async function Page({
     : 0;
 
   const totalFee =
-    price_type === "RSVP" || isLegacy
+    price_type === "RSVP" || isLegacy || priceAfterPromo === 0
       ? 0
       : Math.max(feeAmount + stripeFee, 0.5);
 
