@@ -12,6 +12,8 @@ import {
   PaymentElement,
   useStripe,
   useElements,
+  PaymentRequestButtonElement,
+  ExpressCheckoutElement,
 } from "@stripe/react-stripe-js";
 import { useState, useEffect } from "react";
 import { Tables } from "@/types/supabase";
@@ -25,6 +27,8 @@ import { createPaymentIntent } from "@/lib/actions/stripe";
 import { PriceInfo } from "../page";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -60,6 +64,7 @@ export default function CheckoutForm({
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
   const [isStripeComplete, setIsStripeComplete] = useState(false);
+  const [isExpressReady, setIsExpressReady] = useState(false);
 
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -110,6 +115,7 @@ export default function CheckoutForm({
     toast.loading("Processing payment...");
 
     const { error: submitError } = await elements.submit();
+
     if (submitError) {
       toast.dismiss();
       toast.error(submitError.message);
@@ -188,7 +194,7 @@ export default function CheckoutForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="space-y-2">
+        <div className={cn("space-y-2", isExpressReady && "mb-6")}>
           <FormField
             control={form.control}
             name="first_name"
@@ -226,6 +232,37 @@ export default function CheckoutForm({
             )}
           />
         </div>
+        <div
+          className={cn(
+            "pointer-events-none opacity-70 transition duration-500",
+            form.formState.isValid ? "opacity-100 pointer-events-auto" : ""
+          )}
+        >
+          <ExpressCheckoutElement
+            options={{
+              paymentMethods: {
+                applePay: "always",
+                link: "auto",
+                paypal: "auto",
+              },
+            }}
+            onConfirm={async () => {
+              await onSubmit();
+            }}
+            onReady={({ availablePaymentMethods }) => {
+              setIsExpressReady(availablePaymentMethods !== undefined);
+            }}
+          />
+        </div>
+        {isExpressReady && (
+          <div className="flex space-x-4 items-center">
+            <Separator className="w-full shrink" />
+            <p className="text-sm text-foreground/60 whitespace-nowrap">
+              Or pay another way
+            </p>
+            <Separator className="w-full shrink" />
+          </div>
+        )}
         <PaymentElement id="payment-element" />
         <div className="w-full flex items-center justify-center">
           {profile ? (

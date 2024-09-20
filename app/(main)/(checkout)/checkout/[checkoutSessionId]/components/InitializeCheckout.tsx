@@ -1,6 +1,6 @@
 "use client";
 
-import { Elements } from "@stripe/react-stripe-js";
+import { Elements, ExpressCheckoutElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
@@ -11,16 +11,16 @@ import CheckoutForm, { CheckoutPriceInfo } from "./CheckoutForm";
 import PromoCode from "./PromoCode";
 import FreeCheckout from "./FreeCheckout";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
-);
-
 type InitializeCheckoutProps = {
   checkoutSession: Tables<"checkout_sessions">;
   event: EventDisplayData;
   profile: Tables<"profiles"> | null;
   priceInfo: PriceInfo;
 };
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
+);
 
 export default function InitializeCheckout({
   checkoutSession,
