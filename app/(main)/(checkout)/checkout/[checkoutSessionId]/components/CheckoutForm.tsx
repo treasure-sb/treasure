@@ -243,7 +243,7 @@ export default function CheckoutForm({
               paymentMethods: {
                 applePay: "always",
                 link: "auto",
-                paypal: "auto",
+                googlePay: "always",
               },
             }}
             onConfirm={async () => {
