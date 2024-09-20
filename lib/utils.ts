@@ -82,9 +82,9 @@ export const formatEmailDate = (dates: string[]) => {
   let formattedEventDate: string = "";
   dates.map((date, i) => {
     if (dates.length === i + 1) {
-      formattedEventDate += moment(date).format("dddd, MMM Do");
+      formattedEventDate += formatDate(date);
     } else {
-      formattedEventDate += moment(date).format("dddd, MMM Do") + " / ";
+      formattedEventDate += formatDate(date) + " / ";
     }
   });
   return formattedEventDate;
