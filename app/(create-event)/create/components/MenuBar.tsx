@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
 import { sendEventCreatedEmail } from "@/lib/actions/emails";
+import { getProfile } from "@/lib/helpers/profiles";
 
 const menuVariants = {
   hidden: {
@@ -63,7 +64,7 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 };
 
 export default function MenuBar() {
-  const { currentStep, user, dispatch } = useCreateEvent();
+  const { currentStep, user, preview, dispatch } = useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
@@ -156,7 +157,9 @@ export default function MenuBar() {
     return null;
   }
 
-  const MenuButton = ({ className = "" }: { className?: string } = {}) => {
+  const ContinueSubmitButton = ({
+    className = "",
+  }: { className?: string } = {}) => {
     return (
       <Button
         type="button"
@@ -178,22 +181,48 @@ export default function MenuBar() {
     );
   };
 
+  const PreviewButton = () => {
+    return (
+      <Button
+        type="button"
+        variant={"tertiary"}
+        onClick={() => {
+          dispatch({
+            type: "setPreview",
+            payload: preview ? false : true,
+          });
+        }}
+        className={cn(
+          "w-full h-full rounded-none relative overflow-hidden",
+          isDesktop && "rounded-sm"
+        )}
+      >
+        <span className="relative z-10">{preview ? "Edit" : "Preview"}</span>
+      </Button>
+    );
+  };
+
   const onLoggedIn = async () => {
     const {
       data: { user },
     } = await validateUser();
 
+    const { profile } = await getProfile(user?.id);
+
     dispatch({
       type: "setUser",
-      payload: user,
+      payload: profile,
     });
   };
 
   const LoggedMenuButton =
     !isLoggedIn && currentStep === CurrentStep.STEP_TWO ? (
-      <LoginFlowDialog trigger={MenuButton()} onLoginSuccess={onLoggedIn} />
+      <LoginFlowDialog
+        trigger={ContinueSubmitButton()}
+        onLoginSuccess={onLoggedIn}
+      />
     ) : (
-      <MenuButton />
+      <ContinueSubmitButton />
     );
 
   const desktopMenuBar = (
@@ -201,12 +230,15 @@ export default function MenuBar() {
       variants={menuVariants}
       initial="hidden"
       animate="visible"
-      className="fixed bottom-0 w-full -mx-8 flex items-center justify-center py-4"
+      className="fixed bottom-0 w-full -mx-8 flex items-center justify-center py-4 z-50"
     >
       <div className="rounded-lg bg-background w-full max-w-2xl lg:max-w-5xl p-4 border border-foreground h-24 flex items-center justify-center">
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
-          <div className="flex space-x-2">{LoggedMenuButton}</div>
+          <div className="flex space-x-2">
+            <PreviewButton />
+            {LoggedMenuButton}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -217,7 +249,7 @@ export default function MenuBar() {
       variants={menuVariants}
       initial="hidden"
       animate="visible"
-      className="-mx-4 sm:-mx-8 w-full bg-background fixed bottom-0"
+      className="-mx-4 sm:-mx-8 w-full bg-background fixed bottom-0 z-50"
     >
       <ProgressBar currentStep={currentStep} />
       <div className="px-0 py-0 flex space-x-0 h-12">{LoggedMenuButton}</div>

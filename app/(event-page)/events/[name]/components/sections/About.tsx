@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { EventWithDates } from "@/types/event";
 import { Button } from "@/components/ui/button";
 import { useViewportSize } from "@mantine/hooks";
 
 const MAX_CHARS_MOBILE = 400;
 
-export default function About({ event }: { event: EventWithDates }) {
+export default function About({ description }: { description: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -26,19 +25,18 @@ export default function About({ event }: { event: EventWithDates }) {
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
-  const shouldTruncate =
-    isMobile && event.description.length > MAX_CHARS_MOBILE;
+  const shouldTruncate = isMobile && description.length > MAX_CHARS_MOBILE;
   const displayText =
     !isMobile || isExpanded || !shouldTruncate
-      ? event.description
-      : `${event.description.slice(0, MAX_CHARS_MOBILE)}...`;
+      ? description
+      : `${description.slice(0, MAX_CHARS_MOBILE)}...`;
 
   if (!isClient) {
     return (
       <section className="overflow-hidden">
         <h3 className="font-semibold text-lg mb-2">About</h3>
         <p className="leading-2 whitespace-pre-line text-sm md:text-base text-foreground/80">
-          {event.description}
+          {description}
         </p>
       </section>
     );
@@ -53,9 +51,9 @@ export default function About({ event }: { event: EventWithDates }) {
             isMobile && !isExpanded && shouldTruncate
               ? "max-h-[12em] overflow-hidden"
               : ""
-          }`}
+          } ${!displayText ? "italic" : ""}`}
         >
-          {displayText}
+          {displayText ? displayText : "No description provided"}
         </p>
         {isMobile && shouldTruncate && !isExpanded && (
           <div

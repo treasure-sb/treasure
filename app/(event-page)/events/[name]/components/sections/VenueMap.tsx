@@ -7,22 +7,27 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import SingleImageOverlay from "@/components/ui/custom/single-image-overlay";
 import Image from "next/image";
-import { EventWithDates } from "@/types/event";
 
 export default function VenueMap({
-  event,
+  venueMap,
   venueMapPublicUrl,
 }: {
-  event: EventWithDates;
-  venueMapPublicUrl: string;
+  venueMap: string | null;
+  venueMapPublicUrl: string | File;
 }) {
   const [showOverlay, setShowOverlay] = useState(false);
   const eventHasVenueMap =
-    event.venue_map_url && event.venue_map_url != "venue_map_coming_soon";
+    (venueMap && venueMap != "venue_map_coming_soon") ||
+    venueMapPublicUrl instanceof File;
 
   const handleClose = () => {
     setShowOverlay(false);
   };
+
+  const venueMapImageSrc =
+    typeof venueMapPublicUrl === "string"
+      ? venueMapPublicUrl
+      : URL.createObjectURL(venueMapPublicUrl);
 
   return (
     eventHasVenueMap && (
@@ -39,14 +44,14 @@ export default function VenueMap({
           <Image
             className="rounded-xl object-cover"
             alt="venue map image"
-            src={venueMapPublicUrl}
+            src={venueMapImageSrc}
             layout="fill"
           />
         </AspectRatio>
         <AnimatePresence>
           {showOverlay && (
             <SingleImageOverlay
-              photoSrc={venueMapPublicUrl}
+              photoSrc={venueMapImageSrc}
               handleClose={handleClose}
             />
           )}

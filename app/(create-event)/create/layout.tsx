@@ -1,4 +1,3 @@
-import Image from "next/image";
 import BackgroundImage from "./components/BackgroundImage";
 
 export default function CreateEventLayout({

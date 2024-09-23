@@ -1,8 +1,9 @@
 import { Suspense } from "react";
-import createSupabaseServerClient from "@/utils/supabase/server";
-import CreateEventForm from "./components/CreateEventForm";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
+import CreateEvent from "./components/CreateEvent";
+import createSupabaseServerClient from "@/utils/supabase/server";
+import { getProfile } from "@/lib/helpers/profiles";
 
 export default async function Page() {
   const supabase = await createSupabaseServerClient();
@@ -13,9 +14,11 @@ export default async function Page() {
     data: { user },
   } = await validateUser();
 
+  const { profile } = await getProfile(user?.id);
+
   return (
     <Suspense>
-      <CreateEventForm tags={tags} user={user} />
+      <CreateEvent tags={tags} user={profile} />
     </Suspense>
   );
 }

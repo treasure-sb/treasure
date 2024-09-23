@@ -76,6 +76,7 @@ export default function EventDetails() {
                 <TextareaWithLabel
                   label="Description"
                   placeholder="Add a description of your event"
+                  rows={10}
                   {...field}
                   error={errors.basicDetails?.description}
                 />
