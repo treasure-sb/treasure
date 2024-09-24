@@ -60,6 +60,7 @@ export default function EventDetails() {
               <FormLabel className="text-foreground">Venue Address</FormLabel>
               <FormControl>
                 <Autocomplete
+                  value={field.value.address}
                   onChange={field.onChange}
                   error={errors.basicDetails?.venueAddress?.address}
                 />
@@ -76,7 +77,7 @@ export default function EventDetails() {
                 <TextareaWithLabel
                   label="Description"
                   placeholder="Add a description of your event"
-                  rows={10}
+                  rows={8}
                   {...field}
                   error={errors.basicDetails?.description}
                 />

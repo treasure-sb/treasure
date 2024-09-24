@@ -252,7 +252,10 @@ export default function MenuBar() {
       className="-mx-4 sm:-mx-8 w-full bg-background fixed bottom-0 z-50"
     >
       <ProgressBar currentStep={currentStep} />
-      <div className="px-0 py-0 flex space-x-0 h-12">{LoggedMenuButton}</div>
+      <div className="px-0 py-0 flex space-x-0 h-12">
+        <PreviewButton />
+        {LoggedMenuButton}
+      </div>
     </motion.div>
   );
 

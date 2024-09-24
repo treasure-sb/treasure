@@ -3,6 +3,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
 import { EventWithDates } from "@/types/event";
+import { TagData } from "../types";
 import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
 import VendorTables from "./tables/VendorTables";
@@ -18,7 +19,6 @@ import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Footer from "@/components/shared/Footer";
-import { TagData } from "../types";
 
 export default async function EventPage({ event }: { event: EventWithDates }) {
   const {
