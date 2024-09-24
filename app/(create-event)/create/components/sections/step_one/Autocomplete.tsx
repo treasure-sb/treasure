@@ -14,9 +14,11 @@ import type { Libraries } from "@react-google-maps/api";
 import { FieldError } from "react-hook-form";
 
 const PlacesAutocomplete = ({
+  fieldValue,
   onChange,
   error,
 }: {
+  fieldValue: string;
   onChange: (value: any) => void;
   error?: FieldError;
 }) => {
@@ -29,7 +31,6 @@ const PlacesAutocomplete = ({
   } = usePlacesAutocomplete();
 
   const handleSelect = async (address: string) => {
-    console.log(address);
     setValue(address, false);
     clearSuggestions();
     const result = await getGeocode({ address });
@@ -50,7 +51,7 @@ const PlacesAutocomplete = ({
   return (
     <Command shouldFilter={false}>
       <CommandInput
-        value={value}
+        value={value || fieldValue}
         onValueChange={(newValue) => {
           setValue(newValue);
           onChange({
@@ -86,9 +87,11 @@ const PlacesAutocomplete = ({
 
 const libraries: Libraries = ["places"];
 export default function Autocomplete({
+  value,
   onChange,
   error,
 }: {
+  value: string;
   onChange: (value: any) => void;
   error?: FieldError;
 }) {
@@ -99,7 +102,13 @@ export default function Autocomplete({
 
   return (
     <div>
-      {isLoaded && <PlacesAutocomplete onChange={onChange} error={error} />}
+      {isLoaded && (
+        <PlacesAutocomplete
+          onChange={onChange}
+          error={error}
+          fieldValue={value}
+        />
+      )}
     </div>
   );
 }

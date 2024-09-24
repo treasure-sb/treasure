@@ -10,11 +10,13 @@ export enum CurrentStep {
 export type CreateEventState = {
   currentStep: CurrentStep;
   tags: Tables<"tags">[];
-  user: User | null;
+  user: Tables<"profiles"> | null;
+  preview: boolean;
 };
 type CreateEventActions =
   | { type: "setCurrentStep"; payload: CurrentStep }
-  | { type: "setUser"; payload: User | null };
+  | { type: "setUser"; payload: Tables<"profiles"> | null }
+  | { type: "setPreview"; payload: boolean };
 
 type CreateEventContextType = {
   state: CreateEventState;
@@ -25,6 +27,7 @@ const initialState = {
   currentStep: CurrentStep.STEP_ONE,
   tags: [],
   user: null,
+  preview: false,
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {
@@ -33,6 +36,8 @@ const reducer = (state: CreateEventState, action: CreateEventActions) => {
       return { ...state, currentStep: action.payload };
     case "setUser":
       return { ...state, user: action.payload };
+    case "setPreview":
+      return { ...state, preview: action.payload };
     default:
       return state;
   }

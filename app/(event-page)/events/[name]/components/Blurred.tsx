@@ -10,7 +10,7 @@ export default function Blurred({
   opacity = 0.3,
   marginX = true,
 }: {
-  posterUrl: string;
+  posterUrl: string | File | undefined;
   opacity?: number;
   marginX?: boolean;
 }) {
@@ -19,6 +19,13 @@ export default function Blurred({
     "linear-gradient(to bottom, transparent 75%, #121212 100%)";
   const lightGradient =
     "linear-gradient(to bottom, transparent 75%, #f3f4f6 100%)";
+
+  const imageSrc =
+    typeof posterUrl === "string"
+      ? posterUrl
+      : posterUrl instanceof File
+      ? URL.createObjectURL(posterUrl)
+      : "/static/placeholder_poster.jpg";
 
   return (
     <motion.div
@@ -33,7 +40,7 @@ export default function Blurred({
       <Image
         className="rounded-xl w-full h-[350px] -z-20 absolute object-cover object-top inset-0 pointer-events-none blur-2xl"
         alt="blurred event poster"
-        src={posterUrl}
+        src={imageSrc}
         width={1000}
         height={1000}
       />

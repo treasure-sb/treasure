@@ -3,14 +3,17 @@
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import CreateEventCard from "../../CreateEventCard";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
+import CreateEventCard from "../../CreateEventCard";
 
 export default function EventVenueMap() {
-  const { control } = useFormContext<CreateEvent>();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const { control, getValues } = useFormContext<CreateEvent>();
+  const venueMap = getValues("venueMap");
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    venueMap ? URL.createObjectURL(venueMap as File) : null
+  );
 
   return (
     <FormField
@@ -31,7 +34,7 @@ export default function EventVenueMap() {
                       alt="Uploaded image"
                       className="w-full h-full object-cover rounded-md"
                     />
-                    <div className="absolute inset-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center rounded-md">
                       <h1 className="hidden group-hover:block text-white">
                         Replace Map
                       </h1>

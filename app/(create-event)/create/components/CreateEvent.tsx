@@ -5,24 +5,19 @@ import {
   CreateEventState,
   CurrentStep,
 } from "../context/CreateEventContext";
-import { Form } from "@/components/ui/form";
 import { eventSchema, type CreateEvent } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
-import { sectionVariants } from "./CreateEventFormSections";
 import { Tables } from "@/types/supabase";
-import Exit from "./sections/Exit";
+import CreateEventOrPreview from "./CreateEventOrPreview";
 import MenuBar from "./MenuBar";
-import CreateEventFormSections from "./CreateEventFormSections";
-import { User } from "@supabase/supabase-js";
 
-export default function CreateEventForm({
+export default function CreateEvent({
   tags,
   user,
 }: {
   tags: Tables<"tags">[];
-  user: User | null;
+  user: Tables<"profiles"> | null;
 }) {
   const initialState: CreateEvent = {
     basicDetails: {
@@ -71,29 +66,16 @@ export default function CreateEventForm({
     currentStep: CurrentStep.STEP_ONE,
     tags: tags,
     user: user,
+    preview: false,
   };
 
   return (
     <CreateEventProvider initialState={initalCreateEventState}>
       <FormProvider {...form}>
-        <Form {...form}>
-          <main className="min-h-screen flex flex-col">
-            <form className="pb-14 md:pb-28">
-              <div className="max-w-lg lg:max-w-6xl mx-auto space-y-4">
-                <div className="h-1" />
-                <motion.div
-                  variants={sectionVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Exit />
-                </motion.div>
-                <CreateEventFormSections />
-              </div>
-            </form>
-            <MenuBar />
-          </main>
-        </Form>
+        <main className="min-h-screen">
+          <CreateEventOrPreview form={form} />
+          <MenuBar />
+        </main>
       </FormProvider>
     </CreateEventProvider>
   );

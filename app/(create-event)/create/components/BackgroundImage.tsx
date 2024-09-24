@@ -23,8 +23,9 @@ export default function BackgroundImage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 1 }}
-        className={cn("absolute inset-0")}
+        className={cn("absolute inset-0 -z-10")}
       >
         <Image
           src="/static/create_event.jpg"

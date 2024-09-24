@@ -7,12 +7,18 @@ export default function EventPoster({
   posterUrl,
   hidden,
 }: {
-  posterUrl: string;
+  posterUrl: string | File | undefined;
   hidden?: boolean;
 }) {
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
   const skeletonDisplay = loading ? "inline-block" : "hidden";
+  const imageSrc =
+    typeof posterUrl === "string"
+      ? posterUrl
+      : posterUrl instanceof File
+      ? URL.createObjectURL(posterUrl)
+      : "/static/placeholder_poster.jpg";
 
   return (
     <div className="relative">
@@ -21,7 +27,7 @@ export default function EventPoster({
           hidden ? "invisible" : imageVisibility
         }`}
         alt="event poster image"
-        src={posterUrl}
+        src={imageSrc}
         width={1000}
         height={1000}
         priority

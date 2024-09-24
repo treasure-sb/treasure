@@ -9,8 +9,12 @@ import { useFormContext } from "react-hook-form";
 import CreateEventCard from "../../CreateEventCard";
 
 export default function EventPoster() {
-  const { control } = useFormContext<CreateEvent>();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const { control, getValues } = useFormContext<CreateEvent>();
+  const poster = getValues("poster");
+
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    poster ? URL.createObjectURL(poster as File) : null
+  );
 
   return (
     <FormField
@@ -31,7 +35,7 @@ export default function EventPoster() {
                       alt="Uploaded image"
                       className="w-full h-full object-cover rounded-md"
                     />
-                    <div className="absolute inset-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 hover:bg-black hover:bg-opacity-50 transition duration-300 flex items-center justify-center rounded-md">
                       <h1 className="hidden group-hover:block text-white">
                         Replace Poster
                       </h1>

@@ -1,8 +1,9 @@
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
-import { Tables } from "@/types/supabase";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
+import { EventWithDates } from "@/types/event";
+import { TagData } from "../types";
 import Tickets from "./tickets/Tickets";
 import Tags from "./Tags";
 import VendorTables from "./tables/VendorTables";
@@ -18,7 +19,6 @@ import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Footer from "@/components/shared/Footer";
-import { EventWithDates } from "@/types/event";
 
 export default async function EventPage({ event }: { event: EventWithDates }) {
   const {
@@ -38,6 +38,22 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
   const publicPosterUrl = await getPublicPosterUrl(event);
   const publicVenueMapUrl = await getPublicVenueMapUrl(event);
 
+  const { data: tagsData } = await supabase
+    .from("event_tags")
+    .select("tags(*)")
+    .eq("event_id", event.id)
+    .returns<TagData[]>();
+
+  const tags: TagData[] = tagsData || [];
+  const cleanedTags = tags.map((tag) => tag.tags);
+
+  const { data: tickets } = await supabase
+    .from("tickets")
+    .select("*")
+    .eq("event_id", event.id)
+    .order("price", { ascending: true });
+  const hasTickets = tickets && tickets.length > 0;
+
   return (
     <main className="relative">
       <div className="md:max-w-[1160px] m-auto flex flex-col md:flex-row md:justify-between md:space-x-14">
@@ -48,18 +64,25 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
               <h1 className="text-4xl md:text-5xl font-semibold">
                 {event.name}
               </h1>
-              <Tags event={event} />
-              <EventInfo event={event} />
+              <Tags tags={cleanedTags} />
+              <EventInfo
+                dates={event.dates}
+                address={event.address}
+                venueName={event.venue_name}
+              />
             </div>
             <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-5 px-6 z-10">
               <Tickets event={event} eventDisplayData={eventDisplayData} />
               <VendorTables event={event} />
             </div>
           </div>
-          <About event={event} />
+          <About description={event.description} />
           <Guests event={event} />
           <Vendors event={event} />
-          <VenueMap event={event} venueMapPublicUrl={publicVenueMapUrl} />
+          <VenueMap
+            venueMap={event.venue_map_url}
+            venueMapPublicUrl={publicVenueMapUrl}
+          />
           <PastHighlights event={event} />
           <HostedBy event={event} />
         </div>

@@ -1,8 +1,7 @@
-import { Tables } from "@/types/supabase";
 import { EventDisplayData } from "@/types/event";
+import { EventWithDates } from "@/types/event";
 import SeeTickets from "./SeeTickets";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { EventWithDates } from "@/types/event";
 
 export default async function Tickets({
   event,
