@@ -4,13 +4,13 @@ import EventInfo from "@/app/(event-page)/events/[name]/components/sections/Even
 import About from "@/app/(event-page)/events/[name]/components/sections/About";
 import VenueMap from "@/app/(event-page)/events/[name]/components/sections/VenueMap";
 import HostedBy from "./HostedBy";
+import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import { sectionVariants } from "../CreateEventFormSections";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../schema";
 import { cn } from "@/lib/utils";
-import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 
 export default function PreviewEvent() {
   const form = useFormContext<CreateEvent>();

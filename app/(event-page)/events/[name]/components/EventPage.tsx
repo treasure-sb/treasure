@@ -47,6 +47,13 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
   const tags: TagData[] = tagsData || [];
   const cleanedTags = tags.map((tag) => tag.tags);
 
+  const { data: tickets } = await supabase
+    .from("tickets")
+    .select("*")
+    .eq("event_id", event.id)
+    .order("price", { ascending: true });
+  const hasTickets = tickets && tickets.length > 0;
+
   return (
     <main className="relative">
       <div className="md:max-w-[1160px] m-auto flex flex-col md:flex-row md:justify-between md:space-x-14">
