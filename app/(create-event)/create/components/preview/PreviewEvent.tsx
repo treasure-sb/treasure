@@ -5,12 +5,14 @@ import About from "@/app/(event-page)/events/[name]/components/sections/About";
 import VenueMap from "@/app/(event-page)/events/[name]/components/sections/VenueMap";
 import HostedBy from "./HostedBy";
 import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
+import TicketsPreview from "./TicketsPreview";
 import { sectionVariants } from "../CreateEventFormSections";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../schema";
 import { cn } from "@/lib/utils";
+import TablesPreview from "./TablesPreview";
 
 export default function PreviewEvent() {
   const form = useFormContext<CreateEvent>();
@@ -71,7 +73,10 @@ export default function PreviewEvent() {
                 <p className="italic">Date and address not provided.</p>
               )}
             </div>
-            <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-5 px-6 z-10"></div>
+            <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-5 px-6 z-10">
+              <TicketsPreview />
+              <TablesPreview />
+            </div>
           </div>
           <About description={basicDetails.description} />
           {venueMap && (
