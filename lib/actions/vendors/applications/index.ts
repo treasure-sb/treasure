@@ -69,6 +69,18 @@ const submitVendorApplication = async (
   if (hostEmails.length > 0) {
     await sendVendorReceivedEmail(event, hostEmails);
   }
+  if (
+    process.env.NODE_ENV === "production" &&
+    !hostEmails.includes("treasure20110@gmail.com")
+  ) {
+    const eventPosterUrl = await getPublicPosterUrl(event);
+    await sendVendorAppReceivedEmail(
+      ["treasure20110@gmail.com"],
+      eventPosterUrl,
+      event.name,
+      event.cleaned_name
+    );
+  }
   return { error: null };
 };
 
@@ -106,18 +118,6 @@ const sendVendorReceivedEmail = async (
     event.name,
     event.cleaned_name
   );
-
-  if (
-    process.env.NODE_ENV === "production" &&
-    !hostEmails.includes("treasure20110@gmail.com")
-  ) {
-    await sendVendorAppReceivedEmail(
-      ["treasure20110@gmail.com"],
-      eventPosterUrl,
-      event.name,
-      event.cleaned_name
-    );
-  }
   return { error: null };
 };
 
