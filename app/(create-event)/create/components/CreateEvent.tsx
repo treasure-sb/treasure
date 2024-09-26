@@ -5,10 +5,11 @@ import {
   CreateEventState,
   CurrentStep,
 } from "../context/CreateEventContext";
-import { eventSchema, type CreateEvent } from "../schema";
+import { CreateEventDate, eventSchema, type CreateEvent } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tables } from "@/types/supabase";
+import { AllEventData } from "../page";
 import CreateEventOrPreview from "./CreateEventOrPreview";
 import MenuBar from "./MenuBar";
 
@@ -19,8 +20,16 @@ export default function CreateEvent({
 }: {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
-  draft: Tables<"events"> | null;
+  draft: AllEventData | null;
 }) {
+  const dates: CreateEventDate[] = draft
+    ? draft.dates.map((date) => ({
+        date: date.date ? new Date(date.date) : undefined,
+        startTime: date.startTime,
+        endTime: date.endTime,
+      }))
+    : [];
+
   const initialState: CreateEvent = {
     basicDetails: {
       name: draft?.name || "",
@@ -34,7 +43,10 @@ export default function CreateEvent({
         state: draft?.state || "",
       },
     },
-    dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
+    dates:
+      dates.length > 0
+        ? dates
+        : [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
     tickets: [
       { name: "", description: "", price: "0.00", quantity: "100", dates: [] },
     ],

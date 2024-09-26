@@ -143,6 +143,7 @@ export default function MenuBar() {
     try {
       toast.loading("Saving event...");
       const values = getValues();
+
       const updatedValues = await handlePosterUpload(values);
 
       const { data, error } = await supabase.rpc("save_draft", {

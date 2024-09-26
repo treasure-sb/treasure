@@ -2,9 +2,17 @@ import { Suspense } from "react";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 import { getProfile } from "@/lib/helpers/profiles";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
-import { getPublicPosterUrl } from "@/lib/helpers/events";
+
+export type AllEventData = Tables<"events"> & {
+  dates: {
+    date: string;
+    startTime: string;
+    endTime: string;
+  }[];
+};
 
 export default async function Page({
   searchParams,
@@ -18,12 +26,14 @@ export default async function Page({
   const tags: Tables<"tags">[] = allTagsData || [];
 
   const draftId = searchParams.d || null;
-  let draft: Tables<"events"> | null = null;
+  let draft: AllEventData | null = null;
 
   if (draftId) {
     const { data: draftData, error: draftError } = await supabase
       .from("events")
-      .select("*")
+      .select(
+        "*, dates:event_dates(date, startTime:start_time, endTime:end_time)"
+      )
       .eq("id", draftId)
       .single();
 
@@ -39,6 +49,8 @@ export default async function Page({
   } = await validateUser();
 
   const { profile } = await getProfile(user?.id);
+
+  console.log(draft);
 
   return (
     <Suspense>
