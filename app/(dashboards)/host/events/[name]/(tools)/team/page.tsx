@@ -1,4 +1,3 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import AddMember from "./components/AddMember";
 import ListMembers from "./components/ListMembers";
 import RolesDescription from "./components/RolesDescription";
@@ -6,16 +5,13 @@ import {
   getEventFromCleanedName,
   getEventDisplayData,
 } from "@/lib/helpers/events";
-import { EventWithDates } from "@/types/event";
 
 export default async function Page({
   params: { name },
 }: {
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
-
-  const { event, eventError } = await getEventFromCleanedName(name);
+  const { event } = await getEventFromCleanedName(name);
   const eventDisplay = await getEventDisplayData(event);
 
   return (

@@ -6,14 +6,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Attendee } from "../table/AttendeeDataColumns";
-import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
-import { Tables } from "@/types/supabase";
-import { Key } from "react";
-import React from "react";
 import { EventWithDates } from "@/types/event";
 import { formatDate } from "@/lib/utils";
+import React from "react";
 
 type TicketFetchData = {
   id: string;
@@ -79,8 +76,6 @@ export default function AttendeeDialogContent({
     }
     return acc;
   }, new Map<string, FormattedTicket[]>());
-
-  console.log(formattedTicketData);
 
   let overallTicketCount = 0;
 

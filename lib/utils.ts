@@ -100,6 +100,10 @@ type PromiseResult<T> = {
   error: any | null;
 };
 
+export type NonNullableExcept<T, K extends keyof T> = {
+  [P in keyof T]-?: P extends K ? T[P] : NonNullable<T[P]>;
+};
+
 export function to<T>(promise: Promise<T>): Promise<PromiseResult<T>> {
   return Promise.allSettled([promise]).then(function ([result]) {
     if (result.status === "fulfilled") {

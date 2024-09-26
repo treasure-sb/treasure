@@ -15,6 +15,7 @@ import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
 import { sendEventCreatedEmail } from "@/lib/actions/emails";
 import { getProfile } from "@/lib/helpers/profiles";
+import { Eye, EyeOff } from "lucide-react";
 
 const menuVariants = {
   hidden: {
@@ -68,6 +69,7 @@ export default function MenuBar() {
   const [isMounted, setIsMounted] = useState(false);
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
+  const { getValues } = useFormContext<CreateEvent>();
   const supabase = createClient();
   const form = useFormContext<CreateEvent>();
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -91,27 +93,33 @@ export default function MenuBar() {
     return null;
   };
 
+  const handlePosterUpload = async (values: CreateEvent) => {
+    let updatedValues = { ...values };
+    updatedValues.venueMap = "venue_map_coming_soon";
+    updatedValues.poster = "poster_coming_soon";
+
+    if (values.poster instanceof File) {
+      const posterPath = await uploadFileToBucket(values.poster, "posters");
+      updatedValues.poster = posterPath || "poster_coming_soon";
+    }
+
+    if (values.venueMap instanceof File) {
+      const venueMapPath = await uploadFileToBucket(
+        values.venueMap,
+        "venue_maps"
+      );
+      updatedValues.venueMap = venueMapPath || "venue_map_coming_soon";
+    }
+    return updatedValues;
+  };
+
   const onSubmit = async (values: CreateEvent) => {
     try {
       toast.loading("Creating event...");
 
       setLoading(true);
-      let updatedValues = { ...values };
-      updatedValues.venueMap = "venue_map_coming_soon";
-      updatedValues.poster = "poster_coming_soon";
 
-      if (values.poster instanceof File) {
-        const posterPath = await uploadFileToBucket(values.poster, "posters");
-        updatedValues.poster = posterPath || "poster_coming_soon";
-      }
-
-      if (values.venueMap instanceof File) {
-        const venueMapPath = await uploadFileToBucket(
-          values.venueMap,
-          "venue_maps"
-        );
-        updatedValues.venueMap = venueMapPath || "venue_map_coming_soon";
-      }
+      const updatedValues = await handlePosterUpload(values);
       const { data, error } = await updatedCreateEvent(updatedValues);
       if (error) {
         throw error;
@@ -120,7 +128,7 @@ export default function MenuBar() {
 
       toast.dismiss();
       toast("Event created successfully");
-      const log = await sendEventCreatedEmail(values.basicDetails.name);
+      await sendEventCreatedEmail(values.basicDetails.name);
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
@@ -128,6 +136,37 @@ export default function MenuBar() {
       toast("An error occurred. Please try again later.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onSave = async () => {
+    try {
+      toast.loading("Saving event...");
+      const values = getValues();
+      const updatedValues = await handlePosterUpload(values);
+
+      const { data, error } = await supabase.rpc("save_draft", {
+        event_data: updatedValues,
+        user_id: user!.id,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      const eventId = data;
+      console.log(eventId);
+
+      toast.dismiss();
+      toast.success("Event saved successfully");
+    } catch (err: any) {
+      console.log(err);
+      toast.dismiss();
+      if ((err.message as string).includes("events_name_check")) {
+        toast.error("Please include a name for your event");
+      } else {
+        toast.error("An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -185,7 +224,7 @@ export default function MenuBar() {
     return (
       <Button
         type="button"
-        variant={"tertiary"}
+        variant={"ghost"}
         onClick={() => {
           dispatch({
             type: "setPreview",
@@ -193,11 +232,27 @@ export default function MenuBar() {
           });
         }}
         className={cn(
+          "w-fit h-full rounded-none relative overflow-hidden",
+          isDesktop && "rounded-sm"
+        )}
+      >
+        {preview ? <EyeOff width={60} /> : <Eye width={60} />}
+      </Button>
+    );
+  };
+
+  const SaveButton = () => {
+    return (
+      <Button
+        type="button"
+        variant={"tertiary"}
+        onClick={onSave}
+        className={cn(
           "w-full h-full rounded-none relative overflow-hidden",
           isDesktop && "rounded-sm"
         )}
       >
-        <span className="relative z-10">{preview ? "Edit" : "Preview"}</span>
+        <span className="relative z-10">Save</span>
       </Button>
     );
   };
@@ -236,6 +291,7 @@ export default function MenuBar() {
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
           <div className="flex space-x-2">
+            <SaveButton />
             <PreviewButton />
             {LoggedMenuButton}
           </div>
@@ -253,6 +309,7 @@ export default function MenuBar() {
     >
       <ProgressBar currentStep={currentStep} />
       <div className="px-0 py-0 flex space-x-0 h-12">
+        <SaveButton />
         <PreviewButton />
         {LoggedMenuButton}
       </div>

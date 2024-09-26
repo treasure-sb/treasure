@@ -15,21 +15,23 @@ import MenuBar from "./MenuBar";
 export default function CreateEvent({
   tags,
   user,
+  draft,
 }: {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
+  draft: Tables<"events"> | null;
 }) {
   const initialState: CreateEvent = {
     basicDetails: {
-      name: "",
-      venueName: "",
-      description: "",
+      name: draft?.name || "",
+      venueName: draft?.venue_name || "",
+      description: draft?.description || "",
       venueAddress: {
-        address: "",
-        lat: 0,
-        lng: 0,
-        city: "",
-        state: "",
+        address: draft?.address || "",
+        lat: draft?.lat || 0,
+        lng: draft?.lng || 0,
+        city: draft?.city || "",
+        state: draft?.state || "",
       },
     },
     dates: [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
