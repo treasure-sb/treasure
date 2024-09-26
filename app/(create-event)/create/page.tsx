@@ -12,6 +12,20 @@ export type AllEventData = Tables<"events"> & {
     startTime: string;
     endTime: string;
   }[];
+  tickets: {
+    price: number;
+    quantity: string;
+    description: string;
+    name: string;
+    dates: {
+      date: {
+        date: string;
+      };
+    }[];
+  }[];
+  tags: {
+    tag: Tables<"tags">;
+  }[];
 };
 
 export default async function Page({
@@ -32,7 +46,11 @@ export default async function Page({
     const { data: draftData, error: draftError } = await supabase
       .from("events")
       .select(
-        "*, dates:event_dates(date, startTime:start_time, endTime:end_time)"
+        `*, 
+          dates:event_dates(date, startTime:start_time, endTime:end_time), 
+          tickets(price, quantity, description, name, dates:ticket_dates(date:event_dates(date))),
+          tags:event_tags(tag:tags(*))
+        `
       )
       .eq("id", draftId)
       .single();

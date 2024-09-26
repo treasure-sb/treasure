@@ -5,7 +5,12 @@ import {
   CreateEventState,
   CurrentStep,
 } from "../context/CreateEventContext";
-import { CreateEventDate, eventSchema, type CreateEvent } from "../schema";
+import {
+  CreateEventDate,
+  CreateEventTicket,
+  eventSchema,
+  type CreateEvent,
+} from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tables } from "@/types/supabase";
@@ -30,6 +35,18 @@ export default function CreateEvent({
       }))
     : [];
 
+  const tickets: CreateEventTicket[] = draft
+    ? draft.tickets.map((ticket) => ({
+        name: ticket.name,
+        description: ticket.description,
+        price: ticket.price.toFixed(2).toString(),
+        quantity: ticket.quantity,
+        dates: ticket.dates.map((date) => new Date(date.date.date)),
+      }))
+    : [];
+
+  const eventTags = draft ? draft.tags.map((tag) => tag.tag) : [];
+
   const initialState: CreateEvent = {
     basicDetails: {
       name: draft?.name || "",
@@ -47,9 +64,18 @@ export default function CreateEvent({
       dates.length > 0
         ? dates
         : [{ date: undefined, startTime: "09:30", endTime: "16:30" }],
-    tickets: [
-      { name: "", description: "", price: "0.00", quantity: "100", dates: [] },
-    ],
+    tickets:
+      tickets.length > 0
+        ? tickets
+        : [
+            {
+              name: "",
+              description: "",
+              price: "0.00",
+              quantity: "100",
+              dates: [],
+            },
+          ],
     tables: [
       {
         name: "",
@@ -68,7 +94,7 @@ export default function CreateEvent({
       additionalInfo: "",
       terms: [{ term: "" }],
     },
-    tags: [],
+    tags: eventTags,
     poster: draft?.poster_url || undefined,
   };
 

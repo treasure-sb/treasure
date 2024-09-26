@@ -120,7 +120,7 @@ const eventSchema = z.object({
 
 type CreateEvent = z.infer<typeof eventSchema>;
 type BasicDetails = z.infer<typeof basicDetailsSchema>;
-type Ticket = z.infer<typeof ticketSchema>;
+type CreateEventTicket = z.infer<typeof ticketSchema>;
 type Table = z.infer<typeof tableSchema>;
 type CreateEventDate = z.infer<typeof dateSchema>;
 type VendorInfo = z.infer<typeof vendorInfoSchema>;
@@ -129,7 +129,7 @@ export { eventSchema };
 export type {
   CreateEvent,
   BasicDetails,
-  Ticket,
+  CreateEventTicket,
   Table,
   CreateEventDate,
   VendorInfo,
