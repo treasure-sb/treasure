@@ -35,8 +35,8 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
   }
 
   const eventDisplayData = await getEventDisplayData(event);
-  const publicPosterUrl = await getPublicPosterUrl(event);
-  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+  const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
+  const publicVenueMapUrl = await getPublicVenueMapUrl(event.venue_map_url);
 
   const { data: tagsData } = await supabase
     .from("event_tags")

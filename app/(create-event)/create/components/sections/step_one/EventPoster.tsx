@@ -13,7 +13,11 @@ export default function EventPoster() {
   const poster = getValues("poster");
 
   const [imageUrl, setImageUrl] = useState<string | null>(
-    poster ? URL.createObjectURL(poster as File) : null
+    poster instanceof File
+      ? URL.createObjectURL(poster as File)
+      : typeof poster === "string"
+      ? poster
+      : null
   );
 
   return (

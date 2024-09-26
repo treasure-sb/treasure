@@ -3,7 +3,7 @@ import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
 } from "@/lib/actions/emails";
-import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
 import { Json, Tables } from "@/types/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
@@ -126,7 +126,7 @@ const handleTicketPurchase = async (
   const { profile } = await getProfile(user_id);
   const purchasedTicketId =
     event_ticket_ids.length > 1 ? event_ticket_ids : event_ticket_ids[0];
-  const posterUrl = await getPublicPosterUrlFromPosterUrl(event_poster_url);
+  const posterUrl = await getPublicPosterUrl(event_poster_url);
 
   const numericAmountPaid = Number(amountPaid);
   const numericFeesPaid = Number(fees_paid);

@@ -4,6 +4,7 @@ import { validateUser } from "@/lib/actions/auth";
 import { getProfile } from "@/lib/helpers/profiles";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { getPublicPosterUrl } from "@/lib/helpers/events";
 
 export default async function Page({
   searchParams,
@@ -18,6 +19,7 @@ export default async function Page({
 
   const draftId = searchParams.d || null;
   let draft: Tables<"events"> | null = null;
+
   if (draftId) {
     const { data: draftData, error: draftError } = await supabase
       .from("events")
@@ -27,6 +29,8 @@ export default async function Page({
 
     if (!draftError) {
       draft = draftData;
+      const posterUrl = await getPublicPosterUrl(draft!.poster_url);
+      draft!.poster_url = posterUrl;
     }
   }
 

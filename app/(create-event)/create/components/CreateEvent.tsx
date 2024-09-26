@@ -57,6 +57,7 @@ export default function CreateEvent({
       terms: [{ term: "" }],
     },
     tags: [],
+    poster: draft?.poster_url || undefined,
   };
 
   const form = useForm<CreateEvent>({

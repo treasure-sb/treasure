@@ -73,7 +73,7 @@ const submitVendorApplication = async (
     process.env.NODE_ENV === "production" &&
     !hostEmails.includes("treasure20110@gmail.com")
   ) {
-    const eventPosterUrl = await getPublicPosterUrl(event);
+    const eventPosterUrl = await getPublicPosterUrl(event.poster_url);
     await sendVendorAppReceivedEmail(
       ["treasure20110@gmail.com"],
       eventPosterUrl,
@@ -110,7 +110,7 @@ const sendVendorReceivedEmail = async (
   event: EventDisplayData,
   hostEmails: string[]
 ) => {
-  const eventPosterUrl = await getPublicPosterUrl(event);
+  const eventPosterUrl = await getPublicPosterUrl(event.poster_url);
 
   await sendVendorAppReceivedEmail(
     hostEmails,

@@ -1,6 +1,5 @@
 "use client";
 
-import { Tables } from "@/types/supabase";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useState } from "react";
@@ -13,7 +12,7 @@ export default function VenueMap({
   venueMapPublicUrl,
 }: {
   venueMap: string | null;
-  venueMapPublicUrl: string | File;
+  venueMapPublicUrl: string | File | null;
 }) {
   const [showOverlay, setShowOverlay] = useState(false);
   const eventHasVenueMap =
@@ -27,7 +26,9 @@ export default function VenueMap({
   const venueMapImageSrc =
     typeof venueMapPublicUrl === "string"
       ? venueMapPublicUrl
-      : URL.createObjectURL(venueMapPublicUrl);
+      : venueMapPublicUrl instanceof File
+      ? URL.createObjectURL(venueMapPublicUrl)
+      : "";
 
   return (
     eventHasVenueMap && (

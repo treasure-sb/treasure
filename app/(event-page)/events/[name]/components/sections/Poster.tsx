@@ -11,7 +11,7 @@ export default async function Poster({
   event: EventWithDates;
   user: User | null;
 }) {
-  const publicPosterUrl = await getPublicPosterUrl(event);
+  const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
 
   return (
     <div className="relative md:sticky md:top-20 h-fit m-auto md:m-0">
