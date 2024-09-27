@@ -6,15 +6,16 @@ import { CustomerData } from "../../types";
 import { ArrowUpDown, TicketIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TableIcon from "@/components/icons/TableIcon";
+import { Tables } from "@/types/supabase";
 
 export type Order = {
-  orderID: number;
   quantity: number;
   amountPaid: number;
   purchaseDate: Date;
   type: "TABLE" | "TICKET";
   itemName: string;
   customer: CustomerData;
+  promoCode: Tables<"event_codes"> | null;
   metadata: string | null;
 };
 
@@ -89,6 +90,23 @@ const OrderIDCell = ({ cell }: CellContext<Order, any>) => {
   return <p>#{orderID}</p>;
 };
 
+const PromoCodeCell = ({ row }: CellContext<Order, any>) => {
+  const promoCode =
+    (row.getValue("promoCode") as Tables<"event_codes">) || null;
+
+  return promoCode === null ? null : (
+    <div className="text-left">
+      <p>{promoCode.code}</p>
+      <p className="text-muted-foreground">
+        {(promoCode.type === "DOLLAR"
+          ? "$" + promoCode.discount + " off"
+          : promoCode.discount + "% off") +
+          (promoCode.treasure_sponsored ? " • Admin" : "")}
+      </p>
+    </div>
+  );
+};
+
 const MetadataCell = ({ cell }: CellContext<Order, any>) => {
   const metadata = cell.getValue() as number;
   return <p>{metadata}</p>;
@@ -119,7 +137,7 @@ const AmountPaidHeader = ({ column }: { column: any }) => {
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       className="font-normal -ml-4"
     >
-      Amount Paid
+      Payout
       <ArrowUpDown className="ml-2 h-4 w-4" />
     </Button>
   );
@@ -153,11 +171,6 @@ const DateHeader = ({ column }: { column: any }) => {
 
 export const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "orderID",
-    header: "Order ID",
-    cell: OrderIDCell,
-  },
-  {
     accessorKey: "type",
     header: "Type",
     cell: TypeCell,
@@ -181,6 +194,11 @@ export const columns: ColumnDef<Order>[] = [
     cell: AmountPaidCell,
   },
   {
+    accessorKey: "promoCode",
+    header: "Promo Code",
+    cell: PromoCodeCell,
+  },
+  {
     accessorKey: "purchaseDate",
     header: DateHeader,
     cell: DateCell,
@@ -193,11 +211,6 @@ export const columns: ColumnDef<Order>[] = [
 ];
 
 export const columnsSampa: ColumnDef<Order>[] = [
-  {
-    accessorKey: "orderID",
-    header: "Order ID",
-    cell: OrderIDCell,
-  },
   {
     accessorKey: "type",
     header: "Type",
@@ -227,11 +240,15 @@ export const columnsSampa: ColumnDef<Order>[] = [
     cell: AmountPaidCell,
   },
   {
+    accessorKey: "promoCode",
+    header: "Promo Code",
+    cell: PromoCodeCell,
+  },
+  {
     accessorKey: "purchaseDate",
     header: DateHeader,
     cell: DateCell,
   },
-
   {
     accessorKey: "itemName",
     header: undefined,
