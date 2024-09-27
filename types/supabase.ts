@@ -80,17 +80,17 @@ export type Database = {
         Row: {
           event_id: string
           id: string
-          term: string
+          term: string | null
         }
         Insert: {
           event_id: string
           id?: string
-          term: string
+          term?: string | null
         }
         Update: {
           event_id?: string
           id?: string
-          term?: string
+          term?: string | null
         }
         Relationships: [
           {
@@ -105,24 +105,24 @@ export type Database = {
       application_vendor_information: {
         Row: {
           additional_information: string | null
-          check_in_location: string
-          check_in_time: string
+          check_in_location: string | null
+          check_in_time: string | null
           event_id: string
           id: string
           wifi_availability: boolean
         }
         Insert: {
           additional_information?: string | null
-          check_in_location: string
-          check_in_time: string
+          check_in_location?: string | null
+          check_in_time?: string | null
           event_id: string
           id?: string
           wifi_availability: boolean
         }
         Update: {
           additional_information?: string | null
-          check_in_location?: string
-          check_in_time?: string
+          check_in_location?: string | null
+          check_in_time?: string | null
           event_id?: string
           id?: string
           wifi_availability?: boolean
@@ -296,21 +296,21 @@ export type Database = {
           end_time: string | null
           event_id: string
           id: string
-          start_time: string
+          start_time: string | null
         }
         Insert: {
           date?: string | null
           end_time?: string | null
           event_id: string
           id?: string
-          start_time: string
+          start_time?: string | null
         }
         Update: {
           date?: string | null
           end_time?: string | null
           event_id?: string
           id?: string
-          start_time?: string
+          start_time?: string | null
         }
         Relationships: [
           {
@@ -1205,37 +1205,37 @@ export type Database = {
           additional_information: string | null
           event_id: string
           id: string
-          number_vendors_allowed: number
+          number_vendors_allowed: number | null
           price: number
-          quantity: number
-          section_name: string
-          space_allocated: number
+          quantity: number | null
+          section_name: string | null
+          space_allocated: number | null
           table_provided: boolean
-          total_tables: number
+          total_tables: number | null
         }
         Insert: {
           additional_information?: string | null
           event_id: string
           id?: string
-          number_vendors_allowed?: number
+          number_vendors_allowed?: number | null
           price: number
-          quantity: number
-          section_name: string
-          space_allocated?: number
+          quantity?: number | null
+          section_name?: string | null
+          space_allocated?: number | null
           table_provided?: boolean
-          total_tables?: number
+          total_tables?: number | null
         }
         Update: {
           additional_information?: string | null
           event_id?: string
           id?: string
-          number_vendors_allowed?: number
+          number_vendors_allowed?: number | null
           price?: number
-          quantity?: number
-          section_name?: string
-          space_allocated?: number
+          quantity?: number | null
+          section_name?: string | null
+          space_allocated?: number | null
           table_provided?: boolean
-          total_tables?: number
+          total_tables?: number | null
         }
         Relationships: [
           {
@@ -1433,30 +1433,30 @@ export type Database = {
           description: string | null
           event_id: string
           id: string
-          name: string
+          name: string | null
           price: number
-          quantity: number
-          total_tickets: number
+          quantity: number | null
+          total_tickets: number | null
         }
         Insert: {
           created_at?: string
           description?: string | null
           event_id: string
           id?: string
-          name?: string
+          name?: string | null
           price: number
-          quantity: number
-          total_tickets?: number
+          quantity?: number | null
+          total_tickets?: number | null
         }
         Update: {
           created_at?: string
           description?: string | null
           event_id?: string
           id?: string
-          name?: string
+          name?: string | null
           price?: number
-          quantity?: number
-          total_tickets?: number
+          quantity?: number | null
+          total_tickets?: number | null
         }
         Relationships: [
           {

@@ -6,26 +6,36 @@ import { getPublicPosterUrl } from "@/lib/helpers/events";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
-export type AllEventData = Tables<"events"> & {
+type Ticket = Omit<
+  Tables<"tickets">,
+  "id" | "event_id" | "created_at" | "total_tickets"
+> & {
   dates: {
-    date: string;
-    startTime: string;
-    endTime: string;
+    date: {
+      date: string | null;
+    };
   }[];
-  tickets: {
-    price: number;
-    quantity: string;
-    description: string;
-    name: string;
-    dates: {
-      date: {
-        date: string;
-      };
-    }[];
-  }[];
+};
+type Table = Omit<Tables<"tables">, "id" | "event_id" | "total_tables">;
+type EventDate = Omit<Tables<"event_dates">, "id" | "event_id">;
+type Terms = Omit<
+  Tables<"application_terms_and_conditions">,
+  "id" | "event_id"
+>;
+type VendorInfo = Omit<
+  Tables<"application_vendor_information">,
+  "id" | "event_id"
+>;
+
+export type AllEventData = Tables<"events"> & {
+  dates: EventDate[];
+  tickets: Ticket[];
   tags: {
     tag: Tables<"tags">;
   }[];
+  terms: Terms[];
+  vendorInfo: VendorInfo;
+  tables: Table[];
 };
 
 export default async function Page({
@@ -47,9 +57,14 @@ export default async function Page({
       .from("events")
       .select(
         `*, 
-          dates:event_dates(date, startTime:start_time, endTime:end_time), 
+          dates:event_dates(date, start_time, end_time), 
           tickets(price, quantity, description, name, dates:ticket_dates(date:event_dates(date))),
-          tags:event_tags(tag:tags(*))
+          tags:event_tags(tag:tags(*)),
+          terms:application_terms_and_conditions(term),
+          vendorInfo:application_vendor_information(check_in_time, check_in_location, 
+                          wifi_availability, additional_information),
+          tables(section_name, price, quantity, table_provided, space_allocated, number_vendors_allowed, 
+                          additional_information, table_provided)
         `
       )
       .eq("id", draftId)

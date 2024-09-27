@@ -30,7 +30,7 @@ const ticketSchema = z.object({
   name: z.string().min(1, {
     message: "Ticket name is required",
   }),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   price: z.string().refine(isPositiveNumber, {
     message: "Price must be a positive number",
   }),
@@ -95,7 +95,7 @@ const vendorInfoSchema = z.object({
   }),
   wifiAvailability: z.boolean().default(false),
   additionalInfo: z.string().optional(),
-  terms: z.array(termSchema).nonempty({
+  terms: z.array(termSchema).min(1, {
     message: "At least one term is required",
   }),
 });
@@ -121,7 +121,7 @@ const eventSchema = z.object({
 type CreateEvent = z.infer<typeof eventSchema>;
 type BasicDetails = z.infer<typeof basicDetailsSchema>;
 type CreateEventTicket = z.infer<typeof ticketSchema>;
-type Table = z.infer<typeof tableSchema>;
+type CreateEventTable = z.infer<typeof tableSchema>;
 type CreateEventDate = z.infer<typeof dateSchema>;
 type VendorInfo = z.infer<typeof vendorInfoSchema>;
 
@@ -130,7 +130,7 @@ export type {
   CreateEvent,
   BasicDetails,
   CreateEventTicket,
-  Table,
+  CreateEventTable,
   CreateEventDate,
   VendorInfo,
 };

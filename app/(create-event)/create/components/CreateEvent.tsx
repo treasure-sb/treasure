@@ -7,6 +7,7 @@ import {
 } from "../context/CreateEventContext";
 import {
   CreateEventDate,
+  CreateEventTable,
   CreateEventTicket,
   eventSchema,
   type CreateEvent,
@@ -30,22 +31,45 @@ export default function CreateEvent({
   const dates: CreateEventDate[] = draft
     ? draft.dates.map((date) => ({
         date: date.date ? new Date(date.date) : undefined,
-        startTime: date.startTime,
-        endTime: date.endTime,
+        startTime: date.start_time ? date.start_time : "",
+        endTime: date.end_time ? date.end_time : "",
       }))
     : [];
 
   const tickets: CreateEventTicket[] = draft
     ? draft.tickets.map((ticket) => ({
-        name: ticket.name,
+        name: ticket.name ? ticket.name : "",
         description: ticket.description,
         price: ticket.price.toFixed(2).toString(),
-        quantity: ticket.quantity,
-        dates: ticket.dates.map((date) => new Date(date.date.date)),
+        quantity: ticket.quantity ? ticket.quantity.toString() : "",
+        dates: ticket.dates.map(
+          (date) => new Date(date.date.date ? date.date.date : "")
+        ),
+      }))
+    : [];
+
+  const tables: CreateEventTable[] = draft
+    ? draft.tables.map((table) => ({
+        name: table.section_name || "",
+        price: table.price.toFixed(2).toString(),
+        quantity: table.quantity ? table.quantity.toString() : "",
+        tableProvided: table.table_provided,
+        spaceAllocated: table.space_allocated
+          ? table.space_allocated.toString()
+          : "",
+        numberVendorsAllowed: table.number_vendors_allowed
+          ? table.number_vendors_allowed.toString()
+          : "",
       }))
     : [];
 
   const eventTags = draft ? draft.tags.map((tag) => tag.tag) : [];
+
+  const terms = draft
+    ? draft.terms.map((term) => ({
+        term: term.term || "",
+      }))
+    : [];
 
   const initialState: CreateEvent = {
     basicDetails: {
@@ -76,23 +100,26 @@ export default function CreateEvent({
               dates: [],
             },
           ],
-    tables: [
-      {
-        name: "",
-        price: "0.00",
-        quantity: "100",
-        tableProvided: false,
-        spaceAllocated: "",
-        numberVendorsAllowed: "",
-        additionalInformation: "",
-      },
-    ],
+    tables:
+      tables.length > 0
+        ? tables
+        : [
+            {
+              name: "",
+              price: "0.00",
+              quantity: "100",
+              tableProvided: false,
+              spaceAllocated: "",
+              numberVendorsAllowed: "",
+              additionalInformation: "",
+            },
+          ],
     vendorInfo: {
-      checkInTime: "",
-      checkInLocation: "",
-      wifiAvailability: false,
-      additionalInfo: "",
-      terms: [{ term: "" }],
+      checkInTime: draft?.vendorInfo?.check_in_time || "",
+      checkInLocation: draft?.vendorInfo?.check_in_location || "",
+      wifiAvailability: draft?.vendorInfo?.wifi_availability || false,
+      additionalInfo: draft?.vendorInfo?.additional_information || "",
+      terms: terms.length > 0 ? terms : [{ term: "" }],
     },
     tags: eventTags,
     poster: draft?.poster_url || undefined,
