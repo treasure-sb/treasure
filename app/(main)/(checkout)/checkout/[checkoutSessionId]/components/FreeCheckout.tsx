@@ -198,6 +198,14 @@ export default function FreeCheckout({
         false
       );
     }
+    if (profile.role !== "admin") {
+      await sendTicketPurchasedEmail(
+        "treasure20110@gmail.com",
+        purchasedTicketId,
+        event_id,
+        ticketPurchaseEmailProps
+      );
+    }
   };
 
   const handleFreeTablePurchase = async () => {

@@ -163,6 +163,12 @@ export default function FreeCheckout({
         ticketPurchaseEmailProps
       );
     }
+    await sendTicketPurchasedEmail(
+      "treasure20110@gmail.com",
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
   };
 
   const isValid = form.formState.isValid;
