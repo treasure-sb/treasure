@@ -85,11 +85,6 @@ const DateCell = ({ cell }: CellContext<Order, any>) => {
   );
 };
 
-const OrderIDCell = ({ cell }: CellContext<Order, any>) => {
-  const orderID = cell.getValue() as number;
-  return <p>#{orderID}</p>;
-};
-
 const PromoCodeCell = ({ row }: CellContext<Order, any>) => {
   const promoCode =
     (row.getValue("promoCode") as Tables<"event_codes">) || null;
