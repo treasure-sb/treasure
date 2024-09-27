@@ -48,11 +48,11 @@ const replacePoster = async (posterUrl: string, newPosterFile: File) => {
     return { error: uploadError };
   }
 
-  const { error: removeError } = await supabase.storage
-    .from("posters")
-    .remove([posterUrl]);
+  if (posterUrl !== "poster_coming_soon") {
+    await supabase.storage.from("posters").remove([posterUrl]);
+  }
 
-  return { data: data.path, error: removeError };
+  return { data: data.path };
 };
 
 const dateSchema = z.object({
@@ -111,7 +111,7 @@ export default function EditEventForm({
     setSelectedTags(newTags);
   };
 
-  const { refresh, replace } = useRouter();
+  const { replace } = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
