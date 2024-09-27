@@ -20,13 +20,12 @@ export default function ExportButton({
     const exportData = salesData.map((item, i) => {
       const customer = item.customer;
       return {
-        "Order ID": item.orderID.toString(),
         Type: item.type === "TICKET" ? "Ticket" : "Table",
         Quantity: item.quantity.toString(),
         "Customer Name": `${customer.first_name} ${customer.last_name}`,
         Email: customer.email || "N/A",
         Phone: customer.phone || "N/A",
-        "Amount Paid": `$${item.amountPaid.toFixed(2)}`,
+        Payout: `$${item.amountPaid.toFixed(2)}`,
         "Purchase Date": item.purchaseDate.toLocaleDateString(),
       };
     });
