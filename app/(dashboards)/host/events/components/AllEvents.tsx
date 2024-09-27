@@ -36,6 +36,7 @@ export default async function AllEvents() {
     )
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
+    .eq("event.status", "LIVE")
     .gte("event.max_date", today.toISOString())
     .order("event(min_date)", { ascending: true })
     .returns<MyLiveEvent[]>();
@@ -47,6 +48,7 @@ export default async function AllEvents() {
     )
     .eq("user_id", user.id)
     .eq("status", "ACTIVE")
+    .eq("event.status", "LIVE")
     .lt("event.max_date", today.toISOString())
     .order("event(min_date)", { ascending: false })
     .returns<MyLiveEvent[]>();
