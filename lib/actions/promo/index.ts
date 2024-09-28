@@ -44,4 +44,11 @@ const updatePromoCode = async (
   return { data, error };
 };
 
-export { createPromoCode, updatePromoCode };
+const deletePromoCode = async (id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("event_codes").delete().eq("id", id);
+
+  return { error };
+};
+
+export { createPromoCode, updatePromoCode, deletePromoCode };
