@@ -19,10 +19,21 @@ import {
   Column,
 } from "@react-email/components";
 
-export default function TicketPurchased() {
-  const posterUrl =
-    "https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/poster_coming_soon";
+export interface EventCreatedProps {
+  eventName: string;
+  posterUrl: string;
+  cleanedEventName: string;
+  hostName: string;
+  hostUsername: string;
+}
 
+export default function TicketPurchased({
+  eventName,
+  posterUrl = "poster_coming_soon",
+  cleanedEventName,
+  hostName,
+  hostUsername,
+}: EventCreatedProps) {
   return (
     <Html>
       <TailwindConfig>
@@ -34,32 +45,32 @@ export default function TicketPurchased() {
                 Congrats On Listing Your Event!
               </Heading>
               <Text>
-                Your event, <strong>event name</strong>, is live on Treasure.
+                Your event, <strong>{eventName}</strong>, is live on Treasure.
               </Text>
             </Section>
 
             <BodySection>
               <Img
                 className="m-auto rounded-[.8rem]"
-                src={posterUrl}
+                src={`https://qkdlfshzugzeqlznyqfv.supabase.co/storage/v1/object/public/posters/${posterUrl}`}
                 alt="event-poster"
                 width="400"
                 height="auto"
               />
               <Heading className="font-normal mt-6 text-left">
-                event name
+                {eventName}
               </Heading>
               <Button
                 className="bg-primary text-foreground font-normal rounded-sm px-6 py-4"
-                href={
-                  "https://www.ontreasure.com/events/future-of-india-samosa-capital-11072024"
-                }
+                href={`https://www.ontreasure.com/events/${cleanedEventName}`}
               >
                 View Event
               </Button>
               <Heading className="text-foreground/80 font-normal" as="h5">
                 Edit your event details{" "}
-                <a href="https://www.ontreasure.com/host/events/future-of-india-samosa-capital-11072024/edit">
+                <a
+                  href={`https://www.ontreasure.com/host/events/${cleanedEventName}/edit`}
+                >
                   here
                 </a>
                 , and see below for tips on how to manage your event
@@ -68,7 +79,7 @@ export default function TicketPurchased() {
 
             <BodySection>
               <Heading as="h4" className="text-left font-bold">
-                Thanks for using Treasure, hostName
+                Thanks for using Treasure, {hostName}
               </Heading>
               <Heading
                 className="text-foreground/80 font-normal text-left"
@@ -83,7 +94,9 @@ export default function TicketPurchased() {
                 </Column>
                 <Column className="text-left w-60 pl-4 font-normal">
                   Share the{" "}
-                  <a href="https://www.ontreasure.com/events/future-of-india-samosa-capital-11072024">
+                  <a
+                    href={`https://www.ontreasure.com/events/${cleanedEventName}`}
+                  >
                     event page URL
                   </a>{" "}
                   on your social media and Instagram story
@@ -96,8 +109,10 @@ export default function TicketPurchased() {
                 </Column>
                 <Column className="text-left w-60 pl-4 font-normal">
                   Update your{" "}
-                  <a href="https://www.ontreasure.com/u/shreyas">profile</a> on
-                  Treasure to include a profile picture, username, and bio
+                  <a href={`https://www.ontreasure.com/u/${hostUsername}`}>
+                    profile
+                  </a>{" "}
+                  on Treasure to include a profile picture, username, and bio
                 </Column>
               </Row>
               <LineBreak />
@@ -107,7 +122,9 @@ export default function TicketPurchased() {
                 </Column>
                 <Column className="text-left w-60 pl-4 font-normal">
                   Add the{" "}
-                  <a href="https://www.ontreasure.com/events/future-of-india-samosa-capital-11072024">
+                  <a
+                    href={`https://www.ontreasure.com/events/${cleanedEventName}`}
+                  >
                     event page URL
                   </a>{" "}
                   to your "link in bio" and website
@@ -136,9 +153,7 @@ export default function TicketPurchased() {
               </Row>
               <Button
                 className="bg-primary text-foreground font-normal rounded-sm px-6 py-4"
-                href={
-                  "https://www.ontreasure.com/host/events/future-of-india-samosa-capital-11072024"
-                }
+                href={`https://www.ontreasure.com/host/events/${cleanedEventName}`}
               >
                 Manage Your Event Now
               </Button>
