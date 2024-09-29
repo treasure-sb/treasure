@@ -23,6 +23,7 @@ import VendorAppWaitlisted, {
   VendorAppWaitlistedEmailProps,
 } from "@/emails/VendorAppWaitlisted";
 import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
+import EventCreated from "@/emails/EventCreated";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -208,9 +209,10 @@ const sendEventCreatedEmail = async (eventName: string) => {
   try {
     await resend.emails.send({
       from: "Treasure <noreply@ontreasure.xyz>",
-      to: "treasure20110@gmail.com",
-      subject: `Event Created: ${eventName}`,
-      html: `<p>Event Created: ${eventName}<p>`,
+      to: "adam@ontreasure.com",
+      subject: `Thanks for Creating Your Event: ${eventName}`,
+      // html: `<p>Event Created: ${eventName}<p>`,
+      react: EventCreated(),
     });
   } catch (error) {
     console.error(error);

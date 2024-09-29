@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   UsersIcon,
@@ -6,8 +7,14 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { sendEventCreatedEmail } from "@/lib/actions/emails";
 
-export default async function Page() {
+export default function Page() {
+  const sendEmail = async () => {
+    console.log("send email");
+    await sendEventCreatedEmail("test event");
+  };
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
@@ -43,6 +50,7 @@ export default async function Page() {
           <BadgeDollarSign size={28} className="flex-shrink-0" />
         </div>
       </Link>
+      <Button onClick={sendEmail}>send test email</Button>
     </div>
   );
 }
