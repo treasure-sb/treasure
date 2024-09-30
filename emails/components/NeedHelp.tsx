@@ -20,7 +20,7 @@ export default function NeedHelp() {
         </Link>{" "}
         or for urgent help, contact us at{" "}
         <span className="text-foreground font-semibold">
-          george@ontreasure.com
+          adam@ontreasure.com
         </span>
         .
       </Text>

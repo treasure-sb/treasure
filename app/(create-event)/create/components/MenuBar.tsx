@@ -15,6 +15,7 @@ import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
 import { sendEventCreatedEmail } from "@/lib/actions/emails";
 import { getProfile } from "@/lib/helpers/profiles";
+import { EventCreatedProps } from "@/emails/EventCreated";
 
 const menuVariants = {
   hidden: {
@@ -120,7 +121,20 @@ export default function MenuBar() {
 
       toast.dismiss();
       toast("Event created successfully");
-      const log = await sendEventCreatedEmail(values.basicDetails.name);
+      const eventCreatedEmailPayload: EventCreatedProps = {
+        eventName: values.basicDetails.name,
+        posterUrl: updatedValues.poster,
+        cleanedEventName: eventUrl,
+        hostName: user?.first_name || "",
+        hostUsername: user?.username || "",
+      };
+      if (user?.email) {
+        await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
+      }
+      await sendEventCreatedEmail(
+        "treasure20110@gmail.com",
+        eventCreatedEmailPayload
+      );
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
