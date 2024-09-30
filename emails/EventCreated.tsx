@@ -147,8 +147,10 @@ export default function TicketPurchased({
                 </Column>
                 <Column className="text-left w-60 pl-4 font-normal">
                   Set up your{" "}
-                  <a href="https://www.ontreasure.com/host">payout info</a> so
-                  you get paid for sales on Treasure.
+                  <a href="https://app.formbricks.com/s/cm1o29exk00005f3znm1v713n">
+                    payout info
+                  </a>{" "}
+                  so you get paid for sales on Treasure.
                 </Column>
               </Row>
               <Button
