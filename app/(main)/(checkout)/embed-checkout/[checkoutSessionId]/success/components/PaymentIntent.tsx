@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { TicketSuccessInformation } from "../page";
-import { TicketIcon } from "lucide-react";
+import { HelpingHand, LucideHeartHandshake, TicketIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -98,10 +98,19 @@ export default function PaymentIntent({
                 )}
               >
                 <div className="text-center mb-10 text-foreground dark:text-background">
-                  <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
+                  {eventDisplay.id ===
+                  "3733a7f4-365f-4912-bb24-33dcb58f2a19" ? (
+                    <HelpingHand className="w-20 h-20 stroke-1 m-auto" />
+                  ) : (
+                    <TicketIcon className="w-20 h-20 stroke-1 m-auto" />
+                  )}
+
                   <h2 className="font-bold text-3xl md:text-5xl">
                     {status === "failure"
                       ? "Please try again"
+                      : eventDisplay.id ===
+                        "3733a7f4-365f-4912-bb24-33dcb58f2a19"
+                      ? "Thank You!"
                       : "You're Going!"}
                   </h2>
                 </div>
@@ -123,13 +132,17 @@ export default function PaymentIntent({
               </div>
               {status === "success" && (
                 <div className="border-[1px] border-foreground/20 rounded-lg w-80 h-80 md:w-[30rem] md:h-[30rem] m-auto flex flex-col justify-between p-3 md:p-6">
-                  <p className="mx-auto font-semibold text-sm md:text-base text-center">
-                    <span className="text-muted-foreground text-sm">
-                      {quantity}x
-                    </span>{" "}
-                    {ticketName} {quantity > 1 ? "tickets" : "ticket"} added to
-                    your account
-                  </p>
+                  {eventDisplay.id !==
+                    "3733a7f4-365f-4912-bb24-33dcb58f2a19" && (
+                    <p className="mx-auto font-semibold text-sm md:text-base text-center">
+                      <span className="text-muted-foreground text-sm">
+                        {quantity}x
+                      </span>{" "}
+                      {ticketName} {quantity > 1 ? "tickets" : "ticket"} added
+                      to your account
+                    </p>
+                  )}
+
                   <div className="w-52 md:w-80 mx-auto">
                     <div className="aspect-w-1 aspect-h-1">
                       <Image
@@ -142,13 +155,16 @@ export default function PaymentIntent({
                       />
                     </div>
                   </div>
-                  <div className="flex justify-center">
-                    <Link href="/login">
-                      <Button className="rounded-sm w-fit">
-                        Sign up to access your tickets
-                      </Button>
-                    </Link>
-                  </div>
+                  {eventDisplay.id !==
+                    "3733a7f4-365f-4912-bb24-33dcb58f2a19" && (
+                    <div className="flex justify-center">
+                      <Link href="/login">
+                        <Button className="rounded-sm w-fit">
+                          Sign up to access your tickets
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

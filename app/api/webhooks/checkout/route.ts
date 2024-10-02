@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
+  sendDonationMadeEmail,
 } from "@/lib/actions/emails";
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
@@ -154,20 +155,29 @@ const handleTicketPurchase = async (
   };
 
   if (email) {
-    await sendTicketPurchasedEmail(
-      email,
-      purchasedTicketId,
-      event_id,
-      ticketPurchaseEmailProps
-    );
+    if (event_id === "3733a7f4-365f-4912-bb24-33dcb58f2a19") {
+      await sendDonationMadeEmail(email, {
+        firstName: first_name,
+        donationAmount: USDollar.format(totalPaid),
+      });
+    } else {
+      await sendTicketPurchasedEmail(
+        email,
+        purchasedTicketId,
+        event_id,
+        ticketPurchaseEmailProps
+      );
+    }
   }
   if (phone.length > 0) {
-    await sendAttendeeTicketPurchasedSMS(
-      phone,
-      event_name,
-      formattedEventDate,
-      isGuestCheckout
-    );
+    if (event_id !== "3733a7f4-365f-4912-bb24-33dcb58f2a19") {
+      await sendAttendeeTicketPurchasedSMS(
+        phone,
+        event_name,
+        formattedEventDate,
+        isGuestCheckout
+      );
+    }
   } else if (profile!.phone) {
     await sendAttendeeTicketPurchasedSMS(
       profile!.phone,
@@ -203,12 +213,19 @@ const handleTicketPurchase = async (
   }
 
   if (!profile!.email || profile!.role !== "admin") {
-    await sendTicketPurchasedEmail(
-      "treasure20110@gmail.com",
-      purchasedTicketId,
-      event_id,
-      ticketPurchaseEmailProps
-    );
+    if (event_id === "3733a7f4-365f-4912-bb24-33dcb58f2a19") {
+      await sendDonationMadeEmail("treasure20110@gmail.com", {
+        firstName: first_name,
+        donationAmount: USDollar.format(totalPaid),
+      });
+    } else {
+      await sendTicketPurchasedEmail(
+        "treasure20110@gmail.com",
+        purchasedTicketId,
+        event_id,
+        ticketPurchaseEmailProps
+      );
+    }
   }
 };
 
