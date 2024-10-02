@@ -24,6 +24,7 @@ import VendorAppWaitlisted, {
 } from "@/emails/VendorAppWaitlisted";
 import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
 import EventCreated, { EventCreatedProps } from "@/emails/EventCreated";
+import DonationMade, { DonationMadeProps } from "@/emails/DonationMade";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -221,6 +222,22 @@ const sendEventCreatedEmail = async (
   }
 };
 
+const sendDonationMadeEmail = async (
+  email: string,
+  emailProps: DonationMadeProps
+) => {
+  try {
+    await resend.emails.send({
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: `Thanks for Your Donation to Relief Efforts for Hurricane Helene!`,
+      react: DonationMade(emailProps),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export {
   sendWelcomeEmail,
   sendVendorAppReceivedEmail,
@@ -234,4 +251,5 @@ export {
   sendReminderVendorAppAcceptedEmail,
   sendHostMessageEmail,
   sendEventCreatedEmail,
+  sendDonationMadeEmail,
 };
