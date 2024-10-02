@@ -236,8 +236,9 @@ export default function CheckoutForm({
             }
             id="submit"
           >
-            Purchase Ticket
-            {checkoutSession.quantity > 1 ? "s" : ""}
+            {checkoutSession.event_id === "3733a7f4-365f-4912-bb24-33dcb58f2a19"
+              ? "Donate Now"
+              : "Purchase Ticket" + (checkoutSession.quantity > 1 ? "s" : "")}
           </Button>
         </div>
       </form>

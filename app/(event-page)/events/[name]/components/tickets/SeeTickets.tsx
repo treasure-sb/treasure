@@ -30,8 +30,8 @@ export default function SeeTickets({
             <p className="text-lg">
               {isTicketFree
                 ? "Tickets FREE"
-                : eventDisplayData.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3"
-                ? "Tickets "
+                : eventDisplayData.id === "3733a7f4-365f-4912-bb24-33dcb58f2a19"
+                ? "Donations "
                 : "Tickets from"}
             </p>
             {!isTicketFree && (
@@ -39,11 +39,19 @@ export default function SeeTickets({
             )}
           </div>
           <Link
-            href={`/events/${eventDisplayData.cleaned_name}/tickets`}
+            href={`/events/${eventDisplayData.cleaned_name}/tickets${
+              eventDisplayData.id === "3733a7f4-365f-4912-bb24-33dcb58f2a19"
+                ? "?embed=true"
+                : ""
+            }`}
             className="relative"
           >
             <Button className="border-primary w-32 rounded-full">
-              {isTicketFree ? "RSVP" : "Buy Now"}
+              {isTicketFree
+                ? "RSVP"
+                : eventDisplayData.id === "3733a7f4-365f-4912-bb24-33dcb58f2a19"
+                ? "Donate Now"
+                : "Buy Now"}
             </Button>
             {numTicketsLeft < 50 && (
               <p className="text-xs absolute right-0 italic text-tertiary">
