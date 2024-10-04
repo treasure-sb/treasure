@@ -9,6 +9,8 @@ import { Tables } from "@/types/supabase";
 import { getEditEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
 import { EditEventWithDates } from "@/types/event";
+import { Checkbox } from "@/components/ui/checkbox";
+import { HideVendors } from "./vendors/HideVendors";
 
 export type TicketDetails = Tables<"tickets"> & {
   ticket_dates: Tables<"ticket_dates">[];
@@ -101,6 +103,7 @@ export default async function EditEventDetails({
             tables={tables}
             eventId={eventDisplayData.id}
           />
+          <HideVendors event={eventDisplayData} />
           <EventGuests event={eventDisplayData} />
           <PastHighlights
             event={event}
