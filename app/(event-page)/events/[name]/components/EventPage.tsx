@@ -80,7 +80,7 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
           </div>
           <About description={event.description} />
           <Guests event={event} />
-          <Vendors event={event} />
+          {!event.vendors_hidden && <Vendors event={event} />}
           <VenueMap
             venueMap={event.venue_map_url}
             venueMapPublicUrl={publicVenueMapUrl}
