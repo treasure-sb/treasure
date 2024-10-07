@@ -44,7 +44,16 @@ export default async function Orders({
 
   const tableDataPromise: Promise<Order>[] = orders.map(async (order) => {
     const publicAvatarUrl = await getProfileAvatar(order.profile.avatar_url);
-    const customer: CustomerData = { ...order.profile, publicAvatarUrl };
+    let customer: CustomerData = { ...order.profile, publicAvatarUrl };
+    if (
+      order.profile.first_name === "Guest" &&
+      order.profile.last_name === "Account"
+    ) {
+      customer.first_name = order.first_name || "Guest";
+      customer.last_name = order.last_name || "";
+      customer.email = order.email || "";
+      customer.phone = order.phone || "";
+    }
     const item = order.line_items[0];
 
     let itemName = "";
@@ -79,13 +88,13 @@ export default async function Orders({
     }
 
     return {
-      orderID: order.id,
       quantity: order.line_items[0].quantity,
       amountPaid: amountPaid,
       type: order.line_items[0].item_type,
       purchaseDate: new Date(order.created_at),
       itemName: itemName,
       customer: customer,
+      promoCode: order.code,
       metadata: meta,
     };
   });

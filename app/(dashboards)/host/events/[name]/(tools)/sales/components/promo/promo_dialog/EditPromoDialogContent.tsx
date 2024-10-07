@@ -4,6 +4,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +29,7 @@ import {
 import { PromoCode } from "../table/PromoDataColumns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { updatePromoCode } from "@/lib/actions/promo";
+import { deletePromoCode, updatePromoCode } from "@/lib/actions/promo";
 import { PromoFormSchema } from "../../../types";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 
@@ -45,7 +56,31 @@ export default function EditPromoDialogContent({
 
   const { refresh } = useRouter();
 
+  const onDelete = async () => {
+    toast.loading("Deleting promo code...");
+    const { error } = await deletePromoCode(promoCode.id);
+    if (error) {
+      toast.dismiss();
+      toast.error("Failed to delete promo code");
+      return;
+    }
+    toast.dismiss();
+    toast.success("Promo code updated successfully!");
+    refresh();
+    closeDialog();
+  };
+
   const onSubmit = async (values: z.infer<typeof PromoFormSchema>) => {
+    if (values.usageLimit && Number(values.usageLimit) < promoCode.num_used) {
+      toast.error(
+        "Usage limit cannot be less than the number of times the promo code has been used"
+      );
+      await setTimeout(() => {
+        toast.dismiss();
+      }, 2000);
+      return;
+    }
+
     toast.loading("Updating promo code...");
 
     const { error } = await updatePromoCode(eventId, values);
@@ -66,6 +101,11 @@ export default function EditPromoDialogContent({
     <DialogContent>
       <DialogHeader>
         <DialogTitle className="mb-4">Edit Promo Code</DialogTitle>
+        {promoCode.num_used > 0 && (
+          <p className="text-xs text-muted-foreground">
+            This promo code has been used. Only select info can be changed
+          </p>
+        )}
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -79,6 +119,7 @@ export default function EditPromoDialogContent({
                     label="Code"
                     placeholder="Enter promo code"
                     {...field}
+                    disabled={promoCode.num_used > 0}
                   />
                 </FormControl>
                 <FormMessage />
@@ -96,6 +137,7 @@ export default function EditPromoDialogContent({
                       label="Discount"
                       placeholder="Enter discount"
                       {...field}
+                      disabled={promoCode.num_used > 0}
                     />
                   </FormControl>
                   <FormMessage className="h-2" />
@@ -116,6 +158,7 @@ export default function EditPromoDialogContent({
                           onCheckedChange={(checked) =>
                             field.onChange("PERCENT")
                           }
+                          disabled={promoCode.num_used > 0}
                         />
                         <label
                           htmlFor="PERCENT"
@@ -131,6 +174,7 @@ export default function EditPromoDialogContent({
                           onCheckedChange={(checked) =>
                             field.onChange("DOLLAR")
                           }
+                          disabled={promoCode.num_used > 0}
                         />
                         <label
                           htmlFor="DOLLAR"
@@ -146,22 +190,28 @@ export default function EditPromoDialogContent({
               )}
             />
           </div>
-          <FormField
-            control={form.control}
-            name="usageLimit"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <InputWithLabel
-                    label="Usage Limit"
-                    placeholder="Enter usage limit"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="h-2" />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-col gap-1">
+            <FormField
+              control={form.control}
+              name="usageLimit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <InputWithLabel
+                      label="Usage Limit"
+                      placeholder="Enter usage limit"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="h-2" />
+                </FormItem>
+              )}
+            />
+            <p className="text-muted-foreground text-xs">
+              {promoCode.num_used} used
+            </p>
+          </div>
+
           <FormField
             control={form.control}
             name="status"
@@ -203,9 +253,48 @@ export default function EditPromoDialogContent({
               </FormItem>
             )}
           />
-          <div className="flex justify-end">
-            <Button className="rounded-sm w-24">Edit</Button>
-          </div>
+          {promoCode.num_used === 0 ? (
+            <div className="flex justify-between">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    className="rounded-sm w-24"
+                    type="button"
+                    variant={"destructive"}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the promo code.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDelete}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <Button type="submit" className="rounded-sm w-24">
+                Save
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-end">
+              <Button type="submit" className="rounded-sm w-24">
+                Save
+              </Button>
+            </div>
+          )}
         </form>
       </Form>
     </DialogContent>

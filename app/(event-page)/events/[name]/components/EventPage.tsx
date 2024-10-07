@@ -58,11 +58,13 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
                 {event.name}
               </h1>
               <Tags tags={cleanedTags} />
-              <EventInfo
-                dates={event.dates}
-                address={event.address}
-                venueName={event.venue_name}
-              />
+              {event.id !== "3733a7f4-365f-4912-bb24-33dcb58f2a19" && (
+                <EventInfo
+                  dates={event.dates}
+                  address={event.address}
+                  venueName={event.venue_name}
+                />
+              )}
             </div>
             <div className="my-8 md:my-12 space-y-8 rounded-2xl border-[1px] border-foreground/10 bg-slate-500/10 bg-opacity-20 py-5 px-6 z-10">
               <Tickets event={event} eventDisplayData={eventDisplayData} />
@@ -71,7 +73,7 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
           </div>
           <About description={event.description} />
           <Guests event={event} />
-          <Vendors event={event} />
+          {!event.vendors_hidden && <Vendors event={event} />}
           <VenueMap
             venueMap={event.venue_map_url}
             venueMapPublicUrl={publicVenueMapUrl}

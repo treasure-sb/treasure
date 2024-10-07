@@ -8,7 +8,13 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
+<<<<<<< HEAD
 import { EditEventDisplayData, EditEventWithDates } from "@/types/event";
+=======
+import { EditEventWithDates } from "@/types/event";
+import { Checkbox } from "@/components/ui/checkbox";
+import { HideVendors } from "./vendors/HideVendors";
+>>>>>>> main
 
 export type TicketDetails = Tables<"tickets"> & {
   ticket_dates: Tables<"ticket_dates">[];
@@ -103,6 +109,7 @@ export default async function EditEventDetails({
             tables={tables}
             eventId={eventDisplayData.id}
           />
+          <HideVendors event={eventDisplayData} />
           <EventGuests event={eventDisplayData} />
           <PastHighlights
             event={event}

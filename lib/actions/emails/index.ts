@@ -23,6 +23,8 @@ import VendorAppWaitlisted, {
   VendorAppWaitlistedEmailProps,
 } from "@/emails/VendorAppWaitlisted";
 import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
+import EventCreated, { EventCreatedProps } from "@/emails/EventCreated";
+import DonationMade, { DonationMadeProps } from "@/emails/DonationMade";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -204,13 +206,32 @@ const sendTicketPurchasedEmail = async (
   }
 };
 
-const sendEventCreatedEmail = async (eventName: string) => {
+const sendEventCreatedEmail = async (
+  email: string,
+  emailProps: EventCreatedProps
+) => {
   try {
     await resend.emails.send({
       from: "Treasure <noreply@ontreasure.xyz>",
-      to: "treasure20110@gmail.com",
-      subject: `Event Created: ${eventName}`,
-      html: `<p>Event Created: ${eventName}<p>`,
+      to: email,
+      subject: `Thanks for Creating Your Event: ${emailProps.eventName}`,
+      react: EventCreated(emailProps),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const sendDonationMadeEmail = async (
+  email: string,
+  emailProps: DonationMadeProps
+) => {
+  try {
+    await resend.emails.send({
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: `Thanks for Your Donation to Relief Efforts for Hurricane Helene!`,
+      react: DonationMade(emailProps),
     });
   } catch (error) {
     console.error(error);
@@ -230,4 +251,5 @@ export {
   sendReminderVendorAppAcceptedEmail,
   sendHostMessageEmail,
   sendEventCreatedEmail,
+  sendDonationMadeEmail,
 };
