@@ -288,7 +288,7 @@ export default function MenuBar() {
       animate="visible"
       className="fixed bottom-0 w-full -mx-8 flex items-center justify-center py-4 z-50"
     >
-      <div className="rounded-lg bg-background w-full max-w-2xl lg:max-w-5xl p-4 border border-foreground h-24 flex items-center justify-center">
+      <div className="rounded-full bg-white dark:bg-black bg-opacity-70 w-full max-w-2xl lg:max-w-5xl p-8 border border-foreground h-24 flex items-center justify-center">
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
           <div className="flex space-x-2">
