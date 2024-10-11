@@ -18,21 +18,24 @@ import { Tables } from "@/types/supabase";
 import { AllEventData } from "../page";
 import CreateEventOrPreview from "./CreateEventOrPreview";
 import MenuBar from "./MenuBar";
+import Exit from "./sections/Exit";
 
 export default function CreateEvent({
   tags,
   user,
   draft,
+  eventId,
 }: {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
   draft: AllEventData | null;
+  eventId: string | null;
 }) {
   const dates: CreateEventDate[] = draft
     ? draft.dates.map((date) => ({
         date: date.date ? new Date(date.date) : undefined,
-        startTime: date.start_time ? date.start_time : "",
-        endTime: date.end_time ? date.end_time : "",
+        startTime: date.start_time ? date.start_time.slice(0, -3) : "09:30",
+        endTime: date.end_time ? date.end_time.slice(0, -3) : "16:30",
       }))
     : [];
 
@@ -135,6 +138,7 @@ export default function CreateEvent({
     tags: tags,
     user: user,
     preview: false,
+    eventId: eventId,
   };
 
   return (

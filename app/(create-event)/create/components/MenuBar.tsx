@@ -66,9 +66,9 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 };
 
 export default function MenuBar() {
-  const { currentStep, user, preview, dispatch } = useCreateEvent();
+  const { currentStep, user, preview, eventId, dispatch } = useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
-  const { push } = useRouter();
+  const { push, refresh } = useRouter();
   const [loading, setLoading] = useState(false);
   const { getValues } = useFormContext<CreateEvent>();
   const supabase = createClient();
@@ -96,8 +96,13 @@ export default function MenuBar() {
 
   const handlePosterUpload = async (values: CreateEvent) => {
     let updatedValues = { ...values };
-    updatedValues.venueMap = "venue_map_coming_soon";
-    updatedValues.poster = "poster_coming_soon";
+
+    updatedValues.venueMap = values.poster
+      ? values.poster
+      : "venue_map_coming_soon";
+    updatedValues.poster = values.venueMap
+      ? values.venueMap
+      : "poster_coming_soon";
 
     if (values.poster instanceof File) {
       const posterPath = await uploadFileToBucket(values.poster, "posters");
@@ -129,6 +134,7 @@ export default function MenuBar() {
 
       toast.dismiss();
       toast("Event created successfully");
+
       const eventCreatedEmailPayload: EventCreatedProps = {
         eventName: values.basicDetails.name,
         posterUrl: updatedValues.poster as string,
@@ -136,13 +142,15 @@ export default function MenuBar() {
         hostName: user?.first_name || "",
         hostUsername: user?.username || "",
       };
-      if (user?.email) {
-        await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
-      }
-      await sendEventCreatedEmail(
-        "treasure20110@gmail.com",
-        eventCreatedEmailPayload
-      );
+
+      // if (user?.email) {
+      //   await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
+      // }
+      // await sendEventCreatedEmail(
+      //   "treasure20110@gmail.com",
+      //   eventCreatedEmailPayload
+      // );
+
       push(`/events/${eventUrl}`);
     } catch (err) {
       toast.dismiss();
@@ -160,18 +168,31 @@ export default function MenuBar() {
 
       const updatedValues = await handlePosterUpload(values);
 
-      const { data, error } = await supabase.rpc("save_draft", {
-        event_data: updatedValues,
-        user_id: user!.id,
-      });
+      if (eventId) {
+        const { error } = await supabase.rpc("save_draft", {
+          event_data: updatedValues,
+          user_id: user!.id,
+          p_event_id: eventId,
+        });
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+      } else {
+        const { data, error } = await supabase.rpc("save_draft", {
+          event_data: updatedValues,
+          user_id: user!.id,
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        const draftEventId = data;
+        dispatch({ type: "setEventId", payload: draftEventId });
       }
 
-      const eventId = data;
-      console.log(eventId);
-
+      refresh();
       toast.dismiss();
       toast.success("Event saved successfully");
     } catch (err: any) {

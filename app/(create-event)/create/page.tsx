@@ -3,6 +3,7 @@ import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 import { getProfile } from "@/lib/helpers/profiles";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
+import { unstable_noStore as noStore } from "next/cache";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
 
@@ -45,6 +46,7 @@ export default async function Page({
     d?: string;
   };
 }) {
+  noStore();
   const supabase = await createSupabaseServerClient();
   const { data: allTagsData } = await supabase.from("tags").select("*");
   const tags: Tables<"tags">[] = allTagsData || [];
@@ -83,11 +85,9 @@ export default async function Page({
 
   const { profile } = await getProfile(user?.id);
 
-  console.log(draft);
-
   return (
     <Suspense>
-      <CreateEvent tags={tags} user={profile} draft={draft} />
+      <CreateEvent tags={tags} user={profile} draft={draft} eventId={draftId} />
     </Suspense>
   );
 }
