@@ -53,6 +53,7 @@ export default function InitializeCheckout({
   useEffect(() => {
     setOptions((prevOptions) => ({
       ...prevOptions,
+      amount: Math.round(priceToCharge * 100),
       appearance: {
         ...prevOptions.appearance,
         variables: {
@@ -63,7 +64,7 @@ export default function InitializeCheckout({
         },
       },
     }));
-  }, [theme]);
+  }, [theme, priceToCharge]);
 
   const checkoutPriceInfo: CheckoutPriceInfo = { ...priceInfo, priceToCharge };
 
