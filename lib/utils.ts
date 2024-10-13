@@ -66,14 +66,14 @@ export function roundPrice(price: string) {
   return parseFloat(parseFloat(price).toFixed(2));
 }
 
-export const subtractFourHours = (date: Date): Date => {
+export const subtractFiveHours = (date: Date): Date => {
   const newDate = new Date(date);
-  newDate.setHours(newDate.getHours() - 4);
+  newDate.setHours(newDate.getHours() - 5);
   return newDate;
 };
 
 export const normalizeDate = (date: Date) => {
-  const adjustedDate = subtractFourHours(date);
+  const adjustedDate = subtractFiveHours(date);
   adjustedDate.setHours(0, 0, 0, 0);
   return adjustedDate.toISOString().slice(0, 10);
 };

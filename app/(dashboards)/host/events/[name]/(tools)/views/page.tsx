@@ -32,6 +32,7 @@ export default async function Page({
   searchFromDate.setDate(today.getDate() - length);
   const lastPeriodStartDate = new Date(searchFromDate);
   lastPeriodStartDate.setDate(searchFromDate.getDate() - length * 2);
+  let totalViews = 0;
 
   const supabase = await createSupabaseServerClient();
   const { event, eventError } = await getEventFromCleanedName(name);
@@ -40,40 +41,25 @@ export default async function Page({
     redirect("/host/events");
   }
 
-  const { data: viewsData } = await supabase
-    .from("event_views")
+  const { data: viewsData, error } = await supabase
+    .from("event_views_consolidated")
     .select("*")
     .eq("event_id", event.id)
-    .gte("visited_at", searchFromDate.toISOString());
+    .gte("date", searchFromDate.toISOString())
+    .order("date", { ascending: true });
 
-  const views: Tables<"event_views">[] = viewsData || [];
-
-  const lastDaysMap = new Map<string, any>();
-  Array.from({ length }).forEach((_, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    lastDaysMap.set(normalizeDate(date), 0);
-  });
-
-  views.forEach((view) => {
-    const viewDate = normalizeDate(new Date(view.visited_at));
-    if (lastDaysMap.has(viewDate)) {
-      const views = lastDaysMap.get(viewDate);
-      lastDaysMap.set(viewDate, views + 1);
-    }
-  });
+  const views: Tables<"event_views_consolidated">[] = viewsData || [];
 
   const viewsChartData: ViewsChartData = [];
-  lastDaysMap.forEach((value, key) => {
+  views.map((day) => {
     viewsChartData.push({
-      day: new Date(key).getDate().toString(),
-      formattedDate: formatDate(key),
-      normalizedDate: key,
-      views: value,
+      day: new Date(day.date).getDate().toString(),
+      formattedDate: formatDate(day.date),
+      normalizedDate: day.date,
+      views: day.num_views,
     });
+    totalViews += day.num_views;
   });
-
-  viewsChartData.reverse();
 
   const { count: lastPeriodViewsCount } = await supabase
     .from("event_views")
@@ -83,7 +69,7 @@ export default async function Page({
     .lte("visited_at", searchFromDate.toISOString());
 
   const lastPeriodViews = lastPeriodViewsCount || 0;
-  const viewCountChange = percentageChange(views.length, lastPeriodViews);
+  const viewCountChange = percentageChange(totalViews, lastPeriodViews);
   const viewsIncrease = viewCountChange > 0;
   const isInfinity = !Number.isFinite(viewCountChange);
 
@@ -93,7 +79,7 @@ export default async function Page({
         <div className="flex space-x-2 items-center">
           <h2 className="text-2xl font-semibold">Page Views </h2>
           <div className="text-muted-foreground text-2xl font-semibold flex items-center">
-            {views.length}
+            {totalViews}
           </div>
           <div
             className={cn(
