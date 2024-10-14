@@ -18,7 +18,8 @@ export default function ContinueButton({
 
   const areApplicationsOpen =
     event.vendor_exclusivity === "APPLICATIONS" ||
-    event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT";
+    event.vendor_exclusivity === "APPLICATIONS_NO_PAYMENT" ||
+    event.vendor_exclusivity === "PUBLIC";
 
   const isSoldOut = table.quantity === 0;
 
