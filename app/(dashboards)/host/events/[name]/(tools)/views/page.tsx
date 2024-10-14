@@ -32,7 +32,7 @@ export default async function Page({
   searchFromDate.setHours(0, 0, 0, 0);
   searchFromDate.setDate(searchFromDate.getDate() - length);
   const lastPeriodStartDate = new Date(searchFromDate);
-  lastPeriodStartDate.setDate(searchFromDate.getDate() - length * 2);
+  lastPeriodStartDate.setDate(searchFromDate.getDate() - length);
   let totalViews = 0;
 
   const supabase = await createSupabaseServerClient();
