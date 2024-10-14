@@ -56,7 +56,7 @@ const updateLink = async (link: LinkType, user_id: string) => {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("links")
-    .upsert(link)
+    .update(link)
     .eq("application", link.application)
     .eq("user_id", user_id);
   return { data, error };
