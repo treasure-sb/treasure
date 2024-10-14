@@ -29,7 +29,7 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
 
   const { error: viewError } = await supabase.rpc("add_event_view", {
     p_event_id: event.id,
-    p_visitor_id: user?.id,
+    p_visitor_id: user?.id || null,
     p_date: normalizeDate(new Date()),
   });
 
