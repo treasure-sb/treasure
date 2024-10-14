@@ -29,7 +29,8 @@ export default async function Page({
   const length = period === "30d" ? 30 : period === "24h" ? 1 : 7;
   const today = new Date();
   const searchFromDate = new Date(today);
-  searchFromDate.setDate(today.getDate() - length);
+  searchFromDate.setHours(0, 0, 0, 0);
+  searchFromDate.setDate(searchFromDate.getDate() - length);
   const lastPeriodStartDate = new Date(searchFromDate);
   lastPeriodStartDate.setDate(searchFromDate.getDate() - length * 2);
   let totalViews = 0;
