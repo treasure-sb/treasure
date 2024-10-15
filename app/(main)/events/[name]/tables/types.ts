@@ -18,6 +18,7 @@ type ProfileWithApplicationInfo = Tables<"profiles"> & {
   instagram?: string;
   inventory?: string;
   tags?: Tables<"tags">[];
+  alreadyHadInstagram?: boolean;
 };
 
 type VendorFlowState = {
