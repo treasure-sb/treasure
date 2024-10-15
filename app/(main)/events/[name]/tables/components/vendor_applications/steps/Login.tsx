@@ -70,10 +70,14 @@ export default function Login() {
         return { id: tag.tags.id, name: tag.tags.name };
       }) || [];
 
+    let instagram = links.find(
+      (link) => link.application === "Instagram"
+    )?.username;
+
     const profileWithApplicationInfo: ProfileWithApplicationInfo | null = {
       ...profile,
-      instagram: links.find((link) => link.application === "Instagram")
-        ?.username,
+      instagram: instagram,
+      alreadyHadInstagram: !!instagram,
       inventory: inventory,
       tags: userTags,
     };

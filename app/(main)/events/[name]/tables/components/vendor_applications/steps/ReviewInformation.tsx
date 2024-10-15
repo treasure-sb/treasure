@@ -13,7 +13,7 @@ import { useVendorApplication } from "../../../context/VendorApplicationContext"
 import { sendVendorAppSubmittedEmail } from "@/lib/actions/emails";
 import { VendorAppSubmittedEmailProps } from "@/emails/VendorAppSubmitted";
 import { filterPhoneNumber } from "@/components/ui/custom/phone-input";
-import { updateLink } from "@/lib/actions/links";
+import { createLink, updateLink } from "@/lib/actions/links";
 import type { VendorApplication } from "../../../types";
 import { sendVendorAppSubmittedSMS } from "@/lib/sms";
 
@@ -116,15 +116,23 @@ export default function ReviewInformation() {
   };
 
   const updateInstagram = async () => {
-    if (vendorInfo.instagram) {
-      const linkType = {
+    if (vendorInfo.instagram && profile) {
+      let linkType = {
         application: "Instagram",
-        username: vendorInfo.instagram,
+        username: vendorInfo.instagram.replace("@", ""),
         type: "social",
       };
-      const { error } = await updateLink(linkType, profile?.id as string);
-      if (error) {
-        console.log(error);
+
+      if (profile.alreadyHadInstagram) {
+        const { error } = await updateLink(linkType, profile.id as string);
+        if (error) {
+          console.log(error);
+        }
+      } else {
+        const { error } = await createLink(linkType, profile.id as string);
+        if (error) {
+          console.log(error);
+        }
       }
     }
   };

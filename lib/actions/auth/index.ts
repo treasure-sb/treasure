@@ -240,7 +240,14 @@ const transferTemporaryProfile = async (token: string, user_id: string) => {
     .from("profile_transfers")
     .insert([{ temp_profile_id: tempProfile.id, new_user_id: user_id }]);
   if (tempProfile.instagram) {
-    await createLink(user_id, tempProfile.instagram, "instagram");
+    await createLink(
+      {
+        application: "Instagram",
+        username: tempProfile.instagram,
+        type: "social",
+      },
+      user_id
+    );
   }
   await updateProfileAvatar(tempProfile.avatar_url, user_id);
 
