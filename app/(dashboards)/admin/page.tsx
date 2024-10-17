@@ -6,8 +6,6 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { sendHostTicketPurchasedEmail } from "@/lib/actions/emails";
 
 export default async function Page() {
   return (
