@@ -10,7 +10,7 @@ export default function LandingButton({
   className,
 }: {
   href: string;
-  variant?: "outline" | "default" | "tertiary";
+  variant?: "outline" | "default" | "tertiary" | "ghost";
   text: string;
   className?: string;
 }) {
