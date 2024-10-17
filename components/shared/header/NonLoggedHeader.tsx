@@ -2,6 +2,7 @@ import Link from "next/link";
 import HeaderMotion from "./HeaderMotion";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import LandingButton from "@/components/landing-page/LandingButton";
 
 export default function NonLoggedHeader({
   useMotion = true,
@@ -41,6 +42,14 @@ export default function NonLoggedHeader({
           >
             Events
           </Link>
+        )}
+        {!isEventPage && (
+          <LandingButton
+            className="text-foreground hover:bg-primary"
+            href={`https://www.ontreasure.com/create`}
+            text="Create Event"
+            variant="ghost"
+          />
         )}
         <Link
           href="/login"

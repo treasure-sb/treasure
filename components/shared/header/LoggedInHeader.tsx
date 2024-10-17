@@ -21,6 +21,7 @@ import {
 import { ThemeSwitch } from "../ThemeSwitch";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import LandingButton from "@/components/landing-page/LandingButton";
 
 type PopoverLinkProps = {
   href: string;
@@ -99,6 +100,14 @@ export default async function LoggedInHeader({
           >
             Events
           </Link>
+        )}
+        {!isEventPage && (
+          <LandingButton
+            className="text-foreground hover:bg-primary"
+            href={`https://www.ontreasure.com/create`}
+            text="Create Event"
+            variant="ghost"
+          />
         )}
         <Popover>
           <PopoverTrigger asChild>
