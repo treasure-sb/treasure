@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   UsersIcon,
@@ -6,8 +7,27 @@ import {
   MessageCircle,
   AppWindowIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { sendHostTicketPurchasedEmail } from "@/lib/actions/emails";
 
-export default async function Page() {
+export default function Page() {
+  const sendEmail = async () => {
+    const emails = [
+      "santiagolopezdelpino@gmail.com",
+      "adam.callahan33@gmail.com",
+    ];
+    const emailProps = {
+      customerName: "Nick LDP",
+      eventName: "Brooklyn Anime Fest",
+      posterUrl: "poster_coming_soon",
+      cleanedEventName: "brooklyn-anime-fest-10262024",
+      ticketType: "GA",
+      quantity: 1,
+      location: "1336 Dekalb Ave",
+      date: "Sat, March 3",
+    };
+    await sendHostTicketPurchasedEmail(emails, emailProps);
+  };
   return (
     <div className="lg:grid grid-cols-5 gap-4 flex flex-col">
       <Link
@@ -43,6 +63,9 @@ export default async function Page() {
           <BadgeDollarSign size={28} className="flex-shrink-0" />
         </div>
       </Link>
+      <Button onClick={sendEmail} className="bg-primary text-black">
+        send email
+      </Button>
     </div>
   );
 }
