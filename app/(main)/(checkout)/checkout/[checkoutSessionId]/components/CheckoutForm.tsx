@@ -243,7 +243,7 @@ export default function CheckoutForm({
                 Already have an account?
               </h2>
               <p className="text-muted-foreground text-sm text-center">
-                or try our one-click sign up
+                login or try our one-click sign up
               </p>
             </div>
             <LoginFlowDialog
