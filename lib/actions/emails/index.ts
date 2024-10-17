@@ -25,6 +25,12 @@ import VendorAppWaitlisted, {
 import TeamInvite, { TeamInviteProps } from "@/emails/TeamInvite";
 import EventCreated, { EventCreatedProps } from "@/emails/EventCreated";
 import DonationMade, { DonationMadeProps } from "@/emails/DonationMade";
+import HostTicketPurchased, {
+  HostTicketPurchasedProps,
+} from "@/emails/HostTicketPurchased";
+import HostTablePurchased, {
+  HostTablePurchasedProps,
+} from "@/emails/HostTablePurchased";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
@@ -206,6 +212,44 @@ const sendTicketPurchasedEmail = async (
   }
 };
 
+const sendHostTicketPurchasedEmail = async (
+  emails: string[],
+  emailProps: HostTicketPurchasedProps
+) => {
+  let emailsInfo = emails.map((email) => {
+    return {
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: `New Ticket Sale for ${emailProps.eventName}!`,
+      react: HostTicketPurchased(emailProps),
+    };
+  });
+  try {
+    await resend.batch.send(emailsInfo);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const sendHostTablePurchasedEmail = async (
+  emails: string[],
+  emailProps: HostTablePurchasedProps
+) => {
+  let emailsInfo = emails.map((email) => {
+    return {
+      from: "Treasure <noreply@ontreasure.xyz>",
+      to: email,
+      subject: `New Table Sale for ${emailProps.eventName}!`,
+      react: HostTablePurchased(emailProps),
+    };
+  });
+  try {
+    await resend.batch.send(emailsInfo);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const sendEventCreatedEmail = async (
   email: string,
   emailProps: EventCreatedProps
@@ -250,6 +294,8 @@ export {
   sendTablePurchasedEmail,
   sendReminderVendorAppAcceptedEmail,
   sendHostMessageEmail,
+  sendHostTicketPurchasedEmail,
   sendEventCreatedEmail,
   sendDonationMadeEmail,
+  sendHostTablePurchasedEmail,
 };

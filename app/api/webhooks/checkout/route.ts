@@ -3,6 +3,8 @@ import {
   sendTicketPurchasedEmail,
   sendTablePurchasedEmail,
   sendDonationMadeEmail,
+  sendHostTicketPurchasedEmail,
+  sendHostTablePurchasedEmail,
 } from "@/lib/actions/emails";
 import { getPublicPosterUrlFromPosterUrl } from "@/lib/helpers/events";
 import { getProfile } from "@/lib/helpers/profiles";
@@ -24,6 +26,8 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import Cors from "micro-cors";
 import Stripe from "stripe";
 import { TicketPurchasedProps } from "@/emails/TicketPurchased";
+import { HostTicketPurchasedProps } from "@/emails/HostTicketPurchased";
+import { HostTablePurchasedProps } from "@/emails/HostTablePurchased";
 
 const cors = Cors({
   allowMethods: ["POST", "HEAD"],
@@ -212,6 +216,24 @@ const handleTicketPurchase = async (
     await sendHostTicketSoldSMS(hostSMSPayload);
   }
 
+  const teamEmails = teamData
+    ? teamData.map((member) => member.profile.email).filter(Boolean)
+    : [];
+
+  if (teamEmails.length > 0) {
+    const hostEmailPayload: HostTicketPurchasedProps = {
+      customerName: first_name + " " + last_name,
+      eventName: event_name,
+      posterUrl,
+      cleanedEventName: event_cleaned_name,
+      ticketType: ticket_name,
+      location: event_address,
+      quantity: quantity,
+      date: formattedEventDate,
+    };
+    await sendHostTicketPurchasedEmail(teamEmails, hostEmailPayload);
+  }
+
   if (!profile!.email || profile!.role !== "admin") {
     if (event_id === "3733a7f4-365f-4912-bb24-33dcb58f2a19") {
       await sendDonationMadeEmail("treasure20110@gmail.com", {
@@ -346,6 +368,26 @@ const handleTablePurchase = async (
       eventCleanedName: event_cleaned_name,
     };
     await sendHostTableSoldSMS(hostSMSPayload);
+  }
+
+  const teamEmails = teamData
+    ? teamData.map((member) => member.profile.email).filter(Boolean)
+    : [];
+
+  if (teamEmails.length > 0) {
+    const hostEmailPayload: HostTablePurchasedProps = {
+      customerName: vendor_first_name + " " + vendor_last_name,
+      eventName: event_name,
+      posterUrl: publicUrl,
+      cleanedEventName: event_cleaned_name,
+      tableType: table_section_name,
+      quantity: quantity,
+      location: event_address,
+      date: formattedEventDate,
+      numberOfVendors: vendor_vendors_at_table,
+      businessName: vendor_business_name,
+    };
+    await sendHostTablePurchasedEmail(teamEmails, hostEmailPayload);
   }
 
   if (vendor_application_email !== "treasure20110@gmail.com") {
