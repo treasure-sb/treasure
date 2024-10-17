@@ -88,7 +88,10 @@ export default async function Page({
   } = checkoutSession;
 
   const { event } = await getEventFromId(event_id);
-  const { profile } = await getProfile(user_id);
+  const { profile } =
+    user_id === "735d404d-ba70-4084-9967-5f778a8e1403"
+      ? { profile: null }
+      : await getProfile(user_id);
 
   const eventDisplay = await getEventDisplayData(event);
   const { data: feeData, isLegacy } = await getFeeInfo(event_id);
