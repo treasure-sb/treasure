@@ -44,12 +44,12 @@ export default function NonLoggedHeader({
           </Link>
         )}
         {!isEventPage && (
-          <LandingButton
-            className="text-foreground hover:bg-primary"
-            href={`https://www.ontreasure.com/create`}
-            text="Create Event"
-            variant="ghost"
-          />
+          <Link
+            href="/create"
+            className="hidden sm:flex hover:text-foreground/80 transition duration-300 text-lg font-semibold"
+          >
+            Create Event
+          </Link>
         )}
         <Link
           href="/login"
