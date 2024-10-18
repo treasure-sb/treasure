@@ -139,14 +139,18 @@ export async function middleware(request: NextRequest) {
       pathname.includes("/vendor") ||
       pathname.includes("/host"))
   ) {
-    return NextResponse.redirect(new URL("/events", request.url));
+    return NextResponse.redirect(
+      new URL(`/login?redirect=${pathname}`, request.url)
+    );
   }
 
   const { profile } = await getProfile(session?.user?.id);
   const profileIsAdmin = profile && profile.role === "admin";
 
   if ((!session || !profileIsAdmin) && pathname.includes("/admin")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(
+      new URL(`/login?redirect=${pathname}`, request.url)
+    );
   }
 
   // check to see if the route is /host/events/[id]/...
