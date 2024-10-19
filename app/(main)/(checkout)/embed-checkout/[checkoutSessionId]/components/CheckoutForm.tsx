@@ -27,7 +27,7 @@ import PhoneInput, {
   filterPhoneNumber,
   formatPhoneNumber,
 } from "@/components/ui/custom/phone-input";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -62,7 +62,7 @@ export default function CheckoutForm({
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
   const [isStripeComplete, setIsStripeComplete] = useState(false);
-  const router = useRouter();
+  const { push } = useRouter();
 
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -147,8 +147,9 @@ export default function CheckoutForm({
     });
 
     if (result.paymentIntent?.status === "succeeded") {
+      toast.dismiss();
+      push(`/embed-checkout/${checkoutSession.id}/success`);
       setIsLoading(false);
-      router.push(`/embed-checkout/${checkoutSession.id}/success`);
     } else if (
       result.error &&
       (result.error.type === "card_error" ||
