@@ -13,7 +13,7 @@ export default function SaveButton({
 }: {
   isDesktop: boolean | undefined;
 }) {
-  const { user, eventId, dispatch } = useCreateEvent();
+  const { user, eventId, originalDraft, dispatch } = useCreateEvent();
   const { getValues } = useFormContext<CreateEvent>();
   const { refresh } = useRouter();
   const supabase = createClient();
@@ -23,7 +23,7 @@ export default function SaveButton({
       toast.loading("Saving event...");
       const values = getValues();
 
-      const updatedValues = await handleImagesUpload(values);
+      const updatedValues = await handleImagesUpload(values, originalDraft);
 
       const { data, error } = await supabase.rpc("save_draft", {
         event_data: updatedValues,

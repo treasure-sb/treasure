@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import { CreateEvent } from "../../schema";
-import { useCreateEvent } from "../../context/CreateEventContext";
+import { AllEventData } from "../../page";
 
 const uploadFileToBucket = async (file: File, storageFolder: string) => {
   const supabase = createClient();
@@ -22,9 +22,10 @@ const deleteFileFromBucket = async (filePath: string, bucket: string) => {
   await supabase.storage.from(bucket).remove([filePath]);
 };
 
-const handleImagesUpload = async (values: CreateEvent) => {
-  const { originalDraft } = useCreateEvent();
-
+const handleImagesUpload = async (
+  values: CreateEvent,
+  originalDraft: AllEventData | null
+) => {
   let updatedValues = { ...values };
 
   updatedValues.venueMap = values.venueMap

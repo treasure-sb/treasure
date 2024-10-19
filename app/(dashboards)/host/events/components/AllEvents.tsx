@@ -56,7 +56,7 @@ export default async function AllEvents() {
   const { data: draftEvents } = await supabase
     .from("event_roles")
     .select(
-      "role, event:events(*, dates:event_dates(date, start_time, end_time))"
+      "role, event:events!inner(*, dates:event_dates(date, start_time, end_time))"
     )
     .eq("user_id", user.id)
     .eq("event.status", "DRAFT")
@@ -68,7 +68,6 @@ export default async function AllEvents() {
   const pastEventsHosting = pastData
     ? pastData.map((event) => event.event)
     : [];
-
   const draftEventsHosting = draftEvents
     ? draftEvents.map((event) => event.event)
     : [];

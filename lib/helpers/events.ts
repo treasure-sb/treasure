@@ -242,6 +242,7 @@ const getEventDisplayData = async <T extends EventTypes>(
 ): Promise<
   EventToDisplayMap[T extends keyof EventToDisplayMap ? T : never]
 > => {
+  console.log(event);
   const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
   const baseDisplayData: BaseEventDisplayData = {
     publicPosterUrl,

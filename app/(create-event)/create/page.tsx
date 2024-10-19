@@ -6,6 +6,7 @@ import { getPublicPosterUrl, getPublicVenueMapUrl } from "@/lib/helpers/events";
 import { unstable_noStore as noStore } from "next/cache";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 type Ticket = Omit<
   Tables<"tickets">,
@@ -79,6 +80,10 @@ export default async function Page({
       draftPosterPublicUrl = await getPublicPosterUrl(draft!.poster_url);
       draftVenuePublicUrl = await getPublicVenueMapUrl(draft!.venue_map_url);
     }
+  }
+
+  if (draft && draft.status === "LIVE") {
+    redirect(`/events/${draft.cleaned_name}`);
   }
 
   const {

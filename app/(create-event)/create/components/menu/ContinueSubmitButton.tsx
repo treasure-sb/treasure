@@ -19,7 +19,8 @@ export default function ContinueSubmitButton({
   className?: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const { currentStep, user, dispatch } = useCreateEvent();
+  const { currentStep, user, originalDraft, eventId, dispatch } =
+    useCreateEvent();
   const { push } = useRouter();
   const form = useFormContext<CreateEvent>();
   const isLoggedIn = user !== null;
@@ -30,8 +31,8 @@ export default function ContinueSubmitButton({
 
       setLoading(true);
 
-      const updatedValues = await handleImagesUpload(values);
-      const { data, error } = await updatedCreateEvent(updatedValues);
+      const updatedValues = await handleImagesUpload(values, originalDraft);
+      const { data, error } = await updatedCreateEvent(updatedValues, eventId);
       if (error) {
         throw error;
       }
@@ -47,6 +48,8 @@ export default function ContinueSubmitButton({
         hostName: user?.first_name || "",
         hostUsername: user?.username || "",
       };
+
+      console.log(eventCreatedEmailPayload);
 
       // if (user?.email) {
       //   await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
