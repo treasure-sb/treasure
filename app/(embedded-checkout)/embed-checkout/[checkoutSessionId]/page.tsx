@@ -4,9 +4,9 @@ import OrderSummary from "./components/OrderSummary";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData, getEventFromId } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
-import { CheckoutTicketInfo } from "../../types";
 import { getFeeInfo } from "@/lib/helpers/subscriptions";
 import Back from "./components/Back";
+import { CheckoutTicketInfo } from "@/app/(main)/(checkout)/types";
 
 export type PriceInfo = {
   subtotal: number;
