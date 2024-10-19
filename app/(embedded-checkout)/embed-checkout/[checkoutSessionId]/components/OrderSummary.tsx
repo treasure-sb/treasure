@@ -3,8 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { EventDisplayData } from "@/types/event";
 import { Tables } from "@/types/supabase";
 import { TicketIcon } from "lucide-react";
-import { CheckoutTicketInfo } from "../../../types";
 import { PriceInfo } from "../page";
+import { CheckoutTicketInfo } from "@/app/(main)/(checkout)/types";
 
 type OrderSummaryProps = {
   event: EventDisplayData;
