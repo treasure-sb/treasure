@@ -1,5 +1,6 @@
 import { Tables } from "@/types/supabase";
 import React, { createContext, useContext, useReducer } from "react";
+import { AllEventData } from "../page";
 
 export enum CurrentStep {
   STEP_ONE = 1,
@@ -12,6 +13,8 @@ export type CreateEventState = {
   user: Tables<"profiles"> | null;
   preview: boolean;
   eventId: string | null;
+  originalDraft: AllEventData | null;
+  draftPosterPublicUrl: string | null;
 };
 type CreateEventActions =
   | { type: "setCurrentStep"; payload: CurrentStep }
@@ -30,6 +33,8 @@ const initialState = {
   user: null,
   preview: false,
   eventId: null,
+  originalDraft: null,
+  draftPosterPublicUrl: null,
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {

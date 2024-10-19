@@ -11,12 +11,11 @@ import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { updatedCreateEvent } from "@/lib/actions/events";
 import { useRouter } from "next/navigation";
-import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 import { validateUser } from "@/lib/actions/auth";
-import { sendEventCreatedEmail } from "@/lib/actions/emails";
 import { getProfile } from "@/lib/helpers/profiles";
 import { EventCreatedProps } from "@/emails/EventCreated";
 import { Eye, EyeOff } from "lucide-react";
+import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 
 const menuVariants = {
   hidden: {
@@ -66,7 +65,8 @@ const DesktopProgresBar = ({ currentStep }: { currentStep: CurrentStep }) => {
 };
 
 export default function MenuBar() {
-  const { currentStep, user, preview, eventId, dispatch } = useCreateEvent();
+  const { currentStep, user, preview, eventId, originalDraft, dispatch } =
+    useCreateEvent();
   const [isMounted, setIsMounted] = useState(false);
   const { push, refresh } = useRouter();
   const [loading, setLoading] = useState(false);
@@ -94,18 +94,28 @@ export default function MenuBar() {
     return null;
   };
 
+  const deleteFileFromBucket = async (filePath: string) => {
+    if (filePath) {
+      await supabase.storage.from("posters").remove([filePath]);
+    }
+  };
+
   const handlePosterUpload = async (values: CreateEvent) => {
     let updatedValues = { ...values };
 
-    updatedValues.venueMap = values.poster
-      ? values.poster
-      : "venue_map_coming_soon";
-    updatedValues.poster = values.venueMap
+    updatedValues.venueMap = values.venueMap
       ? values.venueMap
-      : "poster_coming_soon";
+      : "venue_map_coming_soon";
+    updatedValues.poster = values.poster ? values.poster : "poster_coming_soon";
 
     if (values.poster instanceof File) {
       const posterPath = await uploadFileToBucket(values.poster, "posters");
+      if (
+        originalDraft?.poster_url &&
+        originalDraft?.poster_url !== "poster_coming_soon"
+      ) {
+        await deleteFileFromBucket(originalDraft?.poster_url);
+      }
       updatedValues.poster = posterPath || "poster_coming_soon";
     }
 
@@ -114,8 +124,15 @@ export default function MenuBar() {
         values.venueMap,
         "venue_maps"
       );
+      if (
+        originalDraft?.venue_map_url &&
+        originalDraft?.venue_map_url !== "venue_map_coming_soon"
+      ) {
+        await deleteFileFromBucket(originalDraft?.venue_map_url);
+      }
       updatedValues.venueMap = venueMapPath || "venue_map_coming_soon";
     }
+
     return updatedValues;
   };
 

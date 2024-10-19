@@ -24,11 +24,13 @@ export default function CreateEvent({
   tags,
   user,
   draft,
+  draftPosterPublicUrl,
   eventId,
 }: {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
   draft: AllEventData | null;
+  draftPosterPublicUrl: string | null;
   eventId: string | null;
 }) {
   const dates: CreateEventDate[] = draft
@@ -139,6 +141,8 @@ export default function CreateEvent({
     user: user,
     preview: false,
     eventId: eventId,
+    originalDraft: draft,
+    draftPosterPublicUrl: draftPosterPublicUrl,
   };
 
   return (

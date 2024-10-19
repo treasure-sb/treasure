@@ -53,6 +53,7 @@ export default async function Page({
 
   const draftId = searchParams.d || null;
   let draft: AllEventData | null = null;
+  let draftPosterPublicUrl: string | null = null;
 
   if (draftId) {
     const { data: draftData, error: draftError } = await supabase
@@ -74,8 +75,7 @@ export default async function Page({
 
     if (!draftError) {
       draft = draftData;
-      const posterUrl = await getPublicPosterUrl(draft!.poster_url);
-      draft!.poster_url = posterUrl;
+      draftPosterPublicUrl = await getPublicPosterUrl(draft!.poster_url);
     }
   }
 
@@ -87,7 +87,13 @@ export default async function Page({
 
   return (
     <Suspense>
-      <CreateEvent tags={tags} user={profile} draft={draft} eventId={draftId} />
+      <CreateEvent
+        tags={tags}
+        user={profile}
+        draft={draft}
+        draftPosterPublicUrl={draftPosterPublicUrl}
+        eventId={draftId}
+      />
     </Suspense>
   );
 }
