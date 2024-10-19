@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Tables } from "@/types/supabase";
 import { validateUser } from "@/lib/actions/auth";
 import { getProfile } from "@/lib/helpers/profiles";
-import { getPublicPosterUrl } from "@/lib/helpers/events";
+import { getPublicPosterUrl, getPublicVenueMapUrl } from "@/lib/helpers/events";
 import { unstable_noStore as noStore } from "next/cache";
 import CreateEvent from "./components/CreateEvent";
 import createSupabaseServerClient from "@/utils/supabase/server";
@@ -54,6 +54,7 @@ export default async function Page({
   const draftId = searchParams.d || null;
   let draft: AllEventData | null = null;
   let draftPosterPublicUrl: string | null = null;
+  let draftVenuePublicUrl: string | null = null;
 
   if (draftId) {
     const { data: draftData, error: draftError } = await supabase
@@ -76,6 +77,7 @@ export default async function Page({
     if (!draftError) {
       draft = draftData;
       draftPosterPublicUrl = await getPublicPosterUrl(draft!.poster_url);
+      draftVenuePublicUrl = await getPublicVenueMapUrl(draft!.venue_map_url);
     }
   }
 
@@ -92,6 +94,7 @@ export default async function Page({
         user={profile}
         draft={draft}
         draftPosterPublicUrl={draftPosterPublicUrl}
+        draftVenuePublicUrl={draftVenuePublicUrl}
         eventId={draftId}
       />
     </Suspense>

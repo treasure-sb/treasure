@@ -12,7 +12,7 @@ export default function VenueMap({
   venueMapPublicUrl,
 }: {
   venueMap: string | null;
-  venueMapPublicUrl: string | File | null;
+  venueMapPublicUrl: string | File | undefined;
 }) {
   const [showOverlay, setShowOverlay] = useState(false);
   const eventHasVenueMap =

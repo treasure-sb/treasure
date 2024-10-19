@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Tables } from "@/types/supabase";
 import { AllEventData } from "../page";
 import CreateEventOrPreview from "./CreateEventOrPreview";
-import MenuBar from "./MenuBar";
+import MenuBar from "./menu/MenuBar";
 import Exit from "./sections/Exit";
 
 export default function CreateEvent({
@@ -25,12 +25,14 @@ export default function CreateEvent({
   user,
   draft,
   draftPosterPublicUrl,
+  draftVenuePublicUrl,
   eventId,
 }: {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
   draft: AllEventData | null;
   draftPosterPublicUrl: string | null;
+  draftVenuePublicUrl: string | null;
   eventId: string | null;
 }) {
   const dates: CreateEventDate[] = draft
@@ -128,6 +130,7 @@ export default function CreateEvent({
     },
     tags: eventTags,
     poster: draft?.poster_url || undefined,
+    venueMap: draft?.venue_map_url || undefined,
   };
 
   const form = useForm<CreateEvent>({
@@ -143,6 +146,7 @@ export default function CreateEvent({
     eventId: eventId,
     originalDraft: draft,
     draftPosterPublicUrl: draftPosterPublicUrl,
+    draftVenuePublicUrl: draftVenuePublicUrl,
   };
 
   return (

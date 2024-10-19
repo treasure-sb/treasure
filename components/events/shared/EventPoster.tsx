@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCreateEvent } from "@/app/(create-event)/create/context/CreateEventContext";
 
 export default function EventPoster({
   posterUrl,
@@ -11,14 +10,13 @@ export default function EventPoster({
   posterUrl: string | File | undefined;
   hidden?: boolean;
 }) {
-  const { draftPosterPublicUrl } = useCreateEvent();
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
   const skeletonDisplay = loading ? "inline-block" : "hidden";
 
   const imageSrc =
     typeof posterUrl === "string"
-      ? (draftPosterPublicUrl as string)
+      ? posterUrl
       : posterUrl instanceof File
       ? URL.createObjectURL(posterUrl)
       : "/static/placeholder_poster.jpg";

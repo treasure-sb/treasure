@@ -6,13 +6,20 @@ import { Input } from "@/components/ui/input";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../../schema";
+import { useCreateEvent } from "../../../context/CreateEventContext";
 import CreateEventCard from "../../CreateEventCard";
 
 export default function EventVenueMap() {
+  const { draftVenuePublicUrl } = useCreateEvent();
   const { control, getValues } = useFormContext<CreateEvent>();
   const venueMap = getValues("venueMap");
+
   const [imageUrl, setImageUrl] = useState<string | null>(
-    venueMap ? URL.createObjectURL(venueMap as File) : null
+    venueMap instanceof File
+      ? URL.createObjectURL(venueMap as File)
+      : typeof venueMap === "string"
+      ? draftVenuePublicUrl
+      : null
   );
 
   return (

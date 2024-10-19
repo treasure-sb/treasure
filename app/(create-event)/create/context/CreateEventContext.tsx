@@ -15,6 +15,7 @@ export type CreateEventState = {
   eventId: string | null;
   originalDraft: AllEventData | null;
   draftPosterPublicUrl: string | null;
+  draftVenuePublicUrl: string | null;
 };
 type CreateEventActions =
   | { type: "setCurrentStep"; payload: CurrentStep }
@@ -35,6 +36,7 @@ const initialState = {
   eventId: null,
   originalDraft: null,
   draftPosterPublicUrl: null,
+  draftVenuePublicUrl: null,
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {

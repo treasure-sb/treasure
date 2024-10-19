@@ -6,16 +6,18 @@ import VenueMap from "@/app/(event-page)/events/[name]/components/sections/Venue
 import HostedBy from "./HostedBy";
 import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import TicketsPreview from "./TicketsPreview";
+import TablesPreview from "./TablesPreview";
 import { sectionVariants } from "../CreateEventFormSections";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useFormContext } from "react-hook-form";
 import { CreateEvent } from "../../schema";
 import { cn } from "@/lib/utils";
-import TablesPreview from "./TablesPreview";
+import { useCreateEvent } from "../../context/CreateEventContext";
 
 export default function PreviewEvent() {
   const form = useFormContext<CreateEvent>();
+  const { draftPosterPublicUrl, draftVenuePublicUrl } = useCreateEvent();
   const { basicDetails, tags, dates, venueMap, poster } = form.getValues();
 
   const filteredDates = dates.filter(
@@ -43,7 +45,13 @@ export default function PreviewEvent() {
         <div className="relative w-full md:w-auto">
           <div className="md:sticky md:top-12 md:h-fit">
             <div className="mb-6 w-full max-w-xl relative z-10 mx-auto">
-              <EventPoster posterUrl={poster} />
+              <EventPoster
+                posterUrl={
+                  typeof poster === "string"
+                    ? (draftPosterPublicUrl as string)
+                    : poster
+                }
+              />
             </div>
           </div>
         </div>
@@ -80,12 +88,23 @@ export default function PreviewEvent() {
           </div>
           <About description={basicDetails.description} />
           {venueMap && (
-            <VenueMap venueMap={null} venueMapPublicUrl={venueMap} />
+            <VenueMap
+              venueMap={"venue-map"}
+              venueMapPublicUrl={
+                typeof venueMap === "string"
+                  ? (draftVenuePublicUrl as string)
+                  : venueMap
+              }
+            />
           )}
           <HostedBy />
         </div>
       </motion.div>
-      <Blurred posterUrl={poster} />
+      <Blurred
+        posterUrl={
+          typeof poster === "string" ? (draftPosterPublicUrl as string) : poster
+        }
+      />
     </div>
   );
 }
