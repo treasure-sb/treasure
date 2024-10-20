@@ -7,6 +7,7 @@ import EditTables from "./tables/EditTables";
 import EditTickets from "./tickets/EditTickets";
 
 import { TicketDetails } from "./EditEventDetails";
+import { LiveTable } from "@/types/tables";
 
 export default function EditTicketTables({
   tickets,
@@ -16,7 +17,7 @@ export default function EditTicketTables({
 }: {
   tickets: TicketDetails[];
   eventDates: Tables<"event_dates">[];
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
   eventId: string;
 }) {
   const [edit, setEdit] = useState(false);

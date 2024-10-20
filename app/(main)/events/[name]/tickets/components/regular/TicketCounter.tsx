@@ -8,6 +8,7 @@ import { createCheckoutSession } from "@/lib/actions/checkout";
 import { useRouter } from "next/navigation";
 import { EventDisplayData } from "@/types/event";
 import { toast } from "sonner";
+import { LiveTicket } from "@/types/tickets";
 
 export default function TicketCounter({
   ticket,
@@ -16,7 +17,7 @@ export default function TicketCounter({
   embed,
   guestProfileId,
 }: {
-  ticket: Tables<"tickets">;
+  ticket: LiveTicket;
   user: User | null;
   event: EventDisplayData;
   embed: boolean;

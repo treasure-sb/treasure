@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tables } from "@/types/supabase";
 import { User } from "@supabase/supabase-js";
+import { LiveTicket } from "@/types/tickets";
 import LoginFlowDialog from "@/components/ui/custom/login-flow-dialog";
 
 export default function TicketCounterSampa({
@@ -13,10 +13,10 @@ export default function TicketCounterSampa({
   onTicketSelection,
   updateQuantity,
 }: {
-  ticket: Tables<"tickets">;
+  ticket: LiveTicket;
   user: User | null;
   goToDinner: () => void;
-  onTicketSelection: (ticket: Tables<"tickets">) => void;
+  onTicketSelection: (ticket: LiveTicket) => void;
   updateQuantity: (quantity: number) => void;
 }) {
   const [ticketCount, setTicketCount] = useState(1);

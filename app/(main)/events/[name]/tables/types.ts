@@ -1,6 +1,7 @@
 import { Tables } from "@/types/supabase";
 import { TableView } from "./context/VendorFlowContext";
 import { EventDisplayData } from "@/types/event";
+import { LiveTable } from "@/types/tables";
 
 type Link = {
   username: string;
@@ -28,7 +29,7 @@ type VendorFlowState = {
   terms: Tables<"application_terms_and_conditions">[];
   tags: Tables<"tags">[];
   profile: ProfileWithApplicationInfo | null;
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
 };
 
 type VendorApplicationState = {
@@ -39,7 +40,7 @@ type VendorApplicationState = {
   tableQuantity: number;
   vendorsAtTable: number;
   termsAccepted: boolean;
-  table: Tables<"tables">;
+  table: LiveTable;
   vendorTags: Tables<"tags">[];
 };
 

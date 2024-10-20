@@ -10,8 +10,10 @@ import { getEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
 import { EditEventWithDates, EditEventDisplayData } from "@/types/event";
 import { HideVendors } from "./vendors/HideVendors";
+import { LiveTicket } from "@/types/tickets";
+import { LiveTable } from "@/types/tables";
 
-export type TicketDetails = Tables<"tickets"> & {
+export type TicketDetails = LiveTicket & {
   ticket_dates: Tables<"ticket_dates">[];
 };
 
@@ -46,7 +48,7 @@ export default async function EditEventDetails({
     .eq("event_id", event.id)
     .order("price", { ascending: true });
 
-  const tables: Tables<"tables">[] = tablesData || [];
+  const tables: LiveTable[] = tablesData || [];
 
   const { data: tagsData } = await supabase
     .from("event_tags")

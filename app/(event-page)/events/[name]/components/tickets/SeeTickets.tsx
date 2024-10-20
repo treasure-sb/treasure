@@ -1,15 +1,14 @@
 "use client";
-
-import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { EventDisplayData } from "@/types/event";
 import Link from "next/link";
+import { LiveTicket } from "@/types/tickets";
 
 export default function SeeTickets({
   tickets,
   eventDisplayData,
 }: {
-  tickets: Tables<"tickets">[];
+  tickets: LiveTicket[];
   eventDisplayData: EventDisplayData;
 }) {
   const minimumTicketPrice = tickets[0].price;

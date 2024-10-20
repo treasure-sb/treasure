@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { Tables } from "@/types/supabase";
 import type { VendorInfo, VendorApplicationState } from "../types";
+import { LiveTable } from "@/types/tables";
 
 type VendorApplicationActions =
-  | { type: "setTable"; payload: Tables<"tables"> }
+  | { type: "setTable"; payload: LiveTable }
   | { type: "setTableQuantity"; payload: number }
   | { type: "setVendorsAtTable"; payload: number }
   | { type: "setCurrentStep"; payload: number }
@@ -22,7 +23,7 @@ type VendorApplicationContextType = {
 const initialState: VendorApplicationState = {
   currentStep: 1,
   vendorInfo: {} as VendorInfo,
-  table: {} as Tables<"tables">,
+  table: {} as LiveTable,
   inventory: "",
   comments: "",
   tableQuantity: 0,

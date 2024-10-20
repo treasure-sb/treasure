@@ -2,17 +2,17 @@ import { Tables } from "@/types/supabase";
 import { redirect } from "next/navigation";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { validateUser } from "@/lib/actions/auth";
+import { getEventFromCleanedName } from "@/lib/helpers/events";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import AllTickets from "./components/regular/AllTickets";
 import AllTicketsSampa from "./components/sampa/AllTicketsSampa";
-import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { LiveTicket } from "@/types/tickets";
 
 export async function generateMetadata({
   params,
 }: {
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
   const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {
@@ -56,7 +56,7 @@ export default async function Page({
     .select("*")
     .eq("event_id", event.id)
     .order("price", { ascending: false });
-  const tickets: Tables<"tickets">[] = ticketData || [];
+  const tickets: LiveTicket[] = ticketData || [];
 
   const isSampa =
     eventDisplayData.id === "a6ce6fdb-4ff3-4272-a358-6873e896b3e3";

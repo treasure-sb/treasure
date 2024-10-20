@@ -16,6 +16,7 @@ import EventCard from "@/components/events/shared/EventCard";
 import TicketCounterSampa from "./TicketCounterSampa";
 import DinnerSelection from "./DinnerSelection";
 import { cn } from "@/lib/utils";
+import { LiveTicket } from "@/types/tickets";
 
 enum TicketView {
   TICKETS,
@@ -28,12 +29,11 @@ export default function AllTicketsSampa({
   user,
 }: {
   event: EventDisplayData;
-  tickets: Tables<"tickets">[];
+  tickets: LiveTicket[];
   user: User | null;
 }) {
   const [sampaStep, setSampaStep] = useState(TicketView.TICKETS);
-  const [ticketSelected, setTicketSelected] =
-    useState<Tables<"tickets"> | null>(null);
+  const [ticketSelected, setTicketSelected] = useState<LiveTicket | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
 
   const handleGoToDinnerSelection = () => {
@@ -44,7 +44,7 @@ export default function AllTicketsSampa({
     setSampaStep(TicketView.TICKETS);
   };
 
-  const handleTicketSelection = (ticket: Tables<"tickets">) => {
+  const handleTicketSelection = (ticket: LiveTicket) => {
     setTicketSelected(ticket);
   };
 

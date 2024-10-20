@@ -11,6 +11,7 @@ import { User } from "@supabase/supabase-js";
 import EventCard from "@/components/events/shared/EventCard";
 import TicketCounter from "./TicketCounter";
 import { cn } from "@/lib/utils";
+import { LiveTicket } from "@/types/tickets";
 
 export default function AllTickets({
   event,
@@ -20,7 +21,7 @@ export default function AllTickets({
   guestProfileId,
 }: {
   event: EventDisplayData;
-  tickets: Tables<"tickets">[];
+  tickets: LiveTicket[];
   user: User | null;
   embed: boolean;
   guestProfileId: string;
