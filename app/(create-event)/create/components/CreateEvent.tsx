@@ -18,7 +18,6 @@ import { Tables } from "@/types/supabase";
 import { AllEventData } from "../page";
 import CreateEventOrPreview from "./CreateEventOrPreview";
 import MenuBar from "./menu/MenuBar";
-import Exit from "./sections/Exit";
 
 export default function CreateEvent({
   tags,
@@ -122,15 +121,23 @@ export default function CreateEvent({
             },
           ],
     vendorInfo: {
-      checkInTime: draft?.vendorInfo?.check_in_time || "",
+      checkInTime: draft?.vendorInfo.check_in_time
+        ? draft?.vendorInfo?.check_in_time.slice(0, -3)
+        : "",
       checkInLocation: draft?.vendorInfo?.check_in_location || "",
       wifiAvailability: draft?.vendorInfo?.wifi_availability || false,
       additionalInfo: draft?.vendorInfo?.additional_information || "",
       terms: terms.length > 0 ? terms : [{ term: "" }],
     },
     tags: eventTags,
-    poster: draft?.poster_url || undefined,
-    venueMap: draft?.venue_map_url || undefined,
+    poster:
+      draft?.poster_url && draft?.poster_url === "poster_coming_soon"
+        ? undefined
+        : draft?.poster_url || undefined,
+    venueMap:
+      draft?.venue_map_url && draft.venue_map_url === "venue_map_coming_soon"
+        ? undefined
+        : draft?.venue_map_url || undefined,
   };
 
   const form = useForm<CreateEvent>({
