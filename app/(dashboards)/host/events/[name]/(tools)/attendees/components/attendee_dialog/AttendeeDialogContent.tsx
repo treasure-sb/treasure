@@ -45,7 +45,6 @@ export default function AttendeeDialogContent({
         .eq("attendee_id", attendeeData.id)
         .eq("event_id", event.id)
         .returns<TicketFetchData[]>();
-      console.log(data, error);
       if (!data) return [];
       return data;
     },

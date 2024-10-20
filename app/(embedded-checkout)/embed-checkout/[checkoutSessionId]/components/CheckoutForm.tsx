@@ -27,6 +27,7 @@ import PhoneInput, {
   filterPhoneNumber,
   formatPhoneNumber,
 } from "@/components/ui/custom/phone-input";
+import { useRouter } from "next/navigation";
 
 const nameSchema = z.object({
   first_name: z.string().min(1, {
@@ -61,6 +62,7 @@ export default function CheckoutForm({
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
   const [isStripeComplete, setIsStripeComplete] = useState(false);
+  const { push } = useRouter();
 
   const form = useForm<z.infer<typeof nameSchema>>({
     resolver: zodResolver(nameSchema),
@@ -135,20 +137,26 @@ export default function CheckoutForm({
     );
     const clientSecret = paymentIntent?.clientSecret || "";
 
-    const { error } = await stripe.confirmPayment({
+    const result = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
         return_url: `${window.location.origin}/embed-checkout/${checkoutSession.id}/success`,
       },
+      redirect: "if_required",
     });
 
-    if (
-      error &&
-      (error.type === "card_error" || error.type === "validation_error")
+    if (result.paymentIntent?.status === "succeeded") {
+      toast.dismiss();
+      push(`/embed-checkout/${checkoutSession.id}/success`);
+      setIsLoading(false);
+    } else if (
+      result.error &&
+      (result.error.type === "card_error" ||
+        result.error.type === "validation_error")
     ) {
       toast.dismiss();
-      toast.error(error.message);
+      toast.error(result.error.message);
     } else {
       toast.dismiss();
       toast.error("An error occurred. Please try again.");

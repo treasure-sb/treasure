@@ -21,6 +21,7 @@ import {
 import { ThemeSwitch } from "../ThemeSwitch";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import LandingButton from "@/components/landing-page/LandingButton";
 
 type PopoverLinkProps = {
   href: string;
@@ -98,6 +99,14 @@ export default async function LoggedInHeader({
             className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
           >
             Events
+          </Link>
+        )}
+        {!isEventPage && (
+          <Link
+            href="/create"
+            className="hidden sm:flex hover:text-foreground/80 transition duration-300 text-lg font-semibold"
+          >
+            Create Event
           </Link>
         )}
         <Popover>

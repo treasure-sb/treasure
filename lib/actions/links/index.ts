@@ -32,12 +32,10 @@ const getPaymentLinks = async (user_id: string) => {
   return { links, error };
 };
 
-const createLink = async (user_id: string, username: string, type: string) => {
+const createLink = async (link: LinkType, user_id: string) => {
+  let row = { ...link, user_id };
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("links")
-    .insert([{ user_id, username, type }])
-    .select();
+  const { data, error } = await supabase.from("links").insert(row).select();
 
   return { data, error };
 };

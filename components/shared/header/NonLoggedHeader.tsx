@@ -2,6 +2,7 @@ import Link from "next/link";
 import HeaderMotion from "./HeaderMotion";
 import HeaderStatic from "./HeaderStatic";
 import TreasureEmerald from "@/components/icons/TreasureEmerald";
+import LandingButton from "@/components/landing-page/LandingButton";
 
 export default function NonLoggedHeader({
   useMotion = true,
@@ -40,6 +41,14 @@ export default function NonLoggedHeader({
             className="hover:text-foreground/80 transition duration-300 text-lg font-semibold"
           >
             Events
+          </Link>
+        )}
+        {!isEventPage && (
+          <Link
+            href="/create"
+            className="hidden sm:flex hover:text-foreground/80 transition duration-300 text-lg font-semibold"
+          >
+            Create Event
           </Link>
         )}
         <Link

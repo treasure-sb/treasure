@@ -33,7 +33,7 @@ export default function RolesDescription() {
         <TableRow>
           <TableCell>Staff</TableCell>
           <TableCell>
-            Has admin priviles except cannot delete event. Does not appear on
+            Has admin privileges except cannot delete event. Does not appear on
             the event page.
           </TableCell>
         </TableRow>

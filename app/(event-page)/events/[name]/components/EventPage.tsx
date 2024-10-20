@@ -19,6 +19,7 @@ import PastHighlights from "./past_highlights/PastHighlights";
 import VenueMap from "./sections/VenueMap";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Footer from "@/components/shared/Footer";
+import { normalizeDate } from "@/lib/utils";
 
 export default async function EventPage({ event }: { event: EventWithDates }) {
   const {
@@ -26,9 +27,11 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
   } = await validateUser();
   const supabase = await createSupabaseServerClient();
 
-  const { error: viewError } = await supabase
-    .from("event_views")
-    .insert([{ event_id: event.id, visitor_id: user?.id }]);
+  const { error: viewError } = await supabase.rpc("add_event_view", {
+    p_event_id: event.id,
+    p_visitor_id: user?.id || null,
+    p_date: normalizeDate(new Date()),
+  });
 
   if (viewError) {
     console.error(viewError);

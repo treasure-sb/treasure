@@ -88,10 +88,14 @@ export default async function Page({
         ? inventoryDataSingle?.application_email
         : profile.email;
 
+    let instagram = links.find(
+      (link) => link.application === "Instagram"
+    )?.username;
+
     profileWithApplicationInfo = {
       ...profile,
-      instagram: links.find((link) => link.application === "Instagram")
-        ?.username,
+      instagram: instagram,
+      alreadyHadInstagram: !!instagram,
       inventory: inventory,
       tags: userTags,
     };

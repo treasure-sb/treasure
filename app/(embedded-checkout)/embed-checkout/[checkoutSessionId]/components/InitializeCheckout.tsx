@@ -51,6 +51,7 @@ export default function InitializeCheckout({
   useEffect(() => {
     setOptions((prevOptions) => ({
       ...prevOptions,
+      amount: Math.round(priceToCharge * 100),
       appearance: {
         ...prevOptions.appearance,
         variables: {

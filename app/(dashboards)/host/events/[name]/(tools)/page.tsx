@@ -15,6 +15,7 @@ import { USDollar } from "@/lib/utils";
 import { validateUser } from "@/lib/actions/auth";
 import { RoleMapKey } from "./team/components/ListMembers";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { last } from "pdf-lib";
 
 type AttendeeCountData =
   Database["public"]["Functions"]["get_attendee_count"]["Returns"];
@@ -123,6 +124,7 @@ export default async function Page({
 
   const today = new Date();
   const lastWeekStartDate = new Date(today);
+  lastWeekStartDate.setHours(0, 0, 0, 0);
   lastWeekStartDate.setDate(today.getDate() - 7);
 
   const { count: lastPeriodViewsCount } = await supabase

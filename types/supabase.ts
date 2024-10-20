@@ -741,6 +741,35 @@ export type Database = {
           }
         ];
       };
+      event_views_consolidated: {
+        Row: {
+          date: string;
+          event_id: string;
+          id: string;
+          num_views: number;
+        };
+        Insert: {
+          date: string;
+          event_id: string;
+          id?: string;
+          num_views?: number;
+        };
+        Update: {
+          date?: string;
+          event_id?: string;
+          id?: string;
+          num_views?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_views_consolidated_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       events: {
         Row: {
           address: string | null;
@@ -1507,6 +1536,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_event_view: {
+        Args: {
+          p_event_id: string;
+          p_visitor_id: string;
+          p_date: string;
+        };
+        Returns: undefined;
+      };
       create_event: {
         Args: {
           event_data: Json;
