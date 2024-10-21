@@ -1,6 +1,9 @@
 "use server";
 
 import {
+  BaseEventDisplayData,
+  DraftEventDisplayData,
+  DraftEventWithDates,
   EditEventDisplayData,
   EditEventWithDates,
   EventDisplayData,
@@ -39,37 +42,29 @@ interface FilterFunctions {
   ) => Promise<EventWithDates[]>;
 }
 
-const getPublicPosterUrl = async (event: Partial<Tables<"events">>) => {
+const getPublicPosterUrl = async (posterUrl: string) => {
   const supabase = await createSupabaseServerClient();
   let publicPosterUrl = "";
-  if (event.poster_url) {
+  if (posterUrl) {
     const {
       data: { publicUrl },
-    } = await supabase.storage.from("posters").getPublicUrl(event.poster_url);
+    } = await supabase.storage.from("posters").getPublicUrl(posterUrl);
     publicPosterUrl = publicUrl;
   }
   return publicPosterUrl;
 };
 
-const getPublicPosterUrlFromPosterUrl = async (posterUrl: string) => {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { publicUrl },
-  } = await supabase.storage.from("posters").getPublicUrl(posterUrl);
-  return publicUrl;
-};
+const getPublicVenueMapUrl = async (venueMapUrl: string | null) => {
+  if (!venueMapUrl) {
+    return null;
+  }
 
-const getPublicVenueMapUrl = async (
-  event: EventWithDates | EventDisplayData
-) => {
   const supabase = await createSupabaseServerClient();
   let publicVenueMapUrl = "";
-  if (event.venue_map_url) {
+  if (venueMapUrl) {
     const {
       data: { publicUrl: venueMapPublicUrl },
-    } = await supabase.storage
-      .from("venue_maps")
-      .getPublicUrl(event.venue_map_url);
+    } = await supabase.storage.from("venue_maps").getPublicUrl(venueMapUrl);
     publicVenueMapUrl = venueMapPublicUrl;
   }
   return publicVenueMapUrl;
@@ -225,39 +220,41 @@ const getUserEventsDisplayData = async (
   return await eventDisplayData(events);
 };
 
-const eventDisplayData = async (events: EventWithDates[]) => {
+type EventTypes = EventWithDates | DraftEventWithDates | EditEventWithDates;
+
+const eventDisplayData = async <T extends EventWithDates | DraftEventWithDates>(
+  events: T[]
+): Promise<
+  T extends EventWithDates ? EventDisplayData[] : DraftEventDisplayData[]
+> => {
   return Promise.all(
-    events.map(
-      async (event: EventWithDates) => await getEventDisplayData(event)
-    )
-  );
+    events.map(async (event) => await getEventDisplayData(event))
+  ) as any;
 };
 
-const getEventDisplayData = async (
-  event: EventWithDates
-): Promise<EventDisplayData> => {
-  const publicPosterUrl = await getPublicPosterUrl(event);
-  return {
-    ...event,
+const getEventDisplayData = async <T extends EventTypes>(
+  event: T
+): Promise<
+  T extends EditEventWithDates
+    ? EditEventDisplayData
+    : T extends EventWithDates
+    ? EventDisplayData
+    : DraftEventDisplayData
+> => {
+  const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
+  const baseDisplayData: BaseEventDisplayData = {
     publicPosterUrl,
     formattedDates: formatDates(event.dates),
   };
-};
 
-const getEditEventDisplayData = async (
-  event: EditEventWithDates
-): Promise<EditEventDisplayData> => {
-  const publicPosterUrl = await getPublicPosterUrl(event);
   return {
     ...event,
-    publicPosterUrl,
-    formattedDates: formatDates(event.dates),
-  };
+    ...baseDisplayData,
+  } as any;
 };
 
 export {
   getPublicPosterUrl,
-  getPublicPosterUrlFromPosterUrl,
   getPublicVenueMapUrl,
   eventDisplayData,
   getEventFromCleanedName,
@@ -265,6 +262,5 @@ export {
   getEventFromId,
   getEventDisplayData,
   getEventsDisplayData,
-  getEditEventDisplayData,
   getUserEventsDisplayData,
 };

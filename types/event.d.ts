@@ -1,3 +1,4 @@
+import { NonNullableExcept } from "@/lib/utils";
 import { Tables } from "./supabase";
 
 export interface EventFormTicket {
@@ -107,14 +108,20 @@ export interface SearchParams {
   distance?: string;
 }
 
-export type EventWithDates = Tables<"events"> & {
+export type LiveEvent = NonNullableExcept<Tables<"events">, "venue_map_url">;
+export type DraftEvent = Tables<"events">;
+
+export type EventWithDates = LiveEvent & {
   dates: { date: string; start_time: string; end_time: string }[];
   event_roles: Tables<"event_roles">[];
 };
-
-export type EditEventWithDates = Tables<"events"> & {
+export type EditEventWithDates = LiveEvent & {
   dates: { id: string; date: string; start_time: string; end_time: string }[];
   event_roles: Tables<"event_roles">[];
+};
+
+export type DraftEventWithDates = DraftEvent & {
+  dates: { date: string; start_time: string; end_time: string }[];
 };
 
 type BaseEventDisplayData = {
@@ -124,3 +131,4 @@ type BaseEventDisplayData = {
 
 export type EventDisplayData = EventWithDates & BaseEventDisplayData;
 export type EditEventDisplayData = EditEventWithDates & BaseEventDisplayData;
+export type DraftEventDisplayData = DraftEventWithDates & BaseEventDisplayData;

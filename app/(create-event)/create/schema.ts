@@ -95,7 +95,7 @@ const vendorInfoSchema = z.object({
   }),
   wifiAvailability: z.boolean().default(false),
   additionalInfo: z.string().optional(),
-  terms: z.array(termSchema).nonempty({
+  terms: z.array(termSchema).min(1, {
     message: "At least one term is required",
   }),
 });
@@ -104,7 +104,7 @@ const eventSchema = z.object({
   poster: z.union([z.instanceof(File), z.string()]).optional(),
   venueMap: z.union([z.instanceof(File), z.string()]).optional(),
   basicDetails: basicDetailsSchema,
-  dates: z.array(dateSchema).nonempty({
+  dates: z.array(dateSchema).min(1, {
     message: "At least one date is required",
   }),
   tickets: z.array(ticketSchema),
@@ -120,10 +120,17 @@ const eventSchema = z.object({
 
 type CreateEvent = z.infer<typeof eventSchema>;
 type BasicDetails = z.infer<typeof basicDetailsSchema>;
-type Ticket = z.infer<typeof ticketSchema>;
-type Table = z.infer<typeof tableSchema>;
-type Date = z.infer<typeof dateSchema>;
+type CreateEventTicket = z.infer<typeof ticketSchema>;
+type CreateEventTable = z.infer<typeof tableSchema>;
+type CreateEventDate = z.infer<typeof dateSchema>;
 type VendorInfo = z.infer<typeof vendorInfoSchema>;
 
 export { eventSchema };
-export type { CreateEvent, BasicDetails, Ticket, Table, Date, VendorInfo };
+export type {
+  CreateEvent,
+  BasicDetails,
+  CreateEventTicket,
+  CreateEventTable,
+  CreateEventDate,
+  VendorInfo,
+};

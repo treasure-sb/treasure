@@ -8,7 +8,6 @@ export default function Page() {
         <h1 className="font-semibold text-3xl mb-4">My Events</h1>
         <LandingButton href="/create" text="Create Event" />
       </div>
-
       <AllEvents />
     </div>
   );

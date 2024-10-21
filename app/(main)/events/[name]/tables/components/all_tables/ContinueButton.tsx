@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { TableView, useVendorFlow } from "../../context/VendorFlowContext";
 import { formatPhoneNumber } from "@/components/ui/custom/phone-input";
 import { VendorInfo } from "../../types";
+import { LiveTable } from "@/types/tables";
 
 export default function ContinueButton({
   table,
   tableCount,
 }: {
-  table: Tables<"tables">;
+  table: LiveTable;
   tableCount: number;
 }) {
   const { profile, event, tags, flowDispatch } = useVendorFlow();

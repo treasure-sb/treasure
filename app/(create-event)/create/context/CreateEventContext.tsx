@@ -1,6 +1,6 @@
 import { Tables } from "@/types/supabase";
-import { User } from "@supabase/supabase-js";
 import React, { createContext, useContext, useReducer } from "react";
+import { AllEventData } from "../page";
 
 export enum CurrentStep {
   STEP_ONE = 1,
@@ -12,11 +12,16 @@ export type CreateEventState = {
   tags: Tables<"tags">[];
   user: Tables<"profiles"> | null;
   preview: boolean;
+  eventId: string | null;
+  originalDraft: AllEventData | null;
+  draftPosterPublicUrl: string | null;
+  draftVenuePublicUrl: string | null;
 };
 type CreateEventActions =
   | { type: "setCurrentStep"; payload: CurrentStep }
   | { type: "setUser"; payload: Tables<"profiles"> | null }
-  | { type: "setPreview"; payload: boolean };
+  | { type: "setPreview"; payload: boolean }
+  | { type: "setEventId"; payload: string };
 
 type CreateEventContextType = {
   state: CreateEventState;
@@ -28,6 +33,10 @@ const initialState = {
   tags: [],
   user: null,
   preview: false,
+  eventId: null,
+  originalDraft: null,
+  draftPosterPublicUrl: null,
+  draftVenuePublicUrl: null,
 };
 
 const reducer = (state: CreateEventState, action: CreateEventActions) => {
@@ -38,6 +47,8 @@ const reducer = (state: CreateEventState, action: CreateEventActions) => {
       return { ...state, user: action.payload };
     case "setPreview":
       return { ...state, preview: action.payload };
+    case "setEventId":
+      return { ...state, eventId: action.payload };
     default:
       return state;
   }

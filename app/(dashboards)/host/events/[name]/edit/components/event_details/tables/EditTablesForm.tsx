@@ -1,4 +1,3 @@
-import { Tables } from "@/types/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,6 +17,7 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormTable, createTables, updateTables } from "@/lib/actions/tables";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
+import { LiveTable } from "@/types/tables";
 
 export const tableSchema = z.object({
   db_id: z.string().optional(),
@@ -72,7 +72,7 @@ export default function EditTablesForm({
   eventId,
   toggleEdit,
 }: {
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
   eventId: string;
   toggleEdit: () => void;
 }) {

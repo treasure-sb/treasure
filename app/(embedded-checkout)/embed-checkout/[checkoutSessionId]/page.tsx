@@ -71,15 +71,8 @@ export default async function Page({
   }
 
   const checkoutSession: Tables<"checkout_sessions"> = checkoutSessionData;
-  const {
-    event_id,
-    ticket_id,
-    ticket_type,
-    quantity,
-    promo_id,
-    price_type,
-    user_id,
-  } = checkoutSession;
+  const { event_id, ticket_id, ticket_type, quantity, promo_id, price_type } =
+    checkoutSession;
 
   const { event } = await getEventFromId(event_id);
 

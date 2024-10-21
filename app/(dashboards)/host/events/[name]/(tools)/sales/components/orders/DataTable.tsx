@@ -21,7 +21,6 @@ import {
 import Filters from "./Filters";
 import ExportButton from "./ExportButton";
 import { Order } from "./OrderDataColumns";
-import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import { EventWithDates } from "@/types/event";
 

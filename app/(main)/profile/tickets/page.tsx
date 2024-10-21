@@ -16,6 +16,7 @@ import EventDisplay from "@/components/events/shared/EventDisplay";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TicketsCarousel from "./components/TicketsCarousel";
 import { getProfile } from "@/lib/helpers/profiles";
+import { LiveTable } from "@/types/tables";
 
 interface TicketScanningInfo {
   ticketId: string;
@@ -35,7 +36,7 @@ type EventTicket = Tables<"event_tickets"> & {
 
 type EventTable = Tables<"event_vendors"> & {
   event: EventWithDates;
-  table: Tables<"tables">;
+  table: LiveTable;
 };
 
 export default async function Page() {

@@ -11,6 +11,7 @@ import type {
   VendorInfo,
 } from "../types";
 import TableFlow from "./TableFlow";
+import { LiveTable } from "@/types/tables";
 
 export default function TableFlowConsumer({
   eventDisplay,
@@ -21,7 +22,7 @@ export default function TableFlowConsumer({
   profile,
 }: {
   eventDisplay: EventDisplayData;
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
   generalVendorInfo: Tables<"application_vendor_information">;
   terms: Tables<"application_terms_and_conditions">[];
   tags: Tables<"tags">[];
@@ -40,7 +41,7 @@ export default function TableFlowConsumer({
   const initalVendorApplicationState: VendorApplicationState = {
     currentStep: 1,
     vendorInfo: {} as VendorInfo,
-    table: {} as Tables<"tables">,
+    table: {} as LiveTable,
     inventory: "",
     comments: "",
     tableQuantity: 0,

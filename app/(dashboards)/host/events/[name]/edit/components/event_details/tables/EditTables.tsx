@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Tables } from "@/types/supabase";
 import { useState } from "react";
+import { LiveTable } from "@/types/tables";
 import EditTablesForm from "./EditTablesForm";
 
 export default function EditTables({
@@ -9,7 +9,7 @@ export default function EditTables({
   eventId,
   setParentEdit,
 }: {
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
   eventId: string;
   setParentEdit: (toggle: boolean) => void;
 }) {

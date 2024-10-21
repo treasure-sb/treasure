@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tables } from "@/types/supabase";
+import { LiveTable } from "@/types/tables";
 import ContinueButton from "./ContinueButton";
 
-export default function TablesCounter({ table }: { table: Tables<"tables"> }) {
+export default function TablesCounter({ table }: { table: LiveTable }) {
   const [tableCount, setTableCount] = useState(1);
   const minTables = 1;
   const maxTables = Math.min(table.quantity, 6);

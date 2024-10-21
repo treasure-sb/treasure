@@ -13,6 +13,7 @@ export default function EventPoster({
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
   const skeletonDisplay = loading ? "inline-block" : "hidden";
+
   const imageSrc =
     typeof posterUrl === "string"
       ? posterUrl

@@ -6,13 +6,13 @@ import type { EventTagData, Link, ProfileWithApplicationInfo } from "./types";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import TableFlowConsumer from "./components/TableFlowConsumer";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
+import { LiveTable } from "@/types/tables";
 
 export async function generateMetadata({
   params,
 }: {
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
   const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {
@@ -101,8 +101,6 @@ export default async function Page({
     };
   }
 
-  console.log("profileWithApplicationInfo", profileWithApplicationInfo);
-
   const { event, eventError } = await getEventFromCleanedName(params.name);
   const eventDisplayData = await getEventDisplayData(event);
 
@@ -115,7 +113,7 @@ export default async function Page({
     .select("*")
     .eq("event_id", event.id)
     .order("price", { ascending: false });
-  const tables: Tables<"tables">[] = tablesData || [];
+  const tables: LiveTable[] = tablesData || [];
 
   const { data: vendorApplicationInfoData } = await supabase
     .from("application_vendor_information")

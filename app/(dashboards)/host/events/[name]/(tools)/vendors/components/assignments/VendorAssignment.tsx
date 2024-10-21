@@ -1,12 +1,11 @@
 import { getPublicVenueMapUrl } from "@/lib/helpers/events";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { Vendor, columns } from "./table/VendorDataColumns";
-import { Tables } from "@/types/supabase";
+import { EventDisplayData } from "@/types/event";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import Image from "next/image";
 import DataTable from "./table/DataTable";
 import AssignForm from "./AssignForm";
-import { EventDisplayData } from "@/types/event";
 
 const getVendorPublicUrl = async (vendors: any[]) => {
   const supabase = await createSupabaseServerClient();
@@ -41,7 +40,7 @@ export default async function VendorAssignment({
 }: {
   event: EventDisplayData;
 }) {
-  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+  const publicVenueMapUrl = await getPublicVenueMapUrl(event.venue_map_url);
   const supabase = await createSupabaseServerClient();
 
   const { data: vendorsData } = await supabase
@@ -107,13 +106,15 @@ export default async function VendorAssignment({
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-col items-center">
-        <Image
-          className="rounded-xl mb-6 lg:mb-0"
-          alt="venue map image"
-          src={publicVenueMapUrl}
-          width={500}
-          height={200}
-        />
+        {publicVenueMapUrl && (
+          <Image
+            className="rounded-xl mb-6 lg:mb-0"
+            alt="venue map image"
+            src={publicVenueMapUrl}
+            width={500}
+            height={200}
+          />
+        )}
         <AssignForm
           event_id={event.id}
           vendors={tableData}

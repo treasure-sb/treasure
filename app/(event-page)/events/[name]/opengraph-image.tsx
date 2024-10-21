@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { getPublicPosterUrl } from "@/lib/helpers/events";
-import createSupabaseServerClient from "@/utils/supabase/server";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
 
 export const runtime = "edge";
@@ -14,9 +13,8 @@ export const size = {
 export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { name: string } }) {
-  const supabase = await createSupabaseServerClient();
-  const { event, eventError } = await getEventFromCleanedName(params.name);
+  const { event } = await getEventFromCleanedName(params.name);
 
-  const posterUrl = await getPublicPosterUrl(event);
+  const posterUrl = await getPublicPosterUrl(event.poster_url);
   return new ImageResponse(<img alt="event poster" src={posterUrl} />, size);
 }

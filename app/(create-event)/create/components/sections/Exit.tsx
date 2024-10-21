@@ -9,11 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BackButton from "@/components/ui/custom/back-button";
-import Link from "next/link";
 
 export default function Exit() {
   const [isOpen, setIsOpen] = useState(false);
+  const { back } = useRouter();
 
   return (
     <>
@@ -34,8 +35,14 @@ export default function Exit() {
               >
                 Cancel
               </Button>
-              <Button asChild variant={"destructive"} className="w-full">
-                <Link href="/home">Exit</Link>
+              <Button
+                variant={"destructive"}
+                className="w-full"
+                onClick={() => {
+                  back();
+                }}
+              >
+                Exit
               </Button>
             </div>
           </div>

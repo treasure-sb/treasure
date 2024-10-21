@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 import { EyeOff, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logoutUser } from "@/lib/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
@@ -33,11 +33,23 @@ export default function Sidebar() {
     : "admin";
 
   const [showSidebar, setShowSidebar] = useState(true);
-
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const showSidebar = localStorage.getItem("showSidebar");
+    if (showSidebar) {
+      setShowSidebar(JSON.parse(showSidebar));
+    }
+  }, []);
+
   const handleLogout = async () => {
     await logoutUser();
     queryClient.clear();
+  };
+
+  const handleShowSidebar = (showSidebar: boolean) => {
+    setShowSidebar(showSidebar);
+    localStorage.setItem("showSidebar", JSON.stringify(showSidebar));
   };
 
   return (
@@ -83,7 +95,7 @@ export default function Sidebar() {
         )}
         {showSidebar ? (
           <Button
-            onClick={() => setShowSidebar(false)}
+            onClick={() => handleShowSidebar(false)}
             variant={"ghost"}
             className={cn(
               "rounded-sm w-full text-lg justify-center space-x-2 p-6 font-normal",
@@ -95,7 +107,7 @@ export default function Sidebar() {
           </Button>
         ) : (
           <Button
-            onClick={() => setShowSidebar(true)}
+            onClick={() => handleShowSidebar(true)}
             variant={"ghost"}
             className={cn(
               "rounded-sm w-full text-lg justify-center space-x-2 p-6 font-normal",

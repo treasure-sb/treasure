@@ -12,7 +12,10 @@ import { Tables } from "@/types/supabase";
 import { CreateEvent } from "@/app/(create-event)/create/schema";
 import format from "date-fns/format";
 
-const updatedCreateEvent = async (values: CreateEvent) => {
+const updatedCreateEvent = async (
+  values: CreateEvent,
+  draftEventId: string | null
+) => {
   const supabase = await createSupabaseServerClient();
 
   const previousEventsCount = await getPreviousEventsCount(
@@ -31,8 +34,9 @@ const updatedCreateEvent = async (values: CreateEvent) => {
 
   const { data, error } = await supabase.rpc("create_event", {
     event_data: values,
-    cleaned_name: cleanedEventName,
+    p_cleaned_name: cleanedEventName,
     user_id: user!.id,
+    p_event_id: draftEventId,
   });
 
   return { data, error };

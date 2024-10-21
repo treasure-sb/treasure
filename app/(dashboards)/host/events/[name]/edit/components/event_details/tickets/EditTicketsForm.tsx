@@ -18,10 +18,8 @@ import { createTickets, updateTickets } from "@/lib/actions/tickets";
 import { toast } from "sonner";
 import { InputWithLabel } from "@/components/ui/custom/input-with-label";
 import { TicketDetails } from "../EditEventDetails";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TextareaWithLabel } from "@/components/ui/custom/textarea-with-label";
-import { create } from "domain";
 
 export const ticketSchema = z.object({
   db_id: z.string().optional(),

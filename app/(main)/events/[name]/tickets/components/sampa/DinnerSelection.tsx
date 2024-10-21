@@ -18,6 +18,7 @@ import { TicketIcon } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { LiveTicket } from "@/types/tickets";
 
 export default function DinnerSelection({
   goBackToTickets,
@@ -27,7 +28,7 @@ export default function DinnerSelection({
   event,
 }: {
   goBackToTickets: () => void;
-  ticket: Tables<"tickets">;
+  ticket: LiveTicket;
   quantity: number;
   user: User | null;
   event: EventDisplayData;

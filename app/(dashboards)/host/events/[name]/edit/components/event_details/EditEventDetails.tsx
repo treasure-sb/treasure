@@ -6,13 +6,14 @@ import PastHighlights from "./highlights/PastHighlights";
 import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
-import { getEditEventDisplayData } from "@/lib/helpers/events";
+import { getEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
 import { EditEventWithDates } from "@/types/event";
-import { Checkbox } from "@/components/ui/checkbox";
 import { HideVendors } from "./vendors/HideVendors";
+import { LiveTicket } from "@/types/tickets";
+import { LiveTable } from "@/types/tables";
 
-export type TicketDetails = Tables<"tickets"> & {
+export type TicketDetails = LiveTicket & {
   ticket_dates: Tables<"ticket_dates">[];
 };
 
@@ -22,7 +23,7 @@ export default async function EditEventDetails({
   event: EditEventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
-  const eventDisplayData = await getEditEventDisplayData(event);
+  const eventDisplayData = await getEventDisplayData(event);
 
   const { data: ticketsData } = await supabase
     .from("tickets")
@@ -45,7 +46,7 @@ export default async function EditEventDetails({
     .eq("event_id", event.id)
     .order("price", { ascending: true });
 
-  const tables: Tables<"tables">[] = tablesData || [];
+  const tables: LiveTable[] = tablesData || [];
 
   const { data: tagsData } = await supabase
     .from("event_tags")

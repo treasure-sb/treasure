@@ -4,12 +4,13 @@ import { Tables } from "@/types/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { EventWithDates } from "@/types/event";
+import { LiveTable } from "@/types/tables";
 
 export default function SeeTables({
   tables,
   event,
 }: {
-  tables: Tables<"tables">[];
+  tables: LiveTable[];
   event: EventWithDates;
 }) {
   const minimumTablePrice = tables[0].price;

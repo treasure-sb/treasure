@@ -38,8 +38,8 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
   }
 
   const eventDisplayData = await getEventDisplayData(event);
-  const publicPosterUrl = await getPublicPosterUrl(event);
-  const publicVenueMapUrl = await getPublicVenueMapUrl(event);
+  const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
+  const publicVenueMapUrl = await getPublicVenueMapUrl(event.venue_map_url);
 
   const { data: tagsData } = await supabase
     .from("event_tags")
@@ -49,13 +49,6 @@ export default async function EventPage({ event }: { event: EventWithDates }) {
 
   const tags: TagData[] = tagsData || [];
   const cleanedTags = tags.map((tag) => tag.tags);
-
-  const { data: tickets } = await supabase
-    .from("tickets")
-    .select("*")
-    .eq("event_id", event.id)
-    .order("price", { ascending: true });
-  const hasTickets = tickets && tickets.length > 0;
 
   return (
     <main className="relative">

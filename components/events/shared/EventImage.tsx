@@ -7,7 +7,7 @@ export default async function EventImage({
 }: {
   event: Partial<Tables<"events">>;
 }) {
-  const publicUrl = await getPublicPosterUrl(event);
+  const publicUrl = await getPublicPosterUrl(event.poster_url!);
 
   return (
     <>

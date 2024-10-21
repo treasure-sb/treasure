@@ -1,4 +1,3 @@
-import createSupabaseServerClient from "@/utils/supabase/server";
 import EventPage from "@/app/(event-page)/events/[name]/components/EventPage";
 import { redirect } from "next/navigation";
 import { getEventFromCleanedName } from "@/lib/helpers/events";
@@ -8,7 +7,6 @@ export async function generateMetadata({
 }: {
   params: { name: string };
 }) {
-  const supabase = await createSupabaseServerClient();
   const { event, eventError } = await getEventFromCleanedName(params.name);
 
   if (eventError) {

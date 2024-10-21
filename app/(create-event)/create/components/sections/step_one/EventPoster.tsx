@@ -6,14 +6,20 @@ import { Input } from "@/components/ui/input";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { CreateEvent } from "../../../schema";
 import { useFormContext } from "react-hook-form";
+import { useCreateEvent } from "../../../context/CreateEventContext";
 import CreateEventCard from "../../CreateEventCard";
 
 export default function EventPoster() {
+  const { draftPosterPublicUrl } = useCreateEvent();
   const { control, getValues } = useFormContext<CreateEvent>();
   const poster = getValues("poster");
 
   const [imageUrl, setImageUrl] = useState<string | null>(
-    poster ? URL.createObjectURL(poster as File) : null
+    poster instanceof File
+      ? URL.createObjectURL(poster as File)
+      : typeof poster === "string"
+      ? draftPosterPublicUrl
+      : null
   );
 
   return (
