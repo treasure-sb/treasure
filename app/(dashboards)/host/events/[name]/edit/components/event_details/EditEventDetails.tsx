@@ -8,7 +8,7 @@ import createSupabaseServerClient from "@/utils/supabase/server";
 import { Tables } from "@/types/supabase";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { EventHighlightPhoto } from "../../types";
-import { EditEventWithDates, EditEventDisplayData } from "@/types/event";
+import { EditEventWithDates } from "@/types/event";
 import { HideVendors } from "./vendors/HideVendors";
 import { LiveTicket } from "@/types/tickets";
 import { LiveTable } from "@/types/tables";
@@ -23,9 +23,7 @@ export default async function EditEventDetails({
   event: EditEventWithDates;
 }) {
   const supabase = await createSupabaseServerClient();
-  const eventDisplayData = (await getEventDisplayData(
-    event
-  )) as EditEventDisplayData;
+  const eventDisplayData = await getEventDisplayData(event);
 
   const { data: ticketsData } = await supabase
     .from("tickets")

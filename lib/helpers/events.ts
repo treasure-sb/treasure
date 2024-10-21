@@ -221,11 +221,6 @@ const getUserEventsDisplayData = async (
 };
 
 type EventTypes = EventWithDates | DraftEventWithDates | EditEventWithDates;
-type EventToDisplayMap = {
-  EventWithDates: EventDisplayData;
-  DraftEventWithDates: DraftEventDisplayData;
-  EditEventWithDates: EditEventDisplayData;
-};
 
 const eventDisplayData = async <T extends EventWithDates | DraftEventWithDates>(
   events: T[]
@@ -240,9 +235,12 @@ const eventDisplayData = async <T extends EventWithDates | DraftEventWithDates>(
 const getEventDisplayData = async <T extends EventTypes>(
   event: T
 ): Promise<
-  EventToDisplayMap[T extends keyof EventToDisplayMap ? T : never]
+  T extends EditEventWithDates
+    ? EditEventDisplayData
+    : T extends EventWithDates
+    ? EventDisplayData
+    : DraftEventDisplayData
 > => {
-  console.log(event);
   const publicPosterUrl = await getPublicPosterUrl(event.poster_url);
   const baseDisplayData: BaseEventDisplayData = {
     publicPosterUrl,
@@ -252,7 +250,7 @@ const getEventDisplayData = async <T extends EventTypes>(
   return {
     ...event,
     ...baseDisplayData,
-  } as EventToDisplayMap[T extends keyof EventToDisplayMap ? T : never];
+  } as any;
 };
 
 export {

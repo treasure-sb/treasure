@@ -1,14 +1,12 @@
-import InitializePaymentIntent from "./components/InitializePaymentIntent";
 import createSupabaseServerClient from "@/utils/supabase/server";
+import Image from "next/image";
+import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
+import Link from "next/link";
 import { getEventDisplayData } from "@/lib/helpers/events";
 import { redirect } from "next/navigation";
 import { EventWithDates } from "@/types/event";
-import { motion } from "framer-motion";
 import { HelpingHand, TicketIcon } from "lucide-react";
-import Image from "next/image";
-import Blurred from "@/app/(event-page)/events/[name]/components/Blurred";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 type PriceType = "REGULAR" | "RSVP";
 

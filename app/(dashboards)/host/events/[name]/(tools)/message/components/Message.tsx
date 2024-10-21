@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { sendHostMessageEmail } from "@/lib/actions/emails";
 import { HostMessageProps } from "@/emails/HostMessage";
 import { EventDisplayData } from "@/types/event";
-import { sendNotifications, sendSMS } from "@/lib/actions/twilio";
+import { sendNotifications } from "@/lib/actions/twilio";
 
 enum Recipients {
   ALL_ATTENDEES = "All Attendees",
