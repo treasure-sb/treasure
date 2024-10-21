@@ -17,8 +17,13 @@ export default function SaveButton({
   const { getValues } = useFormContext<CreateEvent>();
   const { refresh } = useRouter();
   const supabase = createClient();
+  const isLoggedIn = user !== null;
 
   const onSave = async () => {
+    if (!isLoggedIn) {
+      return;
+    }
+
     try {
       toast.loading("Saving event...");
       const values = getValues();
