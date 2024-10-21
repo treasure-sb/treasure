@@ -6,7 +6,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
-import { CSPostHogProvider } from "./providers";
+import { PHProvider } from "./providers";
+import dynamic from "next/dynamic";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,6 +32,10 @@ export const metadata: Metadata = {
   ],
 };
 
+const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
+  ssr: false,
+});
+
 export default async function RootLayout({
   children,
 }: {
@@ -38,8 +43,9 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.className}`}>
-      <CSPostHogProvider>
+      <PHProvider>
         <body>
+          <PostHogPageView />
           <ReactQueryProvider>
             <ThemeProvider
               attribute="class"
@@ -54,7 +60,7 @@ export default async function RootLayout({
           <Analytics />
           <SpeedInsights />
         </body>
-      </CSPostHogProvider>
+      </PHProvider>
     </html>
   );
 }
