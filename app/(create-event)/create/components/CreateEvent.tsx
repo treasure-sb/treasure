@@ -45,7 +45,7 @@ export default function CreateEvent({
   const tickets: CreateEventTicket[] = draft
     ? draft.tickets.map((ticket) => ({
         name: ticket.name ? ticket.name : "",
-        description: ticket.description,
+        description: ticket.description || "",
         price: ticket.price.toFixed(2).toString(),
         quantity: ticket.quantity ? ticket.quantity.toString() : "",
         dates: ticket.dates.map(

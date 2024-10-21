@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 import { eventDisplayData } from "@/lib/helpers/events";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useUser } from "../query";
+import { EventWithDates } from "@/types/event";
 
 export const useTables = () => {
   const user = useUser();
@@ -17,7 +18,7 @@ export const useTables = () => {
 
       if (!tablesData) return null;
 
-      const events = tablesData.map((table) => table.events);
+      const events: EventWithDates[] = tablesData.map((table) => table.events);
       const eventsData = await eventDisplayData(events);
       return { eventsData, tablesData };
     },

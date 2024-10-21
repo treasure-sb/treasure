@@ -30,7 +30,7 @@ const ticketSchema = z.object({
   name: z.string().min(1, {
     message: "Ticket name is required",
   }),
-  description: z.string().nullable().optional(),
+  description: z.string().optional(),
   price: z.string().refine(isPositiveNumber, {
     message: "Price must be a positive number",
   }),

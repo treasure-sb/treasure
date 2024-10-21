@@ -10,6 +10,7 @@ import { updatedCreateEvent } from "@/lib/actions/events";
 import { EventCreatedProps } from "@/emails/EventCreated";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { sendEventCreatedEmail } from "@/lib/actions/emails";
 
 export default function ContinueSubmitButton({
   isDesktop,
@@ -49,15 +50,13 @@ export default function ContinueSubmitButton({
         hostUsername: user?.username || "",
       };
 
-      console.log(eventCreatedEmailPayload);
-
-      // if (user?.email) {
-      //   await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
-      // }
-      // await sendEventCreatedEmail(
-      //   "treasure20110@gmail.com",
-      //   eventCreatedEmailPayload
-      // );
+      if (user?.email) {
+        await sendEventCreatedEmail(user?.email, eventCreatedEmailPayload);
+      }
+      await sendEventCreatedEmail(
+        "treasure20110@gmail.com",
+        eventCreatedEmailPayload
+      );
 
       push(`/events/${eventUrl}`);
     } catch (err) {
