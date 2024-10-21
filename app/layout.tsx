@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { ThemeProvider } from "@/utils/providers/ThemeProvider";
 import ReactQueryProvider from "@/utils/providers/ReactQueryProvider";
+import { CSPostHogProvider } from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,21 +38,23 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.className}`}>
-      <body>
-        <ReactQueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme={"light"}
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-          <Toaster />
-        </ReactQueryProvider>
-        <Analytics />
-        <SpeedInsights />
-      </body>
+      <CSPostHogProvider>
+        <body>
+          <ReactQueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme={"light"}
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+            <Toaster />
+          </ReactQueryProvider>
+          <Analytics />
+          <SpeedInsights />
+        </body>
+      </CSPostHogProvider>
     </html>
   );
 }
