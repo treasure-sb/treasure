@@ -62,6 +62,15 @@ export default function MenuBar() {
       <ContinueSubmitButton isDesktop={isDesktop} />
     );
 
+  const LoggedSaveButton = !isLoggedIn ? (
+    <LoginFlowDialog
+      trigger={SaveButton({ isDesktop })}
+      onLoginSuccess={onLoggedIn}
+    />
+  ) : (
+    <SaveButton isDesktop={isDesktop} />
+  );
+
   const desktopMenuBar = (
     <motion.div
       variants={menuVariants}
@@ -73,7 +82,7 @@ export default function MenuBar() {
         <div className="flex-1 space-y-2">
           <DesktopProgresBar currentStep={currentStep} />
           <div className="flex space-x-2">
-            <SaveButton isDesktop={isDesktop} />
+            {LoggedSaveButton}
             <PreviewButton isDesktop={isDesktop} />
             {LoggedMenuButton}
           </div>
@@ -91,7 +100,7 @@ export default function MenuBar() {
     >
       <MobileProgressBar currentStep={currentStep} />
       <div className="px-0 py-0 flex space-x-0 h-12">
-        <SaveButton isDesktop={isDesktop} />
+        {LoggedSaveButton}
         <PreviewButton isDesktop={isDesktop} />
         {LoggedMenuButton}
       </div>
