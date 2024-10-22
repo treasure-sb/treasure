@@ -19,10 +19,12 @@ export default function PaymentIntent({
   eventDisplay,
   ticketInfo,
   checkoutSessionId,
+  clientSecret,
 }: {
   eventDisplay: EventDisplayData;
   ticketInfo: TicketSuccessInformation;
   checkoutSessionId: string;
+  clientSecret: string;
 }) {
   const [status, setStatus] = useState<"loading" | "success" | "failure">(
     ticketInfo.priceType === "RSVP"
@@ -34,19 +36,14 @@ export default function PaymentIntent({
   const stripe = useStripe();
 
   useEffect(() => {
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    );
-
     if (!clientSecret || !stripe) {
       return;
     }
 
     const getPaymentIntent = async (clientSecret: string) => {
-      const { paymentIntent } = await stripe.retrievePaymentIntent(
+      const { paymentIntent, error } = await stripe.retrievePaymentIntent(
         clientSecret
       );
-
       if (!paymentIntent) {
         return;
       }
