@@ -148,7 +148,9 @@ export default function CheckoutForm({
 
     if (result.paymentIntent?.status === "succeeded") {
       toast.dismiss();
-      push(`/embed-checkout/${checkoutSession.id}/success`);
+      push(
+        `/embed-checkout/${checkoutSession.id}/success?clientSecret=${result.paymentIntent.client_secret}`
+      );
       setIsLoading(false);
     } else if (
       result.error &&

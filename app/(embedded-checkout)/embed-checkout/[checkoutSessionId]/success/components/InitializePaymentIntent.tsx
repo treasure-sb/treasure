@@ -14,10 +14,12 @@ export default function InitializePaymentIntent({
   eventDisplay,
   ticketInfo,
   checkoutSessionId,
+  clientSecret,
 }: {
   eventDisplay: EventDisplayData;
   ticketInfo: TicketSuccessInformation;
   checkoutSessionId: string;
+  clientSecret: string;
 }) {
   return (
     <Elements stripe={stripePromise}>
@@ -25,6 +27,7 @@ export default function InitializePaymentIntent({
         eventDisplay={eventDisplay}
         ticketInfo={ticketInfo}
         checkoutSessionId={checkoutSessionId}
+        clientSecret={clientSecret}
       />
     </Elements>
   );
