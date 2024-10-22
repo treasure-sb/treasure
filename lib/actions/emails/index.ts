@@ -36,7 +36,7 @@ const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 const sendWelcomeEmail = async (email: string, firstName: string) => {
   await resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: "Welcome to Treasure!",
     react: Welcome({ firstName }),
@@ -51,7 +51,7 @@ const sendVendorAppReceivedEmail = async (
 ) => {
   const batchEmails = emails.map((email) => {
     return {
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: "You Recieved a Vendor Application!",
       react: VendorAppReceived({ posterUrl, eventName, cleanedEventName }),
@@ -66,7 +66,7 @@ const sendVendorAppAcceptedEmail = async (
   emailProps: VendorAppAcceptedEmailProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `[Action Required] You've Been Accepted!: ${emailProps.eventName}`,
     react: VendorAppAccepted(emailProps),
@@ -79,7 +79,7 @@ const sendReminderVendorAppAcceptedEmail = async (
   emailProps: VendorAppAcceptedEmailProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `[Action Required (Reminder)] You've Been Accepted!: ${emailProps.eventName}`,
     react: VendorAppAccepted(emailProps),
@@ -92,7 +92,7 @@ const sendVendorAppRejectedEmail = async (
   emailProps: VendorAppRejectedEmailProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `Update on your ${emailProps.eventName} vendor application`,
     react: VendorAppRejected(emailProps),
@@ -105,7 +105,7 @@ const sendVendorAppWaitlistedEmail = async (
   emailProps: VendorAppWaitlistedEmailProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `Update on your ${emailProps.eventName} vendor application`,
     react: VendorAppWaitlisted(emailProps),
@@ -118,7 +118,7 @@ const sendVendorAppSubmittedEmail = async (
   emailProps: VendorAppSubmittedEmailProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `Registration received: ${emailProps.eventName}`,
     react: VendorAppSubmitted(emailProps),
@@ -131,7 +131,7 @@ const sendTablePurchasedEmail = async (
   emailProps: TablePurchasedProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `Table confirmed: ${emailProps.eventName}`,
     react: TablePurchased(emailProps),
@@ -144,7 +144,7 @@ const sendTeamInviteEmail = async (
   emailProps: TeamInviteProps
 ) => {
   const sendEmailPromise = resend.emails.send({
-    from: "Treasure <noreply@ontreasure.xyz>",
+    from: "Treasure <noreply@ontreasure.com>",
     to: email,
     subject: `You've been invited to join ${emailProps.eventName}'s team!`,
     react: TeamInvite(emailProps),
@@ -170,7 +170,7 @@ const sendHostMessageEmail = async (
   const sendEmailPromises = emailChunks.map(async (chunk) => {
     const batch = chunk.map((email) => {
       return {
-        from: "Treasure <noreply@ontreasure.xyz>",
+        from: "Treasure <noreply@ontreasure.com>",
         to: email,
         subject: `${emailProps.hostName} sent you a message`,
         react: HostMessage(emailProps),
@@ -196,7 +196,7 @@ const sendTicketPurchasedEmail = async (
     );
     const ticketReceiptBuffer = Buffer.from(ticketReceipt);
     await resend.emails.send({
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: `You're going to ${emailProps.eventName}!`,
       attachments: [
@@ -218,7 +218,7 @@ const sendHostTicketPurchasedEmail = async (
 ) => {
   let emailsInfo = emails.map((email) => {
     return {
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: `New Ticket Sale for ${emailProps.eventName}!`,
       react: HostTicketPurchased(emailProps),
@@ -237,7 +237,7 @@ const sendHostTablePurchasedEmail = async (
 ) => {
   let emailsInfo = emails.map((email) => {
     return {
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: `New Table Sale for ${emailProps.eventName}!`,
       react: HostTablePurchased(emailProps),
@@ -256,7 +256,7 @@ const sendEventCreatedEmail = async (
 ) => {
   try {
     await resend.emails.send({
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: `Thanks for Creating Your Event: ${emailProps.eventName}`,
       react: EventCreated(emailProps),
@@ -272,7 +272,7 @@ const sendDonationMadeEmail = async (
 ) => {
   try {
     await resend.emails.send({
-      from: "Treasure <noreply@ontreasure.xyz>",
+      from: "Treasure <noreply@ontreasure.com>",
       to: email,
       subject: `Thanks for Your Donation to Relief Efforts for Hurricane Helene!`,
       react: DonationMade(emailProps),
