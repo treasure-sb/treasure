@@ -34,6 +34,8 @@ export interface TablePurchasedProps {
   totalPrice: string;
   numberOfVendors: number;
   eventInfo: string;
+  event_min_date: string;
+  event_max_date: string;
 }
 
 export default function TablePurchased({
@@ -49,18 +51,19 @@ export default function TablePurchased({
   totalPrice = "$3.00",
   numberOfVendors = 2,
   eventInfo = "Round 2 was the best one yet of our shows! They just get bigger and bigger and round 3 will be no exception. 3/3/24 will have free public street parking and food set up in the back of the show which includes bagel with cream cheese, butter, peanut butter and hot dogs for lunch at an affordable rate. We will have over 60 vendors showcasing the very best of their products including Pokemon, plush, one piece, yugioh and many more! Best place to spend your tax refund! The first show was inspired by corocoro mew and our tee shirt design was made and finalized. Round 3 is inspired by the world renowned classic game",
+  event_min_date = "03/03/2024",
+  event_max_date = "03/07/2024",
 }: TablePurchasedProps) {
   const event: CalendarEvent = {
     title: eventName,
-    description: "eventDescription",
-    start: "2022-03-03T19:00:00-05:00",
-    duration: [3, "hour"],
+    description: eventInfo,
+    start: event_min_date,
+    end: event_max_date + "11:55PM",
   };
 
   const googleUrl = google(event);
   const outlookUrl = outlook(event);
-  const yahooUrl = yahoo(event);
-  const icsUrl = ics(event);
+
   return (
     <Html>
       <TailwindConfig>
@@ -142,10 +145,9 @@ export default function TablePurchased({
                 <Column className="text-right">
                   {date}
                   <Row>
+                    &nbsp;<strong>Add to Calendar</strong>&nbsp;
                     <a href={googleUrl}>Google</a>&nbsp;
-                    <a href={icsUrl}>iCalnowork:(</a>&nbsp;
-                    <a href={outlookUrl}>Outlook</a>&nbsp;
-                    <a href={yahooUrl}>Yahoo</a>
+                    <a href={outlookUrl}>Outlook</a>
                   </Row>
                 </Column>
               </Row>

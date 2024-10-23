@@ -156,6 +156,7 @@ const handleTicketPurchase = async (
     ),
     fees_paid: fees_paid,
     isGuestCheckout,
+    event_date: event_dates[0]
   };
 
   if (email) {
@@ -333,6 +334,8 @@ const handleTablePurchase = async (
     totalPrice: USDollar.format(totalPaid),
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
+    event_min_date: event_min_date,
+    event_max_date: event_max_date
   };
 
   await sendTablePurchasedEmail(
