@@ -179,16 +179,15 @@ export default function FreeCheckout({
       totalPrice: `Free`,
       eventInfo: event_description,
       isGuestCheckout: false,
+      event_date: event_dates[0].split("T")[0],
     };
 
-    if (profile.email) {
-      await sendTicketPurchasedEmail(
-        profile.email,
-        purchasedTicketId,
-        event_id,
-        ticketPurchaseEmailProps
-      );
-    }
+    await sendTicketPurchasedEmail(
+      email,
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
 
     if (profile.phone) {
       await sendAttendeeTicketPurchasedSMS(
@@ -274,6 +273,8 @@ export default function FreeCheckout({
       totalPrice: `Free`,
       numberOfVendors: vendor_vendors_at_table,
       eventInfo: event_description,
+      event_min_date: event_min_date.split("T")[0],
+      event_max_date: event_max_date.split("T")[0],
     };
 
     await sendTablePurchasedEmail(

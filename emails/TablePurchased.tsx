@@ -1,3 +1,4 @@
+import { google, outlook, yahoo, ics, CalendarEvent } from "calendar-link";
 import ColumnLabel from "./components/ColumnLabel";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -33,6 +34,8 @@ export interface TablePurchasedProps {
   totalPrice: string;
   numberOfVendors: number;
   eventInfo: string;
+  event_min_date: string;
+  event_max_date: string;
 }
 
 export default function TablePurchased({
@@ -48,7 +51,19 @@ export default function TablePurchased({
   totalPrice = "$3.00",
   numberOfVendors = 2,
   eventInfo = "Round 2 was the best one yet of our shows! They just get bigger and bigger and round 3 will be no exception. 3/3/24 will have free public street parking and food set up in the back of the show which includes bagel with cream cheese, butter, peanut butter and hot dogs for lunch at an affordable rate. We will have over 60 vendors showcasing the very best of their products including Pokemon, plush, one piece, yugioh and many more! Best place to spend your tax refund! The first show was inspired by corocoro mew and our tee shirt design was made and finalized. Round 3 is inspired by the world renowned classic game",
+  event_min_date = "03/03/2024",
+  event_max_date = "03/07/2024",
 }: TablePurchasedProps) {
+  const event: CalendarEvent = {
+    title: eventName,
+    description: eventInfo,
+    start: event_min_date,
+    end: event_max_date + " 11:55 PM",
+  };
+
+  const googleUrl = google(event);
+  const outlookUrl = outlook(event);
+
   return (
     <Html>
       <TailwindConfig>
@@ -127,7 +142,15 @@ export default function TablePurchased({
               <LineBreak />
               <Row>
                 <ColumnLabel>Date</ColumnLabel>
-                <Column className="text-right">{date}</Column>
+                <Column className="text-right">
+                  {date}
+                  <Row>
+                    &nbsp;<span className="text-gray-700">Add to Calendar</span>
+                    &nbsp;
+                    <a href={googleUrl}>Google</a>&nbsp;
+                    <a href={outlookUrl}>Outlook</a>
+                  </Row>
+                </Column>
               </Row>
               <LineBreak />
               <Row>
