@@ -182,14 +182,12 @@ export default function FreeCheckout({
       event_date: event_dates[0].split("T")[0],
     };
 
-    if (profile.email) {
-      await sendTicketPurchasedEmail(
-        profile.email,
-        purchasedTicketId,
-        event_id,
-        ticketPurchaseEmailProps
-      );
-    }
+    await sendTicketPurchasedEmail(
+      email,
+      purchasedTicketId,
+      event_id,
+      ticketPurchaseEmailProps
+    );
 
     if (profile.phone) {
       await sendAttendeeTicketPurchasedSMS(
