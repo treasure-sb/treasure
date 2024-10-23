@@ -43,7 +43,7 @@ export default function Message({
   const supabase = createClient();
 
   const recipients = Object.values(Recipients);
-  const vendorOptions = recipients.filter(
+  const vendorOptions: Recipients[] = recipients.filter(
     (recipient) => recipient !== "All Attendees" && recipient !== "All Vendors"
   );
 
