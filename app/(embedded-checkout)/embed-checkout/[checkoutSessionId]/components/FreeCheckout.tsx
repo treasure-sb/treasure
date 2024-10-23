@@ -153,6 +153,7 @@ export default function FreeCheckout({
       totalPrice: `Free`,
       eventInfo: event_description,
       isGuestCheckout: !profile,
+      event_date: event_dates[0].split("T")[0],
     };
 
     if (email) {

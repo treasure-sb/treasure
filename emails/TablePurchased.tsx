@@ -58,7 +58,7 @@ export default function TablePurchased({
     title: eventName,
     description: eventInfo,
     start: event_min_date,
-    end: event_max_date + "11:55PM",
+    end: event_max_date + " 11:55 PM",
   };
 
   const googleUrl = google(event);
@@ -145,7 +145,8 @@ export default function TablePurchased({
                 <Column className="text-right">
                   {date}
                   <Row>
-                    &nbsp;<strong>Add to Calendar</strong>&nbsp;
+                    &nbsp;<span className="text-gray-700">Add to Calendar</span>
+                    &nbsp;
                     <a href={googleUrl}>Google</a>&nbsp;
                     <a href={outlookUrl}>Outlook</a>
                   </Row>

@@ -140,6 +140,7 @@ const handleTicketPurchase = async (
     ? numericAmountPaid + numericFeesPaid
     : numericAmountPaid;
   const formattedEventDate = formatEmailDate(event_dates);
+  console.log(event_dates);
 
   const ticketPurchaseEmailProps: TicketPurchasedProps = {
     eventName: event_name,
@@ -156,7 +157,7 @@ const handleTicketPurchase = async (
     ),
     fees_paid: fees_paid,
     isGuestCheckout,
-    event_date: event_dates[0]
+    event_date: event_dates[0].split("T")[0],
   };
 
   if (email) {
@@ -272,8 +273,6 @@ const handleTablePurchase = async (
     })
     .returns<PurchaseTableResult[]>();
 
-  console.log(data, error);
-
   if (error) {
     console.log(error);
     throw new RefundError("Error purchasing table");
@@ -334,8 +333,8 @@ const handleTablePurchase = async (
     totalPrice: USDollar.format(totalPaid),
     numberOfVendors: vendor_vendors_at_table,
     eventInfo: event_description,
-    event_min_date: event_min_date,
-    event_max_date: event_max_date
+    event_min_date: event_min_date.split("T")[0],
+    event_max_date: event_max_date.split("T")[0],
   };
 
   await sendTablePurchasedEmail(

@@ -128,7 +128,8 @@ export default function TicketPurchased({
                 <Column className="text-right">
                   {date}
                   <Row>
-                    &nbsp;<strong>Add to Calendar</strong>&nbsp;
+                    &nbsp;<span className="text-gray-700">Add to Calendar</span>
+                    &nbsp;
                     <a href={googleUrl}>Google</a>&nbsp;
                     <a href={outlookUrl}>Outlook</a>
                   </Row>
