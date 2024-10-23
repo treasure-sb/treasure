@@ -1,3 +1,4 @@
+import { google, outlook, yahoo, ics, CalendarEvent } from "calendar-link";
 import ColumnLabel from "./components/ColumnLabel";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -47,6 +48,18 @@ export default function TicketPurchased({
   dinnerSelection,
   isGuestCheckout,
 }: TicketPurchasedProps) {
+  const event: CalendarEvent = {
+    title: eventName,
+    description: "eventDescription",
+    start: "2022-03-03T19:00:00-05:00",
+    duration: [3, "hour"],
+  };
+
+  const googleUrl = google(event);
+  const outlookUrl = outlook(event);
+  const yahooUrl = yahoo(event);
+  const iosUrl = ics(event);
+
   return (
     <Html>
       <TailwindConfig>
@@ -112,7 +125,15 @@ export default function TicketPurchased({
               <LineBreak />
               <Row>
                 <ColumnLabel>Date</ColumnLabel>
-                <Column className="text-right">{date}</Column>
+                <Column className="text-right">
+                  {date}
+                  <Row>
+                    <a href={googleUrl}>Google</a>&nbsp;
+                    <a href={iosUrl}>iCal</a>&nbsp;
+                    <a href={outlookUrl}>Outlook</a>&nbsp;
+                    <a href={yahooUrl}>Yahoo</a>
+                  </Row>
+                </Column>
               </Row>
               <LineBreak />
               <Row className="mb-6">

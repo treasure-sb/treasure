@@ -1,3 +1,4 @@
+import { google, outlook, yahoo, ics, CalendarEvent } from "calendar-link";
 import ColumnLabel from "./components/ColumnLabel";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -49,6 +50,17 @@ export default function TablePurchased({
   numberOfVendors = 2,
   eventInfo = "Round 2 was the best one yet of our shows! They just get bigger and bigger and round 3 will be no exception. 3/3/24 will have free public street parking and food set up in the back of the show which includes bagel with cream cheese, butter, peanut butter and hot dogs for lunch at an affordable rate. We will have over 60 vendors showcasing the very best of their products including Pokemon, plush, one piece, yugioh and many more! Best place to spend your tax refund! The first show was inspired by corocoro mew and our tee shirt design was made and finalized. Round 3 is inspired by the world renowned classic game",
 }: TablePurchasedProps) {
+  const event: CalendarEvent = {
+    title: eventName,
+    description: "eventDescription",
+    start: "2022-03-03T19:00:00-05:00",
+    duration: [3, "hour"],
+  };
+
+  const googleUrl = google(event);
+  const outlookUrl = outlook(event);
+  const yahooUrl = yahoo(event);
+  const icsUrl = ics(event);
   return (
     <Html>
       <TailwindConfig>
@@ -127,7 +139,15 @@ export default function TablePurchased({
               <LineBreak />
               <Row>
                 <ColumnLabel>Date</ColumnLabel>
-                <Column className="text-right">{date}</Column>
+                <Column className="text-right">
+                  {date}
+                  <Row>
+                    <a href={googleUrl}>Google</a>&nbsp;
+                    <a href={icsUrl}>iCalnowork:(</a>&nbsp;
+                    <a href={outlookUrl}>Outlook</a>&nbsp;
+                    <a href={yahooUrl}>Yahoo</a>
+                  </Row>
+                </Column>
               </Row>
               <LineBreak />
               <Row>
