@@ -16,12 +16,14 @@ export default function EventCard({
   user,
   clickable = true,
   showLikeButton = true,
+  showTicketIcon = true,
 }: {
   event: EventDisplayData;
   redirectTo?: string;
   user?: User | null;
   clickable?: boolean;
   showLikeButton?: boolean;
+  showTicketIcon?: boolean;
 }) {
   const [loading, setLoading] = useState(true);
   const imageVisibility = loading ? "invisible" : "visible";
@@ -78,7 +80,7 @@ export default function EventCard({
         </div>
       </Link>
       {showLikeButton && <LikeButton event={event} user={user} />}
-      {event.sales_status !== "NO_SALE" && (
+      {event.sales_status !== "NO_SALE" && showTicketIcon && (
         <Ticket className="stroke-1 text-foreground dark:text-primary absolute -top-2 -left-2 m-0 rounded-none -rotate-[25deg] fill-primary dark:fill-black" />
       )}
     </div>
