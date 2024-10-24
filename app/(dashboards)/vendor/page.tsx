@@ -1,4 +1,3 @@
-"use client";
 import Sales from "./components/Sales";
 import Tables from "./components/Tables";
 
