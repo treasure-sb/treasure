@@ -82,11 +82,13 @@ export default function ContinueSubmitButton({
         });
       }, 100);
     } else {
-      form.handleSubmit(onSubmit, () => {
+      const onError = () => {
         if (isLoggedIn) {
           toast.error("Please fill in all required fields");
         }
-      })();
+      };
+
+      form.handleSubmit(onSubmit, onError)();
     }
   };
 

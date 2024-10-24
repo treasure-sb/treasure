@@ -75,7 +75,7 @@ export default function EventTables() {
                 onClick={() => handleSelectTable(index)}
                 className={cn(
                   "w-full p-4 py-6 bg-field font-semibold relative group",
-                  (errors?.tables as any)?.[index]?.name &&
+                  (errors?.tables as any)?.[index] &&
                     "border border-destructive hover:border-destructive bg-red-100"
                 )}
               >
