@@ -63,7 +63,7 @@ export default function LikeButton({
   };
 
   const loginDialogTrigger = (
-    <div className="hover:cursor-pointer">
+    <div className="hover:cursor-pointer w-fit">
       <HeartIcon />
     </div>
   );
@@ -83,6 +83,6 @@ export default function LikeButton({
       <HeartIcon className={isDisplay ? "fill-black" : ""} />
     </div>
   ) : (
-    <LoginFlowDialog trigger={loginDialogTrigger} />
+    <LoginFlowDialog trigger={loginDialogTrigger} triggerClassname="w-fit" />
   );
 }

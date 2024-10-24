@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import LoginFlow from "@/app/(login)/login/components/LoginFlow";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function LoginFlowDialog({
   trigger,
+  triggerClassname,
   onLoginSuccess,
 }: {
   trigger: React.ReactElement;
+  triggerClassname?: string;
   onLoginSuccess?: () => Promise<void>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +26,9 @@ export default function LoginFlowDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="w-full">{trigger}</DialogTrigger>
+      <DialogTrigger className={cn("w-full", triggerClassname)}>
+        {trigger}
+      </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => {
           e.preventDefault();
