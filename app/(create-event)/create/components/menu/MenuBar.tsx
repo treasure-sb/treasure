@@ -55,7 +55,7 @@ export default function MenuBar() {
   const LoggedMenuButton =
     !isLoggedIn && currentStep === CurrentStep.STEP_TWO ? (
       <LoginFlowDialog
-        trigger={ContinueSubmitButton({ isDesktop })}
+        trigger={<ContinueSubmitButton isDesktop={isDesktop} />}
         onLoginSuccess={onLoggedIn}
       />
     ) : (
@@ -64,7 +64,7 @@ export default function MenuBar() {
 
   const LoggedSaveButton = !isLoggedIn ? (
     <LoginFlowDialog
-      trigger={SaveButton({ isDesktop })}
+      trigger={<SaveButton isDesktop={isDesktop} />}
       onLoginSuccess={onLoggedIn}
     />
   ) : (

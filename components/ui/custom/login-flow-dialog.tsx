@@ -7,7 +7,7 @@ export default function LoginFlowDialog({
   trigger,
   onLoginSuccess,
 }: {
-  trigger: React.JSX.Element;
+  trigger: React.ReactElement;
   onLoginSuccess?: () => Promise<void>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function LoginFlowDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger className="w-full">{trigger}</DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => {
           e.preventDefault();

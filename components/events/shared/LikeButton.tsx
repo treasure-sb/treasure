@@ -80,7 +80,7 @@ export default function LikeButton({
       onClick={async () => await handleLike()}
       className="flex-shrink-0 hover:cursor-pointer"
     >
-      <HeartIcon className={isDisplay ? "fill-white" : ""} />
+      <HeartIcon className={isDisplay ? "fill-black" : ""} />
     </div>
   ) : (
     <LoginFlowDialog trigger={loginDialogTrigger} />
